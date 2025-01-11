@@ -21,7 +21,7 @@ public final class Constants {
 
   public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
     static {
-      // Key: radial joystick distance
+      // Key: cardinal joystick distance
       // Value: % max speed
       joystickMap.put(0.00, 0.00);
       joystickMap.put(0.07, 0.10);
@@ -34,5 +34,16 @@ public final class Constants {
       joystickMap.put(0.80, 0.80);
       joystickMap.put(0.90, 1.00);
       joystickMap.put(1.00, 1.00);
+
+      joystickMap.put(-0.07, -0.10);
+      joystickMap.put(-0.18, -0.15);
+      joystickMap.put(-0.29, -0.20);
+      joystickMap.put(-0.40, -0.25);
+      joystickMap.put(-0.50, -0.35);
+      joystickMap.put(-0.60, -0.50);
+      joystickMap.put(-0.70, -0.65);
+      joystickMap.put(-0.80, -0.80);
+      joystickMap.put(-0.90, -1.00);
+      joystickMap.put(-1.00, -1.00);
     }
     }
