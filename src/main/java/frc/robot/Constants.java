@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,4 +18,21 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-}
+
+  public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
+    static {
+      // Key: radial joystick distance
+      // Value: % max speed
+      joystickMap.put(0.00, 0.00);
+      joystickMap.put(0.07, 0.10);
+      joystickMap.put(0.18, 0.15);
+      joystickMap.put(0.29, 0.20);
+      joystickMap.put(0.40, 0.25);
+      joystickMap.put(0.50, 0.35);
+      joystickMap.put(0.60, 0.50);
+      joystickMap.put(0.70, 0.65);
+      joystickMap.put(0.80, 0.80);
+      joystickMap.put(0.90, 1.00);
+      joystickMap.put(1.00, 1.00);
+    }
+    }
