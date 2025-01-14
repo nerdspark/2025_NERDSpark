@@ -22,18 +22,17 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmConstants.ArmGains;
-import frc.robot.Constants.ArmConstants.ArmSetPoints;
-import frc.robot.util.LightningShuffleboard;
-import frc.robot.Constants.RobotMap;
+// import frc.robot.Constants.ArmConstants;
+// import frc.robot.Constants.ArmConstants.ArmGains;
+// import frc.robot.Constants.ArmConstants.ArmSetPoints;
+// import frc.robot.util.LightningShuffleboard;
+// import frc.robot.Constants.RobotMap;
 
 public class ArmNew {
     private TalonFX shoulderRight;
@@ -78,78 +77,6 @@ public class ArmNew {
         TalonFXConfiguration wrist1Config; //TODO write this in later
         TalonFXConfiguration wrist2Config; //TODO write this in later
 
-        shoulderconfig.CurrentLimits =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(ArmConstants.currentLimitShoulder).withStatorCurrentLimitEnable(true);
-        shoulderconfig.Feedback = new FeedbackConfigs()
-                .withFeedbackRotorOffset(0.0)//ArmConstants.shoulderOffset)
-                .withSensorToMechanismRatio(ArmConstants.shoulderRadPerRot);
-        shoulderconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3 );
-        shoulderconfig.Slot0 = new Slot0Configs()
-                .withKP(armGains.shoulderP)
-                .withKI(armGains.shoulderI)
-                .withKD(armGains.shoulderD)
-                .withKG(armGains.shoulderG)
-                .withGravityType(GravityTypeValue.Arm_Cosine);
-
-        shoulderLeft
-                .getConfigurator()
-                .apply(shoulderconfig.withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(InvertedValue.Clockwise_Positive)
-                        .withNeutralMode(NeutralModeValue.Coast)));
-        shoulderRight
-                .getConfigurator()
-                .apply(shoulderconfig.withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(InvertedValue.CounterClockwise_Positive)
-                        .withNeutralMode(NeutralModeValue.Coast)));
-
-        elbowconfig.CurrentLimits =
-                new CurrentLimitsConfigs().withStatorCurrentLimit(ArmConstants.currentLimitElbow).withStatorCurrentLimitEnable(true);
-        elbowconfig.Feedback = new FeedbackConfigs()
-                .withFeedbackRotorOffset(0.0)//ArmConstants.elbowOffset)
-                .withSensorToMechanismRatio(ArmConstants.elbowRadPerRot);
-        elbowconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
-        elbowconfig.Slot0 = new Slot0Configs()
-                .withKP(armGains.elbowP)
-                .withKI(armGains.elbowI)
-                .withKD(armGains.elbowD)
-                .withKG(armGains.elbowG)
-                .withGravityType(GravityTypeValue.Arm_Cosine);
-
-        elbowLeft
-                .getConfigurator()
-                .apply(elbowconfig.withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(InvertedValue.Clockwise_Positive)
-                        .withNeutralMode(NeutralModeValue.Coast)));
-        elbowRight
-                .getConfigurator()
-                .apply(elbowconfig.withMotorOutput(new MotorOutputConfigs()
-                        .withInverted(InvertedValue.CounterClockwise_Positive)
-                        .withNeutralMode(NeutralModeValue.Coast)));
-
-        gripper = new CANSparkMax(RobotMap.gripperID, MotorType.kBrushless);
-
-        // shoulderLeft.setNeutralMode(NeutralModeValue.Coast);
-        // shoulderRight.setNeutralMode(NeutralModeValue.Coast);
-        // elbowLeft.setNeutralMode(NeutralModeValue.Coast);
-        // elbowRight.setNeutralMode(NeutralModeValue.Coast);
-
-        // shoulderLeft.setInverted(true);
-        // shoulderRight.setInverted(false);
-        // elbowRight.setInverted(false);
-        // elbowLeft.setInverted(true);
-        gripper.setInverted(true);
-
-        gripperEncoder = gripper.getEncoder();
-
-        inBend = false;
-        resetEncoders();
-        // setArmGains(climbGains);
-
-        // shoulderLeftEncoder.setPosition(ArmConstants.shoulderOffset);
-        // shoulderRightEncoder.setPosition(ArmConstants.shoulderOffset);
-        // elbowLeftEncoder.setPosition(ArmConstants.elbowOffset);
-        // elbowRightEncoder.setPosition(ArmConstants.elbowOffset);
-        // gripperEncoder.setPosition(0);
 
     }
 
@@ -176,6 +103,8 @@ public class ArmNew {
     //     elbowLeftController.setIZone(0.15);
     //     elbowRightController.setIZone(0.15);
     // }
+
+
     public void setArmPosition(Translation2d position, boolean inBend) {
         this.inBend = inBend;
         double distance = MathUtil.clamp(position.getNorm(), ArmSetPoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
@@ -201,12 +130,9 @@ public class ArmNew {
     }
 
     public void resetEncoders() {
-        elbowLeft.setPosition(ArmConstants.elbowOffset / (2.0*Math.PI));
-        elbowRight.setPosition(ArmConstants.elbowOffset / (2.0*Math.PI));
-        shoulderLeft.setPosition(ArmConstants.shoulderOffset / (2.0*Math.PI));
-        shoulderRight.setPosition(ArmConstants.shoulderOffset / (2.0*Math.PI));
+       // reset encoders of the motors
 
-        gripperEncoder.setPosition(0);
+
     }
 
     public Translation2d getArmPosition() {
