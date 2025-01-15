@@ -280,7 +280,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         field.setRobotPose(this.getState().Pose);
     }
     SmartDashboard.putData("Robot Field Pose", field);
-    // SmartDashboard.putString("Robot Pose", getFomattedPose()); 
+    SmartDashboard.putString("Robot Pose", getFomattedPose()); 
            }
 
     private MapleSimSwerveDrivetrain mapleSimSwerveDrivetrain = null;
@@ -311,5 +311,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (this.mapleSimSwerveDrivetrain != null) mapleSimSwerveDrivetrain.mapleSimDrive.setSimulationWorldPose(pose);
         Timer.delay(0.1); // wait for simulation to update
         super.resetPose(pose);
+    }
+
+    private String getFomattedPose() {
+        var pose = this.getState().Pose;
+        return String.format(
+                "(%.3f, %.3f) %.2f degrees",
+                pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     }
 }
