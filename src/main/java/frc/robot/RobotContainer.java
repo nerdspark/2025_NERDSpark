@@ -6,7 +6,6 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.Telemetry;
@@ -79,15 +78,15 @@ public class RobotContainer {
   private void configureBindings() {
       drivetrain.setDefaultCommand(
             drivetrain.applyRequest(() ->
-                drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getLeftY()) * MaxSpeed)) 
-                    .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getLeftX()) * MaxSpeed)) 
-                    .withRotationalRate(zLimiter.calculate(-joystick.getRightX() * MaxAngularRate))
+                drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed)) 
+                    .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) 
+                    .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
             )
         );
 
         joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+            point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
         ));
 
 
