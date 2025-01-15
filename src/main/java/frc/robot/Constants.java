@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,4 +18,16 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
+  public static final int ElevatorID = 0;
+  public static final ArrayList<Double> setHeights = new ArrayList<>(0, 0, 0); //TODO fix
+  public static final int kPElevator = 0;
+  public static final int kIElevator = 0;
+  public static final int kDElevator = 0;
+  public static final int kSElevator = 0;
+  public static final int kGElevator = 0;
+  public static final int kVElevator = 0;
+  public static final int kAElevator = 0;
+
+
 }
