@@ -23,10 +23,14 @@ public class Elevator extends SubsystemBase {
   private ElevatorFeedforward feedforward;
   /** Creates a new Elevator. */
   public Elevator() {
-    SparkMax elevatorMotor = new SparkMax(Constants.ElevatorID, null); 
+    SparkMax elevatorMotor = new SparkMax(Constants.elevatorID, null); 
     PIDController elevatorPID = new PIDController(Constants.kPElevator, Constants.kIElevator, Constants.kDElevator);
     ElevatorFeedforward feedforward = new ElevatorFeedforward(Constants.kSElevator, Constants.kGElevator, Constants.kVElevator, Constants.kAElevator);
     RelativeEncoder elevatorEncoder = elevatorMotor.getAlternateEncoder();
+  }
+
+  public void setTargetPosition(double target) {
+    targetPosition = target;
   }
 
   @Override

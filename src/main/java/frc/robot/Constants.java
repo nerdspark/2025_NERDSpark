@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -19,8 +20,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 
-  public static final int ElevatorID = 0;
-  public static final ArrayList<Double> setHeights = new ArrayList<>(0, 0, 0); //TODO fix
+  public static final int elevatorID = 0;
+  // public static final double[] heightLevels = new double[] {0.0, 0.0, 0.0}; 
   public static final int kPElevator = 0;
   public static final int kIElevator = 0;
   public static final int kDElevator = 0;
