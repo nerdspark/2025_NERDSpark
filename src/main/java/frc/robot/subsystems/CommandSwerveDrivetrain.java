@@ -279,9 +279,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     } else {
         field.setRobotPose(this.getState().Pose);
     }
-    SmartDashboard.putData("Robot Field Pose", field);
-    SmartDashboard.putString("Robot Pose", getFomattedPose()); 
-           }
+
+    }
 
     private MapleSimSwerveDrivetrain mapleSimSwerveDrivetrain = null;
 

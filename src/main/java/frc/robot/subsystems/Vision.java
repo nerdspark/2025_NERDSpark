@@ -33,6 +33,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 import java.util.List;
@@ -122,6 +123,8 @@ public class Vision {
                         () -> {
                             getSimDebugField(visionSystemSim).getObject("VisionEstimation").setPoses();
                         });
+
+                     
             }
         }
         return visionEst;
@@ -169,10 +172,27 @@ public class Vision {
                 // Decrease std devs if multiple targets are visible
                 if (numTags > 1) estStdDevs = kMultiTagStdDevs;
                 // Increase std devs based on (average) distance
-                if (numTags == 1 && avgDist > 4)
+                if (numTags == 1 && avgDist > kSingleTagDistanceThreshold)
                     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
-                curStdDevs = estStdDevs;
+                else if(numTags == 1 && avgDist < kSingleTagDistanceThreshold) {
+                    if(targets.get(0).getPoseAmbiguity() < kPoseAmbiguityThreshold) {
+                        estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                    }
+                    else{
+                        estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+                    }
+                    curStdDevs = estStdDevs;
+                }
+                else {
+                    estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+
+                    // double xyStdDev = calculateXYStdDev(avgDist, numTags);
+                    // double thetaStdDev =
+                    //     calculateThetaStdDev(avgDist, numTags);
+                    // estStdDevs = VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev);
+                    curStdDevs = estStdDevs;
+                }
+
             }
         }
     }
