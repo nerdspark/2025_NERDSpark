@@ -74,7 +74,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Update pose estimator with drivetrain sensors
-        var visionEst = vision.getEstimatedGlobalPoseSim(frontCamera, frontPhotonEstimator, visionSim);
+        var visionEst = vision.getEstimatedGlobalPose(frontCamera, frontPhotonEstimator, visionSim);
         visionEst.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see

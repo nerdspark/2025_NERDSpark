@@ -107,7 +107,7 @@ public class Vision {
         return visionEst;
     }
 
-    public Optional<EstimatedRobotPose> getEstimatedGlobalPoseSim(PhotonCamera camera, PhotonPoseEstimator photonEstimator, VisionSystemSim visionSystemSim) {
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(PhotonCamera camera, PhotonPoseEstimator photonEstimator, VisionSystemSim visionSystemSim) {
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         for (var change : camera.getAllUnreadResults()) {
             visionEst = photonEstimator.update(change);
