@@ -90,6 +90,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
         if(Robot.isSimulation()) {
             vision.simulationPeriodic(getCurrentPose(), visionSim);
+            SmartDashboard.putData("Debug Field", visionSim.getDebugField());
+            
         }
        
     }
