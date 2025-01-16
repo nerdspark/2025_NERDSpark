@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.138141556291391,
+        "y": 4.184809602649007
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.138141556291391,
+        "y": 4.184809602649007
+      },
+      "isLocked": false,
+      "linkedName": "BlueHighPath1Drop"
+    },
+    {
+      "anchor": {
+        "x": 4.743439569536424,
+        "y": 6.560161423841059
+      },
+      "prevControl": {
+        "x": 7.408989036345136,
+        "y": 6.3449307215411554
+      },
+      "nextControl": {
+        "x": 3.57392384106454,
+        "y": 6.654594370865355
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.4673427152367255,
+        "y": 7.22119205298456
+      },
+      "prevControl": {
+        "x": 2.4407284768261297,
+        "y": 5.9790355960309185
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "BlueTopPickup"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 5.02,
+    "maxAcceleration": 4.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 128.0
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
