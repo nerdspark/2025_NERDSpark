@@ -14,12 +14,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -76,32 +79,46 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-      drivetrain.setDefaultCommand(
-            drivetrain.applyRequest(() ->
-                drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed)) 
-                    .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) 
-                    .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
-            )
-        );
+    drivetrain.setDefaultCommand(
+      drivetrain.applyRequest(() ->
+        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed)) 
+          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) 
+          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+        )
+    );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
-        ));
+    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    joystick.b().whileTrue(drivetrain.applyRequest(() ->
+      point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
+    ));
 
 
-        // reset the field-centric 
-        joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    // reset the field-centric 
+    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-        drivetrain.registerTelemetry(logger::telemeterize);
-        // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
+    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    /* Manually start logging with left bumper before running any tests,
+     * and stop logging with right bumper after we're done with ALL tests.
+     * This isn't necessary but is convenient to reduce the size of the hoot file */
+    SignalLogger.setPath("/media/sda1/ctre-logs/");
+    joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    
+        /*
+     * Joystick Y = quasistatic forward
+     * Joystick A = quasistatic reverse
+     * Joystick B = dynamic forward
+     * Joystick X = dyanmic reverse
+     */
+    joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**
