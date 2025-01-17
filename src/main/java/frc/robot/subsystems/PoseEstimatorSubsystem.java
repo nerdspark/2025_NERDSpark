@@ -76,7 +76,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Update pose estimator with drivetrain sensors
-        var visionEst = vision.getEstimatedGlobalPoseSim(frontCamera, frontPhotonEstimator, visionSim);
+        var visionEst = vision.getEstimatedGlobalPose(frontCamera, frontPhotonEstimator, visionSim);
         visionEst.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
@@ -88,17 +88,25 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
         if (getCurrentPose() != null) {
             field.setRobotPose(getCurrentPose());
-            SmartDashboard.putData("Robot Pose", field);
+            SmartDashboard.putData("Robot Pose in Field", field);
+            SmartDashboard.putString("Robot Pose", getFomattedPose());
         }
         if(Robot.isSimulation()) {
             vision.simulationPeriodic(getCurrentPose(), visionSim);
             SmartDashboard.putData("Debug Field", visionSim.getDebugField());
-            
-        }       
+        }
+       
     }
 
     private String getFomattedPose() {
         var pose = getCurrentPose();
+        return String.format(
+                "(%.3f, %.3f) %.2f degrees",
+                pose.getX(), pose.getY(), pose.getRotation().getDegrees());
+    }
+
+    private String getFomattedPose(Pose2d pose) {
+      
         return String.format(
                 "(%.3f, %.3f) %.2f degrees",
                 pose.getX(), pose.getY(), pose.getRotation().getDegrees());
