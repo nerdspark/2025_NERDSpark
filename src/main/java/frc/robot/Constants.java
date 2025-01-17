@@ -41,26 +41,31 @@ public static class Vision {
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
-        public static final double TRANSLATION_TOLERANCE_X = 0.1; // Changed from 0.05 3/26/23
-        public static final double TRANSLATION_TOLERANCE_Y = 0.25; // Changed from 0.05 3/26/23
-        public static final double ROTATION_TOLERANCE = 1.0; // /deg
+        public static final double TRANSLATION_TOLERANCE_X = 0.05; // Changed from 0.05 3/26/23
+        public static final double TRANSLATION_TOLERANCE_Y = 0.05; // Changed from 0.05 3/26/23
+        public static final double ROTATION_TOLERANCE = 5.0; // /deg
 
         public static final double MAX_VELOCITY = 4; // 3 //2
         public static final double MAX_ACCELARATION = 10; // 2 //1
-        public static final double MAX_VELOCITY_ROTATION = 6000; // 8
-        public static final double MAX_ACCELARATION_ROTATION = 2500; // 8
+        public static final double MAX_VELOCITY_ROTATION = 16; // 8
+        public static final double MAX_ACCELARATION_ROTATION = 16; // 8
+        
+        public static final double VELOCITY_TOLERANCE_X =5;
+        public static final double VELOCITY_TOLERANCE_Y = 5;
+        public static final double VELOCITY_TOLERANCE_OMEGA = 5;
+
 
         public static final double kPXController = 2.5d;
         public static final double kIXController = 0.1d;
         public static final double kDXController = 0d;
         public static final double kPYController = 2.5d;
-        public static final double kIYController = 0.1d;
+        public static final double kIYController = 1d; //0.1d;
         public static final double kDYController = 0d;
         public static final double kIzoneX = 1.0d;
         public static final double kIzoneY = 1.0d;
-        public static final double kPThetaController = .033;
+        public static final double kPThetaController = 2;
         public static final double kIThetaController = 0;
-        public static final double kDThetaController = 0.0041;
+        public static final double kDThetaController = 0.041; //0.0041
         public static final double IZone = 5;
         public static final double autoTurnCeiling = 5.0;
 

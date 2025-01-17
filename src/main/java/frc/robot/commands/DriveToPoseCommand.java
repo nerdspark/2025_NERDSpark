@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.*;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+
+
+
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -47,7 +50,7 @@ public class DriveToPoseCommand extends Command {
             Constants.Vision.kDThetaController,
             OMEGA_CONSTRATINTS);
 
-    private final SwerveRequest.ApplyChassisSpeeds driveToPoseRequest = new SwerveRequest.ApplyChassisSpeeds();
+    private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
 
     /**
      * Creates a new ExampleCommand.
@@ -64,13 +67,14 @@ public class DriveToPoseCommand extends Command {
         this.targetPoseSupplier = goalPoseSupplier;
         this.robotAngle = robotAngle;
 
-        xController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_X);
-        yController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_Y);
-        omegaController.setTolerance(Constants.Vision.ROTATION_TOLERANCE);
+        xController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_X, Constants.Vision.VELOCITY_TOLERANCE_X);
+        yController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_Y,Constants.Vision.VELOCITY_TOLERANCE_Y);
+        omegaController.setTolerance(Constants.Vision.ROTATION_TOLERANCE,Constants.Vision.VELOCITY_TOLERANCE_OMEGA);
         omegaController.enableContinuousInput(-180.0, 180.0);
         omegaController.setIZone(Constants.Vision.IZone);
         xController.setIZone(Constants.Vision.kIzoneX);
         yController.setIZone(Constants.Vision.kIzoneY);
+        
         addRequirements(drivetrainSubsystem);
     }
 
@@ -93,8 +97,8 @@ public class DriveToPoseCommand extends Command {
         omegaController.reset(
                 robotAngle.get().getDegrees(),
                 drivetrainSubsystem.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond * 180.0 / Math.PI);
-        xController.reset(robotPose.getX(), -drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
-        yController.reset(robotPose.getY(), -drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+        xController.reset(robotPose.getX(), drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
+        yController.reset(robotPose.getY(), drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
 
         SmartDashboard.putNumber(
                 "YawVelocity",
@@ -138,7 +142,7 @@ public class DriveToPoseCommand extends Command {
         if (yController.atGoal()) {
             ySpeed = 0;
         }
-
+    
         var omegaSpeed = omegaController.calculate(robotAngle.get().getDegrees());
         if (omegaController.atGoal()) {
             omegaSpeed = 0;
@@ -151,15 +155,10 @@ public class DriveToPoseCommand extends Command {
 
         ChassisSpeeds chassisSpeeds;
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                -xSpeed,
-                -ySpeed,
-                MathUtil.clamp(
-                        omegaSpeed * 1.5 * Math.PI,
-                        -Constants.Vision.autoTurnCeiling,
-                        Constants.Vision.autoTurnCeiling),
+                xSpeed,
+                ySpeed,
+                omegaSpeed,
                 robotAngle.get());
-
-        // drivetrainSubsystem.applyRequest(() -> driveToPoseRequest.withSpeeds(chassisSpeeds));
         drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(chassisSpeeds));
     }
 
