@@ -12,6 +12,8 @@ import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -92,8 +94,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             vision.simulationPeriodic(getCurrentPose(), visionSim);
             SmartDashboard.putData("Debug Field", visionSim.getDebugField());
             
-        }
-       
+        }       
     }
 
     private String getFomattedPose() {
