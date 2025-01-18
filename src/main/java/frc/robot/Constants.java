@@ -16,4 +16,13 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+  public static final int elevatorID = 0;
+  // public static final double[] heightLevels = new double[] {0.0, 0.0, 0.0}; 
+  public static final int kPElevator = 0;
+  public static final int kIElevator = 0;
+  public static final int kDElevator = 0;
+  public static final int kSElevator = 0;
+  public static final int kGElevator = 0;
+  public static final int kVElevator = 0;
+  public static final int kAElevator = 0;
 }
