@@ -25,14 +25,15 @@ public class Elevator extends SubsystemBase {
   private ElevatorFeedforward elevFF;
   private Mechanism2d elevMech;
   private MechanismRoot2d elevMechRoot;
+  // MechanismRoot2d elevMechRoot = new MechanismRoot2d("",0,0);
   /** Creates a new Elevator. */
   public Elevator() {
-    SparkMax elevMotor = new SparkMax(Constants.elevatorID, null); 
-    PIDController elevPID = new PIDController(Constants.kPElevator, Constants.kIElevator, Constants.kDElevator);
-    ElevatorFeedforward elevFF = new ElevatorFeedforward(Constants.kSElevator, Constants.kGElevator, Constants.kVElevator, Constants.kAElevator);
-    RelativeEncoder elevEncoder = elevMotor.getAlternateEncoder(); 
-    Mechanism2d elevMech = new Mechanism2d(1, 5);
-    MechanismRoot2d elevMechRoot = new MechanismRoot2d("elevator", 10.0, 10.0); // TODO fix weird java thing
+     elevMotor = new SparkMax(Constants.elevatorID, null); 
+     elevPID = new PIDController(Constants.kPElevator, Constants.kIElevator, Constants.kDElevator);
+     elevFF = new ElevatorFeedforward(Constants.kSElevator, Constants.kGElevator, Constants.kVElevator, Constants.kAElevator);
+     elevEncoder = elevMotor.getAlternateEncoder(); 
+     elevMech = new Mechanism2d(1, 5);
+     elevMechRoot = elevMech.getRoot("elevator", 10.0, 10.0); // TODO fix weird java thing
   }
 
   public void setTargetPosition(double target) {
