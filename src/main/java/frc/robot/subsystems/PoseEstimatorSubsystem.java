@@ -6,6 +6,9 @@ import static frc.robot.Constants.Vision.kCameraNameBack;
 import static frc.robot.Constants.Vision.kRobotToCamBack;
 import static frc.robot.Constants.Vision.kTagLayout;
 
+import java.util.Optional;
+
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -20,7 +23,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private final CommandSwerveDrivetrain driveTrain;
     private Vision visionFront ;
     private Vision visionBack ;
-
 
     // private Vision vision2 = new Vision(kCameraName, kRobotToCam);
     // private Vision vision3 = new Vision(kCameraName, kRobotToCam);
@@ -41,7 +43,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // Update pose estimator with drivetrain sensors
-        var visionEst = visionFront.getEstimatedGlobalPose();
+        Optional<EstimatedRobotPose> visionEst;
+        visionEst = visionFront.getEstimatedGlobalPose();
         visionEst.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
@@ -51,11 +54,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                             est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                 });
 
-            visionEst = visionBack.getEstimatedGlobalPose();
-            visionEst.ifPresent(
+        visionEst = visionBack.getEstimatedGlobalPose();
+        visionEst.ifPresent(
             est -> {
                 // Change our trust in the measurement based on the tags we can see
-                var estStdDevs = visionFront.getEstimationStdDevs();
+                var estStdDevs = visionBack.getEstimationStdDevs();
 
                 driveTrain.addVisionMeasurement(
                         est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
@@ -69,8 +72,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
         if(Robot.isSimulation()) {
             visionFront.simulationPeriodic(getCurrentPose());
-            visionBack.simulationPeriodic(getCurrentPose());
             SmartDashboard.putData("Debug Field Front", visionFront.getSimDebugField());
+            visionBack.simulationPeriodic(getCurrentPose());
             SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
 
         }
