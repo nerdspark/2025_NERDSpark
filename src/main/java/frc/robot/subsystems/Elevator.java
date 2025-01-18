@@ -33,7 +33,7 @@ public class Elevator extends SubsystemBase {
      elevFF = new ElevatorFeedforward(Constants.kSElevator, Constants.kGElevator, Constants.kVElevator, Constants.kAElevator);
      elevEncoder = elevMotor.getAlternateEncoder(); 
      elevMech = new Mechanism2d(1, 5);
-     elevMechRoot = elevMech.getRoot("elevator", 10.0, 10.0); // TODO fix weird java thing
+     elevMechRoot = elevMech.getRoot("elevator", 10.0, 10.0); //
   }
 
   public void setTargetPosition(double target) {
