@@ -27,10 +27,16 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 public static class Vision {
-        public static final String kCameraName = "Camera";
+        public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-        public static final Transform3d kRobotToCam =
+        public static final Transform3d kRobotToCamFront =
                 new Transform3d(new Translation3d(0.3, 0.0, 0.25), new Rotation3d(0, 0, Math.toRadians(0)));
+
+
+        public static final String kCameraNameBack = "BackCamera";
+        // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
+        public static final Transform3d kRobotToCamBack =
+                new Transform3d(new Translation3d(-0.3, 0.0, 0.25), new Rotation3d(0, 0, Math.toRadians(180)));
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =

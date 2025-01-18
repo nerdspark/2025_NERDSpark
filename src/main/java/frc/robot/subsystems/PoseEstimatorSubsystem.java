@@ -1,90 +1,66 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide;
-import static frc.robot.Constants.Vision.kCameraName;
-import static frc.robot.Constants.Vision.kRobotToCam;
+import static frc.robot.Constants.Vision.kCameraNameFront;
+import static frc.robot.Constants.Vision.kRobotToCamFront;
+import static frc.robot.Constants.Vision.kCameraNameBack;
+import static frc.robot.Constants.Vision.kRobotToCamBack;
 import static frc.robot.Constants.Vision.kTagLayout;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.simulation.PhotonCameraSim;
-import org.photonvision.simulation.SimCameraProperties;
-import org.photonvision.simulation.VisionSystemSim;
-
-import com.pathplanner.lib.path.PathConstraints;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.Vision.*;
 import frc.robot.Robot;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
     private final CommandSwerveDrivetrain driveTrain;
-    private Vision vision;
-    private Field2d field = new Field2d();  
+    private Vision visionFront ;
+    private Vision visionBack ;
 
-    // Simulation
-    private PhotonCameraSim cameraSim;
-    private VisionSystemSim visionSim;
 
-    private final PhotonCamera frontCamera = new PhotonCamera(kCameraName);
+    // private Vision vision2 = new Vision(kCameraName, kRobotToCam);
+    // private Vision vision3 = new Vision(kCameraName, kRobotToCam);
+    // private Vision vision4 = new Vision(kCameraName, kRobotToCam);
+
+    private Field2d field = new Field2d(); 
     
-    private PhotonPoseEstimator frontPhotonEstimator =
-                new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
-                
- 
+  
+    // Simulation
 
-    public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain, Vision vision) {
+
+    public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain) {
         this.driveTrain = driveTrain;
-        this.vision = vision;
-        frontPhotonEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        if (Robot.isSimulation()) {
-            // Create the vision system simulation which handles cameras and targets on the field.
-            visionSim = new VisionSystemSim("main");
-            // Add all the AprilTags inside the tag layout as visible targets to this simulated field.
-            visionSim.addAprilTags(kTagLayout);
-            // Create simulated camera properties. These can be set to mimic your actual camera.
-            var cameraProp = new SimCameraProperties();
-            cameraProp.setCalibration(960, 720, Rotation2d.fromDegrees(90));
-            cameraProp.setCalibError(0.35, 0.10);
-            cameraProp.setFPS(15);
-            cameraProp.setAvgLatencyMs(50);
-            cameraProp.setLatencyStdDevMs(15);
-            // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
-            // targets.
-            cameraSim = new PhotonCameraSim(frontCamera, cameraProp);
-            // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(cameraSim, kRobotToCam);
-
-            cameraSim.enableRawStream(true);
-            cameraSim.enableProcessedStream(true);
-            cameraSim.enableDrawWireframe(true);
-        }
+        this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront);
+        this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack);
     }
 
     @Override
     public void periodic() {
         // Update pose estimator with drivetrain sensors
-        var visionEst = vision.getEstimatedGlobalPose(frontCamera, frontPhotonEstimator, visionSim);
+        var visionEst = visionFront.getEstimatedGlobalPose();
         visionEst.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
-                    var estStdDevs = vision.getEstimationStdDevs();
+                    var estStdDevs = visionFront.getEstimationStdDevs();
 
                     driveTrain.addVisionMeasurement(
                             est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                 });
+
+            visionEst = visionBack.getEstimatedGlobalPose();
+            visionEst.ifPresent(
+            est -> {
+                // Change our trust in the measurement based on the tags we can see
+                var estStdDevs = visionFront.getEstimationStdDevs();
+
+                driveTrain.addVisionMeasurement(
+                        est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+            });
+
 
         if (getCurrentPose() != null) {
             field.setRobotPose(getCurrentPose());
@@ -92,8 +68,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putString("Robot Pose", getFomattedPose());
         }
         if(Robot.isSimulation()) {
-            vision.simulationPeriodic(getCurrentPose(), visionSim);
-            SmartDashboard.putData("Debug Field", visionSim.getDebugField());
+            visionFront.simulationPeriodic(getCurrentPose());
+            visionBack.simulationPeriodic(getCurrentPose());
+            SmartDashboard.putData("Debug Field Front", visionFront.getSimDebugField());
+            SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
+
         }
        
     }
