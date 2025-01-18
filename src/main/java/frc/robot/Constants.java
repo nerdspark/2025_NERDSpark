@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
@@ -13,6 +14,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -26,6 +29,7 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+
 public static class Vision {
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
@@ -83,3 +87,32 @@ public static class Vision {
     }
 
 }
+
+  public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
+    static {
+      // Key: cardinal joystick distance
+      // Value: % max speed
+      joystickMap.put(0.00, 0.00);
+      joystickMap.put(0.07, 0.10);
+      joystickMap.put(0.18, 0.15);
+      joystickMap.put(0.29, 0.20);
+      joystickMap.put(0.40, 0.25);
+      joystickMap.put(0.50, 0.35);
+      joystickMap.put(0.60, 0.50);
+      joystickMap.put(0.70, 0.65);
+      joystickMap.put(0.80, 0.80);
+      joystickMap.put(0.90, 1.00);
+      joystickMap.put(1.00, 1.00);
+
+      joystickMap.put(-0.07, -0.10);
+      joystickMap.put(-0.18, -0.15);
+      joystickMap.put(-0.29, -0.20);
+      joystickMap.put(-0.40, -0.25);
+      joystickMap.put(-0.50, -0.35);
+      joystickMap.put(-0.60, -0.50);
+      joystickMap.put(-0.70, -0.65);
+      joystickMap.put(-0.80, -0.80);
+      joystickMap.put(-0.90, -1.00);
+      joystickMap.put(-1.00, -1.00);
+    }
+    }
