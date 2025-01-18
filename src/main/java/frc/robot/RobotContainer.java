@@ -12,6 +12,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.Telemetry;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -25,6 +26,9 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindThenFollowPath;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,7 +49,7 @@ public class RobotContainer {
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController joystick = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -112,6 +116,21 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
+      new Pose2d(5.435, 5.336, Rotation2d.fromDegrees(-120)), 
+      new PathConstraints(
+        5.0, 3.0, 
+        Units.degreesToRadians(360), Units.degreesToRadians(540)
+      ), 
+      0
+    ));
+
+    // SmartDashboard.putData("Pathfind and Follow Path", AutoBuilder.pathfindThenFollowPath(
+    //   new PathPlannerPath.fromPathFile("BlueTeleopHigh1", 
+    //   new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(540))
+    // )));
+
   }
 
     private void configureAutoChooser() {

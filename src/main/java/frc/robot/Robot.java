@@ -5,6 +5,10 @@
 package frc.robot;
 
 import com.ctre.phoenix6.Utils;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -26,12 +30,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        Pathfinding.setPathfinder(new LocalADStar());
+        
+
         DogLog.setOptions(new DogLogOptions()
                 .withLogExtras(true)
                 .withCaptureDs(true)
                 .withNtPublish(true)
                 .withCaptureNt(true));
         DogLog.setPdh(new PowerDistribution());
+
+        PathfindingCommand.warmupCommand().schedule();
     }
 
     @Override
