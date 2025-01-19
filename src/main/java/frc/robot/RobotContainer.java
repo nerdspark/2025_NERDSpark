@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.PathFindFollow;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.Telemetry;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindThenFollowPath;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -68,7 +70,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-    drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
+    // drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
 
     configureAutoChooser();
 
@@ -118,7 +120,7 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     SmartDashboard.putData("Pathfind to Pickup Pos", AutoBuilder.pathfindToPose(
-      new Pose2d(5.435, 5.336, Rotation2d.fromDegrees(-120)), 
+      new Pose2d(5.289, 5.069, Rotation2d.fromDegrees(-120)), 
       new PathConstraints(
         5.0, 3.0, 
         Units.degreesToRadians(360), Units.degreesToRadians(540)
@@ -126,10 +128,33 @@ public class RobotContainer {
       0
     ));
 
+    joystick.x().whileTrue(AutoBuilder.pathfindToPose(
+      new Pose2d(5.289, 5.069, Rotation2d.fromDegrees(-120)), 
+      new PathConstraints(
+        5.0, 3.0, 
+        Units.degreesToRadians(360), Units.degreesToRadians(540)
+      ), 
+      0
+    ));
+    
+    // joystick.y().whileTrue(AutoBuilder.pathfindThenFollowPath(
+    //   "BlueTeleopHighPath", 
+    //   new PathConstraints(
+    //     5.0, 3.0, 
+    //     Units.degreesToRadians(360), Units.degreesToRadians(540)
+    //   )
+    // ));
+
+    joystick.rightBumper().whileTrue(new PathFindFollow());
+
+    // joystick.rightBumper().whileTrue(drivetrain.scoreReef);
+
     // SmartDashboard.putData("Pathfind and Follow Path", AutoBuilder.pathfindThenFollowPath(
     //   new PathPlannerPath.fromPathFile("BlueTeleopHigh1", 
     //   new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(540))
     // )));
+
+
 
   }
 
