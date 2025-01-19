@@ -32,7 +32,7 @@ public final class Constants {
 
 public static class Vision {
 
-        public static final boolean USE_VISION = false;
+        public static final boolean USE_VISION = true;
 
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
@@ -89,7 +89,7 @@ public static class Vision {
         
     }
 
-}
+
 
   public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
     static {
@@ -118,4 +118,5 @@ public static class Vision {
       joystickMap.put(-0.90, -1.00);
       joystickMap.put(-1.00, -1.00);
     }
-    }
+  }
+    
