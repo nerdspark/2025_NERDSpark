@@ -39,7 +39,9 @@
  
  import java.util.List;
  import java.util.Optional;
- import org.photonvision.EstimatedRobotPose;
+import java.util.concurrent.atomic.AtomicReference;
+
+import org.photonvision.EstimatedRobotPose;
  import org.photonvision.PhotonCamera;
  import org.photonvision.PhotonPoseEstimator;
  import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -49,10 +51,12 @@
  import org.photonvision.targeting.PhotonTrackedTarget;
  
  
- public class Vision {
+ public class Vision implements Runnable {
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonPoseEstimator;
      private Matrix<N3, N1> curStdDevs;
+
+     private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
  
      // Simulation
      private PhotonCameraSim cameraSim;
@@ -90,6 +94,11 @@
              cameraSim.enableDrawWireframe(true);
          }
      }
+
+     public void run(){
+
+        optionalEstimatedRobotPose = getEstimatedGlobalPose(this.camera, this.photonPoseEstimator);
+     }
  
      /**
       * The latest estimated robot pose on the field from vision data. This may be empty. This should
@@ -125,12 +134,10 @@
          return visionEst;
      }
 
-     public Optional<EstimatedRobotPose> getEstimatedGlobalPose(){
-
-        return this.getEstimatedGlobalPose(camera, photonPoseEstimator);
+     public Optional<EstimatedRobotPose> getEstimatedRobotPose(){
+        return this.optionalEstimatedRobotPose;
      }
- 
- 
+  
      /**
       * Calculates new standard deviations This algorithm is a heuristic that creates dynamic standard
       * deviations based on number of tags, estimation strategy, and distance from the tags.

@@ -27,6 +27,9 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
 public static class Vision {
+
+        public static final boolean USE_VISION = false;
+
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
