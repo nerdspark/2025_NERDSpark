@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.Arm;
@@ -14,6 +16,8 @@ public class ArmCommand extends Command {
 
   private Arm arm;
 
+  // private final DoubleSupplier armAngle;
+
   
   public ArmCommand(Arm arm) {
     this.arm = arm;
@@ -23,7 +27,7 @@ public class ArmCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.

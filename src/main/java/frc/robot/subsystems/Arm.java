@@ -20,7 +20,7 @@ public class Arm extends SubsystemBase {
   private TalonFX shoulder;
   private TalonFX elbow;
   private TalonFX wrist;
-  private TalonFX hand; //TODO find a better name for this
+  private TalonFX wristRotation; //TODO find a better name for this
 
   /** Creates a new Arm. */
   public Arm() {
@@ -28,7 +28,7 @@ public class Arm extends SubsystemBase {
     shoulder = new TalonFX(ArmConstants.shoulderMotorPort, "canivore1"); 
     elbow = new TalonFX(ArmConstants.elbowMotorPort, "canivore1");
     wrist = new TalonFX(ArmConstants.wristMotorPort, "canivore1");
-    hand = new TalonFX(ArmConstants.handMotorPort, "canivore1");
+    wristRotation = new TalonFX(ArmConstants.handMotorPort, "canivore1");
 
   }
 
@@ -79,11 +79,11 @@ public class Arm extends SubsystemBase {
     return elbowPose;
   }
 
-  public void setHandPosition(double position) {
+  public void setWristRotationPosition(double position) {
     position /= (2d*Math.PI);
 
     SmartDashboard.putNumber("hand position set raw", position);
-    hand.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
+    wristRotation.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
 
   }
 
