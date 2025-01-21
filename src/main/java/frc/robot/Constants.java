@@ -31,16 +31,19 @@ public final class Constants {
   }
 
 public static class Vision {
+
+        public static final boolean USE_VISION = true;
+
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
-                new Transform3d(new Translation3d(0, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(0)));
+                new Transform3d(new Translation3d(0, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(180))); //0
 
 
         public static final String kCameraNameBack = "BackCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamBack =
-                new Transform3d(new Translation3d(-0.1778, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(180)));
+                new Transform3d(new Translation3d(-0.1778, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(0))); //180
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -49,7 +52,7 @@ public static class Vision {
         // The standard deviations of our vision estimated poses, which affect correction rate
         // (Fake values. Experiment and determine estimation noise on an actual robot.)
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.1, 0.1, 1);
 
         public static final double TRANSLATION_TOLERANCE_X = 0.05; // Changed from 0.05 3/26/23
         public static final double TRANSLATION_TOLERANCE_Y = 0.05; // Changed from 0.05 3/26/23
@@ -86,7 +89,7 @@ public static class Vision {
         
     }
 
-}
+
 
   public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
     static {
@@ -115,4 +118,4 @@ public static class Vision {
       joystickMap.put(-0.90, -1.00);
       joystickMap.put(-1.00, -1.00);
     }
-    }
+  }
