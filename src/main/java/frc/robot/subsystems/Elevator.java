@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import org.opencv.core.Point;
+
+import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.jni.CANSparkJNI;
 import com.revrobotics.spark.SparkMax;
@@ -25,6 +28,7 @@ public class Elevator extends SubsystemBase {
   private ElevatorFeedforward elevFF;
   private Mechanism2d elevMech;
   private MechanismRoot2d elevMechRoot;
+  private Point example1;
   // MechanismRoot2d elevMechRoot = new MechanismRoot2d("",0,0);
   /** Creates a new Elevator. */
   public Elevator() {
@@ -32,18 +36,23 @@ public class Elevator extends SubsystemBase {
      elevPID = new PIDController(Constants.kPElevator, Constants.kIElevator, Constants.kDElevator);
      elevFF = new ElevatorFeedforward(Constants.kSElevator, Constants.kGElevator, Constants.kVElevator, Constants.kAElevator);
      elevEncoder = elevMotor.getAlternateEncoder(); 
-     elevMech = new Mechanism2d(1, 5);
-     elevMechRoot = elevMech.getRoot("elevator", 10.0, 10.0); //
+     elevMotor.set(elevPID.calculate(elevEncoder.getPosition(), targetPosition) + 
+     elevFF.calculate(targetPosition));
+    ;
   }
 
   public void setTargetPosition(double target) {
     targetPosition = target;
   }
 
+  public void initializeMapleSim() {
+    elevMech = new Mechanism2d(Constants.elevWidth, Constants.elevHeight);
+    elevMechRoot = elevMech.getRoot("elevator", Constants.elevXPos, Constants.elevYPos); //
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-      elevMotor.set(elevPID.calculate(elevEncoder.getPosition(), targetPosition) + 
-      elevFF.calculate(targetPosition));
+      
   }
 }
