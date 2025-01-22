@@ -10,12 +10,15 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.jni.CANSparkJNI;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;// Constants.setHeights
 
@@ -26,33 +29,36 @@ public class Elevator extends SubsystemBase {
   private RelativeEncoder elevEncoder;
   private double targetPosition;
   private ElevatorFeedforward elevFF;
-  private Mechanism2d elevMech;
+  public Mechanism2d elevMech;
   private MechanismRoot2d elevMechRoot;
   private Point example1;
   // MechanismRoot2d elevMechRoot = new MechanismRoot2d("",0,0);
   /** Creates a new Elevator. */
   public Elevator() {
-     elevMotor = new SparkMax(Constants.elevatorID, null); 
+     elevMotor = new SparkMax(Constants.elevatorID, MotorType.kBrushless); 
      elevPID = new PIDController(Constants.kPElevator, Constants.kIElevator, Constants.kDElevator);
      elevFF = new ElevatorFeedforward(Constants.kSElevator, Constants.kGElevator, Constants.kVElevator, Constants.kAElevator);
      elevEncoder = elevMotor.getAlternateEncoder(); 
-     elevMotor.set(elevPID.calculate(elevEncoder.getPosition(), targetPosition) + 
-     elevFF.calculate(targetPosition));
-    ;
+    
+    elevMech = new Mechanism2d(Constants.elevWidth, Constants.elevHeight);
+    elevMechRoot = elevMech.getRoot("elevator", Constants.elevXPos, Constants.elevYPos); //
+    
   }
 
   public void setTargetPosition(double target) {
     targetPosition = target;
   }
 
-  public void initializeMapleSim() {
-    elevMech = new Mechanism2d(Constants.elevWidth, Constants.elevHeight);
-    elevMechRoot = elevMech.getRoot("elevator", Constants.elevXPos, Constants.elevYPos); //
+  public void initElevDashboard() {
+    SmartDashboard.putData("elevMech", elevMech);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-      
+    elevMotor.set(elevPID.calculate(elevEncoder.getPosition(), targetPosition) + 
+    elevFF.calculate(targetPosition));
+    // DogLog.
+    
   }
 }
