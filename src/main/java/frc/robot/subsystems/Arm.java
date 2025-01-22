@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -13,22 +14,22 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmSetPoints;;
+import frc.robot.Constants.ArmSetPoints;
 
 public class Arm extends SubsystemBase {
 
   private TalonFX shoulder;
   private TalonFX elbow;
-  private TalonFX wrist;
-  private TalonFX wristRotation; //TODO find a better name for this
+  private TalonFX wristFlip;
+  private TalonFX wristTwist; //TODO find a better name for this
 
   /** Creates a new Arm. */
   public Arm() {
 
     shoulder = new TalonFX(ArmConstants.shoulderMotorPort, "canivore1"); 
     elbow = new TalonFX(ArmConstants.elbowMotorPort, "canivore1");
-    wrist = new TalonFX(ArmConstants.wristMotorPort, "canivore1");
-    wristRotation = new TalonFX(ArmConstants.handMotorPort, "canivore1");
+    wristFlip = new TalonFX(ArmConstants.wristMotorPort, "canivore1");
+    wristTwist = new TalonFX(ArmConstants.handMotorPort, "canivore1");
 
   }
 
@@ -79,19 +80,19 @@ public class Arm extends SubsystemBase {
     return elbowPose;
   }
 
-  public void setWristRotationPosition(double position) {
+  public void setWristTwistPosition(double position) {
     position /= (2d*Math.PI);
 
     SmartDashboard.putNumber("hand position set raw", position);
-    wristRotation.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
+    wristTwist.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
 
   }
 
-  public void setWristPosition(double position) {
+  public void setWristFlipPosition(double position) {
     position /= (2d*Math.PI);
 
     SmartDashboard.putNumber("hand position set raw", position);
-    wrist.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
+    wristFlip.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
   } 
 
   public void setElbowPosition(double position) {
@@ -111,6 +112,25 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("shoulder position set raw", position);
     shoulder.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
 
+  }
+
+
+  // set the velocity of each joint separately: 
+
+  public void setShoulderVelocity(double velocity) {
+    shoulder.setControl(new VelocityVoltage(velocity));
+  }
+
+  public void setElbowVelocity(double velocity) {
+    elbow.setControl(new VelocityVoltage(velocity));
+  }
+
+  public void setWristFlipVelocity(double velocity) {
+    wristFlip.setControl(new VelocityVoltage(velocity));
+  }
+
+  public void setWristTwistVelocity(double velocity) {
+    wristTwist.setControl(new VelocityVoltage(velocity));
   }
 
   @Override
