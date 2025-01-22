@@ -36,6 +36,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import frc.robot.QuestNav;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -122,7 +123,7 @@ public class RobotContainer {
     /* Manually start logging with left bumper before running any tests,
      * and stop logging with right bumper after we're done with ALL tests.
      * This isn't necessary but is convenient to reduce the size of the hoot file */
-    SignalLogger.setPath("/media/sda1/ctre-logs/");
+    SignalLogger.setPath("/media/sda1/logs/");
     joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     
