@@ -5,6 +5,11 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.json.simple.parser.ParseException;
+
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
@@ -13,12 +18,14 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.Telemetry;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -29,8 +36,11 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindThenFollowPath;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.util.FileVersionException;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -136,14 +146,53 @@ public class RobotContainer {
       ), 
       0
     ));
+
+    // Add a button to SmartDashboard that will create and follow an on-the-fly path
+    SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+      Pose2d currentPose = drivetrain.getState().Pose;
+      
+      // The rotation component in these poses represents the direction of travel
+      Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+      Pose2d midPosA = new Pose2d(2.692, 6.034, new Rotation2d());
+      Pose2d midPosB = new Pose2d(5.425, 6.034, new Rotation2d());
+      Pose2d endPos = new Pose2d(5.289, 5.069, new Rotation2d());
+
+      List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, midPosA, midPosB, endPos);
+      PathPlannerPath path = new PathPlannerPath(
+        waypoints, 
+        new PathConstraints(
+          4.0, 4.0, 
+          Units.degreesToRadians(360), Units.degreesToRadians(540)
+        ),
+        null, // Ideal starting state can be null for on-the-fly paths
+        new GoalEndState(0.0, Rotation2d.fromDegrees(-120))
+      );
+
+      // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+      path.preventFlipping = true;
+
+      AutoBuilder.followPath(path).schedule();
+    }));
+  
     
-    // joystick.y().whileTrue(AutoBuilder.pathfindThenFollowPath(
-    //   "BlueTeleopHighPath", 
-    //   new PathConstraints(
-    //     5.0, 3.0, 
-    //     Units.degreesToRadians(360), Units.degreesToRadians(540)
-    //   )
-    // ));
+    try {
+      joystick.y().whileTrue(AutoBuilder.pathfindThenFollowPath(
+        PathPlannerPath.fromPathFile("BlueTeleopHighPath"), 
+        new PathConstraints(
+          5.0, 3.0, 
+          Units.degreesToRadians(360), Units.degreesToRadians(540)
+        )
+      ));
+    } catch (FileVersionException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     joystick.rightBumper().whileTrue(new PathFindFollow());
 
