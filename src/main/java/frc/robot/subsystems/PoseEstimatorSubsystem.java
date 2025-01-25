@@ -1,11 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Vision.kCameraNameFront;
-import static frc.robot.Constants.Vision.kRobotToCamFront;
-import static frc.robot.Constants.Vision.kCameraNameBack;
-import static frc.robot.Constants.Vision.kRobotToCamBack;
-import static frc.robot.Constants.Vision.kTagLayout;
-import static frc.robot.Constants.Vision.USE_VISION;
+import static frc.robot.Constants.Vision.*;
 
 
 import java.util.Optional;
@@ -16,11 +11,13 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
@@ -94,6 +91,21 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
     
             }
+            if (visionFront.getObjectClass()=="algae"){
+                Pose2d pose = getCurrentPose();
+                double poseX = pose.getX();
+                double poseY = pose.getY();
+                Rotation2d gyro = new Rotation2d(0);
+    
+    
+                double ty = visionFront.getTy();
+                
+                double distance = (kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((30+ty) * (Math.PI / 180));
+                Pose2d algaePose = new Pose2d(distance * Math.sin(gyro.getRadians()) + poseX - kLimeLightXOffset, distance * Math.cos(gyro.getRadians()) + poseY - kLimeLightYOffset, gyro);
+                
+                SmartDashboard.putNumber("algaeX", algaePose.getX());
+                SmartDashboard.putNumber("algaeY", algaePose.getY());
+                }
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -104,6 +116,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putData("Robot Pose in Field", field);
             SmartDashboard.putString("Robot Pose", getFomattedPose());
         }
+        SmartDashboard.putBoolean("tV", visionFront.hasTarget());
               
     }
 
@@ -115,7 +128,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     private String getFomattedPose(Pose2d pose) {
-      
         return String.format(
                 "(%.3f, %.3f) %.2f degrees",
                 pose.getX(), pose.getY(), pose.getRotation().getDegrees());

@@ -32,7 +32,7 @@ public final class Constants {
 
 public static class Vision {
 
-        public static final boolean USE_VISION = false;
+        public static final boolean USE_VISION = true;
 
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
@@ -86,10 +86,12 @@ public static class Vision {
         public static final double  kPoseAmbiguityThreshold = 0.2;
         public static final double  kSingleTagDistanceThreshold =2.0;
 
-        
+        public static final double kAlgaeCenterHeight = 0.2032; //in meters
+        public static final double kLimeLightHeight = 0.1143;
+        public static final double kLimeLightXOffset = -0.073025;
+        public static final double kLimeLightYOffset = 0.10795;
     }
 
-}
 
   public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
     static {
@@ -118,4 +120,4 @@ public static class Vision {
       joystickMap.put(-0.90, -1.00);
       joystickMap.put(-1.00, -1.00);
     }
-    }
+  }
