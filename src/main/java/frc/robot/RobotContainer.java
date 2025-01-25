@@ -5,13 +5,24 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.constants.AutoDriveConstants;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Inventory;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
+import frc.robot.util.PIDToPosition;
 import frc.robot.Telemetry;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -36,13 +47,13 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
+    public static final Inventory inventory = new Inventory();
     private final Telemetry logger = new Telemetry(MaxSpeed);
-
+    public final PIDToPosition PID = new PIDToPosition();
     private final CommandXboxController joystick = new CommandXboxController(0);
-
+    
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
+    public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
@@ -75,11 +86,13 @@ public class RobotContainer {
             )
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.rightBumper().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        ));
-
+            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
+        joystick.a().whileTrue(new InstantCommand(() -> inventory.setAstatus(true)));// AutoDrive Command
+        Trigger AStatus = new Trigger(() -> (inventory.getAstatus()&&PID.InsideRange(() -> poseEstimatorSubsystem.getCurrentPose())));
+        AStatus.whileTrue(new DriveToPoseCommand(drivetrain, () -> poseEstimatorSubsystem.getCurrentPose(), 
+        () -> AutoDrive(() -> poseEstimatorSubsystem.getCurrentPose()), ()->drivetrain.getState().Pose.getRotation()).until(() -> joystick.y().getAsBoolean()));
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
@@ -91,15 +104,19 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
-
+  public Pose2d AutoDrive(Supplier<Pose2d> robotPose){
+        boolean inventoryStatuses = inventory.getAstatus();
+        Translation2d BestVector = PID.ChooseVector(robotPose.get(), inventoryStatuses);
+        SmartDashboard.putNumber("positionsX", PID.ChooseVector(robotPose.get(), inventoryStatuses).getX());
+        boolean deadzoneA = robotPose.get().getTranslation().getDistance(AutoDriveConstants.position1) < AutoDriveConstants.zone;
+        boolean deadzoneB = robotPose.get().getTranslation().getDistance(AutoDriveConstants.position2) < AutoDriveConstants.zone;
+        boolean deadzoneC = robotPose.get().getTranslation().getDistance(AutoDriveConstants.position3) < AutoDriveConstants.zone;
+        if (deadzoneA || deadzoneB || deadzoneC == true){
+            inventory.setAstatus(false);
+        }
+        return new Pose2d(BestVector.getX(), BestVector.getY(), new Rotation2d(0.0));
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
