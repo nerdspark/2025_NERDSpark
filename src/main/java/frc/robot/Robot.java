@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         Pathfinding.setPathfinder(new LocalADStar());
         
+
+        SignalLogger.setPath("/media/sda1/");
 
         DogLog.setOptions(new DogLogOptions()
                 .withLogExtras(true)
@@ -65,7 +68,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        SignalLogger.stop();
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -93,13 +98,17 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+
+        SignalLogger.start();
     }
 
     @Override
     public void teleopPeriodic() {}
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+        SignalLogger.stop();
+    }
 
     @Override
     public void testInit() {
