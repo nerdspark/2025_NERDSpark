@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.rmi.MarshalException;
+
 import edu.wpi.first.math.geometry.Translation2d;
 
 /**
@@ -29,8 +31,30 @@ public final class Constants {
 
     public static final double baseStageLength = 0;  // TODO fix these lengths
     public static final double secondStageLength = 0;
-    public static final double thirdStageLength = 0;
-    public static final double fourthStageLength = 0;
+
+    public static final double currentLimitShoulder = 40;
+    public static final double shoulderRadPerRot = 2 * Math.PI; //TODO fix with gear ratio
+
+    public static final double currentLimitElbow = 40;
+    public static final double elbowRadPerRot = 2 * Math.PI; //TODO fix with gear ratios
+  
+    public final class ArmGains {
+      
+        public static final double shoulderP = 90.0; //TODO CHANGE ALL OF THIS
+        public static final double shoulderI = 0.0;
+        public static final double shoulderD = 5.0;
+        public static final double elbowP = 50.0;
+        public static final double elbowI = 0.0;
+        public static final double elbowD = 3.5;
+        public static final double shoulderS = 0.0;
+        public static final double shoulderG = 0.1;
+        public static final double shoulderV = 0.0;
+        public static final double shoulderA = 0.0;
+        public static final double elbowS = 0.0;
+        public static final double elbowG = 1.05;
+        public static final double elbowV = 0.0;
+        public static final double elbowA = 0.0;
+    }
 
   }
 

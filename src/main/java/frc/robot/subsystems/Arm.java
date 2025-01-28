@@ -4,9 +4,18 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -14,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmConstants.ArmGains;
 import frc.robot.Constants.ArmSetPoints;
 
 public class Arm extends SubsystemBase {
@@ -30,6 +40,50 @@ public class Arm extends SubsystemBase {
     elbow = new TalonFX(ArmConstants.elbowMotorPort, "canivore1");
     wristFlip = new TalonFX(ArmConstants.wristMotorPort, "canivore1");
     wristTwist = new TalonFX(ArmConstants.handMotorPort, "canivore1");
+
+    TalonFXConfiguration shoulderconfig = new TalonFXConfiguration();
+    TalonFXConfiguration elbowconfig = new TalonFXConfiguration();
+
+    shoulderconfig.CurrentLimits = new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
+        .withStatorCurrentLimitEnable(true);
+    shoulderconfig.Feedback = new FeedbackConfigs()
+        .withFeedbackRotorOffset(0.0) // ArmConstants.shoulderOffset)
+        .withSensorToMechanismRatio(ArmConstants.shoulderRadPerRot);
+    shoulderconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3);
+    shoulderconfig.Slot0 = new Slot0Configs()
+        .withKP(ArmGains.shoulderP)
+        .withKI(ArmGains.shoulderI)
+        .withKD(ArmGains.shoulderD)
+        .withKG(ArmGains.shoulderG)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
+
+    shoulder
+      .getConfigurator()
+      .apply(shoulderconfig.withMotorOutput(new MotorOutputConfigs()
+        .withInverted(InvertedValue.Clockwise_Positive)
+        .withNeutralMode(NeutralModeValue.Brake)));
+
+
+    elbowconfig.CurrentLimits = new CurrentLimitsConfigs()
+      .withStatorCurrentLimit(ArmConstants.currentLimitElbow)
+      .withStatorCurrentLimitEnable(true);
+    elbowconfig.Feedback = new FeedbackConfigs()
+      .withFeedbackRotorOffset(0.0) // ArmConstants.elbowOffset)
+      .withSensorToMechanismRatio(ArmConstants.elbowRadPerRot);
+    elbowconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+    elbowconfig.Slot0 = new Slot0Configs()
+      .withKP(ArmGains.elbowP)
+      .withKI(ArmGains.elbowI)
+      .withKD(ArmGains.elbowD)
+      .withKG(ArmGains.elbowG)
+      .withGravityType(GravityTypeValue.Arm_Cosine);
+        
+    elbow
+      .getConfigurator()
+      .apply(elbowconfig.withMotorOutput(new MotorOutputConfigs()
+        .withInverted(InvertedValue.Clockwise_Positive)
+          .withNeutralMode(NeutralModeValue.Brake)));
 
   }
 
