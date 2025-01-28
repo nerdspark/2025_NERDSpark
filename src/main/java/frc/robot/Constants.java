@@ -29,7 +29,7 @@ public final class Constants {
   public static final double elevWidth = 1;
   public static final double elevHeight = 5;
   public static final double elevXPos = .5;
-  public static final double elevYPos = .6;
+  public static final double elevYPos = 0; // z
   public static final double kElevatorMinLength = 1;
 
 }

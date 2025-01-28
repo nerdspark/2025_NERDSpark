@@ -35,10 +35,10 @@ public class Elevator extends SubsystemBase {
   private SparkAbsoluteEncoder wristEncoder;
   private double targetPosition;
   private ElevatorFeedforward elevFF;
-  public Mechanism2d elevMech;
-  private MechanismRoot2d elevMechRoot;
-  private MechanismLigament2d elevMechStructure;
-  private MechanismLigament2d elevMechWrist;
+  public Mechanism2d m_elev;
+  private MechanismRoot2d m_elev_root;
+  private MechanismLigament2d m_elev_structure;
+  private MechanismLigament2d m_wrist;
   private Point example1;
   // MechanismRoot2d elevMechRoot = new MechanismRoot2d("",0,0);
   /** Creates a new Elevator. */
@@ -50,10 +50,10 @@ public class Elevator extends SubsystemBase {
      wristMotor = new SparkMax(Constants.wristID, MotorType.kBrushless); 
     wristEncoder = wristMotor.getAbsoluteEncoder();
     
-    elevMech = new Mechanism2d(Constants.elevWidth, Constants.elevHeight);
-    elevMechRoot = elevMech.getRoot("elevator", Constants.elevXPos, Constants.elevYPos); //
-    elevMechStructure = elevMechRoot.append(new MechanismLigament2d("elevator", Constants.kElevatorMinLength, 90, 6, new Color8Bit(Color.kGreen)));
-    elevMechWrist = elevMechStructure.append(new MechanismLigament2d("wrist", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
+    m_elev = new Mechanism2d(Constants.elevWidth, Constants.elevHeight);
+    m_elev_root = m_elev.getRoot("elevator", Constants.elevXPos, Constants.elevYPos); //
+    m_elev_structure = m_elev_root.append(new MechanismLigament2d("elevator", Constants.kElevatorMinLength, 90, 6, new Color8Bit(Color.kGreen)));
+    m_wrist = m_elev_structure.append(new MechanismLigament2d("wrist", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
   }
 
   public void setTargetPosition(double target) {
@@ -65,12 +65,12 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     elevMotor.set(elevPID.calculate(elevEncoder.getPosition(), targetPosition) + elevFF.calculate(targetPosition));
     // DogLog.
-    elevMechStructure.setLength(Constants.kElevatorMinLength + elevEncoder.getPosition());
-    elevMechWrist.setAngle(wristEncoder.getPosition());
+    m_elev_structure.setLength(Constants.kElevatorMinLength + elevEncoder.getPosition());
+    m_wrist.setAngle(wristEncoder.getPosition());
   }
 
   public void initElevDashboard() {
     // TODO Auto-generated method stub
-    SmartDashboard.putData("elevator mechanism", elevMech);
+    SmartDashboard.putData("elevator mechanism", m_elev);
   }
 }
