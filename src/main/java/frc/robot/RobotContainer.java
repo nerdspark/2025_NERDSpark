@@ -11,18 +11,22 @@ import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
+import frc.robot.subsystems.ScoringProfileSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -54,12 +58,17 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+    private final Joystick buttonBoard = new Joystick(1);
+
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
 
     // public final  Vision vision = new Vision(Constants.Vision.kCameraName, Constants.Vision.kRobotToCam);
     public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+
+    public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
+
 
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -92,13 +101,23 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
+    // For Amogh's gamepad only
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed)) 
-          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) 
-          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getLeftY()) * MaxSpeed)) 
+          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getLeftX()) * MaxSpeed)) 
+          .withRotationalRate(zLimiter.calculate(-joystick.getRightTriggerAxis() * MaxAngularRate))
         )
     );
+
+
+    // drivetrain.setDefaultCommand(
+    //   drivetrain.applyRequest(() ->
+    //     drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(joystick.getRawAxis(0)) * MaxSpeed)) 
+    //       .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(joystick.getRawAxis(3)) * MaxSpeed)) 
+    //       .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+    //     )
+    // );
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain.applyRequest(() ->
@@ -128,10 +147,19 @@ public class RobotContainer {
      * Joystick B = dynamic forward
      * Joystick X = dyanmic reverse
      */
-    joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
+    // () -> Constants.Vision.reefPositions.get(scoringSubsystem.getScoringProfile()),
+    // () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
+
+    joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
+
   }
 
   /**

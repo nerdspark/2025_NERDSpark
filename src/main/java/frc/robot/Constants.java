@@ -5,15 +5,24 @@
 package frc.robot;
 
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 
@@ -49,10 +58,15 @@ public static class Vision {
         public static final AprilTagFieldLayout kTagLayout =
                 AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
-        // The standard deviations of our vision estimated poses, which affect correction rate
-        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+          
+
+        //Do not change these. Actual values will be calculated by the vision system.
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+        
+        //Change these for fine tune vision system calculations of standard deviations.
+        public static final double kXYStdDev = 0.4; 
+        public static final double kThetaStdDev = 1; 
 
         public static final double TRANSLATION_TOLERANCE_X = 0.05; // Changed from 0.05 3/26/23
         public static final double TRANSLATION_TOLERANCE_Y = 0.05; // Changed from 0.05 3/26/23
@@ -87,11 +101,95 @@ public static class Vision {
         public static final double  kSingleTagDistanceThreshold =2.0;
 
         
-    }
+  //      public static HashMap<String, Pose2d> reefPositions = new HashMap<>();
 
+//         static {        
 
+//           reefPositions.put("A0", FieldConstants.Reef.branchPositions.get(0).get(FieldConstants.ReefHeight.L1).toPose2d().plus(new Transform2d(0,0, new Rotation2d(Math.toRadians(180)))));
 
-  public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
+// //          reefPositions.put("A0", new Pose2d(2, 2, new Rotation2d()));
+//           reefPositions.put("A1", new Pose2d());
+//           reefPositions.put("A2", new Pose2d());
+//           reefPositions.put("A3", new Pose2d());
+//           reefPositions.put("A4", new Pose2d());
+
+//           reefPositions.put("B0", FieldConstants.Reef.branchPositions.get(4).get(FieldConstants.ReefHeight.L1).toPose2d().plus(new Transform2d(0,0, new Rotation2d(Math.toRadians(180)))));
+//           reefPositions.put("B1", new Pose2d());
+//           reefPositions.put("B2", new Pose2d());
+//           reefPositions.put("B3", new Pose2d());
+//           reefPositions.put("B4", new Pose2d());
+
+//           reefPositions.put("C0", new Pose2d(7, 2, new Rotation2d(Math.toRadians(270))));
+//           reefPositions.put("C1", new Pose2d());
+//           reefPositions.put("C2", new Pose2d());
+//           reefPositions.put("C3", new Pose2d());
+//           reefPositions.put("C4", new Pose2d());
+
+//           reefPositions.put("D0", new Pose2d());
+//           reefPositions.put("D1", new Pose2d());
+//           reefPositions.put("D2", new Pose2d());
+//           reefPositions.put("D3", new Pose2d());
+//           reefPositions.put("D4", new Pose2d());
+
+//           reefPositions.put("E0", new Pose2d());
+//           reefPositions.put("E1", new Pose2d());
+//           reefPositions.put("E2", new Pose2d());
+//           reefPositions.put("E3", new Pose2d());
+//           reefPositions.put("E4", new Pose2d());
+
+//           reefPositions.put("F0", new Pose2d());
+//           reefPositions.put("F1", new Pose2d());
+//           reefPositions.put("F2", new Pose2d());
+//           reefPositions.put("F3", new Pose2d());
+//           reefPositions.put("F4", new Pose2d());
+
+//           reefPositions.put("G0", new Pose2d());
+//           reefPositions.put("G1", new Pose2d());
+//           reefPositions.put("G2", new Pose2d());
+//           reefPositions.put("G3", new Pose2d());
+//           reefPositions.put("G4", new Pose2d());
+
+//           reefPositions.put("H0", new Pose2d());
+//           reefPositions.put("H1", new Pose2d());
+//           reefPositions.put("H2", new Pose2d());
+//           reefPositions.put("H3", new Pose2d());
+//           reefPositions.put("H4", new Pose2d());
+
+//           reefPositions.put("I0", new Pose2d());
+//           reefPositions.put("I1", new Pose2d());
+//           reefPositions.put("I2", new Pose2d());
+//           reefPositions.put("I3", new Pose2d());
+//           reefPositions.put("I4", new Pose2d());
+
+//           reefPositions.put("J0", new Pose2d());
+//           reefPositions.put("J1", new Pose2d());
+//           reefPositions.put("J2", new Pose2d());
+//           reefPositions.put("J3", new Pose2d());
+//           reefPositions.put("J4", new Pose2d());
+
+//           reefPositions.put("K0", new Pose2d());
+//           reefPositions.put("K1", new Pose2d());
+//           reefPositions.put("K2", new Pose2d());
+//           reefPositions.put("K3", new Pose2d());
+//           reefPositions.put("K4", new Pose2d());
+
+//           reefPositions.put("L0", new Pose2d());
+//           reefPositions.put("L1", new Pose2d());
+//           reefPositions.put("L2", new Pose2d());
+//           reefPositions.put("L3", new Pose2d());
+//           reefPositions.put("L4", new Pose2d());
+        
+
+//         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {
+//           for (FieldConstants.ReefHeight height : FieldConstants.ReefHeight.values()) {
+//             DogLog.log("Target Pose "+ i + " " + height.toString(), FieldConstants.Reef.branchPositions.get(i).get(height).toPose2d());
+          
+//         }
+//       }
+//     }
+  }
+        
+    public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
     static {
       // Key: cardinal joystick distance
       // Value: % max speed
@@ -118,5 +216,6 @@ public static class Vision {
       joystickMap.put(-0.90, -1.00);
       joystickMap.put(-1.00, -1.00);
     }
-  }
+}
+
     

@@ -25,19 +25,23 @@
  package frc.robot.subsystems;
 
  import static frc.robot.Constants.Vision.*;
- 
- import edu.wpi.first.math.Matrix;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.Matrix;
  import edu.wpi.first.math.VecBuilder;
  import edu.wpi.first.math.geometry.Pose2d;
  import edu.wpi.first.math.geometry.Rotation2d;
  import edu.wpi.first.math.geometry.Transform3d;
  import edu.wpi.first.math.numbers.N1;
  import edu.wpi.first.math.numbers.N3;
- import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
  import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  import frc.robot.Robot;
- 
- import java.util.List;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
  import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -56,20 +60,21 @@ import org.photonvision.EstimatedRobotPose;
      private final PhotonPoseEstimator photonPoseEstimator;
      private Matrix<N3, N1> curStdDevs;
 
+
      private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
  
      // Simulation
      private PhotonCameraSim cameraSim;
      private VisionSystemSim visionSim;
-     int count=0;
  
      public Vision(String photonCamName, Transform3d robotToCam) {
          camera = new PhotonCamera(photonCamName);
- 
+
+           
          photonPoseEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
          photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
- 
+
          // Simulation
          if (Robot.isSimulation()) {
              // Create the vision system simulation which handles cameras and targets on the field.
@@ -126,7 +131,6 @@ import org.photonvision.EstimatedRobotPose;
                          () -> {
                              getSimDebugField().getObject("VisionEstimation").setPoses();
                          });
- 
                       
              }
          }
@@ -183,23 +187,25 @@ import org.photonvision.EstimatedRobotPose;
                      estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                  else if(numTags == 1 && avgDist < kSingleTagDistanceThreshold) {
                      if(targets.get(0).getPoseAmbiguity() < kPoseAmbiguityThreshold) {
-                         estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                        //  estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                        double xydeviations = kXYStdDev * Math.pow(avgDist, 2) / numTags ;
+                        double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;
+                        estStdDevs = VecBuilder.fill(xydeviations, xydeviations, thetadeviations);
                      }
                      else{
                          estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                      }
-                     curStdDevs = estStdDevs;
                  }
                  else {
-                     estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                    //  estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
  
-                     // double xyStdDev = calculateXYStdDev(avgDist, numTags);
-                     // double thetaStdDev =
-                     //     calculateThetaStdDev(avgDist, numTags);
-                     // estStdDevs = VecBuilder.fill(xyStdDev, xyStdDev, thetaStdDev);
-                     curStdDevs = estStdDevs;
+                     double xydeviations = kXYStdDev * Math.pow(avgDist, 2) / numTags ;
+                     double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;
+                     estStdDevs = VecBuilder.fill(xydeviations, xydeviations, thetadeviations);
                  }
- 
+                 
+                 curStdDevs = estStdDevs;
+
              }
          }
      }

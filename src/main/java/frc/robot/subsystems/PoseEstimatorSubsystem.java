@@ -7,7 +7,8 @@ import static frc.robot.Constants.Vision.kRobotToCamBack;
 import static frc.robot.Constants.Vision.kTagLayout;
 import static frc.robot.Constants.Vision.USE_VISION;
 
-
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -15,7 +16,17 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
+import com.ctre.phoenix6.Utils;
+
+import dev.doglog.DogLog;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,72 +39,75 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private Vision visionFront ;
     private Vision visionBack ;
     private static Notifier allNotifier;
-
-
-
-    // private Vision vision2 = new Vision(kCameraName, kRobotToCam);
-    // private Vision vision3 = new Vision(kCameraName, kRobotToCam);
-    // private Vision vision4 = new Vision(kCameraName, kRobotToCam);
-
-    private Field2d field = new Field2d(); 
+   
+       
+        private Field2d field = new Field2d(); 
+          
+        // Simulation
     
-  
-    // Simulation
-
-
-    public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain) {
-        this.driveTrain = driveTrain;
-        if(USE_VISION) {
-
-            this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront);
-            this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack);
-
-            allNotifier = new Notifier(() -> {
-                visionFront.run();
-                visionBack.run();
-            });
-
-            allNotifier.setName("runAll");
-            allNotifier.startPeriodic(0.02);
-        }
+        public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain) {
+            this.driveTrain = driveTrain;
+            if(USE_VISION) {
+    
+                this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront);
+                this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack);
+    
+                allNotifier = new Notifier(() -> {
+                    visionFront.run();
+                    visionBack.run();
+                });
+    
+                allNotifier.setName("runAll");
+                allNotifier.startPeriodic(0.02);  
+              
+        }        
     }
 
     @Override
     public void periodic() {
         // Update pose estimator with drivetrain sensors
         if(USE_VISION) {
-             Optional<EstimatedRobotPose> visionEst;
-            visionEst = visionFront.getEstimatedRobotPose();
-            visionEst.ifPresent(
+             Optional<EstimatedRobotPose> visionEstFront  = visionFront.getEstimatedRobotPose();
+            visionEstFront.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
                     var estStdDevs = visionFront.getEstimationStdDevs();
 
-                    SmartDashboard.putString("Adding Front visionEst ", getFomattedPose(est.estimatedPose.toPose2d()));
-
+                    // printMatrixValues(estStdDevs);
                     driveTrain.addVisionMeasurement(
-                            est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                            est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
+
+
                 });
 
-            visionEst = visionBack.getEstimatedRobotPose();
-            visionEst.ifPresent(
+            Optional<EstimatedRobotPose> visionEstBack  = visionBack.getEstimatedRobotPose();
+
+            visionEstBack = visionBack.getEstimatedRobotPose();
+            visionEstBack.ifPresent(
                 est -> {
                 // Change our trust in the measurement based on the tags we can see
-                var estStdDevs = visionBack.getEstimationStdDevs();
-                
-                SmartDashboard.putString("Adding Back visionEst ", getFomattedPose(est.estimatedPose.toPose2d()));
-
+                var estStdDevs = visionBack.getEstimationStdDevs();               
+             
                 driveTrain.addVisionMeasurement(
-                        est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-            });
+                        est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
+            
+                });
 
             if(Robot.isSimulation() ) {
-                visionFront.simulationPeriodic(getCurrentPose());
+                 visionFront.simulationPeriodic(getCurrentPose());
                 SmartDashboard.putData("Debug Field Front", visionFront.getSimDebugField());
-                visionBack.simulationPeriodic(getCurrentPose());
+                 visionBack.simulationPeriodic(getCurrentPose());
                 SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
     
             }
+
+            if(visionEstFront.isPresent()) {
+               DogLog.log("PoseEstimator/VisionEst", visionEstFront.get().estimatedPose.toPose2d());
+            }
+            if(visionEstBack.isPresent()) {
+                DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
+             }
+
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -101,8 +115,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
         if (getCurrentPose() != null) {
             field.setRobotPose(getCurrentPose());
+            // field.getObject("VisionEstimation").setPoses();
+
             SmartDashboard.putData("Robot Pose in Field", field);
-            SmartDashboard.putString("Robot Pose", getFomattedPose());
+            DogLog.log("PoseEstimator/Pose", getCurrentPose());
+            DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
+
         }
               
     }
@@ -146,27 +164,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         setCurrentPose(new Pose2d());
     }
 
-    /**
-     * Calculate the standard deviation of the x and y coordinates.
-     *
-     * @param poseEstimates The pose estimate
-     * @param tagPosesSize The number of detected tag poses
-     * @return The standard deviation of the x and y coordinates
-     */
-
-    /**
-     * Calculate the standard deviation of the theta coordinate.
-     *
-     * @param poseEstimates The pose estimate
-     * @param tagPosesSize The number of detected tag poses
-     * @return The standard deviation of the theta coordinate
-     *
-
-    /**
-     * Updates the inputs for AprilTag vision.
-     *
-     * @param estimator PhotonVisionRunnable estimator.
-     * @param inputs The AprilTagVisionIOInputs object containing the inputs.
-     */
-
-}
+    public void printMatrixValues(Matrix<N3, N1> curStdDevs) {
+        
+        for (int i = 0; i < curStdDevs.getNumRows(); i++) {
+            for (int j = 0; j < curStdDevs.getNumCols(); j++) {
+                DogLog.log("Stddev "+ i,curStdDevs.get(i, j));
+            }
+        }
+    }
+} 
