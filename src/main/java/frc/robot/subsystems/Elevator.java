@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import dev.doglog.DogLog;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -31,10 +32,13 @@ public class Elevator extends SubsystemBase {
   private SparkMax elevMotor;
   private SparkMax wristMotor;
   private PIDController elevPID;
+  private PIDController wristPID;
   private SparkAbsoluteEncoder elevEncoder;
   private SparkAbsoluteEncoder wristEncoder;
-  private double targetPosition;
+  private double targetElevLength;
+  private double targetWristAngle;
   private ElevatorFeedforward elevFF;
+  private ArmFeedforward wristFF;
   public Mechanism2d m_elev;
   private MechanismRoot2d m_elev_root;
   private MechanismLigament2d m_elev_structure;
@@ -48,6 +52,8 @@ public class Elevator extends SubsystemBase {
      elevFF = new ElevatorFeedforward(Constants.kSElevator, Constants.kGElevator, Constants.kVElevator, Constants.kAElevator);
      elevEncoder = elevMotor.getAbsoluteEncoder(); 
      wristMotor = new SparkMax(Constants.wristID, MotorType.kBrushless); 
+    wristPID = new PIDController(Constants.kPWrist, Constants.kIWrist, Constants.kDWrist);
+    wristFF = new ArmFeedforward(Constants.kSWrist,Constants.kVWrist,Constants.kAWrist);
     wristEncoder = wristMotor.getAbsoluteEncoder();
     
     m_elev = new Mechanism2d(Constants.elevWidth, Constants.elevHeight);
@@ -56,21 +62,28 @@ public class Elevator extends SubsystemBase {
     m_wrist = m_elev_structure.append(new MechanismLigament2d("wrist", 0.5, 90, 6, new Color8Bit(Color.kPurple)));
   }
 
-  public void setTargetPosition(double target) {
-    targetPosition = target;
-  }
+  
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    elevMotor.set(elevPID.calculate(elevEncoder.getPosition(), targetPosition) + elevFF.calculate(targetPosition));
-    // DogLog.
-    m_elev_structure.setLength(Constants.kElevatorMinLength + elevEncoder.getPosition());
+
     m_wrist.setAngle(wristEncoder.getPosition());
   }
 
   public void initElevDashboard() {
     // TODO Auto-generated method stub
     SmartDashboard.putData("elevator mechanism", m_elev);
+  }
+
+  public void setElevHeight(double targetArmPos) {
+    elevMotor.set(elevPID.calculate(elevEncoder.getPosition(), targetArmPos) + elevFF.calculate(targetArmPos));
+    m_elev_structure.setLength(Constants.kElevatorMinLength + elevEncoder.getPosition());
+  }
+
+  public void setWristAngle(double targetWristAngle) {
+    wristMotor.set(wristPID.calculate(elevEncoder.getPosition(), targetWristAngle) + elevFF.calculate(targetWristAngle));
+    m_wrist.setAngle(wristEncoder.getPosition());
+
   }
 }

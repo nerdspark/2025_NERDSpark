@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevCommand;
 import frc.robot.subsystems.Elevator;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -62,7 +63,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
-
+    
   }
 
   /**
@@ -76,7 +77,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
       drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
+            //// Drivetrain will execute this command periodically
             drivetrain.applyRequest(() ->
                 drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                     .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
@@ -89,6 +90,7 @@ public class RobotContainer {
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
+        elev.setDefaultCommand(new ElevCommand(elev, () -> joystick.getLeftTriggerAxis(), () -> joystick.getRightTriggerAxis()));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.

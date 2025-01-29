@@ -18,6 +18,7 @@ public final class Constants {
   }
   public static final int elevatorID = 0;
   public static final int wristID = 1;
+  public static final int driveControllerPort = 0;
   // public static final double[] heightLevels = new double[] {0.0, 0.0, 0.0}; 
   public static final int kPElevator = 0;
   public static final int kIElevator = 0;
@@ -26,6 +27,15 @@ public final class Constants {
   public static final int kGElevator = 0;
   public static final int kVElevator = 0;
   public static final int kAElevator = 0;
+  
+  public static final int kIWrist = 0;
+  public static final int kPWrist = 0;
+  public static final int kDWrist = 0;
+  public static final int kSWrist = 0;
+  public static final int kGWrist = 0;
+  public static final int kVWrist = 0;
+  public static final int kAWrist = 0;
+
   public static final double elevWidth = 1;
   public static final double elevHeight = 5;
   public static final double elevXPos = .5;
