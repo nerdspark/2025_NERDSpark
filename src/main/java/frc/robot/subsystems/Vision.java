@@ -53,12 +53,15 @@ import org.photonvision.EstimatedRobotPose;
  import org.photonvision.simulation.SimCameraProperties;
  import org.photonvision.simulation.VisionSystemSim;
  import org.photonvision.targeting.PhotonTrackedTarget;
+
+import dev.doglog.DogLog;
  
  
  public class Vision implements Runnable {
      private final PhotonCamera camera;
      private final PhotonPoseEstimator photonPoseEstimator;
      private Matrix<N3, N1> curStdDevs;
+     private String cameraName;
 
 
      private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
@@ -68,7 +71,9 @@ import org.photonvision.EstimatedRobotPose;
      private VisionSystemSim visionSim;
  
      public Vision(String photonCamName, Transform3d robotToCam) {
-         camera = new PhotonCamera(photonCamName);
+        this.cameraName = photonCamName; 
+        camera = new PhotonCamera(photonCamName);
+
 
            
          photonPoseEstimator =
@@ -174,6 +179,7 @@ import org.photonvision.EstimatedRobotPose;
                                  .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
              }
  
+                DogLog.log("Vision"+cameraName+"/NumTags", numTags);
              if (numTags == 0) {
                  // No tags visible. Default to single-tag std devs
                  curStdDevs = kSingleTagStdDevs;
@@ -191,6 +197,8 @@ import org.photonvision.EstimatedRobotPose;
                         double xydeviations = kXYStdDev * Math.pow(avgDist, 2) / numTags ;
                         double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;
                         estStdDevs = VecBuilder.fill(xydeviations, xydeviations, thetadeviations);
+                        DogLog.log("Vision"+cameraName+"/PoseAmbiguity", targets.get(0).getPoseAmbiguity());
+                        DogLog.log("Vision"+cameraName+"/estStdDevs", estStdDevs);
                      }
                      else{
                          estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);

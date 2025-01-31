@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -104,9 +105,9 @@ public class RobotContainer {
     // For Amogh's gamepad only
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getLeftY()) * MaxSpeed)) 
-          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getLeftX()) * MaxSpeed)) 
-          .withRotationalRate(zLimiter.calculate(-joystick.getRightTriggerAxis() * MaxAngularRate))
+        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftY(),0.1) * MaxSpeed))) 
+          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftX(),0.1) * MaxSpeed)) )
+          .withRotationalRate(zLimiter.calculate(MathUtil.applyDeadband(-joystick.getRightTriggerAxis(),0.1) * MaxAngularRate))
         )
     );
 
@@ -159,7 +160,7 @@ public class RobotContainer {
     joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
-
+ 
   }
 
   /**
