@@ -10,6 +10,12 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -42,6 +48,47 @@ public class Arm extends SubsystemBase {
     wristTwist = new TalonFX(ArmConstants.handMotorPort, "canivore1");
     TalonFXConfiguration shoulderconfig = new TalonFXConfiguration();
     TalonFXConfiguration elbowconfig = new TalonFXConfiguration();
+
+    shoulderconfig.CurrentLimits = new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
+        .withStatorCurrentLimitEnable(true);
+    shoulderconfig.Feedback = new FeedbackConfigs()
+        .withFeedbackRotorOffset(0.0) // ArmConstants.shoulderOffset)
+        .withSensorToMechanismRatio(ArmConstants.shoulderRadPerRot);
+    shoulderconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3);
+    shoulderconfig.Slot0 = new Slot0Configs()
+        .withKP(ArmGains.shoulderP)
+        .withKI(ArmGains.shoulderI)
+        .withKD(ArmGains.shoulderD)
+        .withKG(ArmGains.shoulderG)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
+
+    shoulder
+      .getConfigurator()
+      .apply(shoulderconfig.withMotorOutput(new MotorOutputConfigs()
+        .withInverted(InvertedValue.Clockwise_Positive)
+        .withNeutralMode(NeutralModeValue.Brake)));
+
+
+    elbowconfig.CurrentLimits = new CurrentLimitsConfigs()
+      .withStatorCurrentLimit(ArmConstants.currentLimitElbow)
+      .withStatorCurrentLimitEnable(true);
+    elbowconfig.Feedback = new FeedbackConfigs()
+      .withFeedbackRotorOffset(0.0) // ArmConstants.elbowOffset)
+      .withSensorToMechanismRatio(ArmConstants.elbowRadPerRot);
+    elbowconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+    elbowconfig.Slot0 = new Slot0Configs()
+      .withKP(ArmGains.elbowP)
+      .withKI(ArmGains.elbowI)
+      .withKD(ArmGains.elbowD)
+      .withKG(ArmGains.elbowG)
+      .withGravityType(GravityTypeValue.Arm_Cosine);
+        
+    elbow
+      .getConfigurator()
+      .apply(elbowconfig.withMotorOutput(new MotorOutputConfigs()
+        .withInverted(InvertedValue.Clockwise_Positive)
+          .withNeutralMode(NeutralModeValue.Brake)));
 
     shoulderconfig.CurrentLimits = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
