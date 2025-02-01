@@ -4,7 +4,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.DoubleArrayPublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.FloatArrayPublisher;
 import edu.wpi.first.networktables.FloatArraySubscriber;
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.IntegerSubscriber;
@@ -20,6 +22,7 @@ public class QuestNav {
   NetworkTable nt4Table = nt4Instance.getTable("questnav");
   private IntegerSubscriber questMiso = nt4Table.getIntegerTopic("miso").subscribe(0);
   private IntegerPublisher questMosi = nt4Table.getIntegerTopic("mosi").publish();
+  private DoubleArrayPublisher questResetPose = nt4Table.getDoubleArrayTopic("resetpose").publish();
 
   // Subscribe to the Network Tables questnav data topics
   private DoubleSubscriber questTimestamp = nt4Table.getDoubleTopic("timestamp").subscribe(0.0f);
@@ -111,5 +114,16 @@ public class QuestNav {
   public void getQuestNavFieldPose() {
     field.setRobotPose(getQuestNavPose());
     SmartDashboard.putData("Robot Pose in Field From QuestNav", field);
+  }
+
+  public void PPZeroPose(Pose2d pose) {
+    if (questMiso.get() != 98) {
+      questResetPose.set(ToArray(pose));
+      questMosi.set(2);
+    }
+  }
+
+  private static double[] ToArray(Pose2d pose) {
+    return new double[] {pose.getX(), pose.getY(), pose.getRotation().getDegrees()};
   }
 }
