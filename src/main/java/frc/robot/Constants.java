@@ -34,12 +34,14 @@ public final class Constants {
 
     public static final double currentLimitElbow = 20;
     public static final double elbowRadPerRot = 2 * Math.PI; //TODO fix with gear ratios
-    public static final double shoulderOffset = -0.07; // TODO fidn these, radians, fwd = 0
-    public static final double elbowOffset = 2.68; // TODO find these, negative of measurement
+    public static final double shoulderOffset = 0.0; // TODO fidn these, radians, fwd = 0
+    public static final double elbowOffset = 0.0; // TODO find these, negative of measurement
 
+    //shoulder true offset: 34.513 deg below forward horizontal
     //shoulder gearbox: 25:1
     //shoulder stage 0: 36:26
 
+    // elbow true offset: 122.198 deg above forward horizontal
     // elbow gearbox: 25:1
     //elbow stage 0: 38:26
     // elbow stage 1: 50:50
