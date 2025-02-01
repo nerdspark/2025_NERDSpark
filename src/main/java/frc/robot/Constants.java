@@ -5,15 +5,24 @@
 package frc.robot;
 
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.HashMap;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 
@@ -34,6 +43,8 @@ public static class Vision {
 
         public static final boolean USE_VISION = false;
 
+        public static final boolean USE_WO_BUTTON_BOARD = true;
+
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
@@ -47,51 +58,60 @@ public static class Vision {
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
-                AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+                AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);          
 
-        // The standard deviations of our vision estimated poses, which affect correction rate
-        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+        //Do not change these. Actual values will be calculated by the vision system.
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.1, 0.1, 1);
+
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+        
+        //Change these for fine tune vision system calculations of standard deviations.
+        public static final double kXYStdDev = 0.4; 
+        public static final double kThetaStdDev = 1; 
 
         public static final double TRANSLATION_TOLERANCE_X = 0.05; // Changed from 0.05 3/26/23
         public static final double TRANSLATION_TOLERANCE_Y = 0.05; // Changed from 0.05 3/26/23
         public static final double ROTATION_TOLERANCE = 5.0; // /deg
 
-        public static final double MAX_VELOCITY = 4; // 3 //2
+        public static final double MAX_VELOCITY = 5; // 3 //2
         public static final double MAX_ACCELARATION = 10; // 2 //1
-        public static final double MAX_VELOCITY_ROTATION = 16; // 8
-        public static final double MAX_ACCELARATION_ROTATION = 16; // 8
+        public static final double MAX_VELOCITY_ROTATION = 8; // 8
+        public static final double MAX_ACCELARATION_ROTATION = 8; // 8
         
-        public static final double VELOCITY_TOLERANCE_X =5;
-        public static final double VELOCITY_TOLERANCE_Y = 5;
-        public static final double VELOCITY_TOLERANCE_OMEGA = 5;
+        public static final double VELOCITY_TOLERANCE_X =2;
+        public static final double VELOCITY_TOLERANCE_Y = 2;
+        public static final double VELOCITY_TOLERANCE_OMEGA = 2;
 
 
-        public static final double kPXController = 2.5d;
+        public static final double kPXController = 2.5d; //2.5
         public static final double kIXController = 0.1d;
         public static final double kDXController = 0d;
-        public static final double kPYController = 2.5d;
+        public static final double kPYController = 2.5d; //2.5
         public static final double kIYController = 1d; //0.1d;
         public static final double kDYController = 0d;
         public static final double kIzoneX = 1.0d;
         public static final double kIzoneY = 1.0d;
-        public static final double kPThetaController = 2;
+        public static final double kPThetaController = 2; //2
         public static final double kIThetaController = 0;
         public static final double kDThetaController = 0.041; //0.0041
-        public static final double IZone = 5;
+        public static final double IZone = 1.0d;
         public static final double autoTurnCeiling = 5.0;
-
 
         public static final double  kPoseAmbiguityThreshold = 0.2;
         public static final double  kSingleTagDistanceThreshold =2.0;
 
+      
+
+//         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {
+//           for (FieldConstants.ReefHeight height : FieldConstants.ReefHeight.values()) {
+//             DogLog.log("Target Pose "+ i + " " + height.toString(), FieldConstants.Reef.branchPositions.get(i).get(height).toPose2d());
+          
+//         }
+//       }
+//     }
+  }
         
-    }
-
-
-
-  public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
+    public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
     static {
       // Key: cardinal joystick distance
       // Value: % max speed
@@ -118,4 +138,4 @@ public static class Vision {
       joystickMap.put(-0.90, -1.00);
       joystickMap.put(-1.00, -1.00);
     }
-  }
+}
