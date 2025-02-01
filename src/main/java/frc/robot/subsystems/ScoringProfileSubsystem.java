@@ -23,7 +23,7 @@ import frc.robot.util.AllianceFlipUtil;
 
 public class ScoringProfileSubsystem extends SubsystemBase {
 
-  private int branch = 9;
+  private int branch = 4;
   private FieldConstants.ReefHeight reefHeight  = FieldConstants.ReefHeight.L1;
 
   private Pose2d selectedBranchPose = new Pose2d();
@@ -73,7 +73,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     }
   }
   else {
-    if(DriverStation.getStickButtonPressed(0, 3)) {
+    if(DriverStation.getStickButtonPressed(0, 8)) {
       branch++;
       if(branch > 11) {
         branch = 0;
@@ -115,7 +115,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public Pose2d getRobotPoseForSelectedBranch() {
-    return selectedBranchPose.plus(new Transform2d(Units.inchesToMeters(36), 0, new Rotation2d(Math.toRadians(180))));
+    return selectedBranchPose.plus(new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
   }
 
 }

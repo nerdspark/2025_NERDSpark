@@ -41,7 +41,7 @@ public final class Constants {
 
 public static class Vision {
 
-        public static final boolean USE_VISION = false;
+        public static final boolean USE_VISION = true;
 
         public static final boolean USE_WO_BUTTON_BOARD = true;
 
@@ -73,29 +73,29 @@ public static class Vision {
         public static final double TRANSLATION_TOLERANCE_Y = 0.05; // Changed from 0.05 3/26/23
         public static final double ROTATION_TOLERANCE = 5.0; // /deg
 
-        public static final double MAX_VELOCITY = 5; // 3 //2
-        public static final double MAX_ACCELARATION = 10; // 2 //1
-        public static final double MAX_VELOCITY_ROTATION = 8; // 8
-        public static final double MAX_ACCELARATION_ROTATION = 8; // 8
+        public static final double MAX_VELOCITY = 4.5; // 3 //2
+        public static final double MAX_ACCELARATION = 6; // 2 //1
+        public static final double MAX_VELOCITY_ROTATION = 540; // 8
+        public static final double MAX_ACCELARATION_ROTATION = 720; // 8
         
         public static final double VELOCITY_TOLERANCE_X =2;
         public static final double VELOCITY_TOLERANCE_Y = 2;
         public static final double VELOCITY_TOLERANCE_OMEGA = 2;
 
 
-        public static final double kPXController = 2.5d; //2.5
-        public static final double kIXController = 0.1d;
+        public static final double kPXController = 2.5; //2.5
+        public static final double kIXController = 0d;
         public static final double kDXController = 0d;
-        public static final double kPYController = 2.5d; //2.5
-        public static final double kIYController = 1d; //0.1d;
+        public static final double kPYController = 2.5; //2.5
+        public static final double kIYController = 0d; //0.1d;
         public static final double kDYController = 0d;
         public static final double kIzoneX = 1.0d;
         public static final double kIzoneY = 1.0d;
-        public static final double kPThetaController = 2; //2
-        public static final double kIThetaController = 0;
-        public static final double kDThetaController = 0.041; //0.0041
+        public static final double kPThetaController = 0.4; //2
+        public static final double kIThetaController = 0.0;
+        public static final double kDThetaController = 0.0; //0.0041
         public static final double IZone = 1.0d;
-        public static final double autoTurnCeiling = 5.0;
+        // public static final double autoTurnCeiling = 5.0;
 
         public static final double  kPoseAmbiguityThreshold = 0.2;
         public static final double  kSingleTagDistanceThreshold =2.0;

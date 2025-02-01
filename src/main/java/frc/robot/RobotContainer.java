@@ -102,48 +102,30 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
-    // For Amogh's gamepad only
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftY(),0.1) * MaxSpeed))) 
-          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftX(),0.1) * MaxSpeed)) )
-          .withRotationalRate(zLimiter.calculate(MathUtil.applyDeadband(-joystick.getRightTriggerAxis(),0.1) * MaxAngularRate))
+        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
     );
-
-
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.applyRequest(() ->
-    //     drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(joystick.getRawAxis(0)) * MaxSpeed)) 
-    //       .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(joystick.getRawAxis(3)) * MaxSpeed)) 
-    //       .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
-    //     )
-    // );
-
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain.applyRequest(() ->
       point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
     ));
-
-
-    // reset the field-centric 
+    // reset the field-centric
     joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
     drivetrain.registerTelemetry(logger::telemeterize);
     // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
-
     /* Manually start logging with left bumper before running any tests,
      * and stop logging with right bumper after we're done with ALL tests.
      * This isn't necessary but is convenient to reduce the size of the hoot file */
     SignalLogger.setPath("/media/sda1/logs/");
     joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-    
-    
         /*
      * Joystick Y = quasistatic forward
      * Joystick A = quasistatic reverse
@@ -154,10 +136,6 @@ public class RobotContainer {
     // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
-    // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
-    // () -> Constants.Vision.reefPositions.get(scoringSubsystem.getScoringProfile()),
-    // () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
 
     joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),

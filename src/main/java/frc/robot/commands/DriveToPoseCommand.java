@@ -133,6 +133,11 @@ public class DriveToPoseCommand extends Command {
         DogLog.log("DriveToPoseCommand/goalPose.Y", targetPoseSupplier.get().getY());
         DogLog.log("DriveToPoseCommand/goalPose.Angle", targetPoseSupplier.get().getRotation().getDegrees());
 
+        DogLog.log("DriveToPoseCommand/Error.x", targetPoseSupplier.get().getX() - robotPose.getX());
+        DogLog.log("DriveToPoseCommand/Error.y", targetPoseSupplier.get().getY() - robotPose.getY());
+        DogLog.log("DriveToPoseCommand/Error.theta", targetPoseSupplier.get().getRotation().getDegrees() - robotAngle.get().getDegrees());
+
+
         if((targetPoseSupplier.get().getTranslation().getDistance(currentPoseProvider.get().getTranslation()) 
         > AllianceFlipUtil.apply(FieldConstants.Reef.center).getDistance(currentPoseProvider.get().getTranslation()))){
            DogLog.log("DriveToPoseCommand/GoalPose", "Out of Range");
@@ -167,7 +172,7 @@ public class DriveToPoseCommand extends Command {
                 omegaSpeed,
                 robotAngle.get());
                 
-        drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(chassisSpeeds).withDriveRequestType(DriveRequestType.Velocity));
+        drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(chassisSpeeds));
     }
 
     // Called once the command ends or is interrupted.

@@ -196,6 +196,7 @@ import dev.doglog.DogLog;
                         double xydeviations = kXYStdDev * Math.pow(avgDist, 2) / numTags ;
                         double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;
                         estStdDevs = VecBuilder.fill(xydeviations, xydeviations, thetadeviations);
+                        // estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                         DogLog.log("Vision"+cameraName+"/PoseAmbiguity", targets.get(0).getPoseAmbiguity());
                         DogLog.log("Vision"+cameraName+"/estStdDevs", estStdDevs);
                      }
