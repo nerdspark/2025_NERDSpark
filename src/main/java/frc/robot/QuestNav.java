@@ -82,22 +82,28 @@ public class QuestNav {
   // Get the yaw Euler angle of the headset
   private float getOculusYaw() {
     float[] eulerAngles = questEulerAngles.get();
-    var ret = eulerAngles[1] - yaw_offset;
+    var ret = eulerAngles[1];
     ret %= 360;
     if (ret < 0) {
       ret += 360;
     }
+    //if (ret > 180) {
+      //ret += -360;
+    //}
+    //if (ret < -180) {
+      //ret += 360;
+    //}
     return ret;
   }
 
   private Translation2d getQuestNavTranslation() {
     float[] questnavPosition = questPosition.get();
-    return new Translation2d(questnavPosition[2], -questnavPosition[0]);
+    return new Translation2d(-questnavPosition[0], -questnavPosition[2]); // Switch Around Based On Which Way Quest Is Facing/Mounted
   }
 
   private Pose2d getQuestNavPose() {
-    var oculousPositionCompensated = getQuestNavTranslation().minus(new Translation2d(-0.5, -1.6351)); // 6.5 or 0.1651
-    return new Pose2d(oculousPositionCompensated, Rotation2d.fromDegrees(getOculusYaw()));
+    var oculousPositionCompensated = getQuestNavTranslation().minus(new Translation2d(-0.4, -1.6351)); // 6.5 or 0.1651  This is used for
+    return new Pose2d(oculousPositionCompensated, Rotation2d.fromDegrees(getOculusYaw())); // starting pose since quest starts at 0
   }
 
   private Field2d field = new Field2d(); 

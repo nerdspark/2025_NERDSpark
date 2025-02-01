@@ -131,7 +131,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             SwerveDrivetrainConstants drivetrainConstants, SwerveModuleConstants<?, ?, ?>... modules) {
         super(drivetrainConstants, MapleSimSwerveDrivetrain.regulateModuleConstantsForSimulation(modules));
         if (Utils.isSimulation()) {
-            startSimThread();
+            //startSimThread();
         }
         configureAutoBuilder();
     }
@@ -156,7 +156,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 odometryUpdateFrequency,
                 MapleSimSwerveDrivetrain.regulateModuleConstantsForSimulation(modules));
         if (Utils.isSimulation()) {
-            startSimThread();
+            //startSimThread();
         }
         configureAutoBuilder();
     }
@@ -189,7 +189,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 visionStandardDeviation,
                 MapleSimSwerveDrivetrain.regulateModuleConstantsForSimulation(modules));
         if (Utils.isSimulation()) {
-            startSimThread();
+            //startSimThread();
         }
         configureAutoBuilder();
     }
@@ -203,8 +203,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 () -> getState().Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
-                        //.withDriveRequestType(DriveRequestType.Velocity)
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity)
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),
@@ -295,26 +294,26 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private MapleSimSwerveDrivetrain mapleSimSwerveDrivetrain = null;
 
-    private void startSimThread() {
-        mapleSimSwerveDrivetrain = new MapleSimSwerveDrivetrain(
-                Seconds.of(kSimLoopPeriod),
-                Pounds.of(115),
-                Inches.of(30),
-                Inches.of(30),
-                DCMotor.getKrakenX60(1),
-                DCMotor.getFalcon500(1),
-                1.2,
-                getModuleLocations(),
-                getPigeon2(),
-                getModules(),
-                TunerConstants.FrontLeft,
-                TunerConstants.FrontRight,
-                TunerConstants.BackLeft,
-                TunerConstants.BackRight);
+    //private void startSimThread() {
+        //mapleSimSwerveDrivetrain = new MapleSimSwerveDrivetrain(
+                //Seconds.of(kSimLoopPeriod),
+                //Pounds.of(115),
+                //Inches.of(30),
+                //Inches.of(30),
+                //DCMotor.getKrakenX60(1),
+                //DCMotor.getFalcon500(1),
+                //1.2,
+                //getModuleLocations(),
+                //getPigeon2(),
+                //getModules(),
+                //TunerConstants.FrontLeft,
+                //TunerConstants.FrontRight,
+                //TunerConstants.BackLeft,
+                //TunerConstants.BackRight);
         /* Run simulation at a faster rate so PID gains behave more reasonably */
-        m_simNotifier = new Notifier(mapleSimSwerveDrivetrain::update);
-        m_simNotifier.startPeriodic(kSimLoopPeriod);
-    }
+        //m_simNotifier = new Notifier(mapleSimSwerveDrivetrain::update);
+        //m_simNotifier.startPeriodic(kSimLoopPeriod);
+    //}
 
     @Override
     public void resetPose(Pose2d pose) {

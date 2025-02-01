@@ -70,7 +70,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     public void periodic() {
         // Update pose estimator with drivetrain sensors
         if(USE_VISION) {
-             Optional<EstimatedRobotPose> visionEst = Optional.empty();
+            Optional<EstimatedRobotPose> visionEst = Optional.empty();
             visionEst = visionFront.getEstimatedRobotPose();
             visionEst.ifPresent(
                 est -> {
@@ -95,17 +95,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 SmartDashboard.putString("Adding Back visionEst ", getFomattedPose(est.estimatedPose.toPose2d()));
                 
                 
-                driveTrain.addVisionMeasurement(
-                        est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
+                //driveTrain.addVisionMeasurement(
+                        //est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
             });
 
-            // if(Robot.isSimulation() ) {
-            //     visionFront.simulationPeriodic(driveTrain.getDriveTrainSimulationPose());
-            //     SmartDashboard.putData("Debug Field Front", visionFront.getSimDebugField());
-            //     visionBack.simulationPeriodic(driveTrain.getDriveTrainSimulationPose());
-            //     SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
-    
-            // }
+            if(Robot.isSimulation() ) {
+                visionFront.simulationPeriodic(getCurrentPose());
+               SmartDashboard.putData("Debug Field Front", visionFront.getSimDebugField());
+               visionBack.simulationPeriodic(getCurrentPose());
+               SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
+           }
         }
         else {
             if (allNotifier != null) allNotifier.close();
