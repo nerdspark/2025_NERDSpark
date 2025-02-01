@@ -141,7 +141,7 @@ public class RobotContainer {
     joystick.x().whileTrue(AutoBuilder.pathfindToPose(
       new Pose2d(5.289, 5.069, Rotation2d.fromDegrees(-120)), 
       new PathConstraints(
-        5.0, 3.0, 
+        5.6, 4.0, 
         Units.degreesToRadians(360), Units.degreesToRadians(540)
       ), 
       0
