@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.lang.constant.Constable;
 import java.lang.reflect.Field;
 
 import dev.doglog.DogLog;
@@ -15,10 +16,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 import frc.robot.FieldConstants;
 import frc.robot.util.AllianceFlipUtil;
 
 public class ScoringProfileSubsystem extends SubsystemBase {
+
   private int branch = 9;
   private FieldConstants.ReefHeight reefHeight  = FieldConstants.ReefHeight.L1;
 
@@ -55,6 +59,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
+  if(!Constants.Vision.USE_WO_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
       if(DriverStation.getStickButton(1, i+1)) {
         branch = i; 
@@ -66,6 +71,19 @@ public class ScoringProfileSubsystem extends SubsystemBase {
         reefHeight = FieldConstants.ReefHeight.values()[j-12];
       }
     }
+  }
+  else {
+    if(DriverStation.getStickButtonPressed(0, 3)) {
+      branch++;
+      if(branch > 11) {
+        branch = 0;
+      }
+    }
+      DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
+    
+  }
+
+
 
     selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefHeight).toPose2d());
 

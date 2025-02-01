@@ -42,6 +42,7 @@ public final class Constants {
 public static class Vision {
 
         public static final boolean USE_VISION = true;
+        public static final boolean USE_WO_BUTTON_BOARD = true;
 
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
