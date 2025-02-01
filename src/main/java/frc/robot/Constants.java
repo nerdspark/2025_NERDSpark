@@ -42,18 +42,19 @@ public final class Constants {
 public static class Vision {
 
         public static final boolean USE_VISION = true;
+
         public static final boolean USE_WO_BUTTON_BOARD = true;
 
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
-                new Transform3d(new Translation3d(0, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(0)));
+                new Transform3d(new Translation3d(0, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(180))); //0
 
 
         public static final String kCameraNameBack = "BackCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamBack =
-                new Transform3d(new Translation3d(-0.1778, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(180)));
+                new Transform3d(new Translation3d(-0.1778, 0.0, 0.23495), new Rotation3d(0, 0, Math.toRadians(0))); //180
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -61,6 +62,7 @@ public static class Vision {
 
         //Do not change these. Actual values will be calculated by the vision system.
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
         
         //Change these for fine tune vision system calculations of standard deviations.
@@ -98,85 +100,7 @@ public static class Vision {
         public static final double  kPoseAmbiguityThreshold = 0.2;
         public static final double  kSingleTagDistanceThreshold =2.0;
 
-        
-  //      public static HashMap<String, Pose2d> reefPositions = new HashMap<>();
-
-//         static {        
-
-//           reefPositions.put("A0", FieldConstants.Reef.branchPositions.get(0).get(FieldConstants.ReefHeight.L1).toPose2d().plus(new Transform2d(0,0, new Rotation2d(Math.toRadians(180)))));
-
-// //          reefPositions.put("A0", new Pose2d(2, 2, new Rotation2d()));
-//           reefPositions.put("A1", new Pose2d());
-//           reefPositions.put("A2", new Pose2d());
-//           reefPositions.put("A3", new Pose2d());
-//           reefPositions.put("A4", new Pose2d());
-
-//           reefPositions.put("B0", FieldConstants.Reef.branchPositions.get(4).get(FieldConstants.ReefHeight.L1).toPose2d().plus(new Transform2d(0,0, new Rotation2d(Math.toRadians(180)))));
-//           reefPositions.put("B1", new Pose2d());
-//           reefPositions.put("B2", new Pose2d());
-//           reefPositions.put("B3", new Pose2d());
-//           reefPositions.put("B4", new Pose2d());
-
-//           reefPositions.put("C0", new Pose2d(7, 2, new Rotation2d(Math.toRadians(270))));
-//           reefPositions.put("C1", new Pose2d());
-//           reefPositions.put("C2", new Pose2d());
-//           reefPositions.put("C3", new Pose2d());
-//           reefPositions.put("C4", new Pose2d());
-
-//           reefPositions.put("D0", new Pose2d());
-//           reefPositions.put("D1", new Pose2d());
-//           reefPositions.put("D2", new Pose2d());
-//           reefPositions.put("D3", new Pose2d());
-//           reefPositions.put("D4", new Pose2d());
-
-//           reefPositions.put("E0", new Pose2d());
-//           reefPositions.put("E1", new Pose2d());
-//           reefPositions.put("E2", new Pose2d());
-//           reefPositions.put("E3", new Pose2d());
-//           reefPositions.put("E4", new Pose2d());
-
-//           reefPositions.put("F0", new Pose2d());
-//           reefPositions.put("F1", new Pose2d());
-//           reefPositions.put("F2", new Pose2d());
-//           reefPositions.put("F3", new Pose2d());
-//           reefPositions.put("F4", new Pose2d());
-
-//           reefPositions.put("G0", new Pose2d());
-//           reefPositions.put("G1", new Pose2d());
-//           reefPositions.put("G2", new Pose2d());
-//           reefPositions.put("G3", new Pose2d());
-//           reefPositions.put("G4", new Pose2d());
-
-//           reefPositions.put("H0", new Pose2d());
-//           reefPositions.put("H1", new Pose2d());
-//           reefPositions.put("H2", new Pose2d());
-//           reefPositions.put("H3", new Pose2d());
-//           reefPositions.put("H4", new Pose2d());
-
-//           reefPositions.put("I0", new Pose2d());
-//           reefPositions.put("I1", new Pose2d());
-//           reefPositions.put("I2", new Pose2d());
-//           reefPositions.put("I3", new Pose2d());
-//           reefPositions.put("I4", new Pose2d());
-
-//           reefPositions.put("J0", new Pose2d());
-//           reefPositions.put("J1", new Pose2d());
-//           reefPositions.put("J2", new Pose2d());
-//           reefPositions.put("J3", new Pose2d());
-//           reefPositions.put("J4", new Pose2d());
-
-//           reefPositions.put("K0", new Pose2d());
-//           reefPositions.put("K1", new Pose2d());
-//           reefPositions.put("K2", new Pose2d());
-//           reefPositions.put("K3", new Pose2d());
-//           reefPositions.put("K4", new Pose2d());
-
-//           reefPositions.put("L0", new Pose2d());
-//           reefPositions.put("L1", new Pose2d());
-//           reefPositions.put("L2", new Pose2d());
-//           reefPositions.put("L3", new Pose2d());
-//           reefPositions.put("L4", new Pose2d());
-        
+      
 
 //         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {
 //           for (FieldConstants.ReefHeight height : FieldConstants.ReefHeight.values()) {
@@ -215,5 +139,3 @@ public static class Vision {
       joystickMap.put(-1.00, -1.00);
     }
 }
-
-    
