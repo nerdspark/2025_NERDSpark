@@ -4,21 +4,19 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 import java.util.function.Supplier;
 
-public class ArmCommand extends Command {
+public class ArmCommandAngles extends Command {
     private Arm arm;
-    private Supplier<Translation2d> position;
-    private Supplier<Boolean> inBend;
+    private Supplier<Double> elbow, shoulder;
     /** Creates a new ArmCommand. */
-    public ArmCommand(Arm arm, Supplier<Translation2d> position, Supplier<Boolean> inBend) {
+    public ArmCommandAngles(Arm arm, Supplier<Double> elbow, Supplier<Double> shoulder) {
         this.arm = arm;
-        this.position = position;
-        this.inBend = inBend;
+        this.shoulder = shoulder;
+        this.elbow = elbow;
         addRequirements(arm);
     }
 
@@ -32,7 +30,8 @@ public class ArmCommand extends Command {
     @Override
     public void execute() {
         // arm.getArmPosition();
-        arm.setArmPosition(position.get(), inBend.get());
+        arm.setElbowPosition(elbow.get());
+        arm.setShoulderPosition(shoulder.get());
     }
 
     // Called once the command ends or is interrupted.
