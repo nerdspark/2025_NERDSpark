@@ -29,15 +29,33 @@ public final class Constants {
     public static final int elbowMotorPort = 10;
     public static final int wristMotorPort = 11;
     public static final int handMotorPort = 12;
-    public static final double currentLimitShoulder = 40;
+    public static final double currentLimitShoulder = 20;
     public static final double shoulderRadPerRot = 2 * Math.PI; //TODO fix with gear ratio
 
-    public static final double currentLimitElbow = 40;
+    public static final double currentLimitElbow = 20;
     public static final double elbowRadPerRot = 2 * Math.PI; //TODO fix with gear ratios
     public static final double shoulderOffset = -0.07; // TODO fidn these, radians, fwd = 0
     public static final double elbowOffset = 2.68; // TODO find these, negative of measurement
 
-    public static final double baseStageLength = 23.158;  // TODO fix these lengths
+    //shoulder gearbox: 25:1
+    //shoulder stage 0: 36:26
+
+    // elbow gearbox: 25:1
+    //elbow stage 0: 38:26
+    // elbow stage 1: 50:50
+
+    //wrist up/down gearbox: 25:1
+    //wrist up/down stage 0: 49:50
+    //wrist up/down stage 1: 49:49
+    //wrist up/down stage 2: 35:49
+
+    //wrist twist gearbox: 25:1
+    //wrist twist stage 0: 49:50
+    //wrist twist stage 1: 49:49
+    //wrist twist stage 2: 35:49
+    //wrist twist bevel: 1:1
+
+    public static final double baseStageLength = 23.158;  
     public static final double secondStageLength = 25.475;
 
   }
