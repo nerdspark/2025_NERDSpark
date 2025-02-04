@@ -132,14 +132,14 @@ public class RobotContainer {
      * Joystick B = dynamic forward
      * Joystick X = dyanmic reverse
      */
-    // joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
+    //joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
+    //() -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    //() -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
  
   }
 
