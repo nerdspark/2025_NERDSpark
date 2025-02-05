@@ -25,26 +25,28 @@ public final class Constants {
 
   public static class ArmConstants {
 
-    public static final int shoulderMotorPort = 9; // TODO fix these port numbers
-    public static final int elbowMotorPort = 10;
+    public static final int shoulderMotorLeftPort = 7; // TODO fix these port numbers
+    public static final int shoulderMotorRightPort = 9; // TODO fix these port numbers
+    public static final int elbowMotorLeftPort = 10;
+    public static final int elbowMotorRightPort = 8;
     public static final int wristMotorPort = 11;
     public static final int handMotorPort = 12;
-    public static final double currentLimitShoulder = 20;
-    public static final double shoulderRadPerRot = 2 * Math.PI; //TODO fix with gear ratio
 
+
+    public static final double currentLimitShoulder = 1;
     public static final double currentLimitElbow = 20;
-    public static final double elbowRadPerRot = 2 * Math.PI; //TODO fix with gear ratios
-    public static final double shoulderOffset = 0.0; // TODO fidn these, radians, fwd = 0
-    public static final double elbowOffset = 0.0; // TODO find these, negative of measurement
+
 
     //shoulder true offset: 34.513 deg below forward horizontal
-    //shoulder gearbox: 25:1
+    //shoulder gearbox: 75:1
     //shoulder stage 0: 36:26
-
+    public static final double shoulderGearRatio = 75.0*36.0/26.0;
+    
     // elbow true offset: 122.198 deg above forward horizontal
-    // elbow gearbox: 25:1
+    // elbow gearbox: 75:1
     //elbow stage 0: 38:26
     // elbow stage 1: 50:50
+    public static final double elbowGearRatio = 75.0*38.0/26.0;
 
     //wrist up/down gearbox: 25:1
     //wrist up/down stage 0: 49:50
@@ -60,6 +62,11 @@ public final class Constants {
     public static final double baseStageLength = 23.158;  
     public static final double secondStageLength = 25.475;
 
+
+    public static final double shoulderRadPerRot = shoulderGearRatio; //TODO fix with gear ratio
+    public static final double elbowRadPerRot = elbowGearRatio; //TODO fix with gear ratios
+    public static final double shoulderOffset = -0.524 / 2 / Math.PI; // TODO fidn these, radians, fwd = 0
+    public static final double elbowOffset = 2.053 / 2 / Math.PI; // TODO find these, negative of measurement
   }
   public static class ReefSetPoints {
     public static final Translation2d l1Reef = new Translation2d(2.2, 25.2);
@@ -69,25 +76,25 @@ public final class Constants {
     public static final Translation2d l5Reef = new Translation2d(2.2, 45.2);
   }
   public static class ArmTestAngles{
-    public static final double testElbowAngle = Units.degreesToRadians(30);
+    public static final double testElbowAngle = Units.degreesToRadians(70);
     public static final double testShoulderAngle = Units.degreesToRadians(30);
   }
   
 
   public final class ArmGains {
     
-      public static final double shoulderP = 90.0; //TODO CHANGE ALL OF THIS
+      public static final double shoulderP = 0; //TODO CHANGE ALL OF THIS
       public static final double shoulderI = 0.0;
-      public static final double shoulderD = 5.0;
-      public static final double elbowP = 50.0;
+      public static final double shoulderD = 0.0;
+      public static final double elbowP = 0.0;//30.0
       public static final double elbowI = 0.0;
-      public static final double elbowD = 3.5;
+      public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.1;
+      public static final double shoulderG = 0.0;
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 1.05;
+      public static final double elbowG = 0.03;//???? 1???
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }

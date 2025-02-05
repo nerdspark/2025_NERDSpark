@@ -37,8 +37,8 @@ public class ArmCommandAngles extends Command {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        arm.setElbowPosition(ArmConstants.elbowOffset);
-        arm.setShoulderPosition(ArmConstants.shoulderOffset);
+        // arm.setElbowPosition(-ArmConstants.elbowOffset);
+        // arm.setShoulderPosition(-ArmConstants.shoulderOffset);
     }
 
     // Returns true when the command should end.
