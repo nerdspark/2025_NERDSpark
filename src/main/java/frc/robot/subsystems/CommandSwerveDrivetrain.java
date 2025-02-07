@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.QuestNav;
+import frc.robot.QuestNav7028;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MapleSimSwerveDrivetrain;
@@ -52,7 +52,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.002; // 2 ms
     private Notifier m_simNotifier = null;
 
-    private QuestNav questNav = new QuestNav();
+    private QuestNav7028 questNav = new QuestNav7028();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -204,12 +204,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                () -> questNav.getPPQuestPose(), //() -> getState().Pose,   // Supplier of current robot pose
-                questNav::PPZeroPose, //this::resetPose,   // Consumer for seeding pose against auto
+                () -> getState().Pose, //() -> questNav.getPPQuestPose(),   // Supplier of current robot pose
+                this::resetPose, //questNav::PPZeroPose,   // Consumer for seeding pose against auto
                 () -> getState().Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(
-                    m_pathApplyRobotSpeeds.withSpeeds(speeds)//.withDriveRequestType(DriveRequestType.Velocity)
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds).withDriveRequestType(DriveRequestType.Velocity)
                         .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
                         .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
                 ),
@@ -294,7 +294,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         field.setRobotPose(this.getState().Pose);
     }
 
-    questNav.getQuestNavFieldPose();
+    questNav.getRobotPose();
 
     }
 

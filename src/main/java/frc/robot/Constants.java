@@ -41,7 +41,7 @@ public final class Constants {
 
 public static class Vision {
 
-        public static final boolean USE_VISION = true;
+        public static final boolean USE_VISION = false;
 
         public static final boolean USE_WO_BUTTON_BOARD = true;
 
