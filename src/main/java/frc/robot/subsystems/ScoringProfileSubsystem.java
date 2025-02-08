@@ -73,7 +73,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     }
   }
   else {
-    if(DriverStation.getStickButtonPressed(0, 8)) {
+    if(DriverStation.getStickButtonPressed(0, 7)) {
       branch++;
       if(branch > 11) {
         branch = 0;

@@ -105,7 +105,7 @@ public class QuestNav5010 //implements PoseProvider
     }
 
     public Translation3d getRawPosition() {
-        return new Translation3d(-position.get()[0], -position.get()[2], position.get()[0]);
+        return new Translation3d(-position.get()[2], position.get()[0], position.get()[3]);
     }
 
     private Translation3d rotateAxes(Translation3d raw, Rotation3d rotation) {
@@ -260,12 +260,12 @@ public class QuestNav5010 //implements PoseProvider
     }
 
 
-    public Command determineOffsetToRobotCenter(SwerveRequest.ApplyRobotSpeeds driveToPoseRequest) {
+    public Command determineOffsetToRobotCenter(CommandSwerveDrivetrain drivetrain) {
         return
         Commands.repeatingSequence(
             Commands.run(
             () -> {
-                driveToPoseRequest.withSpeeds(new ChassisSpeeds(0, 0, 0.314));
+                drivetrain.setControl(driveToPoseRequest.withSpeeds(new ChassisSpeeds(0, 0, 0.314)));
             }).withTimeout(2.0),
             Commands.runOnce(() -> {
                 // Update current offset

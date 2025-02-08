@@ -17,6 +17,8 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -37,7 +39,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.QuestNav7028;
+import frc.robot.QuestNav5010;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MapleSimSwerveDrivetrain;
@@ -53,7 +55,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.002; // 2 ms
     private Notifier m_simNotifier = null;
 
-    private QuestNav7028 questNav = new QuestNav7028();
+    private QuestNav5010 questNav = new QuestNav5010(new Transform3d(6.569852759410616, -5.137295051877407, 0, new Rotation3d()));
+    private Field2d fieldQ = new Field2d();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -286,7 +289,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         DogLog.log("Drive/MeasuredStates", getState().ModuleStates);
         DogLog.log("Drive/MeasuredSpeeds", getState().Speeds);
 
-        questNav.getRobotPose();
+        // fieldQ.setRobotPose(questNav.toPose2d(questNav.getRobotPose()));
+        // SmartDashboard.putData("QuestNav 5010", fieldQ);
 
     if (mapleSimSwerveDrivetrain != null) {
         DogLog.log("Drive/SimulationPose", mapleSimSwerveDrivetrain.mapleSimDrive.getSimulatedDriveTrainPose());

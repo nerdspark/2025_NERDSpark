@@ -72,24 +72,24 @@ public static class Vision {
 
         public static final double TRANSLATION_TOLERANCE_X = 0.05; // Changed from 0.05 3/26/23
         public static final double TRANSLATION_TOLERANCE_Y = 0.05; // Changed from 0.05 3/26/23
-        public static final double ROTATION_TOLERANCE = 5.0; // /deg
+        public static final double ROTATION_TOLERANCE = 2.5; // /deg
 
-        public static final double MAX_VELOCITY = 4.5; // 3 //2
-        public static final double MAX_ACCELARATION = 6; // 2 //1
-        public static final double MAX_VELOCITY_ROTATION = 540; // 8
-        public static final double MAX_ACCELARATION_ROTATION = 720; // 8
+        public static final double MAX_VELOCITY = 4.5;
+        public static final double MAX_ACCELARATION = 6;
+        public static final double MAX_VELOCITY_ROTATION = 540;
+        public static final double MAX_ACCELARATION_ROTATION = 720;
         
-        public static final double VELOCITY_TOLERANCE_X =2;
-        public static final double VELOCITY_TOLERANCE_Y = 2;
-        public static final double VELOCITY_TOLERANCE_OMEGA = 2;
+        public static final double VELOCITY_TOLERANCE_X = 4;
+        public static final double VELOCITY_TOLERANCE_Y = 4;
+        public static final double VELOCITY_TOLERANCE_OMEGA = 5;
 
 
-        public static final double kPXController = 2.5;
-        public static final double kIXController = 0d;
-        public static final double kDXController = 0d;
+        public static final double kPXController = 2.6;
+        public static final double kIXController = 0.01d;
+        public static final double kDXController = 0.01d;
         public static final double kPYController = 2.4;
-        public static final double kIYController = 0d;
-        public static final double kDYController = 0d;
+        public static final double kIYController = 0.01d;
+        public static final double kDYController = 0.01d;
         public static final double kIzoneX = 1.0d;
         public static final double kIzoneY = 1.0d;
         public static final double kPThetaController = 0.25;

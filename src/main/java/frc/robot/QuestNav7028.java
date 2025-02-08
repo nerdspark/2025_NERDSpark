@@ -46,7 +46,7 @@ public class QuestNav7028 {
   private Pose2d resetPoseRobot = new Pose2d();
 
   // Position of the quest on the robot (13.5" forward, centered side-to-side, pointed forward))
-  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(-12.75), 0, new Rotation2d());
+  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(-12.75), 0, new Rotation2d(3.14159));
 
   Field2d fieldQ = new Field2d();
 
