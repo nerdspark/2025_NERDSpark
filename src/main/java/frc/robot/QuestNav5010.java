@@ -60,8 +60,10 @@ public class QuestNav5010 //implements PoseProvider
     private Pose3d previousPose;
     private double previousTime;
 
-    private Translation2d _calculatedOffsetToRobotCenter = new Translation2d();
-    private int _calculatedOffsetToRobotCenterCount = 0;
+    private static Translation2d _calculatedOffsetToRobotCenter = new Translation2d();
+    private static int _calculatedOffsetToRobotCenterCount = 0;
+
+    
 
     public enum QuestCommand {
         RESET(1);
@@ -103,7 +105,7 @@ public class QuestNav5010 //implements PoseProvider
     }
 
     public Translation3d getRawPosition() {
-        return new Translation3d(position.get()[2], -position.get()[0], position.get()[2]);
+        return new Translation3d(-position.get()[0], -position.get()[2], position.get()[0]);
     }
 
     private Translation3d rotateAxes(Translation3d raw, Rotation3d rotation) {
@@ -125,6 +127,12 @@ public class QuestNav5010 //implements PoseProvider
         } else {
             return Optional.empty();
         }
+    }
+    
+    public Pose2d toPose2d(Optional<Pose3d> pose) {
+        var translation = new Translation2d(pose.get().getX(), pose.get().getY());
+        var rotation = new Rotation2d(pose.get().getRotation().getAngle());
+        return new Pose2d(translation, rotation);
     }
 
     public Translation3d getPosition() {
@@ -238,7 +246,7 @@ public class QuestNav5010 //implements PoseProvider
     //     }
     // }
 
-    private Translation2d calculateOffsetToRobotCenter() {
+    public Translation2d calculateOffsetToRobotCenter() {
         Pose3d currentPose = getRobotPose().get();
         Pose2d currentPose2d = currentPose.toPose2d();
 

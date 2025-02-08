@@ -17,6 +17,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -285,7 +286,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         DogLog.log("Drive/MeasuredStates", getState().ModuleStates);
         DogLog.log("Drive/MeasuredSpeeds", getState().Speeds);
 
-    
+        questNav.getRobotPose();
 
     if (mapleSimSwerveDrivetrain != null) {
         DogLog.log("Drive/SimulationPose", mapleSimSwerveDrivetrain.mapleSimDrive.getSimulatedDriveTrainPose());
@@ -293,9 +294,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     } else {
         field.setRobotPose(this.getState().Pose);
     }
-
-    questNav.getRobotPose();
-
     }
 
     private MapleSimSwerveDrivetrain mapleSimSwerveDrivetrain = null;

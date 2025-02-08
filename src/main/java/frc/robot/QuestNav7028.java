@@ -46,7 +46,7 @@ public class QuestNav7028 {
   private Pose2d resetPoseRobot = new Pose2d();
 
   // Position of the quest on the robot (13.5" forward, centered side-to-side, pointed forward))
-  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(-11.65), 0.0508, new Rotation2d());
+  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(-12.75), 0, new Rotation2d());
 
   Field2d fieldQ = new Field2d();
 
@@ -149,7 +149,7 @@ public class QuestNav7028 {
     var rotation = Rotation2d.fromDegrees(-Math.IEEEremainder(eulerAngles[1], 360d));
 
     var questnavPosition = questPosition.get();
-    var translation = new Translation2d(-questnavPosition[0], -questnavPosition[2]);
+    var translation = new Translation2d(-questnavPosition[2], questnavPosition[0]);
     return new Pose2d(translation, rotation);
   }
 

@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -37,7 +38,9 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import frc.robot.QuestNav5010;
+
+import dev.doglog.DogLog;
+import frc.robot.commands.QuestNavOffset;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -56,8 +59,6 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
-    private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -86,6 +87,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    if (!Constants.USE_DOGLOG) {
+      DogLog.setEnabled(false);
+    }
     autoChooser = AutoBuilder.buildAutoChooser("Tests");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -139,11 +143,11 @@ public class RobotContainer {
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    //joystick.a().whileTrue(QuestNav5010.determineOffsetToRobotCenter(driveToPoseRequest));
+    //joystick.y().whileTrue(new QuestNavOffset(drivetrain));
 
-    //joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
-    //() -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    //() -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
+    joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
  
   }
 

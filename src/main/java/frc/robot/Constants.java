@@ -38,10 +38,11 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
+public static boolean USE_DOGLOG = false;
 
 public static class Vision {
 
-        public static final boolean USE_VISION = false;
+        public static final boolean USE_VISION = true;
 
         public static final boolean USE_WO_BUTTON_BOARD = true;
 
@@ -83,17 +84,17 @@ public static class Vision {
         public static final double VELOCITY_TOLERANCE_OMEGA = 2;
 
 
-        public static final double kPXController = 2.5; //2.5
+        public static final double kPXController = 2.5;
         public static final double kIXController = 0d;
         public static final double kDXController = 0d;
-        public static final double kPYController = 2.5; //2.5
-        public static final double kIYController = 0d; //0.1d;
+        public static final double kPYController = 2.4;
+        public static final double kIYController = 0d;
         public static final double kDYController = 0d;
         public static final double kIzoneX = 1.0d;
         public static final double kIzoneY = 1.0d;
-        public static final double kPThetaController = 0.4; //2
+        public static final double kPThetaController = 0.25;
         public static final double kIThetaController = 0.0;
-        public static final double kDThetaController = 0.0; //0.0041
+        public static final double kDThetaController = 0.0;
         public static final double IZone = 1.0d;
         // public static final double autoTurnCeiling = 5.0;
 
