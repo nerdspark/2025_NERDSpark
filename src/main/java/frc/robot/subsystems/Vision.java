@@ -178,7 +178,7 @@ import dev.doglog.DogLog;
                                  .getDistance(estimatedPose.get().estimatedPose.toPose2d().getTranslation());
              }
  
-                DogLog.log("Vision"+cameraName+"/NumTags", numTags);
+                // DogLog.log("Vision"+cameraName+"/NumTags", numTags);
              if (numTags == 0) {
                  // No tags visible. Default to single-tag std devs
                  curStdDevs = kSingleTagStdDevs;
@@ -197,8 +197,8 @@ import dev.doglog.DogLog;
                         double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;
                         estStdDevs = VecBuilder.fill(xydeviations, xydeviations, thetadeviations);
                         // estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                        DogLog.log("Vision"+cameraName+"/PoseAmbiguity", targets.get(0).getPoseAmbiguity());
-                        DogLog.log("Vision"+cameraName+"/estStdDevs", estStdDevs);
+                        // DogLog.log("Vision"+cameraName+"/PoseAmbiguity", targets.get(0).getPoseAmbiguity());
+                        // DogLog.log("Vision"+cameraName+"/estStdDevs", estStdDevs);
                      }
                      else{
                          estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);

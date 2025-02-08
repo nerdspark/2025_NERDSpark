@@ -79,7 +79,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
         branch = 0;
       }
     }
-      DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
+      // DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
       SmartDashboard.putNumber("Branch Selected", branch);
   }
 

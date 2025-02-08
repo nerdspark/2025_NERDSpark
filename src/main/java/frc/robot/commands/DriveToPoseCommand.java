@@ -96,7 +96,7 @@ public class DriveToPoseCommand extends Command {
     @Override
     public void initialize() {
 
-        DogLog.log("DriveToPoseCommand", "Initialize");
+        // DogLog.log("DriveToPoseCommand", "Initialize");
 
         var robotPose = currentPoseProvider.get();
         omegaController.reset(
@@ -105,13 +105,13 @@ public class DriveToPoseCommand extends Command {
         xController.reset(robotPose.getX(), drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
         yController.reset(robotPose.getY(), drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
 
-        DogLog.log(
-                "DriveToPoseCommand/YawVelocity",
-                drivetrainSubsystem.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond * 180.0 / Math.PI);
-        DogLog.log(
-                "DriveToPoseCommand/FieldVelocityX", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
-        DogLog.log(
-                "DriveToPoseCommand/FieldVelocityY", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+        // DogLog.log(
+        //         "DriveToPoseCommand/YawVelocity",
+        //         drivetrainSubsystem.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond * 180.0 / Math.PI);
+        // DogLog.log(
+        //         "DriveToPoseCommand/FieldVelocityX", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
+        // DogLog.log(
+        //         "DriveToPoseCommand/FieldVelocityY", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
 
         omegaController.setGoal(targetPoseSupplier.get().getRotation().getDegrees());
         xController.setGoal(targetPoseSupplier.get().getX());
@@ -125,24 +125,24 @@ public class DriveToPoseCommand extends Command {
         // SmartDashboard.putString("DriveToPoseCommand", "Execute");
 
         var robotPose = currentPoseProvider.get();
-        DogLog.log("DriveToPoseCommand/robotPose.X", robotPose.getX());
-        DogLog.log("DriveToPoseCommand/robotPose.Y", robotPose.getY());
-        DogLog.log("DriveToPoseCommand/robotAngle", robotAngle.get().getDegrees());
+        // DogLog.log("DriveToPoseCommand/robotPose.X", robotPose.getX());
+        // DogLog.log("DriveToPoseCommand/robotPose.Y", robotPose.getY());
+        // DogLog.log("DriveToPoseCommand/robotAngle", robotAngle.get().getDegrees());
 
-        DogLog.log("DriveToPoseCommand/goalPose.X", targetPoseSupplier.get().getX());
-        DogLog.log("DriveToPoseCommand/goalPose.Y", targetPoseSupplier.get().getY());
-        DogLog.log("DriveToPoseCommand/goalPose.Angle", targetPoseSupplier.get().getRotation().getDegrees());
+        // DogLog.log("DriveToPoseCommand/goalPose.X", targetPoseSupplier.get().getX());
+        // DogLog.log("DriveToPoseCommand/goalPose.Y", targetPoseSupplier.get().getY());
+        // DogLog.log("DriveToPoseCommand/goalPose.Angle", targetPoseSupplier.get().getRotation().getDegrees());
 
-        DogLog.log("DriveToPoseCommand/Error.x", targetPoseSupplier.get().getX() - robotPose.getX());
-        DogLog.log("DriveToPoseCommand/Error.y", targetPoseSupplier.get().getY() - robotPose.getY());
-        DogLog.log("DriveToPoseCommand/Error.theta", targetPoseSupplier.get().getRotation().getDegrees() - robotAngle.get().getDegrees());
+        // DogLog.log("DriveToPoseCommand/Error.x", targetPoseSupplier.get().getX() - robotPose.getX());
+        // DogLog.log("DriveToPoseCommand/Error.y", targetPoseSupplier.get().getY() - robotPose.getY());
+        // DogLog.log("DriveToPoseCommand/Error.theta", targetPoseSupplier.get().getRotation().getDegrees() - robotAngle.get().getDegrees());
 
 
         if((targetPoseSupplier.get().getTranslation().getDistance(currentPoseProvider.get().getTranslation()) 
         > AllianceFlipUtil.apply(FieldConstants.Reef.center).getDistance(currentPoseProvider.get().getTranslation()))){
-           DogLog.log("DriveToPoseCommand/GoalPose", "Out of Range");
+        //    DogLog.log("DriveToPoseCommand/GoalPose", "Out of Range");
         }else{
-            DogLog.log("DriveToPoseCommand/GoalPose", "In Range");
+        //     DogLog.log("DriveToPoseCommand/GoalPose", "In Range");
         }       
 
 
@@ -161,9 +161,9 @@ public class DriveToPoseCommand extends Command {
             omegaSpeed = 0;
         }
 
-        DogLog.log("DriveToPoseCommand/X Speed", xSpeed);
-        DogLog.log("DriveToPoseCommand/Y Speed", ySpeed);
-        DogLog.log("DriveToPoseCommand/Omega Speed", omegaSpeed);
+        // DogLog.log("DriveToPoseCommand/X Speed", xSpeed);
+        // DogLog.log("DriveToPoseCommand/Y Speed", ySpeed);
+        // DogLog.log("DriveToPoseCommand/Omega Speed", omegaSpeed);
 
         ChassisSpeeds chassisSpeeds;
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(

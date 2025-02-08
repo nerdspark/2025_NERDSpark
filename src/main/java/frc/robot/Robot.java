@@ -4,13 +4,19 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.pathplanner.lib.pathfinding.LocalADStar;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+
 import org.ironmaple.simulation.SimulatedArena;
 
 public class Robot extends TimedRobot {
@@ -22,16 +28,23 @@ public class Robot extends TimedRobot {
 
     public Robot() {
         m_robotContainer = new RobotContainer();
+
+        Pathfinding.setPathfinder(new LocalADStar());
+        // SignalLogger.setPath("/media/sda1/logs/");
+
     }
 
     @Override
     public void robotInit() {
-        DogLog.setOptions(new DogLogOptions()
-                .withLogExtras(true)
-                .withCaptureDs(true)
-                .withNtPublish(true)
-                .withCaptureNt(true));
-        DogLog.setPdh(new PowerDistribution());
+
+        // if (Constants.USE_DOGLOG){
+        // DogLog.setOptions(new DogLogOptions()
+        //         .withLogExtras(true)
+        //         .withCaptureDs(true)
+        //         .withNtPublish(true)
+        //         .withCaptureNt(true));
+        // DogLog.setPdh(new PowerDistribution());
+        // }
     }
 
     @Override
@@ -84,13 +97,19 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+
+        // SignalLogger.start();
+        
     }
 
     @Override
     public void teleopPeriodic() {}
 
     @Override
-    public void teleopExit() {}
+    public void teleopExit() {
+
+        // SignalLogger.stop();
+    }
 
     @Override
     public void testInit() {
@@ -105,8 +124,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        DogLog.log("Simulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-        DogLog.log("Simulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        // DogLog.log("Simulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+        // DogLog.log("Simulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
         
     }
 }

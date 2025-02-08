@@ -38,7 +38,7 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-public static boolean USE_DOGLOG = false;
+// public static boolean USE_DOGLOG = false;
 
 public static class Vision {
 

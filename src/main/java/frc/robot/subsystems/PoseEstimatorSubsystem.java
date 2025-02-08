@@ -104,10 +104,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             }
 
             if(visionEstFront.isPresent()) {
-               DogLog.log("PoseEstimator/VisionEst", visionEstFront.get().estimatedPose.toPose2d());
+            //    DogLog.log("PoseEstimator/VisionEst", visionEstFront.get().estimatedPose.toPose2d());
             }
             if(visionEstBack.isPresent()) {
-                DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
+                // DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
              }
 
         }
@@ -120,8 +120,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             // field.getObject("VisionEstimation").setPoses();
 
             SmartDashboard.putData("Robot Pose in Field", field);
-            DogLog.log("PoseEstimator/Pose", getCurrentPose());
-            DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
+            // DogLog.log("PoseEstimator/Pose", getCurrentPose());
+            // DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
 
         }
               
@@ -170,7 +170,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         
         for (int i = 0; i < curStdDevs.getNumRows(); i++) {
             for (int j = 0; j < curStdDevs.getNumCols(); j++) {
-                DogLog.log("Stddev "+ i,curStdDevs.get(i, j));
+                // DogLog.log("Stddev "+ i,curStdDevs.get(i, j));
             }
         }
     }

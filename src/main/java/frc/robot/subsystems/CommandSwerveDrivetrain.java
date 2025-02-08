@@ -84,7 +84,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
             new SysIdRoutine.Config(
                     null, // Use default ramp rate (1 V/s)
-                    Volts.of(3), // Reduce dynamic step voltage to 4 V to prevent brownout
+                    Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
                     null, // Use default timeout (10 s)
                     // Log state with SignalLogger class
                     state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())),
@@ -126,7 +126,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     this));
 
     /* The SysId routine to test */
-    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineTranslation;
+    private SysIdRoutine m_sysIdRoutineToApply = m_sysIdRoutineSteer;
 
     /**
      * Constructs a CTRE SwerveDrivetrain using the specified constants.
@@ -283,17 +283,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        DogLog.log("BatteryVoltage", RobotController.getBatteryVoltage());
-        DogLog.log("Drive/OdometryPose", getState().Pose);
-        DogLog.log("Drive/TargetStates", getState().ModuleTargets);
-        DogLog.log("Drive/MeasuredStates", getState().ModuleStates);
-        DogLog.log("Drive/MeasuredSpeeds", getState().Speeds);
+        // DogLog.log("BatteryVoltage", RobotController.getBatteryVoltage());
+        // DogLog.log("Drive/OdometryPose", getState().Pose);
+        // DogLog.log("Drive/TargetStates", getState().ModuleTargets);
+        // DogLog.log("Drive/MeasuredStates", getState().ModuleStates);
+        // DogLog.log("Drive/MeasuredSpeeds", getState().Speeds);
 
         // fieldQ.setRobotPose(questNav.toPose2d(questNav.getRobotPose()));
         // SmartDashboard.putData("QuestNav 5010", fieldQ);
 
     if (mapleSimSwerveDrivetrain != null) {
-        DogLog.log("Drive/SimulationPose", mapleSimSwerveDrivetrain.mapleSimDrive.getSimulatedDriveTrainPose());
+        // DogLog.log("Drive/SimulationPose", mapleSimSwerveDrivetrain.mapleSimDrive.getSimulatedDriveTrainPose());
         field.setRobotPose(mapleSimSwerveDrivetrain.mapleSimDrive.getSimulatedDriveTrainPose());
     } else {
         field.setRobotPose(this.getState().Pose);

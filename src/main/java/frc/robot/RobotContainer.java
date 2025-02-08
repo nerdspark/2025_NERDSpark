@@ -5,6 +5,10 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.DriveToPoseCommand;
@@ -41,6 +45,9 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import dev.doglog.DogLog;
 
@@ -92,9 +99,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    if (!Constants.USE_DOGLOG) {
-      DogLog.setEnabled(false);
-    }
+    // if (!Constants.USE_DOGLOG) {
+    //   DogLog.setEnabled(false);
+    // }
     autoChooser = AutoBuilder.buildAutoChooser("Tests");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -134,19 +141,19 @@ public class RobotContainer {
     /* Manually start logging with left bumper before running any tests,
      * and stop logging with right bumper after we're done with ALL tests.
      * This isn't necessary but is convenient to reduce the size of the hoot file */
-    SignalLogger.setPath("/media/sda1/logs/");
-    joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    // SignalLogger.setPath("/media/sda1/logs/");
+    // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
         /*
      * Joystick Y = quasistatic forward
      * Joystick A = quasistatic reverse
      * Joystick B = dynamic forward
      * Joystick X = dyanmic reverse
      */
-    // joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // joystick.leftTrigger().and(joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward)));
+    // joystick.leftTrigger().and(joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)));
+    // joystick.leftTrigger().and(joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward)));
+    // joystick.leftTrigger().and(joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse)));
 
     //joystick.y().onTrue(questnav.determineOffsetToRobotCenter(drivetrain));
 
@@ -156,6 +163,25 @@ public class RobotContainer {
     joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     FieldConstants.CoralStation.leftCenterFace.plus(new Transform2d(Units.inchesToMeters(36), 0, new Rotation2d(Math.toRadians(0)))),
     () -> drivetrain.getState().Pose.getRotation()));//.until(() -> joystick.x().getAsBoolean());
+
+     try {
+      joystick.x().whileTrue(AutoBuilder.pathfindThenFollowPath(
+        PathPlannerPath.fromPathFile("Test_PathFindThenFollowPath"), 
+        new PathConstraints(
+          5.0, 3.0, 
+          Units.degreesToRadians(360), Units.degreesToRadians(540)
+        )
+      ));
+    } catch (FileVersionException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
  
   }
 
