@@ -33,8 +33,8 @@ public final class Constants {
     public static final int handMotorPort = 12;
 
 
-    public static final double currentLimitShoulder = 1;
-    public static final double currentLimitElbow = 20;
+    public static final double currentLimitShoulder = 40;
+    public static final double currentLimitElbow = 40;
 
 
     //shoulder true offset: 34.513 deg below forward horizontal
@@ -65,36 +65,36 @@ public final class Constants {
 
     public static final double shoulderRadPerRot = shoulderGearRatio; //TODO fix with gear ratio
     public static final double elbowRadPerRot = elbowGearRatio; //TODO fix with gear ratios
-    public static final double shoulderOffset = -0.524 / 2 / Math.PI; // TODO fidn these, radians, fwd = 0
-    public static final double elbowOffset = 2.053 / 2 / Math.PI; // TODO find these, negative of measurement
+    public static final double shoulderOffset = -0.35 / 2 / Math.PI; // TODO fidn these, radians, fwd = 0
+    public static final double elbowOffset = 2.158 / 2 / Math.PI; // TODO find these, negative of measurement
   }
   public static class ReefSetPoints {
-    public static final Translation2d l1Reef = new Translation2d(2.2, 25.2);
+    public static final Translation2d l1Reef = new Translation2d(30.2, 35.2);
     public static final Translation2d l2Reef = new Translation2d(2.2, 30.2);
     public static final Translation2d l3Reef = new Translation2d(2.2, 35.2);
     public static final Translation2d l4Reef = new Translation2d(2.2, 40.2);
     public static final Translation2d l5Reef = new Translation2d(2.2, 45.2);
   }
   public static class ArmTestAngles{
-    public static final double testElbowAngle = Units.degreesToRadians(70);
-    public static final double testShoulderAngle = Units.degreesToRadians(30);
+    public static final double testElbowAngle = Units.degreesToRadians(45);
+    public static final double testShoulderAngle = Units.degreesToRadians(45);
   }
   
 
   public final class ArmGains {
     
-      public static final double shoulderP = 0; //TODO CHANGE ALL OF THIS
+      public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 0.0;//30.0
+      public static final double elbowP = 20.0;//15.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.0;
+      public static final double shoulderG = 0.25;
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.03;//???? 1???
+      public static final double elbowG = 0.3;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
