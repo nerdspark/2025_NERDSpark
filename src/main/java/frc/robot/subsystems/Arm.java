@@ -194,6 +194,8 @@ public class Arm extends SubsystemBase {
   }
   public void setVelocity(Translation2d velocity){
     Translation2d position = getArmPosition().plus(velocity.times(ArmMap.linearApproximationTime));
+    SmartDashboard.putNumber("velocity x", velocity.getX());
+    SmartDashboard.putNumber("velocity y", velocity.getY());
     double distance = MathUtil.clamp(position.getNorm(), ArmSetPoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
     boolean inBend = false;
 

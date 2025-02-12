@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmMap;
@@ -38,7 +39,9 @@ public class ArmCommandFollowPath extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("Check", false);
     if (ArmPath.CheckArmPosition(path, arm.getArmPosition())){
+      SmartDashboard.putBoolean("Check", true);
       arm.setArmPosition(path.get(path.size()-1), inBend.get());
     }else{
       Rotation2d direction = ArmPath.ArmPathChooser(path, arm.getArmPosition());

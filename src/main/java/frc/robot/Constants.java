@@ -28,16 +28,16 @@ public final class Constants {
 
   public static class ArmConstants {
 
-    public static final int shoulderMotorLeftPort = 7; // TODO fix these port numbers
-    public static final int shoulderMotorRightPort = 9; // TODO fix these port numbers
+    public static final int shoulderMotorLeftPort = 7; // 7
+    public static final int shoulderMotorRightPort = 9; // 9
     public static final int elbowMotorLeftPort = 10;
     public static final int elbowMotorRightPort = 8;
     public static final int wristMotorPort = 11;
     public static final int handMotorPort = 12;
 
 
-    public static final double currentLimitShoulder = 5.0;
-    public static final double currentLimitElbow = 5.0;
+    public static final double currentLimitShoulder = 15.0;
+    public static final double currentLimitElbow = 10.0;
 
 
     //shoulder true offset: 34.513 deg below forward horizontal
@@ -86,14 +86,14 @@ public final class Constants {
 
   public final class ArmGains {
     
-      public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER
+      public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 20.0;//15.0
+      public static final double elbowP = 20.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.25;
+      public static final double shoulderG = 0.25; // 0.25
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
@@ -120,7 +120,52 @@ public final class Constants {
     new Translation2d(7.7, 19.3), 
     new Translation2d(7.7, 20.3), 
     new Translation2d(7.7, 21.3), 
-    new Translation2d(7.7, 22.3));
+    new Translation2d(7.7, 22.3),
+    new Translation2d(7.7, 23.3), 
+    new Translation2d(7.7, 24.3), 
+    new Translation2d(7.7, 25.3), 
+    new Translation2d(7.7, 26.3), 
+    new Translation2d(7.7, 27.3), 
+    new Translation2d(7.7, 28.3), 
+    new Translation2d(7.7, 29.3), 
+    new Translation2d(7.7, 30.3), 
+    new Translation2d(7.7, 31.3), 
+    new Translation2d(7.7, 32.3),
+    new Translation2d(7.7, 33.3), 
+    new Translation2d(7.7, 34.3), 
+    new Translation2d(7.7, 35.3), 
+    new Translation2d(7.7, 36.3), 
+    new Translation2d(7.7, 37.3), 
+    new Translation2d(7.7, 38.3), 
+    new Translation2d(7.7, 39.3), 
+    new Translation2d(8.7, 39.3),
+    new Translation2d(9.7, 39.3),
+    new Translation2d(10.7, 39.3),
+    new Translation2d(11.7, 39.3),
+    new Translation2d(12.7, 39.3),
+    new Translation2d(13.7, 39.3),
+    new Translation2d(14.7, 39.3),
+    new Translation2d(15.7, 39.3),
+    new Translation2d(16.7, 39.3),
+    new Translation2d(17.7, 39.3),
+    new Translation2d(18.7, 39.3),
+    new Translation2d(19.7, 39.3),
+    new Translation2d(20.7, 39.3),
+    new Translation2d(21.7, 39.3),
+    new Translation2d(22.7, 39.3),
+    new Translation2d(23.7, 39.3),
+    new Translation2d(24.7, 39.3),
+    new Translation2d(25.7, 39.3),
+    new Translation2d(26.7, 38.3),
+    new Translation2d(27.7, 37.3),
+    new Translation2d(28.7, 36.3),
+    new Translation2d(29.7, 35.3),
+    new Translation2d(30.7, 34.3),
+    new Translation2d(31.7, 33.3),
+    new Translation2d(32.7, 32.3),
+    new Translation2d(33.7, 31.3),
+    new Translation2d(34.7, 30.3),
+    new Translation2d(35.7, 29.3));
     public static final double endDistance = 5.0;
     public static final double linearApproximationTime = 0.1; // seconds
     public static final double velocity = 1;

@@ -18,14 +18,15 @@ public class ArmPath {
     public static Rotation2d ArmPathChooser(List<Translation2d> armPaths,Translation2d position){
         Translation2d closestVector = new Translation2d(10000, 100000);
         for (int i = armPaths.size() - 1; i >= 0; i-- ){
+            SmartDashboard.putNumber("distance pos - target", armPaths.get(i).getDistance(position));
             if (armPaths.get(i).getDistance(position) < ArmMap.lookAheadDistance){
-                Rotation2d angle = position.minus(armPaths.get(i)).getAngle();
+                Rotation2d angle = armPaths.get(i).minus(position).getAngle();
                 SmartDashboard.putBoolean("on path", true);
                 SmartDashboard.putNumber("target point angle", angle.getDegrees());
-                return position.minus(armPaths.get(i)).getAngle();
+                return angle;
             }
             if (armPaths.get(i).getDistance(position) < closestVector.getNorm()){
-                closestVector = position.minus(armPaths.get(i));
+                closestVector = armPaths.get(i).minus(position);
             }
         }
         SmartDashboard.putBoolean("on path", false);
