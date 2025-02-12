@@ -5,8 +5,11 @@
 package frc.robot;
 
 import java.rmi.MarshalException;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -33,8 +36,8 @@ public final class Constants {
     public static final int handMotorPort = 12;
 
 
-    public static final double currentLimitShoulder = 40;
-    public static final double currentLimitElbow = 40;
+    public static final double currentLimitShoulder = 5.0;
+    public static final double currentLimitElbow = 5.0;
 
 
     //shoulder true offset: 34.513 deg below forward horizontal
@@ -104,5 +107,22 @@ public final class Constants {
   }
   public static class ArmSetPoints {
     public static final Translation2d home = new Translation2d(0,0); // TODO change this
+  }
+  public static class ArmMap {
+    public static final double lookAheadDistance = 3.0;
+    public static final List<Translation2d> armPaths = List.of(
+    new Translation2d(7.7, 13.3), 
+    new Translation2d(7.7, 14.3), 
+    new Translation2d(7.7, 15.3), 
+    new Translation2d(7.7, 16.3), 
+    new Translation2d(7.7, 17.3), 
+    new Translation2d(7.7, 18.3), 
+    new Translation2d(7.7, 19.3), 
+    new Translation2d(7.7, 20.3), 
+    new Translation2d(7.7, 21.3), 
+    new Translation2d(7.7, 22.3));
+    public static final double endDistance = 5.0;
+    public static final double linearApproximationTime = 0.1; // seconds
+    public static final double velocity = 1;
   }
 }

@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
+import frc.robot.Constants.ArmMap;
 import frc.robot.Constants.ArmSetPoints;
 
 public class Arm extends SubsystemBase {
@@ -67,6 +68,7 @@ public class Arm extends SubsystemBase {
         .withKD(ArmGains.shoulderD)
         .withKG(ArmGains.shoulderG)
         .withGravityType(GravityTypeValue.Arm_Cosine);
+    
 
     shoulderLeft
       .getConfigurator()
@@ -157,11 +159,11 @@ public class Arm extends SubsystemBase {
 
   public Translation2d getArmPosition() {
     Translation2d jointPos = new Translation2d(
-                Math.cos(getShoulderLeftPosition()) * ArmConstants.baseStageLength,
-                Math.sin(getShoulderLeftPosition()) * ArmConstants.baseStageLength);
+                Math.cos(getShoulderPosition()) * ArmConstants.baseStageLength,
+                Math.sin(getShoulderPosition()) * ArmConstants.baseStageLength);
         Translation2d jointToEndPos = new Translation2d(
-                Math.cos(getElbowLeftPosition()) * ArmConstants.secondStageLength,
-                Math.sin(getElbowLeftPosition()) * ArmConstants.secondStageLength);
+                Math.cos(getElbowPosition()) * ArmConstants.secondStageLength,
+                Math.sin(getElbowPosition()) * ArmConstants.secondStageLength);
         SmartDashboard.putNumber("arm x position", jointPos.plus(jointToEndPos).getX());
         SmartDashboard.putNumber("arm y position", jointPos.plus(jointToEndPos).getY());
         return jointPos.plus(jointToEndPos);
@@ -187,13 +189,33 @@ public class Arm extends SubsystemBase {
         // smart dashboard
         SmartDashboard.putNumber("shouldertarget", shoulderPosition);
         SmartDashboard.putNumber("elbowtarget", elbowPosition);
-        SmartDashboard.putNumber("shoulderLeftPosition error", shoulderPosition - getShoulderLeftPosition());
-        SmartDashboard.putNumber("shoulderRightPosition error", shoulderPosition - getShoulderRightPosition());
-        SmartDashboard.putNumber("elbow Left Position error", elbowPosition - getElbowLeftPosition());
-        SmartDashboard.putNumber("elbow Right Position error", elbowPosition - getElbowRightPosition());
+        SmartDashboard.putNumber("shoulderLeftPosition error", shoulderPosition - getShoulderPosition());
+        SmartDashboard.putNumber("elbow Left Position error", elbowPosition - getElbowPosition());
   }
+  public void setVelocity(Translation2d velocity){
+    Translation2d position = getArmPosition().plus(velocity.times(ArmMap.linearApproximationTime));
+    double distance = MathUtil.clamp(position.getNorm(), ArmSetPoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
+    boolean inBend = false;
 
-
+        double BaseAngleArmDiff = Math.acos(((distance * distance)
+                        + (ArmConstants.baseStageLength * ArmConstants.baseStageLength)
+                        - (ArmConstants.secondStageLength * ArmConstants.secondStageLength))
+                / (2 * distance * ArmConstants.baseStageLength));
+        double SecondAngleArmDiff = Math.acos(((distance * distance)
+                        - (ArmConstants.baseStageLength * ArmConstants.baseStageLength)
+                        + (ArmConstants.secondStageLength * ArmConstants.secondStageLength))
+                / (2 * distance * ArmConstants.secondStageLength));
+        double shoulderPosition = position.getAngle().getRadians() + (BaseAngleArmDiff * (inBend ? 1 : -1));
+        double elbowPosition = position.getAngle().getRadians() + (SecondAngleArmDiff * (inBend ? -1 : 1));
+    double shoulderVelocity = (shoulderPosition - getShoulderPosition())/ArmMap.linearApproximationTime;
+    double elbowVelocity =(elbowPosition - getElbowPosition())/ArmMap.linearApproximationTime;
+    SmartDashboard.putNumber("shoulder target velocity", shoulderVelocity);
+    SmartDashboard.putNumber("elbow target velocity", elbowVelocity);
+    SmartDashboard.putNumber("target pos x", position.getX());
+    SmartDashboard.putNumber("target pos y", position.getY());
+    setShoulderVelocity(shoulderVelocity);
+    setElbowVelocity(elbowVelocity);
+  }
   public void setElbowPosition(double position) {
     // position -= getShoulderLeftPosition() * (1.0 - ArmConstants.virtual4BarGearRatio);
     position /= (2d * Math.PI);
@@ -228,25 +250,16 @@ public class Arm extends SubsystemBase {
     wristFlip.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
   } 
 
-  public double getElbowLeftPosition() {
-    double elbowPose = elbowLeft.getPosition().getValueAsDouble() * (2d * Math.PI);
+  public double getElbowPosition() {
+    double elbowPose = (elbowLeft.getPosition().getValueAsDouble() + elbowRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
     // elbowPose += getShoulderLeftPosition() * (1.0 - ArmConstants.virtual4BarGearRatio);
-    SmartDashboard.putNumber("elbow l position", elbowPose);
+    //SmartDashboard.putNumber("elbow l position", elbowPose);
     // SmartDashboard.putNumber("elbow adjustment factor", shoulderLeft.getPosition()*24.0/42.0);
     // SmartDashboard.putNumber("elbow to shoulder", elbowPose - shoulderLeft.getPosition());
     return elbowPose;
     //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
 }
 
-public double getElbowRightPosition() {
-    double elbowPose = elbowRight.getPosition().getValueAsDouble() * (2d * Math.PI);
-    // elbowPose += getShoulderRightPosition() * (1.0 - ArmConstants.virtual4BarGearRatio);
-    SmartDashboard.putNumber("elbow r position", elbowPose);
-    // SmartDashboard.putNumber("elbow adjustment factor", shoulderLeft.getPosition()*24.0/42.0);
-    // SmartDashboard.putNumber("elbow to shoulder", elbowPose - shoulderLeft.getPosition());
-    return elbowPose;
-    //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
-}
 
    public void setShoulderPosition(double position) {
         position /= (2d * Math.PI);
@@ -274,20 +287,13 @@ public double getElbowRightPosition() {
 
 
   // set the velocity of each joint separately: 
-  public double getShoulderLeftPosition() {
-    double position = shoulderLeft.getPosition().getValueAsDouble() * (2d * Math.PI);
-    SmartDashboard.putNumber("shoulder l position", position);
+  public double getShoulderPosition() {
+    double position = (shoulderLeft.getPosition().getValueAsDouble() + shoulderRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
     return position;
 }
 
-  public double getShoulderRightPosition() {
-    double position = shoulderRight.getPosition().getValueAsDouble() * (2d * Math.PI);
-    SmartDashboard.putNumber("shoulder r position", position);
-    return position;
-    
-  }
 
-  public void setShouldervelocity(double velocity) {
+  public void setShoulderVelocity(double velocity) {
     shoulderLeft.setControl(new VelocityVoltage(velocity));
     shoulderRight.setControl(new VelocityVoltage(velocity));
   }
@@ -307,10 +313,10 @@ public double getElbowRightPosition() {
 
   @Override
   public void periodic() {
-    getShoulderLeftPosition();
-    getShoulderRightPosition();
-    getElbowLeftPosition();
-    getElbowRightPosition();
+    getShoulderPosition();
+    getElbowPosition();
+    SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
+    SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
     SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());
     SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getDutyCycle().getValueAsDouble());
     // This method will be called once per scheduler run

@@ -5,12 +5,14 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import frc.robot.Constants.ArmMap;
 import frc.robot.Constants.ArmTestAngles;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.ReefSetPoints;
 import frc.robot.Constants.WristTestAngles;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandAngles;
+import frc.robot.commands.ArmCommandFollowPath;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.Telemetry;
@@ -96,9 +98,10 @@ public class RobotContainer {
 
       //   // reset the field-centric heading on left bumper press
       //   joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        joystick.rightBumper().onTrue(new ArmCommand(arm, () -> ReefSetPoints.l1Reef, () -> false));
+        // joystick.rightBumper().onTrue(new ArmCommand(arm, () -> ReefSetPoints.l1Reef, () -> false));
+        // // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
         // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
-        joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
+        joystick.y().whileTrue(new ArmCommandFollowPath(arm, ArmMap.armPaths, () -> false));
         // joystick.y().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
