@@ -168,6 +168,7 @@ public final class Constants {
     new Translation2d(35.7, 29.3));
     public static final double endDistance = 5.0;
     public static final double linearApproximationTime = 0.1; // seconds
-    public static final double velocity = 1;
+    public static final double velocity = 3;
+    public static final double maxMotorVelocity = 0.1;
   }
 }

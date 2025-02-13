@@ -197,6 +197,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("velocity x", velocity.getX());
     SmartDashboard.putNumber("velocity y", velocity.getY());
     double distance = MathUtil.clamp(position.getNorm(), ArmSetPoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
+double currentMaxV = 30;
     boolean inBend = false;
 
         double BaseAngleArmDiff = Math.acos(((distance * distance)
@@ -215,8 +216,22 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("elbow target velocity", elbowVelocity);
     SmartDashboard.putNumber("target pos x", position.getX());
     SmartDashboard.putNumber("target pos y", position.getY());
+currentMaxV = Math.max(Math.abs(shoulderVelocity), Math.abs(elbowVelocity));
+    SmartDashboard.putNumber("current max v", currentMaxV);
+    if(currentMaxV > ArmMap.maxMotorVelocity){
+      shoulderVelocity = shoulderVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
+      elbowVelocity = elbowVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
+    }
+    if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
+      setShoulderVelocity(0);
+    }else{
     setShoulderVelocity(shoulderVelocity);
+}
+    if(Math.abs(elbowPosition - shoulderPosition) > Math.abs(ArmConstants.elbowOffset - ArmConstants.shoulderOffset) * (2*Math.PI)){
+      setElbowVelocity(shoulderVelocity);
+    }else{
     setElbowVelocity(elbowVelocity);
+}  
   }
   public void setElbowPosition(double position) {
     // position -= getShoulderLeftPosition() * (1.0 - ArmConstants.virtual4BarGearRatio);
