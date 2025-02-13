@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -39,7 +40,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.NerdQuestNav;
 import frc.robot.QuestNav5010;
+import frc.robot.QuestNavOG;
 import frc.robot.generated.TunerConstants;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.MapleSimSwerveDrivetrain;
@@ -55,8 +58,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private static final double kSimLoopPeriod = 0.002; // 2 ms
     private Notifier m_simNotifier = null;
 
-    private QuestNav5010 questNav = new QuestNav5010(new Transform3d(6.569852759410616, -5.137295051877407, 0, new Rotation3d()));
-    private Field2d fieldQ = new Field2d();
+    private NerdQuestNav questNav = new NerdQuestNav();
+    private QuestNav5010 QuestNav = new QuestNav5010(new Transform3d(inchesToMeters(-11.375), 0, 0, new Rotation3d(0,0,180)));
+    private QuestNavOG QUESTNAV = new QuestNavOG();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -208,8 +212,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                () -> getState().Pose, //() -> questNav.getPPQuestPose(),   // Supplier of current robot pose
-                this::resetPose, //questNav::PPZeroPose,   // Consumer for seeding pose against auto
+                () -> questNav.getRobotPose(), //() -> getState().Pose,   // Supplier of current robot pose
+                questNav::resetPose, //this::resetPose,   // Consumer for seeding pose against auto
                 () -> getState().Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(
@@ -289,8 +293,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         DogLog.log("Drive/MeasuredStates", getState().ModuleStates);
         DogLog.log("Drive/MeasuredSpeeds", getState().Speeds);
 
-        // fieldQ.setRobotPose(questNav.toPose2d(questNav.getRobotPose()));
-        // SmartDashboard.putData("QuestNav 5010", fieldQ);
+        questNav.getRobotPose();
+        QuestNav.toPose2d(QuestNav.getRobotPose());
+        QUESTNAV.getPose();
 
     if (mapleSimSwerveDrivetrain != null) {
         DogLog.log("Drive/SimulationPose", mapleSimSwerveDrivetrain.mapleSimDrive.getSimulatedDriveTrainPose());

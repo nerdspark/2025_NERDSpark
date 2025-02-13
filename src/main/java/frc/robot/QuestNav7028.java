@@ -46,9 +46,9 @@ public class QuestNav7028 {
   private Pose2d resetPoseRobot = new Pose2d();
 
   // Position of the quest on the robot (13.5" forward, centered side-to-side, pointed forward))
-  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(-12.75), 0, new Rotation2d(3.14159));
+  private final Transform2d robotToQuest = new Transform2d(inchesToMeters(-12), 0.0, Rotation2d.fromDegrees(0));
 
-  Field2d fieldQ = new Field2d();
+  private Field2d fieldQ = new Field2d();
 
   /* Constructor */
   public QuestNav7028() {
@@ -65,7 +65,7 @@ public class QuestNav7028 {
    */
   public Pose2d getRobotPose() {
     fieldQ.setRobotPose(getQuestPose().transformBy(robotToQuest.inverse()));
-    SmartDashboard.putData("Quest7028 In Field", fieldQ);
+    SmartDashboard.putData("Quest7028", fieldQ);
     return getQuestPose().transformBy(robotToQuest.inverse());
   }
 

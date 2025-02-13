@@ -4,14 +4,12 @@
 
 package frc.robot;
 
+import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static edu.wpi.first.units.Units.Degrees;
 
 import java.util.Optional;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
-//import org.frc5010.common.drive.GenericDrivetrain;
-//import org.frc5010.common.drive.pose.PoseProvider;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -30,6 +28,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -44,7 +43,7 @@ public class QuestNav5010 //implements PoseProvider
     private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
     private NetworkTable networkTable;
     private Transform3d robotToQuest;
-    private Pose3d initPose = new Pose3d();
+    private Pose3d initPose = new Pose3d(inchesToMeters(64.5), inchesToMeters(15),0, new Rotation3d());
 
     private IntegerEntry miso;
     private IntegerPublisher mosi;
@@ -62,6 +61,8 @@ public class QuestNav5010 //implements PoseProvider
 
     private static Translation2d _calculatedOffsetToRobotCenter = new Translation2d();
     private static int _calculatedOffsetToRobotCenterCount = 0;
+
+    private Field2d fieldQ = new Field2d();
 
     
 
@@ -105,7 +106,7 @@ public class QuestNav5010 //implements PoseProvider
     }
 
     public Translation3d getRawPosition() {
-        return new Translation3d(-position.get()[2], position.get()[0], position.get()[3]);
+        return new Translation3d(position.get()[2], -position.get()[0], position.get()[2]);
     }
 
     private Translation3d rotateAxes(Translation3d raw, Rotation3d rotation) {
@@ -132,6 +133,8 @@ public class QuestNav5010 //implements PoseProvider
     public Pose2d toPose2d(Optional<Pose3d> pose) {
         var translation = new Translation2d(pose.get().getX(), pose.get().getY());
         var rotation = new Rotation2d(pose.get().getRotation().getAngle());
+        fieldQ.setRobotPose(new Pose2d(translation, rotation));
+        SmartDashboard.putData("QuestNav New", fieldQ);
         return new Pose2d(translation, rotation);
     }
 

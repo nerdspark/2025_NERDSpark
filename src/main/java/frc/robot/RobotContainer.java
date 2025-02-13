@@ -56,9 +56,6 @@ public class RobotContainer {
   private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    //private QuestNav5010 questnav = new QuestNav5010(new Transform3d());
-    private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
-
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
@@ -70,6 +67,7 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final Joystick buttonBoard = new Joystick(1);
 
+    private NerdQuestNav questNav = new NerdQuestNav();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -148,14 +146,14 @@ public class RobotContainer {
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    //joystick.y().onTrue(questnav.determineOffsetToRobotCenter(drivetrain));
+    joystick.y().onTrue(new InstantCommand(() -> questNav.resetPose(new Pose2d(0, 0, new Rotation2d()))));
 
     // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     // () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
-    joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
-    FieldConstants.CoralStation.leftCenterFace.plus(new Transform2d(Units.inchesToMeters(36), 0, new Rotation2d(Math.toRadians(0)))),
-    () -> drivetrain.getState().Pose.getRotation()));//.until(() -> joystick.x().getAsBoolean());
+    // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
+    // FieldConstants.CoralStation.leftCenterFace.plus(new Transform2d(Units.inchesToMeters(36), 0, new Rotation2d(Math.toRadians(0)))),
+    // () -> drivetrain.getState().Pose.getRotation()));//.until(() -> joystick.x().getAsBoolean());
  
   }
 
