@@ -32,12 +32,14 @@ public final class Constants {
     public static final int shoulderMotorRightPort = 9; // 9
     public static final int elbowMotorLeftPort = 10;
     public static final int elbowMotorRightPort = 8;
-    public static final int wristMotorPort = 11;
-    public static final int handMotorPort = 12;
+    public static final int wristFlipMotorPort = 13;
+    public static final int wristTwistMotorPort = 14;
 
 
     public static final double currentLimitShoulder = 15.0;
     public static final double currentLimitElbow = 10.0;
+    public static final double currentWristFlipLimit = 20.0;
+    public static final double currentWristTwistLimit = 20.0;
 
 
     //shoulder true offset: 34.513 deg below forward horizontal
@@ -51,25 +53,29 @@ public final class Constants {
     // elbow stage 1: 50:50
     public static final double elbowGearRatio = 75.0*38.0/26.0;
 
-    //wrist up/down gearbox: 25:1
+    //wrist up/down gearbox: 9:1
     //wrist up/down stage 0: 49:50
     //wrist up/down stage 1: 49:49
     //wrist up/down stage 2: 35:49
-
-    //wrist twist gearbox: 25:1
+    public static final double wristFlipGearRatio = 9.0*49.0/50.0*35.0/49.0;
+    //wrist twist gearbox: 9:1
     //wrist twist stage 0: 49:50
     //wrist twist stage 1: 49:49
     //wrist twist stage 2: 35:49
     //wrist twist bevel: 1:1
-
+    public static final double wristTwistGearRatio = 9.0*49.0/50.0*35.0/49.0;
     public static final double baseStageLength = 23.158;  
     public static final double secondStageLength = 25.475;
 
 
     public static final double shoulderRadPerRot = shoulderGearRatio; //TODO fix with gear ratio
     public static final double elbowRadPerRot = elbowGearRatio; //TODO fix with gear ratios
+    public static final double wristFlipRadPerRot = wristFlipGearRatio;
+    public static final double wristTwistRadPerRot = wristTwistGearRatio;
     public static final double shoulderOffset = -0.35 / 2 / Math.PI; // TODO fidn these, radians, fwd = 0
     public static final double elbowOffset = 2.158 / 2 / Math.PI; // TODO find these, negative of measurement
+    public static final double wristFlipOffset = 0;
+    public static final double wristTwistOffset = 0;
   }
   public static class ReefSetPoints {
     public static final Translation2d l1Reef = new Translation2d(30.2, 35.2);
@@ -86,18 +92,24 @@ public final class Constants {
 
   public final class ArmGains {
     
-      public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
+      public static final double shoulderP = 0.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 20.0;//20.0
+      public static final double elbowP = 0.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
+      public static final double wristFlipP = 0.0; //30.0
+      public static final double wristFlipI = 0.0;
+      public static final double wristFlipD = 0.0;
+      public static final double wristTwistP = 30.0;
+      public static final double wristTwistI = 0.0;
+      public static final double wristTwistD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.25; // 0.25
+      public static final double shoulderG = 0.0; // 0.25
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.3;//0.3
+      public static final double elbowG = 0.0;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
