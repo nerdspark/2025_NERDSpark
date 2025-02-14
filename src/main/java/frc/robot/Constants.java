@@ -73,8 +73,8 @@ public final class Constants {
     public static final double secondStageLength = 25.475;
 
 
-    public static final double shoulderRadPerRot = shoulderGearRatio; //TODO fix with gear ratio
-    public static final double elbowRadPerRot = elbowGearRatio; //TODO fix with gear ratios
+    public static final double shoulderRadPerRot = shoulderGearRatio; 
+    public static final double elbowRadPerRot = elbowGearRatio; 
     public static final double wristFlipRadPerRot = wristFlipGearRatio;
     public static final double wristTwistRadPerRot = wristTwistGearRatio;
     public static final double gripperRadPerRot = gripperGearRatio;
@@ -83,6 +83,9 @@ public final class Constants {
     public static final double elbowOffset = 2.158 / 2 / Math.PI; // TODO find these, negative of measurement
     public static final double wristFlipOffset = 0;
     public static final double wristTwistOffset = 0;
+
+    /** wrist flip belting ratio between elbow and the wrist */
+    public static final double wristFlipToElbowRatio = 35.0 / 49.0; // TODO change this 
   }
   public static class ReefSetPoints {
     public static final Translation2d l1Reef = new Translation2d(30.2, 35.2);
