@@ -34,13 +34,17 @@ public final class Constants {
     public static final int elbowMotorRightPort = 8;
     public static final int wristFlipMotorPort = 13;
     public static final int wristTwistMotorPort = 14;
+    public static final int gripperMotorPort = 11;
 
 
     public static final double currentLimitShoulder = 15.0;
     public static final double currentLimitElbow = 10.0;
-    public static final double currentWristFlipLimit = 20.0;
-    public static final double currentWristTwistLimit = 20.0;
-
+    public static final double currentLimitWristFlip = 20.0;
+    public static final double currentLimitWristTwist = 20.0;
+    public static final double currentLimitGripperOpen = 3.0;
+    public static final double currentLimitGripperClose = 10.0;
+    public static final double gripperPowerClose = 0.1;
+    public static final double gripperPowerOpen = -0.04;
 
     //shoulder true offset: 34.513 deg below forward horizontal
     //shoulder gearbox: 75:1
@@ -64,7 +68,8 @@ public final class Constants {
     //wrist twist stage 2: 35:49
     //wrist twist bevel: 1:1
     public static final double wristTwistGearRatio = 9.0*49.0/50.0*35.0/49.0;
-    public static final double baseStageLength = 23.158;  
+    public static final double gripperGearRatio = 5.0*5.0 / 3.0;
+    public static final double baseStageLength = 23.158;
     public static final double secondStageLength = 25.475;
 
 
@@ -72,6 +77,8 @@ public final class Constants {
     public static final double elbowRadPerRot = elbowGearRatio; //TODO fix with gear ratios
     public static final double wristFlipRadPerRot = wristFlipGearRatio;
     public static final double wristTwistRadPerRot = wristTwistGearRatio;
+    public static final double gripperRadPerRot = gripperGearRatio;
+    public static final double gripperOffset = 0;
     public static final double shoulderOffset = -0.35 / 2 / Math.PI; // TODO fidn these, radians, fwd = 0
     public static final double elbowOffset = 2.158 / 2 / Math.PI; // TODO find these, negative of measurement
     public static final double wristFlipOffset = 0;
@@ -101,9 +108,12 @@ public final class Constants {
       public static final double wristFlipP = 0.0; //30.0
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 0.0;
-      public static final double wristTwistP = 30.0;
+      public static final double wristTwistP = 0.0; //30.0
       public static final double wristTwistI = 0.0;
       public static final double wristTwistD = 0.0;
+      public static final double gripperP = 10.0;
+      public static final double gripperI = 0.0;
+      public static final double gripperD = 0.0;
       public static final double shoulderS = 0.0;
       public static final double shoulderG = 0.0; // 0.25
       public static final double shoulderV = 0.0;
@@ -116,6 +126,7 @@ public final class Constants {
   public static class WristTestAngles{
     public static final double testWristFlipAngle = Units.degreesToRadians(30);
     public static final double testWristTwistAngle = Units.degreesToRadians(30);
+    public static final double testGripperAngle = Units.degreesToRadians(30);
   }
   public static class ArmSetPoints {
     public static final Translation2d home = new Translation2d(0,0); // TODO change this

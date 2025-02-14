@@ -42,6 +42,7 @@ import frc.robot.Constants.ArmSetPoints;
 public class Arm extends SubsystemBase {
 
   private TalonFX shoulderLeft, shoulderRight, elbowLeft, elbowRight, wristFlip, wristTwist;
+  
 
   /** Creates a new Arm. */
   public Arm() {
@@ -52,12 +53,11 @@ public class Arm extends SubsystemBase {
     elbowRight = new TalonFX(ArmConstants.elbowMotorRightPort, "rio");
     wristFlip = new TalonFX(ArmConstants.wristFlipMotorPort, "rio");
     wristTwist = new TalonFX(ArmConstants.wristTwistMotorPort, "rio");
+    
     TalonFXConfiguration shoulderconfig = new TalonFXConfiguration();
     TalonFXConfiguration elbowconfig = new TalonFXConfiguration();
     TalonFXConfiguration wristTwistConfig = new TalonFXConfiguration();
     TalonFXConfiguration wristFlipConfig = new TalonFXConfiguration();
-    TalonFXConfiguration gripperConfig = new TalonFXConfiguration();
-
     shoulderconfig.CurrentLimits = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
         .withStatorCurrentLimitEnable(true);
@@ -119,7 +119,7 @@ public class Arm extends SubsystemBase {
     
     
     wristFlipConfig.CurrentLimits = new CurrentLimitsConfigs()
-      .withStatorCurrentLimit(ArmConstants.currentWristFlipLimit)
+      .withStatorCurrentLimit(ArmConstants.currentLimitWristFlip)
       .withStatorCurrentLimitEnable(true);
     wristFlipConfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.wristFlipOffset)
@@ -137,7 +137,7 @@ public class Arm extends SubsystemBase {
     
     
     wristTwistConfig.CurrentLimits = new CurrentLimitsConfigs()
-      .withStatorCurrentLimit(ArmConstants.currentWristTwistLimit)
+      .withStatorCurrentLimit(ArmConstants.currentLimitWristTwist)
       .withStatorCurrentLimitEnable(true);
     wristTwistConfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.wristTwistOffset)
@@ -154,22 +154,7 @@ public class Arm extends SubsystemBase {
           .withNeutralMode(NeutralModeValue.Coast)));
 
 
-        //   gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-        //   .withStatorCurrentLimit(ArmConstants.currentWristTwistLimit)
-        //   .withStatorCurrentLimitEnable(true);
-        // gripperConfig.Feedback = new FeedbackConfigs()
-        //   .withFeedbackRotorOffset(ArmConstants.wristTwistOffset)
-        //   .withSensorToMechanismRatio(ArmConstants.wristTwistRadPerRot);
-        // wristTwistConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
-        // wristTwistConfig.Slot0 = new Slot0Configs()
-        //   .withKP(ArmGains.wristTwistP)
-        //   .withKI(ArmGains.wristTwistI)
-        //   .withKD(ArmGains.wristTwistD);
-        // wristTwist
-        //   .getConfigurator()
-        //   .apply(wristTwistConfig.withMotorOutput(new MotorOutputConfigs()
-        //   .withInverted(InvertedValue.Clockwise_Positive)
-        //       .withNeutralMode(NeutralModeValue.Coast)));
+        
 
     // shoulderconfig.CurrentLimits = new CurrentLimitsConfigs()
     //     .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
@@ -333,8 +318,8 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("hand position set raw", position);
     wristFlip.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
-  } 
-
+  }
+  
   public double getElbowPosition() {
     double elbowPose = (elbowLeft.getPosition().getValueAsDouble() + elbowRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
     // elbowPose += getShoulderLeftPosition() * (1.0 - ArmConstants.virtual4BarGearRatio);
