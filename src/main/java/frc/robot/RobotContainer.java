@@ -107,11 +107,11 @@ public class RobotContainer {
         // // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
         // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
         // joystick.y().whileTrue(new ArmCommandFollowPath(arm, ArmMap.armPaths, () -> false));
-        // joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle, () -> WristTestAngles.testGripperAngle));
-        // joystick.y().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+        //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+        joystick.y().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
-        joystick.a().onTrue(new ArmCommandGripper(gripper, () -> true));
-        joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false));
+        // joystick.a().onTrue(new ArmCommandGripper(gripper, () -> true));
+        // joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,

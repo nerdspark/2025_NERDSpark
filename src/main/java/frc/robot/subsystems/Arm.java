@@ -297,33 +297,38 @@ public class Arm extends SubsystemBase {
 }
   public double getWristTwistPosition(){
     double wristTwistPosition = (wristTwist.getPosition().getValueAsDouble() * (2d * Math.PI));
+    wristTwistPosition += getElbowPosition() * (1.0 - ArmConstants.wristTwistToElbowRatio);
+    wristTwistPosition += getWristFlipPosition() * (1.0 - ArmConstants.wristTwistToFlipRatio);
     SmartDashboard.putNumber("wrist twist position", wristTwistPosition);
     return wristTwistPosition;
   }
   public void setWristTwistPosition(double position) {
+    position -= getElbowPosition() * (1.0 - ArmConstants.wristTwistToElbowRatio);
+    position -= getWristFlipPosition() * (1.0 - ArmConstants.wristTwistToFlipRatio);
     position /= (2d*Math.PI);
 
-    SmartDashboard.putNumber("hand position set raw", position);
-    wristTwist.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
+    SmartDashboard.putNumber("wrist twist position set raw", position);
+    wristTwist.setControl(new PositionVoltage(position).withPosition(position));
 
   }
   public double getWristFlipPosition(){
     double wristFlipPosition = (wristFlip.getPosition().getValueAsDouble() * (2d * Math.PI));
+    wristFlipPosition += getElbowPosition() * (1.0 - ArmConstants.wristFlipToElbowRatio);
     SmartDashboard.putNumber("wrist flip position", wristFlipPosition);
     return wristFlipPosition;
   }
 
   public void setWristFlipPosition(double position) {
+    position -= getElbowPosition() * (1.0 / ArmConstants.wristFlipToElbowRatio - 1.0);
     position /= (2d*Math.PI);
 
-    SmartDashboard.putNumber("hand position set raw", position);
-    wristFlip.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
+    SmartDashboard.putNumber("wrist flip position set raw", position);
+    wristFlip.setControl(new PositionVoltage(position).withPosition(position));
   }
   
   public double getElbowPosition() {
     double elbowPose = (elbowLeft.getPosition().getValueAsDouble() + elbowRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
-    // elbowPose += getShoulderLeftPosition() * (1.0 - ArmConstants.virtual4BarGearRatio);
-    //SmartDashboard.putNumber("elbow l position", elbowPose);
+    SmartDashboard.putNumber("elbow position", elbowPose);
     // SmartDashboard.putNumber("elbow adjustment factor", shoulderLeft.getPosition()*24.0/42.0);
     // SmartDashboard.putNumber("elbow to shoulder", elbowPose - shoulderLeft.getPosition());
     return elbowPose;

@@ -85,7 +85,9 @@ public final class Constants {
     public static final double wristTwistOffset = 0;
 
     /** wrist flip belting ratio between elbow and the wrist */
-    public static final double wristFlipToElbowRatio = 35.0 / 49.0; // TODO change this 
+    public static final double wristFlipToElbowRatio = 35.0 / 49.0;
+    public static final double wristTwistToElbowRatio = 35.0 / 49.0;
+    public static final double wristTwistToFlipRatio = 1.0 / 1.0;
   }
   public static class ReefSetPoints {
     public static final Translation2d l1Reef = new Translation2d(30.2, 35.2);
@@ -108,13 +110,13 @@ public final class Constants {
       public static final double elbowP = 0.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
-      public static final double wristFlipP = 0.0; //30.0
+      public static final double wristFlipP = 45.0; //30.0
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 0.0;
       public static final double wristTwistP = 0.0; //30.0
       public static final double wristTwistI = 0.0;
       public static final double wristTwistD = 0.0;
-      public static final double gripperP = 10.0;
+      public static final double gripperP = 0.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
       public static final double shoulderS = 0.0;
@@ -127,8 +129,8 @@ public final class Constants {
       public static final double elbowA = 0.0;
   }
   public static class WristTestAngles{
-    public static final double testWristFlipAngle = Units.degreesToRadians(30);
-    public static final double testWristTwistAngle = Units.degreesToRadians(30);
+    public static final double testWristFlipAngle = Units.degreesToRadians(0.0);
+    public static final double testWristTwistAngle = Units.degreesToRadians(0.0);
     public static final double testGripperAngle = Units.degreesToRadians(30);
   }
   public static class ArmSetPoints {

@@ -14,7 +14,7 @@ public class ArmCommandWrist extends Command {
   private Arm arm;
   private Supplier<Double> wristFlip, wristTwist, gripper;
   /** Creates a new ArmCommandWrist. */
-  public ArmCommandWrist(Arm arm, Supplier<Double> wristFlip, Supplier<Double> wristTwist, Supplier<Double> gripper) {
+  public ArmCommandWrist(Arm arm, Supplier<Double> wristFlip, Supplier<Double> wristTwist) {
     this.arm = arm;
     this.wristFlip = wristFlip;
     this.wristTwist = wristTwist;
