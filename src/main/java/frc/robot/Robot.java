@@ -11,10 +11,15 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Arm;
 import org.ironmaple.simulation.SimulatedArena;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
+    private final Arm m_arm = new Arm();
+    private final Joystick m_joystick = new Joystick(OperatorConstants.kJoystickPort);
 
     private final RobotContainer m_robotContainer;
 
@@ -56,7 +61,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        m_arm.stop();
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -84,10 +91,19 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        m_arm.loadPreferences();
     }
 
     @Override
-    public void teleopPeriodic() {}
+    public void teleopPeriodic() {
+        if (m_joystick.getTrigger()) {
+            // Here, we run PID control like normal.
+            m_arm.reachSetpoint();
+          } else {
+            // Otherwise, we disable the motor.
+            m_arm.stop();
+          }
+    }
 
     @Override
     public void teleopExit() {}
@@ -107,5 +123,13 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
         DogLog.log("Simulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
         DogLog.log("Simulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        m_arm.simulationPeriodic();
+    }
+
+    @Override
+    public void close() {
+        m_arm.close();
+        super.close();
     }
 }
+
