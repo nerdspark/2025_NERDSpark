@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.math.util.Units.inchesToMeters;
 import static edu.wpi.first.units.Units.Degrees;
 
 import java.util.Optional;
@@ -28,22 +27,19 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /** Add your docs here. */
-public class QuestNav5010 //implements PoseProvider 
-{
-    private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
+public class QuestNav5010 {
     private boolean initializedPosition = false;
     private String networkTableRoot = "questnav";
     private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
     private NetworkTable networkTable;
     private Transform3d robotToQuest;
-    private Pose3d initPose = new Pose3d(inchesToMeters(64.5), inchesToMeters(15),0, new Rotation3d());
+    private Pose3d initPose = new Pose3d();
 
     private IntegerEntry miso;
     private IntegerPublisher mosi;
@@ -59,12 +55,10 @@ public class QuestNav5010 //implements PoseProvider
     private Pose3d previousPose;
     private double previousTime;
 
-    private static Translation2d _calculatedOffsetToRobotCenter = new Translation2d();
-    private static int _calculatedOffsetToRobotCenterCount = 0;
+    private Translation2d _calculatedOffsetToRobotCenter = new Translation2d();
+    private int _calculatedOffsetToRobotCenterCount = 0;
 
-    private Field2d fieldQ = new Field2d();
-
-    
+    private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
 
     public enum QuestCommand {
         RESET(1);
@@ -128,14 +122,6 @@ public class QuestNav5010 //implements PoseProvider
         } else {
             return Optional.empty();
         }
-    }
-    
-    public Pose2d toPose2d(Optional<Pose3d> pose) {
-        var translation = new Translation2d(pose.get().getX(), pose.get().getY());
-        var rotation = new Rotation2d(pose.get().getRotation().getAngle());
-        fieldQ.setRobotPose(new Pose2d(translation, rotation));
-        SmartDashboard.putData("QuestNav New", fieldQ);
-        return new Pose2d(translation, rotation);
     }
 
     public Translation3d getPosition() {
@@ -249,7 +235,7 @@ public class QuestNav5010 //implements PoseProvider
     //     }
     // }
 
-    public Translation2d calculateOffsetToRobotCenter() {
+    private Translation2d calculateOffsetToRobotCenter() {
         Pose3d currentPose = getRobotPose().get();
         Pose2d currentPose2d = currentPose.toPose2d();
 
@@ -264,12 +250,11 @@ public class QuestNav5010 //implements PoseProvider
 
 
     public Command determineOffsetToRobotCenter(CommandSwerveDrivetrain drivetrain) {
-        return
-        Commands.repeatingSequence(
+        return Commands.repeatingSequence(
             Commands.run(
             () -> {
                 drivetrain.setControl(driveToPoseRequest.withSpeeds(new ChassisSpeeds(0, 0, 0.314)));
-            }).withTimeout(2.0),
+            }, drivetrain).withTimeout(0.5),
             Commands.runOnce(() -> {
                 // Update current offset
                 Translation2d offset = calculateOffsetToRobotCenter();
@@ -280,7 +265,7 @@ public class QuestNav5010 //implements PoseProvider
 
                 SmartDashboard.putNumberArray("Quest Calculated Offset to Robot Center", new double[] { _calculatedOffsetToRobotCenter.getX(), _calculatedOffsetToRobotCenter.getY() });
 
-            })).withTimeout(10.0);
+            }).onlyIf(() -> getRotation().getMeasureZ().in(Degrees) > 30));
     }
 
 }

@@ -14,6 +14,7 @@ import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
@@ -67,7 +68,7 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final Joystick buttonBoard = new Joystick(1);
 
-    private NerdQuestNav questNav = new NerdQuestNav();
+    private QuestNav5010 QuestNav = new QuestNav5010(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(0))));
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -146,7 +147,7 @@ public class RobotContainer {
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    joystick.y().onTrue(new InstantCommand(() -> questNav.resetPose(new Pose2d(0, 0, new Rotation2d()))));
+    joystick.y().whileTrue(new InstantCommand(() -> QuestNav.determineOffsetToRobotCenter(drivetrain)));
 
     // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
