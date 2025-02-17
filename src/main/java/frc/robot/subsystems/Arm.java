@@ -297,14 +297,14 @@ public class Arm extends SubsystemBase {
 }
   public double getWristTwistPosition(){
     double wristTwistPosition = (wristTwist.getPosition().getValueAsDouble() * (2d * Math.PI));
-    wristTwistPosition += getElbowPosition() * (1.0 - ArmConstants.wristTwistToElbowRatio);
-    wristTwistPosition += getWristFlipPosition() * (1.0 - ArmConstants.wristTwistToFlipRatio);
+    wristTwistPosition -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+    wristTwistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio - 1.0);
     SmartDashboard.putNumber("wrist twist position", wristTwistPosition);
     return wristTwistPosition;
   }
   public void setWristTwistPosition(double position) {
-    position -= getElbowPosition() * (1.0 - ArmConstants.wristTwistToElbowRatio);
-    position -= getWristFlipPosition() * (1.0 - ArmConstants.wristTwistToFlipRatio);
+    position += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+    position += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio - 1.0);
     position /= (2d*Math.PI);
 
     SmartDashboard.putNumber("wrist twist position set raw", position);
@@ -313,13 +313,16 @@ public class Arm extends SubsystemBase {
   }
   public double getWristFlipPosition(){
     double wristFlipPosition = (wristFlip.getPosition().getValueAsDouble() * (2d * Math.PI));
-    wristFlipPosition += getElbowPosition() * (1.0 - ArmConstants.wristFlipToElbowRatio);
+    wristFlipPosition -= getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
     SmartDashboard.putNumber("wrist flip position", wristFlipPosition);
     return wristFlipPosition;
   }
 
   public void setWristFlipPosition(double position) {
-    position -= getElbowPosition() * (1.0 / ArmConstants.wristFlipToElbowRatio - 1.0);
+// ratio = oo: wrist change amount -oo
+// ratio = 1: wrist change amount 0
+// ratio = 0: wrist change amount 1
+    position += getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
     position /= (2d*Math.PI);
 
     SmartDashboard.putNumber("wrist flip position set raw", position);

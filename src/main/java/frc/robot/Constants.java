@@ -85,8 +85,8 @@ public final class Constants {
     public static final double wristTwistOffset = 0;
 
     /** wrist flip belting ratio between elbow and the wrist */
-    public static final double wristFlipToElbowRatio = 35.0 / 49.0;
-    public static final double wristTwistToElbowRatio = 35.0 / 49.0;
+    public static final double wristFlipToElbowRatio = 1.0/(35.0 / 49.0);
+    public static final double wristTwistToElbowRatio = 1.0/(35.0 / 49.0);
     public static final double wristTwistToFlipRatio = 1.0 / 1.0;
   }
   public static class ReefSetPoints {
