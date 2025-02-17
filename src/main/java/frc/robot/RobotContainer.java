@@ -108,7 +108,7 @@ public class RobotContainer {
         // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
         // joystick.y().whileTrue(new ArmCommandFollowPath(arm, ArmMap.armPaths, () -> false));
         //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
-        joystick.y().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+        joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
         // joystick.a().onTrue(new ArmCommandGripper(gripper, () -> true));
         // joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false));

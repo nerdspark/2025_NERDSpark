@@ -298,13 +298,13 @@ public class Arm extends SubsystemBase {
   public double getWristTwistPosition(){
     double wristTwistPosition = (wristTwist.getPosition().getValueAsDouble() * (2d * Math.PI));
     wristTwistPosition -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-    wristTwistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio - 1.0);
+    wristTwistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
     SmartDashboard.putNumber("wrist twist position", wristTwistPosition);
     return wristTwistPosition;
   }
   public void setWristTwistPosition(double position) {
     position += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-    position += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio - 1.0);
+    position += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
     position /= (2d*Math.PI);
 
     SmartDashboard.putNumber("wrist twist position set raw", position);

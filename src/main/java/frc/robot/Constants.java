@@ -104,27 +104,27 @@ public final class Constants {
 
   public final class ArmGains {
     
-      public static final double shoulderP = 0.0; //TODO CHANGE SOME OF THIS LATER //52.0
+      public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 0.0;//20.0
+      public static final double elbowP = 20.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
-      public static final double wristFlipP = 45.0; //30.0
+      public static final double wristFlipP = 45.0; //45.0
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 0.0;
-      public static final double wristTwistP = 0.0; //30.0
+      public static final double wristTwistP = 30.0; //30.0
       public static final double wristTwistI = 0.0;
       public static final double wristTwistD = 0.0;
-      public static final double gripperP = 0.0; // 10.0
+      public static final double gripperP = 10.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.0; // 0.25
+      public static final double shoulderG = 0.25; // 0.25
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.0;//0.3
+      public static final double elbowG = 0.3;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
