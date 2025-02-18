@@ -8,25 +8,25 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 /** a single setpoint for an arm position */
 public class ArmPoint {
-    public Translation2d point;
+    public Translation2d position = new Translation2d();
     public boolean inBend = false;
     public double wristFlip, wristTwist = 0;
     public ArmPoint(Translation2d point, boolean inBend, double wristFlip, double wristTwist) {
-        this.point = point;
+        this.position = point;
         this.inBend = inBend;
         this.wristFlip = wristFlip;
         this.wristTwist = wristTwist;
     }
     public ArmPoint(Translation2d point, boolean inBend) {
-        this.point = point;
+        this.position = point;
         this.inBend = inBend;
     }
     public ArmPoint(Translation2d point, double wristFlip, double wristTwist) {
-        this.point = point;
+        this.position = point;
         this.wristFlip = wristFlip;
         this.wristTwist = wristTwist;
     }
     public ArmPoint(Translation2d point) {
-        this.point = point;
+        this.position = point;
     }
 }

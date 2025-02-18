@@ -271,8 +271,8 @@ public class Arm extends SubsystemBase {
       shoulderVelocity = shoulderVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
       elbowVelocity = elbowVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
     }
-    ArmIntermediatePoints.intermediatePoints[1][1].get(0).getAngle();
-    if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
+    ArmIntermediatePoints.intermediatePoints[1][1].get(0).position.getAngle().getRadians();
+        if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
       setShoulderVelocity(0);
     }else{
       setShoulderVelocity(shoulderVelocity);
