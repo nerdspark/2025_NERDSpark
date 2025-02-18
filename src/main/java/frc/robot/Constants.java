@@ -100,6 +100,17 @@ public final class Constants {
     public static final double testElbowAngle = Units.degreesToRadians(45);
     public static final double testShoulderAngle = Units.degreesToRadians(45);
   }
+  public static class ArmPickpup {
+    public static final Translation2d armPos = new Translation2d(-15, -15);
+    public static final boolean inBend = false;
+    public static final double wristFlipPos = Units.degreesToRadians(180.0);
+    public static final double wristTwistPos = Units.degreesToRadians(180.0);
+    
+  public static class ArmIntermediatePoints {
+    public static final List<Translation2d> home_pickup = List.of(
+      new Translation2d(-14.0, 20.0));
+    }
+  }
   
 
   public final class ArmGains {
@@ -134,11 +145,11 @@ public final class Constants {
     public static final double testGripperAngle = Units.degreesToRadians(30);
   }
   public static class ArmSetPoints {
-    public static final Translation2d home = new Translation2d(0,0); // TODO change this
+    public static final Translation2d home = new Translation2d(9.9,14.7); // TODO change this
   }
   public static class ArmMap {
     public static final double lookAheadDistance = 3.0;
-    public static final List<Translation2d> armPaths = List.of(
+    public static final List<Translation2d> armTestPath = List.of(
     new Translation2d(7.7, 13.3), 
     new Translation2d(7.7, 14.3), 
     new Translation2d(7.7, 15.3), 

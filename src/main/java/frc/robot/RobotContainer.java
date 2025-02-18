@@ -106,11 +106,13 @@ public class RobotContainer {
         // joystick.rightBumper().onTrue(new ArmCommand(arm, () -> ReefSetPoints.l1Reef, () -> false));
         // // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
         // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
-        joystick.y().whileTrue(new ArmCommandFollowPath(arm, ArmMap.armPaths, () -> false));
+        joystick.y().whileTrue(new ArmCommandFollowPath(arm, ArmMap.armTestPath, () -> false));
         //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
-        joystick.rightTrigger().onTrue(new ArmCommandGripper(gripper, () -> true)).onFalse(new ArmCommandGripper(gripper, () -> false));
+        joystick.rightTrigger().onTrue(new ArmCommandGripper(gripper, () -> true));
+        joystick.leftTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
+        
         // joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
