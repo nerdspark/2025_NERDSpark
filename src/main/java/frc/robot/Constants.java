@@ -15,6 +15,7 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.ArmPoint;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -118,33 +119,33 @@ public final class Constants {
      * contains a list of intermediate points from first index to second index
      * @home 0
      * @groundPickup 1
-     * @l1Reef 2
-     * @l2Reef 3
-     * @l3Reef 4
-     * @l4Reef 5
+     * @L1Reef 2
+     * @L2Reef 3
+     * @L3Reef 4
+     * @L4Reef 5
      */
     @SuppressWarnings("unchecked")
-    public static final List<Translation2d>[][] intermediatePoints = new List[ArmSetPoints.setPointCount-1][ArmSetPoints.setPointCount-1]; {
-      intermediatePoints[0][1] = List.of(new Translation2d(-14.0, 20.0));
+    public static final List<ArmPoint>[][] intermediatePoints = new List[ArmSetPoints.setPointCount-1][ArmSetPoints.setPointCount-1]; {
+      intermediatePoints[0][1] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
-      intermediatePoints[0][2] = List.of(new Translation2d(-14.0, 20.0));
-      intermediatePoints[0][3] = List.of(new Translation2d(-14.0, 20.0));
-      intermediatePoints[0][4] = List.of(new Translation2d(-14.0, 20.0));
-      intermediatePoints[0][5] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[0][2] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[0][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[0][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[0][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
-      intermediatePoints[1][2] = List.of(new Translation2d(-14.0, 20.0));
-      intermediatePoints[1][3] = List.of(new Translation2d(-14.0, 20.0));
-      intermediatePoints[1][4] = List.of(new Translation2d(-14.0, 20.0));
-      intermediatePoints[1][5] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[1][2] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[1][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[1][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[1][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
-      // intermediatePoints[2][3] = List.of(new Translation2d(-14.0, 20.0));
-      // intermediatePoints[2][4] = List.of(new Translation2d(-14.0, 20.0));
-      // intermediatePoints[2][5] = List.of(new Translation2d(-14.0, 20.0));
+      // intermediatePoints[2][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      // intermediatePoints[2][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      // intermediatePoints[2][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
-      // intermediatePoints[3][4] = List.of(new Translation2d(-14.0, 20.0));
-      // intermediatePoints[3][5] = List.of(new Translation2d(-14.0, 20.0));
+      // intermediatePoints[3][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      // intermediatePoints[3][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
-      // intermediatePoints[4][5] = List.of(new Translation2d(-14.0, 20.0));
+      // intermediatePoints[4][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
       for (int i = 0; i < ArmSetPoints.setPointCount-1; i++){
         for (int j = 0; j < i; j++){
