@@ -16,15 +16,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmMap;
 import frc.robot.subsystems.Arm;
+import frc.robot.util.ArmPath;
 import frc.robot.util.ArmPathplannerUtil;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmCommandFollowPath extends Command {
   private Arm arm;
-    private List<Translation2d> path;
+    private ArmPath path;
     private Supplier<Boolean> inBend;
     /** Creates a new ArmCommand. */
-    public ArmCommandFollowPath(Arm arm, List<Translation2d> path, Supplier<Boolean> inBend) {
+    public ArmCommandFollowPath(Arm arm, ArmPath path, Supplier<Boolean> inBend) {
         this.arm = arm;
         this.path = path;
         this.inBend = inBend;
@@ -40,11 +41,11 @@ public class ArmCommandFollowPath extends Command {
   @Override
   public void execute() {
     SmartDashboard.putBoolean("Check", false);
-    if (ArmPathplannerUtil.CheckArmPosition(path, arm.getArmPosition())){
+    if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())){
       SmartDashboard.putBoolean("Check", true);
-      arm.setArmPosition(path.get(path.size()-1), inBend.get());
+      arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), inBend.get());
     }else{
-      Rotation2d direction = ArmPathplannerUtil.ArmPathChooser(path, arm.getArmPosition());
+      Rotation2d direction = ArmPathplannerUtil.ArmPathChooser(path.getTranslations(), arm.getArmPosition());
       arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmMap.velocity));
     }
   }

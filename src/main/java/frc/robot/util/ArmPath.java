@@ -4,6 +4,7 @@
 
 package frc.robot.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -25,6 +26,15 @@ public class ArmPath {
             this.points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(i), points.get(i+1)));
         }
         this.points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(points.size()-1), end));
+    }
+
+    /** returns arm setpoints in a translation2d list */
+    public List<Translation2d> getTranslations() {
+        List<Translation2d> translations = new ArrayList<Translation2d>();
+        for (ArmPoint point : points) {
+            translations.add(point.position);
+        }
+        return translations;
     }
 
    
