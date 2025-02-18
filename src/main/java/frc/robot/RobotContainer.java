@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.*;
 import frc.robot.Constants.ArmMap;
 import frc.robot.Constants.ArmTestAngles;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.ReefSetPoints;
 import frc.robot.Constants.WristTestAngles;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandAngles;
