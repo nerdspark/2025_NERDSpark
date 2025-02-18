@@ -15,6 +15,7 @@ import java.util.List;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.ArmPath;
 import frc.robot.util.ArmPoint;
 
 /**
@@ -94,13 +95,13 @@ public final class Constants {
     public static final double wristTwistToElbowRatio = 1.0/(35.0 / 49.0);
     public static final double wristTwistToFlipRatio = -1.0 / 1.0;
   }
-  public static class ReefSetPoints {
-    public static final Translation2d l1Reef = new Translation2d(30.2, 35.2);
-    public static final Translation2d l2Reef = new Translation2d(2.2, 30.2);
-    public static final Translation2d l3Reef = new Translation2d(2.2, 35.2);
-    public static final Translation2d l4Reef = new Translation2d(2.2, 40.2);
-    public static final Translation2d l5Reef = new Translation2d(2.2, 45.2);
-  }
+  // public static class ReefSetPoints {
+  //   public static final Translation2d l1Reef = new Translation2d(30.2, 35.2);
+  //   public static final Translation2d l2Reef = new Translation2d(2.2, 30.2);
+  //   public static final Translation2d l3Reef = new Translation2d(2.2, 35.2);
+  //   public static final Translation2d l4Reef = new Translation2d(2.2, 40.2);
+  //   public static final Translation2d l5Reef = new Translation2d(2.2, 45.2);
+  // }
   public static class ArmTestAngles{
     public static final double testElbowAngle = Units.degreesToRadians(45);
     public static final double testShoulderAngle = Units.degreesToRadians(45);
@@ -116,6 +117,24 @@ public final class Constants {
   
   public static class ArmIntermediatePoints {
     /**
+     * contains a list of endpoints
+     * @home 0
+     * @groundPickup 1
+     * @L1Reef 2
+     * @L2Reef 3
+     * @L3Reef 4
+     * @L4Reef 5
+     */
+    public static final ArmPoint[] armSetPoints = new ArmPoint[ArmSetPoints.setPointCount - 1]; {
+      armSetPoints[0] = new ArmPoint(ArmSetPoints.home, false, 0.0, 0.0);
+      armSetPoints[1] = new ArmPoint(new Translation2d(-15.0, -15.0));
+      armSetPoints[2] = new ArmPoint(new Translation2d(5.0, 10.0));
+      armSetPoints[3] = new ArmPoint(new Translation2d(5.0, 16.0));
+      armSetPoints[4] = new ArmPoint(new Translation2d(5.0, 22.0));
+      armSetPoints[5] = new ArmPoint(new Translation2d(5.0, 40.0));
+    }
+
+    /**
      * contains a list of intermediate points from first index to second index
      * @home 0
      * @groundPickup 1
@@ -128,15 +147,15 @@ public final class Constants {
     public static final List<ArmPoint>[][] intermediatePoints = new List[ArmSetPoints.setPointCount-1][ArmSetPoints.setPointCount-1]; {
       intermediatePoints[0][1] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
-      intermediatePoints[0][2] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[0][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[0][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[0][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-
-      intermediatePoints[1][2] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[1][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[1][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[1][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[0][2] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[0][3] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[0][4] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[0][5] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+    
+      intermediatePoints[1][2] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[1][3] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[1][4] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[1][5] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
 
       // intermediatePoints[2][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
       // intermediatePoints[2][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
@@ -159,6 +178,28 @@ public final class Constants {
         } 
       }
     }
+
+    /**
+     * contains a full path between two points
+     * @home 0
+     * @groundPickup 1
+     * @L1Reef 2
+     * @L2Reef 3
+     * @L3Reef 4
+     * @L4Reef 5
+     */
+    public static final ArmPath[][] armPaths = new ArmPath[ArmSetPoints.setPointCount-1][ArmSetPoints.setPointCount-1]; {
+      for (int i = 0; i < ArmSetPoints.setPointCount-1; i++){
+        for (int j = 0; j < ArmSetPoints.setPointCount-1; j++){
+          if (i != j){
+            armPaths[i][j] = new ArmPath(intermediatePoints[i][j], armSetPoints[i], armSetPoints[j]);
+          } else {
+            armPaths[i][j] = new ArmPath(List.of(armSetPoints[i]));
+          }
+        }
+      }
+    }
+    
   }
   
 
@@ -195,8 +236,10 @@ public final class Constants {
   public static class ArmSetPoints {
     public static final Translation2d home = new Translation2d(9.9,14.7); // TODO change this
     public static final int setPointCount = 6;
+    public static double interpolationDistance = 0.1; // inches
   }
   public static class ArmMap {
+    public static final ArmPath testPath = new ArmPath(List.of(new ArmPoint(new Translation2d(7.7, 13.3)), new ArmPoint(new Translation2d(7.7, 39.3)), new ArmPoint(new Translation2d(25.7, 39.3)), new ArmPoint(new Translation2d(35.0, 30.0))));
     public static final double lookAheadDistance = 3.0;
     public static final List<Translation2d> armTestPath = List.of(
     new Translation2d(7.7, 13.3), 

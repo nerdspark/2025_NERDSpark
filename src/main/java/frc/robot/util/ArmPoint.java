@@ -5,10 +5,11 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants.ArmSetPoints;
 
 /** a single setpoint for an arm position */
 public class ArmPoint {
-    public Translation2d position = new Translation2d();
+    public Translation2d position = ArmSetPoints.home;
     public boolean inBend = false;
     public double wristFlip, wristTwist = 0;
     public ArmPoint(Translation2d point, boolean inBend, double wristFlip, double wristTwist) {

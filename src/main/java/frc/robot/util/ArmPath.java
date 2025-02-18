@@ -4,36 +4,30 @@
 
 package frc.robot.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ArmMap;
 
-/** Add your docs here. */
+/** an arm path from a starting point going through a list of intermediate points */
 public class ArmPath {
-    public static Rotation2d ArmPathChooser(List<Translation2d> armPaths,Translation2d position){
-        Translation2d closestVector = new Translation2d(10000, 100000);
-        for (int i = armPaths.size() - 1; i >= 0; i-- ){
-            SmartDashboard.putNumber("distance pos - target", armPaths.get(i).getDistance(position));
-            if (armPaths.get(i).getDistance(position) < ArmMap.lookAheadDistance){
-                Rotation2d angle = armPaths.get(i).minus(position).getAngle();
-                SmartDashboard.putBoolean("on path", true);
-                SmartDashboard.putNumber("target point angle", angle.getDegrees());
-                return angle;
-            }
-            if (armPaths.get(i).getDistance(position) < closestVector.getNorm()){
-                closestVector = armPaths.get(i).minus(position);
-            }
+    public List<ArmPoint> points;
+
+    public ArmPath(List<ArmPoint> points) {
+        for (int i = 0; i < points.size()-1; i++) { // interpolate between each point
+            points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(i), points.get(i+1)));
         }
-        SmartDashboard.putBoolean("on path", false);
-        SmartDashboard.putNumber("target point angle", closestVector.getAngle().getDegrees());
-        return closestVector.getAngle();
     }
-    public static boolean CheckArmPosition(List<Translation2d> armPaths, Translation2d position){
-        return position.getDistance(armPaths.get(armPaths.size()-1)) < ArmMap.endDistance;
+
+    /** interpolates linearly betwen start, points, and end */
+    public ArmPath(List<ArmPoint> points, ArmPoint start, ArmPoint end) {
+        this.points.addAll(ArmPathplannerUtil.interpolateArmPath(start, points.get(0)));
+        for (int i = 0; i < points.size()-1; i++) {
+            this.points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(i), points.get(i+1)));
+        }
+        this.points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(points.size()-1), end));
     }
+
+   
+
+   
 }
