@@ -39,7 +39,7 @@ public final class Constants {
 
     public static final double currentLimitShoulder = 15.0;
     public static final double currentLimitElbow = 10.0;
-    public static final double currentLimitWristFlip = 20.0;
+    public static final double currentLimitWristFlip = 40.0;
     public static final double currentLimitWristTwist = 20.0;
     public static final double currentLimitGripperOpen = 3.0;
     public static final double currentLimitGripperClose = 10.0;
@@ -79,15 +79,15 @@ public final class Constants {
     public static final double wristTwistRadPerRot = wristTwistGearRatio;
     public static final double gripperRadPerRot = gripperGearRatio;
     public static final double gripperOffset = 0;
-    public static final double shoulderOffset = -0.35 / 2 / Math.PI; // TODO fidn these, radians, fwd = 0
-    public static final double elbowOffset = 2.158 / 2 / Math.PI; // TODO find these, negative of measurement
-    public static final double wristFlipOffset = 0;
-    public static final double wristTwistOffset = 0;
+    public static final double shoulderOffset = -0.35 / 2.0 / Math.PI; // TODO fidn these, radians, fwd = 0
+    public static final double elbowOffset = 2.158 / 2.0 / Math.PI; // TODO find these, negative of measurement
+    public static final double wristFlipOffset = (0.38) / 2.0 / Math.PI;
+    public static final double wristTwistOffset = -0.35 / 2.0 / Math.PI;
 
     /** wrist flip belting ratio between elbow and the wrist */
     public static final double wristFlipToElbowRatio = 1.0/(35.0 / 49.0);
     public static final double wristTwistToElbowRatio = 1.0/(35.0 / 49.0);
-    public static final double wristTwistToFlipRatio = 1.0 / 1.0;
+    public static final double wristTwistToFlipRatio = -1.0 / 1.0;
   }
   public static class ReefSetPoints {
     public static final Translation2d l1Reef = new Translation2d(30.2, 35.2);
@@ -110,10 +110,10 @@ public final class Constants {
       public static final double elbowP = 20.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
-      public static final double wristFlipP = 45.0; //45.0
+      public static final double wristFlipP = 20.0; //45.0
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 0.0;
-      public static final double wristTwistP = 30.0; //30.0
+      public static final double wristTwistP = 15.0; //30.0
       public static final double wristTwistI = 0.0;
       public static final double wristTwistD = 0.0;
       public static final double gripperP = 10.0; // 10.0
@@ -129,8 +129,8 @@ public final class Constants {
       public static final double elbowA = 0.0;
   }
   public static class WristTestAngles{
-    public static final double testWristFlipAngle = Units.degreesToRadians(0.0);
-    public static final double testWristTwistAngle = Units.degreesToRadians(0.0);
+    public static final double testWristFlipAngle = Units.degreesToRadians(90.0);
+    public static final double testWristTwistAngle = Units.degreesToRadians(90.0);
     public static final double testGripperAngle = Units.degreesToRadians(30);
   }
   public static class ArmSetPoints {

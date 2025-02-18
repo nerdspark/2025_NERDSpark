@@ -112,10 +112,8 @@ public class Arm extends SubsystemBase {
           .withInverted(InvertedValue.Clockwise_Positive)
           .withNeutralMode(NeutralModeValue.Coast)));
 
-          elbowRight.setPosition(Constants.ArmConstants.elbowOffset);
-          elbowLeft.setPosition(Constants.ArmConstants.elbowOffset);
-          shoulderRight.setPosition(Constants.ArmConstants.shoulderOffset);
-          shoulderLeft.setPosition(Constants.ArmConstants.shoulderOffset);
+          
+    
     
     
     wristFlipConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -150,7 +148,7 @@ public class Arm extends SubsystemBase {
     wristTwist
       .getConfigurator()
       .apply(wristTwistConfig.withMotorOutput(new MotorOutputConfigs()
-      .withInverted(InvertedValue.Clockwise_Positive)
+      .withInverted(InvertedValue.CounterClockwise_Positive)
           .withNeutralMode(NeutralModeValue.Coast)));
 
 
@@ -196,7 +194,15 @@ public class Arm extends SubsystemBase {
     //   .apply(elbowconfig.withMotorOutput(new MotorOutputConfigs()
     //     .withInverted(InvertedValue.Clockwise_Positive)
     //       .withNeutralMode(NeutralModeValue.Brake)));
-
+    resetOffsets();
+  }
+  public void resetOffsets() {
+    elbowRight.setPosition(Constants.ArmConstants.elbowOffset);
+    elbowLeft.setPosition(Constants.ArmConstants.elbowOffset);
+    shoulderRight.setPosition(Constants.ArmConstants.shoulderOffset);
+    shoulderLeft.setPosition(Constants.ArmConstants.shoulderOffset);
+    wristFlip.setPosition(Constants.ArmConstants.wristFlipOffset);
+    wristTwist.setPosition(Constants.ArmConstants.wristTwistOffset);
   }
 
   public Translation2d getArmPosition() {
@@ -297,13 +303,13 @@ public class Arm extends SubsystemBase {
 }
   public double getWristTwistPosition(){
     double wristTwistPosition = (wristTwist.getPosition().getValueAsDouble() * (2d * Math.PI));
-    wristTwistPosition -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+    wristTwistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
     wristTwistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
     SmartDashboard.putNumber("wrist twist position", wristTwistPosition);
     return wristTwistPosition;
   }
   public void setWristTwistPosition(double position) {
-    position += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+    position -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
     position += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
     position /= (2d*Math.PI);
 
@@ -387,6 +393,13 @@ public class Arm extends SubsystemBase {
 
   public void setWristTwistVelocity(double velocity) {
     wristTwist.setControl(new VelocityVoltage(velocity));
+  }
+
+  public void stopArm() {
+    elbowLeft.stopMotor();
+    elbowRight.stopMotor();
+    shoulderLeft.stopMotor();
+    shoulderRight.stopMotor();
   }
 
   @Override
