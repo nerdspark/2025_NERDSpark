@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import java.lang.annotation.Documented;
+import java.lang.reflect.Array;
 import java.rmi.MarshalException;
+import java.text.CollationElementIterator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -105,16 +109,59 @@ public final class Constants {
     public static final boolean inBend = false;
     public static final double wristFlipPos = Units.degreesToRadians(180.0);
     public static final double wristTwistPos = Units.degreesToRadians(180.0);
-    
+    public static final List<Translation2d> home_pickup = List.of(new Translation2d(-14.0, 20.0));
+    }
+
+  
   public static class ArmIntermediatePoints {
-    public static final List<Translation2d> home_pickup = List.of(
-      new Translation2d(-14.0, 20.0));
+    /**
+     * contains a list of intermediate points from first index to second index
+     * @home 0
+     * @groundPickup 1
+     * @l1Reef 2
+     * @l2Reef 3
+     * @l3Reef 4
+     * @l4Reef 5
+     */
+    @SuppressWarnings("unchecked")
+    public static final List<Translation2d>[][] intermediatePoints = new List[ArmSetPoints.setPointCount-1][ArmSetPoints.setPointCount-1]; {
+      intermediatePoints[0][1] = List.of(new Translation2d(-14.0, 20.0));
+
+      intermediatePoints[0][2] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[0][3] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[0][4] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[0][5] = List.of(new Translation2d(-14.0, 20.0));
+
+      intermediatePoints[1][2] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[1][3] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[1][4] = List.of(new Translation2d(-14.0, 20.0));
+      intermediatePoints[1][5] = List.of(new Translation2d(-14.0, 20.0));
+
+      // intermediatePoints[2][3] = List.of(new Translation2d(-14.0, 20.0));
+      // intermediatePoints[2][4] = List.of(new Translation2d(-14.0, 20.0));
+      // intermediatePoints[2][5] = List.of(new Translation2d(-14.0, 20.0));
+
+      // intermediatePoints[3][4] = List.of(new Translation2d(-14.0, 20.0));
+      // intermediatePoints[3][5] = List.of(new Translation2d(-14.0, 20.0));
+
+      // intermediatePoints[4][5] = List.of(new Translation2d(-14.0, 20.0));
+
+      for (int i = 0; i < ArmSetPoints.setPointCount-1; i++){
+        for (int j = 0; j < i; j++){
+          if (intermediatePoints[i][j] == null && intermediatePoints[j][i] != null){
+            intermediatePoints[i][j] = intermediatePoints[j][i];
+            Collections.reverse(intermediatePoints[i][j]);
+          } else if (intermediatePoints[i][j] != null && intermediatePoints[j][i] == null){
+            intermediatePoints[j][i] = intermediatePoints[i][j];
+            Collections.reverse(intermediatePoints[j][i]);
+          }
+        } 
+      }
     }
   }
   
 
   public final class ArmGains {
-    
       public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
@@ -146,6 +193,7 @@ public final class Constants {
   }
   public static class ArmSetPoints {
     public static final Translation2d home = new Translation2d(9.9,14.7); // TODO change this
+    public static final int setPointCount = 6;
   }
   public static class ArmMap {
     public static final double lookAheadDistance = 3.0;
@@ -211,3 +259,4 @@ public final class Constants {
     public static final double maxMotorVelocity = 0.1;
   }
 }
+

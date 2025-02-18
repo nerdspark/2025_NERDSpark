@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
+import frc.robot.Constants.ArmIntermediatePoints;
 import frc.robot.Constants.ArmMap;
 import frc.robot.Constants.ArmSetPoints;
 
@@ -270,6 +271,7 @@ public class Arm extends SubsystemBase {
       shoulderVelocity = shoulderVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
       elbowVelocity = elbowVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
     }
+    ArmIntermediatePoints.intermediatePoints[1][1].get(0).getAngle();
     if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
       setShoulderVelocity(0);
     }else{
