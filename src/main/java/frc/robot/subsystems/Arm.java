@@ -36,9 +36,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
-import frc.robot.Constants.ArmIntermediatePoints;
+import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmMap;
-import frc.robot.Constants.ArmSetPoints;
+import frc.robot.Constants.ArmSetpoints;
 
 public class Arm extends SubsystemBase {
 
@@ -218,9 +218,9 @@ public class Arm extends SubsystemBase {
         return jointPos.plus(jointToEndPos);
   }
 
-  public void setArmPosition(Translation2d position, boolean inBend) {  // rotates the base two stages 
+  public void setArmPosition(Translation2d position, boolean inBend) {  // rotates the two base stages 
 
-    double distance = MathUtil.clamp(position.getNorm(), ArmSetPoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
+    double distance = MathUtil.clamp(position.getNorm(), ArmSetpoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
 
         double BaseAngleArmDiff = Math.acos(((distance * distance)
                         + (ArmConstants.baseStageLength * ArmConstants.baseStageLength)
@@ -245,7 +245,7 @@ public class Arm extends SubsystemBase {
     Translation2d position = getArmPosition().plus(velocity.times(ArmMap.linearApproximationTime));
     SmartDashboard.putNumber("velocity x", velocity.getX());
     SmartDashboard.putNumber("velocity y", velocity.getY());
-    double distance = MathUtil.clamp(position.getNorm(), ArmSetPoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
+    double distance = MathUtil.clamp(position.getNorm(), ArmSetpoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
     double currentMaxV = 30;
     boolean inBend = false;
 
@@ -271,15 +271,14 @@ public class Arm extends SubsystemBase {
       shoulderVelocity = shoulderVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
       elbowVelocity = elbowVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
     }
-    ArmIntermediatePoints.intermediatePoints[1][1].get(0).position.getAngle().getRadians();
-        if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
+    if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
       setShoulderVelocity(0);
-    }else{
+    } else {
       setShoulderVelocity(shoulderVelocity);
     }
     if(Math.abs(elbowPosition - shoulderPosition) > Math.abs(ArmConstants.elbowOffset - ArmConstants.shoulderOffset) * (2*Math.PI)){
       setElbowVelocity(shoulderVelocity);
-    }else{
+    } else {
       setElbowVelocity(elbowVelocity);
     }  
   }

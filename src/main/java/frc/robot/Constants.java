@@ -115,7 +115,12 @@ public final class Constants {
     }
 
   
-  public static class ArmIntermediatePoints {
+  public static class ArmSetpoints {
+
+    public static final Translation2d home = new Translation2d(9.9,14.7); // TODO: tune for backlash and comp bot
+    public static final int setPointCount = 6;
+    public static double interpolationDistance = 0.1; // inches
+
     /**
      * contains a list of endpoints
      * @home 0
@@ -125,8 +130,8 @@ public final class Constants {
      * @L3Reef 4
      * @L4Reef 5
      */
-    public static final ArmPoint[] armSetPoints = new ArmPoint[ArmSetPoints.setPointCount - 1]; {
-      armSetPoints[0] = new ArmPoint(ArmSetPoints.home, false, 0.0, 0.0);
+    public static final ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount - 1]; {
+      armSetPoints[0] = new ArmPoint(ArmSetpoints.home, false, 0.0, 0.0);
       armSetPoints[1] = new ArmPoint(new Translation2d(-15.0, -15.0));
       armSetPoints[2] = new ArmPoint(new Translation2d(5.0, 10.0));
       armSetPoints[3] = new ArmPoint(new Translation2d(5.0, 16.0));
@@ -144,7 +149,7 @@ public final class Constants {
      * @L4Reef 5
      */
     @SuppressWarnings("unchecked")
-    public static final List<ArmPoint>[][] intermediatePoints = new List[ArmSetPoints.setPointCount-1][ArmSetPoints.setPointCount-1]; {
+    public static final List<ArmPoint>[][] intermediatePoints = new List[ArmSetpoints.setPointCount-1][ArmSetpoints.setPointCount-1]; {
       intermediatePoints[0][1] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
       intermediatePoints[0][2] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
@@ -166,7 +171,7 @@ public final class Constants {
 
       // intermediatePoints[4][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
 
-      for (int i = 0; i < ArmSetPoints.setPointCount-1; i++){
+      for (int i = 0; i < ArmSetpoints.setPointCount-1; i++){
         for (int j = 0; j < i; j++){
           if (intermediatePoints[i][j] == null && intermediatePoints[j][i] != null){
             intermediatePoints[i][j] = intermediatePoints[j][i];
@@ -188,12 +193,12 @@ public final class Constants {
      * @L3Reef 4
      * @L4Reef 5
      */
-    public static final ArmPath[][] armPaths = new ArmPath[ArmSetPoints.setPointCount-1][ArmSetPoints.setPointCount-1]; {
-      for (int i = 0; i < ArmSetPoints.setPointCount-1; i++){
-        for (int j = 0; j < ArmSetPoints.setPointCount-1; j++){
+    public static final ArmPath[][] armPaths = new ArmPath[ArmSetpoints.setPointCount-1][ArmSetpoints.setPointCount-1]; {
+      for (int i = 0; i < ArmSetpoints.setPointCount-1; i++){
+        for (int j = 0; j < ArmSetpoints.setPointCount-1; j++){
           if (i != j){
             armPaths[i][j] = new ArmPath(intermediatePoints[i][j], armSetPoints[i], armSetPoints[j]);
-          } else {
+          } else { // set path to just the endpoint
             armPaths[i][j] = new ArmPath(List.of(armSetPoints[i]));
           }
         }
@@ -233,11 +238,7 @@ public final class Constants {
     public static final double testWristTwistAngle = Units.degreesToRadians(90.0);
     public static final double testGripperAngle = Units.degreesToRadians(30);
   }
-  public static class ArmSetPoints {
-    public static final Translation2d home = new Translation2d(9.9,14.7); // TODO change this
-    public static final int setPointCount = 6;
-    public static double interpolationDistance = 0.1; // inches
-  }
+
   public static class ArmMap {
     public static final ArmPath testPath = new ArmPath(List.of(new ArmPoint(new Translation2d(7.7, 13.3)), new ArmPoint(new Translation2d(7.7, 39.3)), new ArmPoint(new Translation2d(25.7, 39.3)), new ArmPoint(new Translation2d(35.0, 30.0))));
     public static final double lookAheadDistance = 3.0;
