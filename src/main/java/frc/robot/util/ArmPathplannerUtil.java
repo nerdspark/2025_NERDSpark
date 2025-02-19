@@ -43,9 +43,10 @@ public class ArmPathplannerUtil {
     }
     /** interpolates linearly between start and end */
     public static List<ArmPoint> interpolateArmPath(ArmPoint start, ArmPoint end){
-        List<ArmPoint> path = new ArrayList<ArmPoint>();
+        List<ArmPoint> path = (List<ArmPoint>) new ArrayList<ArmPoint>();
         double distance = start.position.getDistance(end.position);
-        Translation2d step = end.position.minus(start.position).div(distance).times(ArmSetpoints.interpolationDistance);
+        Translation2d step = end.position.minus(start.position).div(distance);
+
         //TODO: add wrist interpolation or other way to time wrist movement
         for (double i = 0; i < distance; i += ArmSetpoints.interpolationDistance){
             path.add(new ArmPoint(start.position.plus(step.times(i))));

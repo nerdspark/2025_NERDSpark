@@ -45,8 +45,8 @@ public final class Constants {
 
     public static final double currentLimitShoulder = 15.0;
     public static final double currentLimitElbow = 10.0;
-    public static final double currentLimitWristFlip = 40.0;
-    public static final double currentLimitWristTwist = 20.0;
+    public static final double currentLimitWristFlip = 20.0; //40.0
+    public static final double currentLimitWristTwist = 8.0;
     public static final double currentLimitGripperOpen = 3.0;
     public static final double currentLimitGripperClose = 10.0;
     public static final double gripperPowerClose = 0.1;
@@ -63,17 +63,17 @@ public final class Constants {
     // elbow stage 1: 50:50
     public static final double elbowGearRatio = 75.0*38.0/26.0;
 
-    //wrist up/down gearbox: 9:1
+    //wrist up/down gearbox: 25:1
     //wrist up/down stage 0: 49:50
     //wrist up/down stage 1: 49:49
     //wrist up/down stage 2: 35:49
-    public static final double wristFlipGearRatio = 9.0*49.0/50.0*35.0/49.0;
-    //wrist twist gearbox: 9:1
+    public static final double wristFlipGearRatio = 25.0*49.0/50.0*35.0/49.0;
+    //wrist twist gearbox: 25:1
     //wrist twist stage 0: 49:50
     //wrist twist stage 1: 49:49
     //wrist twist stage 2: 35:49
     //wrist twist bevel: 1:1
-    public static final double wristTwistGearRatio = 9.0*49.0/50.0*35.0/49.0;
+    public static final double wristTwistGearRatio = 25.0*49.0/50.0*35.0/49.0;
     public static final double gripperGearRatio = 5.0*5.0 / 3.0;
     public static final double baseStageLength = 23.158;
     public static final double secondStageLength = 25.475;
@@ -132,10 +132,10 @@ public final class Constants {
      */
     public static final ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount - 1]; {
       armSetPoints[0] = new ArmPoint(ArmSetpoints.home, false, 0.0, 0.0);
-      armSetPoints[1] = new ArmPoint(new Translation2d(-15.0, -15.0));
+      armSetPoints[1] = new ArmPoint(new Translation2d(46.82, -12.48));
       armSetPoints[2] = new ArmPoint(new Translation2d(5.0, 10.0));
       armSetPoints[3] = new ArmPoint(new Translation2d(5.0, 16.0));
-      armSetPoints[4] = new ArmPoint(new Translation2d(5.0, 22.0));
+      armSetPoints[4] = new ArmPoint(new Translation2d(23.27, 38.46));
       armSetPoints[5] = new ArmPoint(new Translation2d(5.0, 40.0));
     }
 
@@ -150,7 +150,7 @@ public final class Constants {
      */
     @SuppressWarnings("unchecked")
     public static final List<ArmPoint>[][] intermediatePoints = new List[ArmSetpoints.setPointCount-1][ArmSetpoints.setPointCount-1]; {
-      intermediatePoints[0][1] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[0][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(28.43, 22.52)));
 
       intermediatePoints[0][2] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
       intermediatePoints[0][3] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
@@ -159,7 +159,7 @@ public final class Constants {
     
       intermediatePoints[1][2] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
       intermediatePoints[1][3] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[1][4] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[1][4] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(12.75, 20.95)));
       intermediatePoints[1][5] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
 
       // intermediatePoints[2][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
@@ -183,6 +183,27 @@ public final class Constants {
         } 
       }
     }
+    /**
+     * contains a list of intermediate points from first index to second index with wrist twsit/flip movement
+     * @home 0
+     * @groundPickup 1
+     * @L1Reef 2
+     * @L2Reef 3
+     * @L3Reef 4
+     * @L4Reef 5
+     */
+    // public static final List<ArmPoint>[][] wristIntermediatePoints = new List[ArmSetpoints.setPointCount-1][ArmSetpoints.setPointCount-1]; {
+    //   wristIntermediatePoints[0][1] = List.of(new ArmPoint(new Translation2d( 20, 20), false, 30, 30));
+    //   wristIntermediatePoints[0][2] = List.of(new ArmPoint(new Translation2d( 20, 20), false, 30, 30));
+    //   wristIntermediatePoints[0][3] = List.of(new ArmPoint(new Translation2d( 20, 20), false, 30, 30));
+    //   wristIntermediatePoints[0][4] = List.of(new ArmPoint(new Translation2d( 20, 20), false, 30, 30));
+    //   wristIntermediatePoints[0][5] = List.of(new ArmPoint(new Translation2d( 20, 20), false, 30, 30));
+    //   for (int i = 0; i < ArmSetpoints.setPointCount-1; i++){
+    //     for (int j = 0; j < ArmSetpoints.setPointCount-1; i++){
+
+    //     }
+    //   }
+    
 
     /**
      * contains a full path between two points
@@ -215,13 +236,13 @@ public final class Constants {
       public static final double elbowP = 20.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
-      public static final double wristFlipP = 20.0; //45.0
+      public static final double wristFlipP = 20.0; //20.0
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 0.0;
-      public static final double wristTwistP = 15.0; //30.0
+      public static final double wristTwistP = 15.0; //15.0
       public static final double wristTwistI = 0.0;
       public static final double wristTwistD = 0.0;
-      public static final double gripperP = 10.0; // 10.0
+      public static final double gripperP = 0.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
       public static final double shoulderS = 0.0;
@@ -240,65 +261,9 @@ public final class Constants {
   }
 
   public static class ArmMap {
-    public static final ArmPath testPath = new ArmPath(List.of(new ArmPoint(new Translation2d(7.7, 13.3)), new ArmPoint(new Translation2d(7.7, 39.3)), new ArmPoint(new Translation2d(25.7, 39.3)), new ArmPoint(new Translation2d(35.0, 30.0))));
-    public static final double lookAheadDistance = 3.0;
-    public static final List<Translation2d> armTestPath = List.of(
-    new Translation2d(7.7, 13.3), 
-    new Translation2d(7.7, 14.3), 
-    new Translation2d(7.7, 15.3), 
-    new Translation2d(7.7, 16.3), 
-    new Translation2d(7.7, 17.3), 
-    new Translation2d(7.7, 18.3), 
-    new Translation2d(7.7, 19.3), 
-    new Translation2d(7.7, 20.3), 
-    new Translation2d(7.7, 21.3), 
-    new Translation2d(7.7, 22.3),
-    new Translation2d(7.7, 23.3), 
-    new Translation2d(7.7, 24.3), 
-    new Translation2d(7.7, 25.3), 
-    new Translation2d(7.7, 26.3), 
-    new Translation2d(7.7, 27.3), 
-    new Translation2d(7.7, 28.3), 
-    new Translation2d(7.7, 29.3), 
-    new Translation2d(7.7, 30.3), 
-    new Translation2d(7.7, 31.3), 
-    new Translation2d(7.7, 32.3),
-    new Translation2d(7.7, 33.3), 
-    new Translation2d(7.7, 34.3), 
-    new Translation2d(7.7, 35.3), 
-    new Translation2d(7.7, 36.3), 
-    new Translation2d(7.7, 37.3), 
-    new Translation2d(7.7, 38.3), 
-    new Translation2d(7.7, 39.3), 
-    new Translation2d(8.7, 39.3),
-    new Translation2d(9.7, 39.3),
-    new Translation2d(10.7, 39.3),
-    new Translation2d(11.7, 39.3),
-    new Translation2d(12.7, 39.3),
-    new Translation2d(13.7, 39.3),
-    new Translation2d(14.7, 39.3),
-    new Translation2d(15.7, 39.3),
-    new Translation2d(16.7, 39.3),
-    new Translation2d(17.7, 39.3),
-    new Translation2d(18.7, 39.3),
-    new Translation2d(19.7, 39.3),
-    new Translation2d(20.7, 39.3),
-    new Translation2d(21.7, 39.3),
-    new Translation2d(22.7, 39.3),
-    new Translation2d(23.7, 39.3),
-    new Translation2d(24.7, 39.3),
-    new Translation2d(25.7, 39.3),
-    new Translation2d(26.7, 38.3),
-    new Translation2d(27.7, 37.3),
-    new Translation2d(28.7, 36.3),
-    new Translation2d(29.7, 35.3),
-    new Translation2d(30.7, 34.3),
-    new Translation2d(31.7, 33.3),
-    new Translation2d(32.7, 32.3),
-    new Translation2d(33.7, 31.3),
-    new Translation2d(34.7, 30.3),
-    new Translation2d(35.7, 29.3));
-    public static final double endDistance = 5.0;
+    public static final ArmPath testPath = new ArmPath(List.of(new ArmPoint(new Translation2d(7.7, 13.3)), new ArmPoint(new Translation2d(15.7, 31.3)), new ArmPoint(new Translation2d(25.7, 39.3)), new ArmPoint(new Translation2d(35.7, 31.3))));
+    public static final double lookAheadDistance = 1.0;
+    public static final double endDistance = 1.0;
     public static final double linearApproximationTime = 0.1; // seconds
     public static final double velocity = 3;
     public static final double maxMotorVelocity = 0.1;

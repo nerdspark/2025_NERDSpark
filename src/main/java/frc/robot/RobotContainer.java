@@ -6,6 +6,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Constants.ArmMap;
+import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmTestAngles;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.WristTestAngles;
@@ -105,9 +106,10 @@ public class RobotContainer {
         // joystick.rightBumper().onTrue(new ArmCommand(arm, () -> ReefSetPoints.l1Reef, () -> false));
         // // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
         // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
-        joystick.y().whileTrue(new ArmCommandFollowPath(arm, ArmMap.testPath, () -> false));
+        joystick.y().onTrue(new ArmCommandFollowPath(arm, ArmSetpoints.armPaths[1][4], () -> false));
+        joystick.b().onTrue(new ArmCommandFollowPath(arm, ArmSetpoints.armPaths[0][1], () -> false));
         //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
-        joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+        // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
         joystick.rightTrigger().onTrue(new ArmCommandGripper(gripper, () -> true));
         joystick.leftTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));

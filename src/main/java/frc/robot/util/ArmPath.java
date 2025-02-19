@@ -11,13 +11,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 /** an interpolated arm path between a starting point, a list of intermediate points, and an end point */
 public class ArmPath {
-    public List<ArmPoint> points;
+    public List<ArmPoint> points = (List<ArmPoint>) new ArrayList<ArmPoint>();
     //TODO: add and incorporate optional inflection point
     
     /** interpolates linearly betwen points */
     public ArmPath(List<ArmPoint> points) {
         for (int i = 0; i < points.size()-1; i++) { // interpolate between each point
-            points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(i), points.get(i+1)));
+            this.points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(i), points.get(i+1)));
         }
     }
 
