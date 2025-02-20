@@ -63,7 +63,6 @@ import dev.doglog.DogLog;
      private Matrix<N3, N1> curStdDevs;
      private String cameraName;
 
-
      private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
  
      // Simulation
@@ -245,4 +244,3 @@ import dev.doglog.DogLog;
          return visionSim.getDebugField();
      }
  }
- 

@@ -41,6 +41,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import dev.doglog.DogLog;
+import frc.robot.QuestNav;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
