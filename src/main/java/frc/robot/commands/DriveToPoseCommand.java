@@ -20,11 +20,14 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.AllianceFlipUtil;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 
 import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 
 import dev.doglog.DogLog;
 
@@ -55,7 +58,12 @@ public class DriveToPoseCommand extends Command {
             Constants.Vision.kDThetaController,
             OMEGA_CONSTRATINTS);
 
-    private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
+  //  private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
+
+    private final FieldCentric fieldCentricSwerveRequest = new FieldCentric()
+    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+    .withDriveRequestType(DriveRequestType.Velocity)
+    .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
 
     /**
      * Creates a new ExampleCommand.
@@ -145,21 +153,23 @@ public class DriveToPoseCommand extends Command {
         if (xController.atGoal()) {
             xSpeed = 0;
         }
+        DogLog.log("DriveToPoseCommand/X Speed", xSpeed);
 
         var ySpeed = yController.calculate(robotPose.getY());
         if (yController.atGoal()) {
             ySpeed = 0;
         }
-    
+
+        DogLog.log("DriveToPoseCommand/Y Speed", ySpeed);
+
+
         var omegaSpeed = omegaController.calculate(robotAngle.get().getDegrees());
         if (omegaController.atGoal()) {
             omegaSpeed = 0;
         }
 
-        DogLog.log("DriveToPoseCommand/X Speed", xSpeed);
-        DogLog.log("DriveToPoseCommand/Y Speed", ySpeed);
         DogLog.log("DriveToPoseCommand/Omega Speed", omegaSpeed);
-
+       
         ChassisSpeeds chassisSpeeds;
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 xSpeed,
@@ -167,15 +177,20 @@ public class DriveToPoseCommand extends Command {
                 omegaSpeed,
                 robotAngle.get());
                 
-        drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(chassisSpeeds).withDriveRequestType(DriveRequestType.Velocity));
+      //  drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(chassisSpeeds).withDriveRequestType(DriveRequestType.Velocity));
+
+        drivetrainSubsystem.setControl(
+        fieldCentricSwerveRequest.withVelocityX(xSpeed).withVelocityY(ySpeed).withRotationalRate(omegaSpeed));
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        // ChassisSpeeds zeroChassisSpeeds = new ChassisSpeeds();
-        // drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(zeroChassisSpeeds));
-        drivetrainSubsystem.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+ 
+       // drivetrainSubsystem.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+
+       drivetrainSubsystem.setControl(new SwerveRequest.Idle());
+
     }
 
     // Returns true when the command should end.

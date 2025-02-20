@@ -6,7 +6,9 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -37,6 +39,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import dev.doglog.DogLog;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -83,6 +87,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+
     autoChooser = AutoBuilder.buildAutoChooser("Tests");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -139,8 +145,8 @@ public class RobotContainer {
      * and stop logging with right bumper after we're done with ALL tests.
      * This isn't necessary but is convenient to reduce the size of the hoot file */
     SignalLogger.setPath("/media/sda1/ctre-logs/");
-    joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     
         /*
      * Joystick Y = quasistatic forward
@@ -153,13 +159,22 @@ public class RobotContainer {
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
-    // () -> Constants.Vision.reefPositions.get(scoringSubsystem.getScoringProfile()),
-    // () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
-
     joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
+
+    // joystick.leftBumper().onTrue(new DriveToPose(drivetrain,
+    // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
+    // ).until(() -> joystick.rightBumper().getAsBoolean()));
+
+    joystick.leftBumper().onTrue( new AutoScoreCommand(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch()
+    ).until(() -> joystick.rightBumper().getAsBoolean()));
+
+    // joystick.y().onTrue(new DriveToPose(drivetrain,
+    // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
+    // ).until(() -> joystick.x().getAsBoolean()));
  
   }
 

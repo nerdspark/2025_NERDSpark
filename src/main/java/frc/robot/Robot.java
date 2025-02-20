@@ -26,12 +26,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        DogLog.setOptions(new DogLogOptions()
+
+        if(!Constants.DOGLOG_ENABLED){
+            DogLog.setEnabled(false);
+        }else{
+            DogLog.setEnabled(true);
+            DogLog.setOptions(new DogLogOptions()
                 .withLogExtras(true)
                 .withCaptureDs(true)
                 .withNtPublish(true)
                 .withCaptureNt(true));
-        DogLog.setPdh(new PowerDistribution());
+                DogLog.setPdh(new PowerDistribution());
+        }
     }
 
     @Override

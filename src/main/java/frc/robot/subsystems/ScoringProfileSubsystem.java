@@ -24,7 +24,7 @@ import frc.robot.util.AllianceFlipUtil;
 public class ScoringProfileSubsystem extends SubsystemBase {
 
   private int branch = 9;
-  private FieldConstants.ReefHeight reefHeight  = FieldConstants.ReefHeight.L1;
+  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L1;
 
   private Pose2d selectedBranchPose = new Pose2d();
 
@@ -68,12 +68,12 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
     for(int j=12; j<17; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
-        reefHeight = FieldConstants.ReefHeight.values()[j-12];
+        reefLevel = FieldConstants.ReefLevel.values()[j-12];
       }
     }
   }
   else {
-    if(DriverStation.getStickButtonPressed(0, 3)) {
+    if(DriverStation.getStickButtonPressed(0, 7)) {
       branch++;
       if(branch > 11) {
         branch = 0;
@@ -85,7 +85,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
 
 
-    selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefHeight).toPose2d());
+    selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefLevel).toPose2d());
 
     // DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
     // DogLog.log("ScoringProfileSubSystem/Selected level", reefHeight);
@@ -101,21 +101,21 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   public int getBranch() {
     return branch;
   }
-  public FieldConstants.ReefHeight getLevel() {
-    return reefHeight;
+  public FieldConstants.ReefLevel getLevel() {
+    return reefLevel;
   }
   public void setBranch(char branch) {
     this.branch = branch;
   }
-  public void setLevel(FieldConstants.ReefHeight level) {
-    this.reefHeight = level;
+  public void setLevel(FieldConstants.ReefLevel level) {
+    this.reefLevel = level;
   } 
   public Pose2d getSelectedBranchPose() {
     return selectedBranchPose;
   }
 
   public Pose2d getRobotPoseForSelectedBranch() {
-    return selectedBranchPose.plus(new Transform2d(Units.inchesToMeters(36), 0, new Rotation2d(Math.toRadians(180))));
+    return selectedBranchPose.plus(new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
   }
 
 }
