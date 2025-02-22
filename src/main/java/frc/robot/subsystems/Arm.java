@@ -49,7 +49,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-
+    
     shoulderLeft = new TalonFX(ArmConstants.shoulderMotorLeftPort, "rio"); 
     shoulderRight = new TalonFX(ArmConstants.shoulderMotorRightPort, "rio"); 
     elbowLeft = new TalonFX(ArmConstants.elbowMotorLeftPort, "rio");

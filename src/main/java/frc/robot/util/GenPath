@@ -1,71 +1,143 @@
-import edu.wpi.first.math.geometry.Translation2d;
 import java.util.ArrayList;
 import java.util.List;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public class GenPath {
-    public static List<Translation2d> getArcPoints(
-            Translation2d p1, Translation2d p2, Translation2d p3, double radius, int numpoints) {
-        // Translate frame to set p2 as origin (frame 'q')
+
+    /**
+     * Finds the points along a circular arc for a bend defined by three points.
+     *
+     * @param p1        Starting point.
+     * @param p2        Midpoint where the bend occurs.
+     * @param p3        Stopping point.
+     * @param radius    Radius of circular arc path.
+     * @param numPoints Number of points lying between the arc endpoints.
+     * @return A list of Translation2d points describing a path along the circular arc.
+     */
+    public static List<Translation2d> getArcPoints(Translation2d p1,
+                                                   Translation2d p2,
+                                                   Translation2d p3,
+                                                   double radius,
+                                                   int numPoints) {
+        // Translate frame to set p2 as the origin (frame "q")
         Translation2d q1 = p1.minus(p2);
         Translation2d q3 = p3.minus(p2);
 
         // Inner bend angles from point p2
-        double theta_b = q3.getAngle().minus(q1.getAngle()).getRadians(); // inner bend angle
-        double theta_c = theta_b / 2.0; // angle from q1 to circle center
+        Rotation2d thetaB = q3.getAngle().minus(q1.getAngle()); // inner bend angle
+        // Divide thetaB by 2 to obtain thetaC (angle from q1 to circle center)
+        Rotation2d thetaC = new Rotation2d(thetaB.getRadians() / 2.0);
 
-        // Arc endpoints in frame 'q'
-        double a = Math.abs(radius / Math.tan(theta_c)); // distance from p2 to arc endpoints
-        Translation2d qi = new Translation2d(a, q1.getAngle());
-        Translation2d qf = new Translation2d(a, q3.getAngle());
+        // Arc endpoints in frame "q"
+        double a = Math.abs(radius / Math.tan(thetaC.getRadians())); // distance from p2 to arc endpoints
+        Translation2d qi = fromPolar(a, q1.getAngle());
+        Translation2d qf = fromPolar(a, q3.getAngle());
 
-        // Circle center in frame 'q'
-        double h = Math.abs(radius / Math.sin(theta_c)); // distance from p2 to circle center
-        Translation2d qc = new Translation2d(h, q1.getAngle().plus(Rotation2d.fromRadians(theta_c)));
+        // Circle center in frame "q"
+        double h = Math.abs(radius / Math.sin(thetaC.getRadians())); // distance from p2 to circle center
+        Rotation2d centerAngle = q1.getAngle().plus(thetaC);
+        Translation2d qc = fromPolar(h, centerAngle);
 
         // Angles of arc endpoints from circle center
-        double phi_i = qi.minus(qc).getAngle().getRadians();
-        double phi_f = qf.minus(qc).getAngle().getRadians();
+        Rotation2d phiI = (qi.minus(qc)).getAngle();
+        Rotation2d phiF = (qf.minus(qc)).getAngle();
 
         // Interpolate points on the arc between the endpoints
         List<Translation2d> ret = new ArrayList<>();
-        for (int i = 0; i <= numpoints + 1; i++) {
-            double phi = phi_i + (phi_f - phi_i) * ((double) i / (numpoints + 1));
-            Translation2d q = new Translation2d(radius, new Rotation2d(phi)).plus(qc);
-            Translation2d p = q.plus(p2); // Translate frame back to original (frame 'p')
+        for (int i = 0; i < numPoints + 2; i++) {
+            double t = (double) i / (numPoints + 1);
+            Rotation2d phi = interpolate(phiI, phiF, t);
+            // Create a point at the given angle and radius, then translate back by qc and p2
+            Translation2d q = fromPolar(radius, phi).plus(qc);
+            Translation2d p = q.plus(p2);
             ret.add(p);
         }
         return ret;
     }
 
-    public static List<Translation2d> generateSmoothPath(List<Translation2d> points, double radius, int numpoints) {
+    /**
+     * Generates a smooth path through the given list of points by replacing each bend with an arc.
+     *
+     * @param points    A sequence of Translation2d points.
+     * @param radius    The radius of the arcs.
+     * @param numPoints The number of points to generate between each pair of arc endpoints.
+     * @return A list of Translation2d points representing the smooth path.
+     */
+    public static List<Translation2d> generateSmoothPath(List<Translation2d> points,
+                                                           double radius,
+                                                           int numPoints) {
         List<Translation2d> ret = new ArrayList<>();
+        if (points.isEmpty()) {
+            return ret;
+        }
         ret.add(points.get(0));
         for (int i = 0; i < points.size() - 2; i++) {
-            List<Translation2d> arcPoints = getArcPoints(points.get(i), points.get(i + 1), points.get(i + 2), radius, numpoints);
+            List<Translation2d> arcPoints = getArcPoints(points.get(i), points.get(i + 1), points.get(i + 2), radius, numPoints);
             ret.addAll(arcPoints);
         }
         ret.add(points.get(points.size() - 1));
         return ret;
     }
 
-    public static void main(String[] args) {
-        List<Translation2d> points = List.of(
-                new Translation2d(1, 0),
-                new Translation2d(2, -1),
-                new Translation2d(3, 2),
-                new Translation2d(2, 2),
-                new Translation2d(4, -1),
-                new Translation2d(1, 1),
-                new Translation2d(2, 4),
-                new Translation2d(2.5, 2.5),
-                new Translation2d(3, 4)
-        );
-        double radius = 0.2;
-        int numpoints = 5;
+    /**
+     * Helper method to create a Translation2d from polar coordinates.
+     *
+     * @param r     The radius (distance).
+     * @param angle The angle as a Rotation2d.
+     * @return A Translation2d point.
+     */
+    public static Translation2d fromPolar(double r, Rotation2d angle) {
+        double x = r * Math.cos(angle.getRadians());
+        double y = r * Math.sin(angle.getRadians());
+        return new Translation2d(x, y);
+    }
 
-        List<Translation2d> smoothPath = generateSmoothPath(points, radius, numpoints);
+    /**
+     * Helper method to interpolate between two Rotation2d objects.
+     *
+     * @param a The starting rotation.
+     * @param b The ending rotation.
+     * @param t The interpolation parameter (0.0 to 1.0).
+     * @return The interpolated Rotation2d.
+     */
+    public static Rotation2d interpolate(Rotation2d a, Rotation2d b, double t) {
+        double start = a.getRadians();
+        double end = b.getRadians();
+        // Normalize the difference to be within [-pi, pi]
+        double diff = end - start;
+        while (diff < -Math.PI) {
+            diff += 2 * Math.PI;
+        }
+        while (diff > Math.PI) {
+            diff -= 2 * Math.PI;
+        }
+        double interpolated = start + t * diff;
+        return new Rotation2d(interpolated);
+    }
+
+    // Example usage of the above methods.
+    public static void main(String[] args) {
+        List<Translation2d> points = new ArrayList<>();
+        points.add(new Translation2d(1, 0));
+        points.add(new Translation2d(2, -1));
+        points.add(new Translation2d(3, 2));
+        points.add(new Translation2d(2, 2));
+        points.add(new Translation2d(4, -1));
+        points.add(new Translation2d(1, 1));
+        points.add(new Translation2d(2, 4));
+        points.add(new Translation2d(2.5, 2.5));
+        points.add(new Translation2d(3, 4));
+
+        double radius = 0.2;
+        int numPoints = 5;
+
+        List<Translation2d> smoothPath = generateSmoothPath(points, radius, numPoints);
+
+        // Print the generated smooth path points.
         for (Translation2d point : smoothPath) {
-            System.out.println("(" + point.getX() + ", " + point.getY() + ")");
+            System.out.println("Point: (" + point.getX() + ", " + point.getY() + ")");
         }
     }
 }
+
