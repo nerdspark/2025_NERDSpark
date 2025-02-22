@@ -1,0 +1,71 @@
+import edu.wpi.first.math.geometry.Translation2d;
+import java.util.ArrayList;
+import java.util.List;
+
+public class GenPath {
+    public static List<Translation2d> getArcPoints(
+            Translation2d p1, Translation2d p2, Translation2d p3, double radius, int numpoints) {
+        // Translate frame to set p2 as origin (frame 'q')
+        Translation2d q1 = p1.minus(p2);
+        Translation2d q3 = p3.minus(p2);
+
+        // Inner bend angles from point p2
+        double theta_b = q3.getAngle().minus(q1.getAngle()).getRadians(); // inner bend angle
+        double theta_c = theta_b / 2.0; // angle from q1 to circle center
+
+        // Arc endpoints in frame 'q'
+        double a = Math.abs(radius / Math.tan(theta_c)); // distance from p2 to arc endpoints
+        Translation2d qi = new Translation2d(a, q1.getAngle());
+        Translation2d qf = new Translation2d(a, q3.getAngle());
+
+        // Circle center in frame 'q'
+        double h = Math.abs(radius / Math.sin(theta_c)); // distance from p2 to circle center
+        Translation2d qc = new Translation2d(h, q1.getAngle().plus(Rotation2d.fromRadians(theta_c)));
+
+        // Angles of arc endpoints from circle center
+        double phi_i = qi.minus(qc).getAngle().getRadians();
+        double phi_f = qf.minus(qc).getAngle().getRadians();
+
+        // Interpolate points on the arc between the endpoints
+        List<Translation2d> ret = new ArrayList<>();
+        for (int i = 0; i <= numpoints + 1; i++) {
+            double phi = phi_i + (phi_f - phi_i) * ((double) i / (numpoints + 1));
+            Translation2d q = new Translation2d(radius, new Rotation2d(phi)).plus(qc);
+            Translation2d p = q.plus(p2); // Translate frame back to original (frame 'p')
+            ret.add(p);
+        }
+        return ret;
+    }
+
+    public static List<Translation2d> generateSmoothPath(List<Translation2d> points, double radius, int numpoints) {
+        List<Translation2d> ret = new ArrayList<>();
+        ret.add(points.get(0));
+        for (int i = 0; i < points.size() - 2; i++) {
+            List<Translation2d> arcPoints = getArcPoints(points.get(i), points.get(i + 1), points.get(i + 2), radius, numpoints);
+            ret.addAll(arcPoints);
+        }
+        ret.add(points.get(points.size() - 1));
+        return ret;
+    }
+
+    public static void main(String[] args) {
+        List<Translation2d> points = List.of(
+                new Translation2d(1, 0),
+                new Translation2d(2, -1),
+                new Translation2d(3, 2),
+                new Translation2d(2, 2),
+                new Translation2d(4, -1),
+                new Translation2d(1, 1),
+                new Translation2d(2, 4),
+                new Translation2d(2.5, 2.5),
+                new Translation2d(3, 4)
+        );
+        double radius = 0.2;
+        int numpoints = 5;
+
+        List<Translation2d> smoothPath = generateSmoothPath(points, radius, numpoints);
+        for (Translation2d point : smoothPath) {
+            System.out.println("(" + point.getX() + ", " + point.getY() + ")");
+        }
+    }
+}
