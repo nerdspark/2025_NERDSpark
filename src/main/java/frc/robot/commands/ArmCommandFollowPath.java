@@ -47,11 +47,11 @@ public class ArmCommandFollowPath extends Command {
     }else{
       Rotation2d direction = ArmPathplannerUtil.ArmPathChooser(path.getTranslations(), arm.getArmPosition());
       arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmMap.velocity));
-      if ((path.getTranslations().get((path.getTranslations().size()-1)/4)).getDistance(arm.getArmPosition()) < 20.0){
+    }
+      // if ((path.getTranslations().get((path.getTranslations().size()-1)/4)).getDistance(arm.getArmPosition()) < 20.0){
         arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);
         arm.setWristTwistPosition(path.points.get(path.points.size() - 1).wristTwist);
-      }
-    }
+      // }
   }
 
   // Called once the command ends or is interrupted.

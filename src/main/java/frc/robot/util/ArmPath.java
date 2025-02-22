@@ -28,6 +28,7 @@ public class ArmPath {
             this.points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(i), points.get(i+1)));
         }
         this.points.addAll(ArmPathplannerUtil.interpolateArmPath(points.get(points.size()-1), end));
+        this.points.add(end);
     }
 
     /** returns arm setpoints in a translation2d list */

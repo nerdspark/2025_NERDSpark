@@ -133,7 +133,7 @@ public final class Constants {
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount - 1]; 
     static{
       armSetPoints[0] = new ArmPoint(ArmSetpoints.home, false, 0.0, 0.0);
-      armSetPoints[1] = new ArmPoint(new Translation2d(46.82, -16.48), Units.degreesToRadians(-40), 00);
+      armSetPoints[1] = new ArmPoint(new Translation2d(46.82, -12.48), Units.degreesToRadians(0), 0.0);
       armSetPoints[2] = new ArmPoint(new Translation2d(5.0, 10.0));
       armSetPoints[3] = new ArmPoint(new Translation2d(5.0, 16.0));
       armSetPoints[4] = new ArmPoint(new Translation2d(23.27, 38.46));
@@ -315,11 +315,11 @@ public final class Constants {
 
   public static class ArmMap {
     public static final ArmPath testPath = new ArmPath(List.of(new ArmPoint(new Translation2d(7.7, 13.3)), new ArmPoint(new Translation2d(15.7, 31.3)), new ArmPoint(new Translation2d(25.7, 39.3)), new ArmPoint(new Translation2d(35.7, 31.3))));
-    public static final double lookAheadDistance = 7.0;
+    public static final double lookAheadDistance = 12.0;
     public static final double endDistance = 7.0;
-    public static final double linearApproximationTime = 0.1; // seconds
-    public static final double velocity = 10;
-    public static final double maxMotorVelocity = 0.6;
+    public static final double linearApproximationTime = 0.05; // seconds
+    public static final double velocity = 14;
+    public static final double maxMotorVelocity = 10;
   }
 }
 
