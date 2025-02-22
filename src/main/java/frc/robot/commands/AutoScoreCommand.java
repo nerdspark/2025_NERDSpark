@@ -26,18 +26,31 @@ public class AutoScoreCommand extends SequentialCommandGroup {
 
         
     addCommands(     
-        getAutoDriveCommand(drive, robotPoseSupplier, goalPoseSupplier)
+      getAutoDriveToReefCommand(drive, robotPoseSupplier, goalPoseSupplier)
         
     );
   }
 
-  public static Command getAutoDriveCommand(
+  public static Command getAutoDriveToReefCommand(
      CommandSwerveDrivetrain drive,
      Supplier<Pose2d> robotPoseSupplier,
      Supplier<Pose2d> goalPoseSupplier) {
 
-        return new DriveToPose(drive, () -> getDriveTarget(()->drive.getState().Pose, ()->goalPoseSupplier.get()));
-      } 
+       return new DriveToPose(drive, () -> getDriveTarget(()->drive.getState().Pose, ()->goalPoseSupplier.get()));
+          
+          
+  }
+
+  public static Command getAutoDriveToReefCommandXY(
+     CommandSwerveDrivetrain drive,
+     Supplier<Pose2d> robotPoseSupplier,
+     Supplier<Pose2d> goalPoseSupplier) {
+
+          return new DriveToPoseCommand(drive, robotPoseSupplier, 
+                () -> getDriveTarget(()->drive.getState().Pose, ()->goalPoseSupplier.get()),
+                () -> drive.getState().Pose.getRotation());
+          
+  }
 
 
   /** Get drive target. */
@@ -62,11 +75,6 @@ public class AutoScoreCommand extends SequentialCommandGroup {
             0.0,
             1.0);
     double shiftYT = MathUtil.clamp(offset.getX() / Reef.faceLength, 0.0, 1.0);
-    //  goal.transformBy(
-    //     GeomUtil.toTransform2d(
-    //         -shiftXT * maxDistanceReefLineup,
-    //         Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY())));
-
 
     DogLog.log("AutoScoreCommand/shiftedGoalPose" , goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup, Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d())));
 

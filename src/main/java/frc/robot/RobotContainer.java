@@ -7,41 +7,26 @@ import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoScoreCommand;
-import frc.robot.commands.Autos;
-import frc.robot.commands.DriveToPose;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-
-import dev.doglog.DogLog;
-import frc.robot.QuestNav;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -160,18 +145,19 @@ public class RobotContainer {
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    () -> drivetrain.getState().Pose.getRotation()).until(() -> joystick.x().getAsBoolean()));
+    joystick.y().onTrue(AutoScoreCommand.getAutoDriveToReefCommandXY( drivetrain,
+    () -> drivetrain.getState().Pose, 
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch())
+    .until(() -> joystick.x().getAsBoolean()));
 
     // joystick.leftBumper().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.leftBumper().onTrue( new AutoScoreCommand(drivetrain,
+    joystick.leftBumper().onTrue(AutoScoreCommand.getAutoDriveToReefCommand(drivetrain,
     () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch()
-    ).until(() -> joystick.rightBumper().getAsBoolean()));
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch())
+    .until(() -> joystick.rightBumper().getAsBoolean()));
 
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()

@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,6 +41,8 @@ public class DriveToPoseCommand extends Command {
 
     private final Supplier<Pose2d> currentPoseProvider;
     private final Supplier<Rotation2d> robotAngle;
+
+
     // private  final Pose2d goalPose;
 
     private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
@@ -124,6 +127,7 @@ public class DriveToPoseCommand extends Command {
         omegaController.setGoal(targetPoseSupplier.get().getRotation().getDegrees());
         xController.setGoal(targetPoseSupplier.get().getX());
         yController.setGoal(targetPoseSupplier.get().getY());
+
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -133,6 +137,12 @@ public class DriveToPoseCommand extends Command {
         // SmartDashboard.putString("DriveToPoseCommand", "Execute");
 
         var robotPose = currentPoseProvider.get();
+        var targetPose = targetPoseSupplier.get();
+
+        omegaController.setGoal(targetPoseSupplier.get().getRotation().getDegrees());
+        xController.setGoal(targetPoseSupplier.get().getX());
+        yController.setGoal(targetPoseSupplier.get().getY());
+
         DogLog.log("DriveToPoseCommand/robotPose.X", robotPose.getX());
         DogLog.log("DriveToPoseCommand/robotPose.Y", robotPose.getY());
         DogLog.log("DriveToPoseCommand/robotAngle", robotAngle.get().getDegrees());
@@ -161,7 +171,6 @@ public class DriveToPoseCommand extends Command {
         }
 
         DogLog.log("DriveToPoseCommand/Y Speed", ySpeed);
-
 
         var omegaSpeed = omegaController.calculate(robotAngle.get().getDegrees());
         if (omegaController.atGoal()) {
