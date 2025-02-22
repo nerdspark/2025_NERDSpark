@@ -154,59 +154,67 @@ public final class Constants {
     static{
       intermediatePoints[0][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(22.43, 30.52)), new ArmPoint(new Translation2d(47.519, 10.114)));
 
-      intermediatePoints[0][2] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[0][3] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[0][4] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[0][5] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[0][2] = List.of();
+      intermediatePoints[0][3] = List.of();
+      intermediatePoints[0][4] = List.of();
+      intermediatePoints[0][5] = List.of();
     
-      intermediatePoints[1][2] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[1][3] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[1][4] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(40.0, 15.0)));
-      intermediatePoints[1][5] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      intermediatePoints[1][2] = List.of();
+      intermediatePoints[1][3] = List.of();
+      intermediatePoints[1][4] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(30.0, 24.0)));
+      intermediatePoints[1][5] = List.of();
 
-      intermediatePoints[2][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[2][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[2][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[2][3] = List.of();
+      intermediatePoints[2][4] = List.of();
+      intermediatePoints[2][5] = List.of();
 
-      intermediatePoints[3][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[3][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[3][4] = List.of();
+      intermediatePoints[3][5] = List.of();
 
-      intermediatePoints[4][5] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      intermediatePoints[4][5] = List.of();
+
+      intermediatePoints[0][0] = List.of();
+      intermediatePoints[1][1] = List.of();
+      intermediatePoints[2][2] = List.of();
+      intermediatePoints[3][3] = List.of();
+      intermediatePoints[4][4] = List.of();
+      intermediatePoints[5][5] = List.of();
 
 
-      intermediatePoints[1][0] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(28.43, 22.52)), new ArmPoint(new Translation2d(43.519, 10.114)));
+      // intermediatePoints[1][0] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(47.5, 10.1)), new ArmPoint(new Translation2d(22.4, 30.5)));
 
-      intermediatePoints[2][0] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[3][0] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[4][0] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[5][0] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      // intermediatePoints[2][0] = List.of();
+      // intermediatePoints[3][0] = List.of();
+      // intermediatePoints[4][0] = List.of();
+      // intermediatePoints[5][0] = List.of();
     
-      intermediatePoints[2][1] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[3][1] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
-      intermediatePoints[4][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(12.75, 20.95)));
-      intermediatePoints[5][1] = List.of(new ArmPoint(new Translation2d(20.0, 20.0)));
+      // intermediatePoints[2][1] = List.of();
+      // intermediatePoints[3][1] = List.of();
+      // intermediatePoints[4][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(30.0, 24.0)));
+      // intermediatePoints[5][1] = List.of();
 
-      intermediatePoints[3][2] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[4][2] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[5][2] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      // intermediatePoints[3][2] = List.of();
+      // intermediatePoints[4][2] = List.of();
+      // intermediatePoints[5][2] = List.of();
 
-      intermediatePoints[4][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
-      intermediatePoints[5][3] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      // intermediatePoints[4][3] = List.of();
+      // intermediatePoints[5][3] = List.of();
 
-      intermediatePoints[5][4] = List.of(new ArmPoint(new Translation2d(-14.0, 20.0)));
+      // intermediatePoints[5][4] = List.of();
 
-      // for (int i = 0; i < ArmSetpoints.setPointCount-1; i++){
-      //   for (int j = 0; j < i; j++){
-      //     if (intermediatePoints[i][j] == null && intermediatePoints[j][i] != null){
-      //       intermediatePoints[i][j] = intermediatePoints[j][i];
-      //       Collections.reverse(intermediatePoints[i][j]);
-  
-      //     } else if (intermediatePoints[i][j] != null && intermediatePoints[j][i] == null){
-      //       intermediatePoints[j][i] = intermediatePoints[i][j];
-      //       Collections.reverse(intermediatePoints[j][i]);
-      //     }
-      //   } 
-      // }
+      for (int i = 0; i < ArmSetpoints.setPointCount-1; i++){
+        for (int j = 0; j < i; j++){
+          if (intermediatePoints[i][j] == null && intermediatePoints[j][i] != null){
+            intermediatePoints[i][j] = new ArrayList<>();
+            intermediatePoints[i][j].addAll(intermediatePoints[j][i]);
+            Collections.reverse(intermediatePoints[i][j]);
+          } else if (intermediatePoints[i][j] != null && intermediatePoints[j][i] == null){
+            intermediatePoints[j][i] = new ArrayList<>();
+            intermediatePoints[j][i].addAll(intermediatePoints[i][j]);
+            Collections.reverse(intermediatePoints[j][i]);
+          }
+        } 
+      }
     }
     /**
      * contains a list of intermediate points from first index to second index with wrist twsit/flip movement
@@ -244,7 +252,11 @@ public final class Constants {
       for (int i = 0; i < ArmSetpoints.setPointCount-1; i++){
         for (int j = 0; j < ArmSetpoints.setPointCount-1; j++){
           if (i != j){
-            armPaths[i][j] = new ArmPath(intermediatePoints[i][j], armSetPoints[i], armSetPoints[j]);
+            if (intermediatePoints[i][j].size() != 0) {
+              armPaths[i][j] = new ArmPath(intermediatePoints[i][j], armSetPoints[i], armSetPoints[j]);
+            } else {
+              armPaths[i][j] = new ArmPath(armSetPoints[i], armSetPoints[j]);
+            }
             System.out.println("Created arm path" + i + " " + j);
             System.out.println(armPaths[i][j]);
           } else { // set path to just the endpoint
@@ -315,11 +327,13 @@ public final class Constants {
 
   public static class ArmMap {
     public static final ArmPath testPath = new ArmPath(List.of(new ArmPoint(new Translation2d(7.7, 13.3)), new ArmPoint(new Translation2d(15.7, 31.3)), new ArmPoint(new Translation2d(25.7, 39.3)), new ArmPoint(new Translation2d(35.7, 31.3))));
-    public static final double lookAheadDistance = 12.0;
+    public static final double lookAheadDistance = 10.0;
     public static final double endDistance = 7.0;
     public static final double linearApproximationTime = 0.05; // seconds
     public static final double velocity = 14;
-    public static final double maxMotorVelocity = 10;
+    public static final double maxMotorVelocity = 2;
+    public static final double arcRadius = 15;
+    public static final int arcPoints = 10;
   }
 }
 

@@ -4,8 +4,10 @@
 
 package frc.robot.util;
 
+import java.time.chrono.MinguoDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -53,4 +55,24 @@ public class ArmPathplannerUtil {
         }
         return path;
     }
+
+    /** returns the closest armPoint to the current armPosition 
+     * @param armPoints possible arm setpoints
+     * @param armPosition current arm position
+    */
+    public static int closestArmPoint(ArmPoint[] armPoints, Translation2d armPosition) {
+        Translation2d position = armPosition;
+        double minDist = 1000000;
+        int closestPoint = 0;
+        for (int i = 0; i < armPoints.length; i++) {
+            ArmPoint point = armPoints[i];
+            if (point.position.getDistance(position) < minDist) {
+                minDist = point.position.getDistance(position);
+                closestPoint = i;
+            }
+        }
+        SmartDashboard.putNumber("closest point", closestPoint);
+        return closestPoint;
+    }
+
 }

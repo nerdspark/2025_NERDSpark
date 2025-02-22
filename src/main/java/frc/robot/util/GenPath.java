@@ -1,7 +1,11 @@
+package frc.robot.util;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.util.ArmPoint;
 
 public class GenPath {
 
@@ -13,9 +17,9 @@ public class GenPath {
      * @param p3        Stopping point.
      * @param radius    Radius of circular arc path.
      * @param numPoints Number of points lying between the arc endpoints.
-     * @return A list of Translation2d points describing a path along the circular arc.
+     * @return A list of ArmPoint points describing a path along the circular arc.
      */
-    public static List<Translation2d> getArcPoints(Translation2d p1,
+    public static List<ArmPoint> getArcPoints(Translation2d p1,
                                                    Translation2d p2,
                                                    Translation2d p3,
                                                    double radius,
@@ -44,14 +48,14 @@ public class GenPath {
         Rotation2d phiF = (qf.minus(qc)).getAngle();
 
         // Interpolate points on the arc between the endpoints
-        List<Translation2d> ret = new ArrayList<>();
+        List<ArmPoint> ret = new ArrayList<>();
         for (int i = 0; i < numPoints + 2; i++) {
             double t = (double) i / (numPoints + 1);
             Rotation2d phi = interpolate(phiI, phiF, t);
             // Create a point at the given angle and radius, then translate back by qc and p2
             Translation2d q = fromPolar(radius, phi).plus(qc);
             Translation2d p = q.plus(p2);
-            ret.add(p);
+            ret.add(new ArmPoint(p));
         }
         return ret;
     }
@@ -59,25 +63,35 @@ public class GenPath {
     /**
      * Generates a smooth path through the given list of points by replacing each bend with an arc.
      *
-     * @param points    A sequence of Translation2d points.
+     * @param points    A sequence of ArmPoint points.
      * @param radius    The radius of the arcs.
      * @param numPoints The number of points to generate between each pair of arc endpoints.
-     * @return A list of Translation2d points representing the smooth path.
+     * @return A list of ArmPoint points representing the smooth path.
      */
-    public static List<Translation2d> generateSmoothPath(List<Translation2d> points,
+    public static List<ArmPoint> generateSmoothPath(List<ArmPoint> points,
                                                            double radius,
                                                            int numPoints) {
-        List<Translation2d> ret = new ArrayList<>();
+        List<ArmPoint> ret = new ArrayList<>();
         if (points.isEmpty()) {
             return ret;
         }
         ret.add(points.get(0));
         for (int i = 0; i < points.size() - 2; i++) {
-            List<Translation2d> arcPoints = getArcPoints(points.get(i), points.get(i + 1), points.get(i + 2), radius, numPoints);
+            List<ArmPoint> arcPoints = getArcPoints(points.get(i).position, points.get(i + 1).position, points.get(i + 2).position, radius, numPoints);
             ret.addAll(arcPoints);
         }
         ret.add(points.get(points.size() - 1));
         return ret;
+    }
+
+    public static ArmPath generateSmoothPath(ArmPoint start, List<ArmPoint> points, ArmPoint end, 
+    double radius,
+    int numPoints) {
+        List<ArmPoint> temp = new ArrayList<>();
+        temp.addAll(points);
+        temp.add(0, start);
+        temp.add(end);
+        return new ArmPath(generateSmoothPath(temp, radius, numPoints), end);
     }
 
     /**
@@ -118,25 +132,25 @@ public class GenPath {
 
     // Example usage of the above methods.
     public static void main(String[] args) {
-        List<Translation2d> points = new ArrayList<>();
-        points.add(new Translation2d(1, 0));
-        points.add(new Translation2d(2, -1));
-        points.add(new Translation2d(3, 2));
-        points.add(new Translation2d(2, 2));
-        points.add(new Translation2d(4, -1));
-        points.add(new Translation2d(1, 1));
-        points.add(new Translation2d(2, 4));
-        points.add(new Translation2d(2.5, 2.5));
-        points.add(new Translation2d(3, 4));
+        List<ArmPoint> points = new ArrayList<>();
+        points.add(new ArmPoint(new Translation2d(1, 0)));
+        points.add(new ArmPoint(new Translation2d(2, -1)));
+        points.add(new ArmPoint(new Translation2d(3, 2)));
+        points.add(new ArmPoint(new Translation2d(2, 2)));
+        points.add(new ArmPoint(new Translation2d(4, -1)));
+        points.add(new ArmPoint(new Translation2d(1, 1)));
+        points.add(new ArmPoint(new Translation2d(2, 4)));
+        points.add(new ArmPoint(new Translation2d(2.5, 2.5)));
+        points.add(new ArmPoint(new Translation2d(3, 4)));
 
         double radius = 0.2;
         int numPoints = 5;
 
-        List<Translation2d> smoothPath = generateSmoothPath(points, radius, numPoints);
+        List<ArmPoint> smoothPath = generateSmoothPath(points, radius, numPoints);
 
         // Print the generated smooth path points.
-        for (Translation2d point : smoothPath) {
-            System.out.println("Point: (" + point.getX() + ", " + point.getY() + ")");
+        for (ArmPoint point : smoothPath) {
+            System.out.println("Point: (" + point.position.getX() + ", " + point.position.getY() + ")");
         }
     }
 }
