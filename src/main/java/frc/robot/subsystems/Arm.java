@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -37,6 +38,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
 import frc.robot.Constants.ArmSetpoints;
+import frc.robot.Constants.ArmVelocityGains;
 import frc.robot.Constants.ArmMap;
 import frc.robot.Constants.ArmSetpoints;
 
@@ -72,6 +74,12 @@ public class Arm extends SubsystemBase {
         .withKD(ArmGains.shoulderD)
         .withKG(ArmGains.shoulderG)
         .withGravityType(GravityTypeValue.Arm_Cosine);
+    shoulderconfig.Slot1 = new Slot1Configs()
+        .withKP(ArmVelocityGains.shoulderP)
+        .withKI(ArmVelocityGains.shoulderI)
+        .withKD(ArmVelocityGains.shoulderD)
+        .withKG(ArmVelocityGains.shoulderG)
+        .withGravityType(GravityTypeValue.Arm_Cosine);
     
 
     shoulderLeft
@@ -99,6 +107,12 @@ public class Arm extends SubsystemBase {
       .withKI(ArmGains.elbowI)
       .withKD(ArmGains.elbowD)
       .withKG(ArmGains.elbowG)
+      .withGravityType(GravityTypeValue.Arm_Cosine);
+    elbowconfig.Slot1 = new Slot1Configs()
+      .withKP(ArmVelocityGains.elbowP)
+      .withKI(ArmVelocityGains.elbowI)
+      .withKD(ArmVelocityGains.elbowD)
+      .withKG(ArmVelocityGains.elbowG)
       .withGravityType(GravityTypeValue.Arm_Cosine);
         
     elbowLeft
@@ -272,13 +286,18 @@ public class Arm extends SubsystemBase {
       elbowVelocity = elbowVelocity * (ArmMap.maxMotorVelocity/currentMaxV);
     }
     if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
+      SmartDashboard.putBoolean("shoulder soft limit triggered", true);
+      
       setShoulderVelocity(0);
     } else {
+      SmartDashboard.putBoolean("shoulder soft limit triggered", false);
       setShoulderVelocity(shoulderVelocity);
     }
     if(Math.abs(elbowPosition - shoulderPosition) > Math.abs(ArmConstants.elbowOffset - ArmConstants.shoulderOffset) * (2*Math.PI)){
+      SmartDashboard.putBoolean("elbow soft limit triggered", true);
       setElbowVelocity(shoulderVelocity);
     } else {
+      SmartDashboard.putBoolean("elbow soft limit triggered", false);
       setElbowVelocity(elbowVelocity);
     }  
   }
@@ -294,9 +313,9 @@ public class Arm extends SubsystemBase {
     //     elbowRight.setControl(new DutyCycleOut(0));
     // } else {
     elbowLeft.setControl(
-            new PositionVoltage(position).withPosition(position));
+            new PositionVoltage(position).withPosition(position).withSlot(0));
     elbowRight.setControl(
-            new PositionVoltage(position).withPosition(position));
+            new PositionVoltage(position).withPosition(position).withSlot(0));
     // }
     SmartDashboard.putNumber("elbow Left Position error", position - elbowLeft.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elbow Right Position error", position - elbowRight.getPosition().getValueAsDouble());
@@ -361,9 +380,9 @@ public class Arm extends SubsystemBase {
         //     shoulderRight.setControl(new DutyCycleOut(0));
         // } else {
             shoulderLeft.setControl(
-                    new PositionVoltage(position).withPosition(position));
+                    new PositionVoltage(position).withPosition(position).withSlot(0));
             shoulderRight.setControl(
-                    new PositionVoltage(position).withPosition(position));
+                    new PositionVoltage(position).withPosition(position).withSlot(0));
             SmartDashboard.putNumber("shoulder target pos", position);
             SmartDashboard.putNumber("shoulder Left Position error", position - shoulderLeft.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("shoulder Right Position error", position - shoulderRight.getPosition().getValueAsDouble());
@@ -379,13 +398,14 @@ public class Arm extends SubsystemBase {
 
 
   public void setShoulderVelocity(double velocity) {
-    shoulderLeft.setControl(new VelocityVoltage(velocity));
-    shoulderRight.setControl(new VelocityVoltage(velocity));
+    shoulderLeft.setControl(new VelocityVoltage(velocity).withSlot(1));
+    shoulderRight.setControl(new VelocityVoltage(velocity).withSlot(1));
   }
 
   public void setElbowVelocity(double velocity) {
-    elbowLeft.setControl(new VelocityVoltage(velocity));
-    elbowRight.setControl(new VelocityVoltage(velocity));
+    elbowLeft.setControl(new VelocityVoltage(velocity).withSlot(1));
+    elbowRight.setControl(new VelocityVoltage(velocity).withSlot(1));
+    
   }
 
   public void setWristFlipVelocity(double velocity) {
