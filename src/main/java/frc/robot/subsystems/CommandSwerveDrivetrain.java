@@ -211,7 +211,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
                 () -> QuestNAV.getRobotPose().get().toPose2d(), //() -> getState().Pose, // Supplier of current robot pose
-                QuestNAV::resetPose, //this::resetPose, // Consumer for seeding pose against auto
+                QuestNAV::softReset, //this::resetPose, // Consumer for seeding pose against auto
                 () -> getState().Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(

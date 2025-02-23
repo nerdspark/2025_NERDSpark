@@ -148,7 +148,6 @@ public class RobotContainer {
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     joystick.y().whileTrue(QuestNavOffset.determineOffsetToRobotCenter(drivetrain));
-    joystick.a().onTrue(new InstantCommand(() -> QuestNavOffset.zeroPose()));
 
     // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
