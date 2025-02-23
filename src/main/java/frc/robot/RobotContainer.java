@@ -68,7 +68,7 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final Joystick buttonBoard = new Joystick(1);
 
-    private QuestNav5010 QuestNav = new QuestNav5010(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(0))));
+    private QuestNav5010 QuestNavOffset = new QuestNav5010(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
@@ -119,7 +119,7 @@ public class RobotContainer {
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
     );
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    //joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain.applyRequest(() ->
       point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
     ));
@@ -147,7 +147,8 @@ public class RobotContainer {
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    joystick.y().whileTrue(new InstantCommand(() -> QuestNav.determineOffsetToRobotCenter(drivetrain)));
+    joystick.y().whileTrue(QuestNavOffset.determineOffsetToRobotCenter(drivetrain));
+    joystick.a().onTrue(new InstantCommand(() -> QuestNavOffset.zeroPose()));
 
     // joystick.y().onTrue(new DriveToPoseCommand(drivetrain,() -> drivetrain.getState().Pose, 
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),

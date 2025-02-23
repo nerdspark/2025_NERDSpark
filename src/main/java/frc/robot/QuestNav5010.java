@@ -27,6 +27,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -50,6 +51,7 @@ public class QuestNav5010 {
     private FloatArraySubscriber quaternion;
     private FloatArraySubscriber eulerAngles;
     private DoubleSubscriber battery;
+    private double startTimestamp;
 
     private ChassisSpeeds velocity;
     private Pose3d previousPose;
@@ -78,6 +80,7 @@ public class QuestNav5010 {
         super();
         this.robotToQuest = robotToQuest;
         setupNetworkTables(networkTableRoot);
+        setupInitialTimestamp();
     }
 
     public QuestNav5010(Transform3d robotToQuest, String networkTableRoot) {
@@ -85,8 +88,13 @@ public class QuestNav5010 {
         this.robotToQuest = robotToQuest;
         this.networkTableRoot = networkTableRoot;
         setupNetworkTables(networkTableRoot);
+        setupInitialTimestamp();
     }
 
+    private void setupInitialTimestamp() {
+        startTimestamp = timestamp.get();
+    }
+    
     private void setupNetworkTables(String root) {
         networkTable = networkTableInstance.getTable(root);
         miso = networkTable.getIntegerTopic("miso").getEntry(0);
@@ -118,7 +126,8 @@ public class QuestNav5010 {
 
     public Optional<Pose3d> getRobotPose() {
         if (RobotBase.isReal()) {
-            return Optional.of(new Pose3d(getPosition(), getRotation()));
+            Pose3d pose = new Pose3d(getPosition(), getRotation());
+            return Optional.of(pose);
         } else {
             return Optional.empty();
         }
@@ -141,20 +150,28 @@ public class QuestNav5010 {
 
     public double getConfidence() {
         if (RobotBase.isReal()) {
-            return 0.00001;
+            return 0.01;
         } else {
             return Double.MAX_VALUE;
         }
     }
 
     public double getCaptureTime() {
-        return timestamp.getAsDouble();
+        double t = RobotController.getFPGATime() / 1E6;
+        SmartDashboard.putNumber("Quest Timestamp", t);
+        return t;
     }
 
     public boolean isActive() {
-        if (timestamp.get() == 0.0 || RobotBase.isSimulation() || DriverStation.isDisabled()) {
+        double t = timestamp.get();
+        boolean simulation = RobotBase.isSimulation();
+        boolean disabled = DriverStation.isDisabled();
+        double frame = frameCount.get();
+        double previousFrame = previousFrameCount;
+        if (t == 0|| simulation || disabled) {
         return false;
         }
+        previousFrameCount = frameCount.get();
         return initializedPosition;
     }
 
@@ -170,6 +187,22 @@ public class QuestNav5010 {
         processQuestCommand(QuestCommand.RESET);
     }
 
+    public void resetPose(Pose2d pose) {
+        initializedPosition = true;
+        Pose3d pose3 = new Pose3d(pose);
+        SmartDashboard.putNumberArray("Pose3d Before", new double[] {pose3.getX(), pose3.getY(), pose3.getZ(), pose3.getRotation().getAngle()});
+        pose3.getTranslation().minus(robotToQuest.getTranslation());
+        SmartDashboard.putNumberArray("Pose3d After", new double[] {pose3.getX(), pose3.getY(), pose3.getZ(), pose3.getRotation().getAngle()});
+        initPose = pose3;
+        resetQuestPose();
+    }
+    
+    public void zeroPose() {
+        initializedPosition = true;
+        initPose = new Pose3d(new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
+        resetQuestPose();
+    }
+    
     public void resetPose(Pose3d pose) {
         initializedPosition = true;
         initPose = pose;
@@ -252,9 +285,10 @@ public class QuestNav5010 {
     public Command determineOffsetToRobotCenter(CommandSwerveDrivetrain drivetrain) {
         return Commands.repeatingSequence(
             Commands.run(
-            () -> {
-                drivetrain.setControl(driveToPoseRequest.withSpeeds(new ChassisSpeeds(0, 0, 0.314)));
-            }, drivetrain).withTimeout(0.5),
+                () -> {
+                    drivetrain.setControl(driveToPoseRequest.withSpeeds(new ChassisSpeeds(0, 0, 0.314)));
+                }
+            ).withTimeout(0.5),
             Commands.runOnce(() -> {
                 // Update current offset
                 Translation2d offset = calculateOffsetToRobotCenter();
@@ -265,7 +299,8 @@ public class QuestNav5010 {
 
                 SmartDashboard.putNumberArray("Quest Calculated Offset to Robot Center", new double[] { _calculatedOffsetToRobotCenter.getX(), _calculatedOffsetToRobotCenter.getY() });
 
-            }).onlyIf(() -> getRotation().getMeasureZ().in(Degrees) > 30));
+                }
+            ).onlyIf(() -> getRotation().getMeasureZ().in(Degrees) > 30 || getRotation().getMeasureZ().in(Degrees) < 0));
     }
 
 }
