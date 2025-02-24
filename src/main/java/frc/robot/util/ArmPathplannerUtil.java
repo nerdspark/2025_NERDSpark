@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.ArmMap;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 
 /** Add your docs here. */
@@ -24,37 +24,88 @@ public class ArmPathplannerUtil {
     public static Rotation2d ArmPathChooser(List<Translation2d> armPaths,Translation2d position){
         Translation2d closestVector = new Translation2d(10000, 100000);
         for (int i = armPaths.size() - 1; i >= 0; i-- ){
-            SmartDashboard.putNumber("distance pos - target", armPaths.get(i).getDistance(position));
-            if (armPaths.get(i).getDistance(position) < ArmMap.lookAheadDistance){
+            // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).getDistance(position));
+            if (armPaths.get(i).getDistance(position) < ArmConstants.lookAheadDistance){
                 Rotation2d angle = armPaths.get(i).minus(position).getAngle();
-                SmartDashboard.putBoolean("on path", true);
-                SmartDashboard.putNumber("target point angle", angle.getDegrees());
+                // SmartDashboard.putBoolean("on path", true);
+                // SmartDashboard.putNumber("target point angle", angle.getDegrees());
                 return angle;
             }
             if (armPaths.get(i).getDistance(position) < closestVector.getNorm()){
                 closestVector = armPaths.get(i).minus(position);
             }
         }
-        SmartDashboard.putBoolean("on path", false);
-        SmartDashboard.putNumber("target point angle", closestVector.getAngle().getDegrees());
+        // SmartDashboard.putBoolean("on path", false);
+        // SmartDashboard.putNumber("target point angle", closestVector.getAngle().getDegrees());
         return closestVector.getAngle();
     }
+    public static ArmPoint getNextPoint(List<ArmPoint> armPaths, Translation2d position) {
+        ArmPoint closestArmPoint = new ArmPoint(new Translation2d(1000000,1000000));
+        for (int i = armPaths.size() - 1; i >= 0; i-- ){
+            // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).position.getDistance(position));
+            if (armPaths.get(i).position.getDistance(position) < ArmConstants.lookAheadDistance){
+                Rotation2d angle = armPaths.get(i).position.minus(position).getAngle();
+                // SmartDashboard.putBoolean("on path", true);
+                // SmartDashboard.putNumber("target point angle", angle.getDegrees());
+                return armPaths.get(i);
+            }
+            if (armPaths.get(i).position.getDistance(position) < closestArmPoint.position.getNorm()){
+                closestArmPoint = armPaths.get(i);
+            }
+        }
+        return closestArmPoint;
+    }
+   
+
     /** checks if the arm is at the end of the path */
     public static boolean CheckArmPosition(List<Translation2d> armPaths, Translation2d position){
-        return position.getDistance(armPaths.get(armPaths.size()-1)) < ArmMap.endDistance;
+        return position.getDistance(armPaths.get(armPaths.size()-1)) < ArmConstants.endDistance;
     }
-    /** interpolates linearly between start and end */
+    /** interpolates linearly between start and end, includes endpoint but not startpoint */
     public static List<ArmPoint> interpolateArmPath(ArmPoint start, ArmPoint end){
         List<ArmPoint> path = (List<ArmPoint>) new ArrayList<ArmPoint>();
-        double distance = start.position.getDistance(end.position);
-        Translation2d step = end.position.minus(start.position).div(distance);
+        // path.add(start);
 
-        //TODO: add wrist interpolation or other way to time wrist movement
-        for (double i = 0; i < distance; i += ArmSetpoints.interpolationDistance){
-            path.add(new ArmPoint(start.position.plus(step.times(i))));
+        //interpolate polarly every 1 degree
+        Rotation2d step = Rotation2d.fromDegrees(0.1);
+        int pointCount = (int) ((end.position.getAngle().minus(start.position.getAngle())).getDegrees() / 0.1);
+        double stepDist = (end.position.getNorm() - start.position.getNorm()) / (pointCount);
+
+        if (pointCount < 0) {
+            pointCount = -pointCount;
+            step = step.times(-1);
+            stepDist *= -1;
         }
+        // if (pointCount > 5) { // continue interpolation polarly
+            for (int i = 1; i <= pointCount; i++){
+                boolean inBend = i < pointCount/2 ? start.inBend : end.inBend;
+                path.add(new ArmPoint(new Translation2d(start.position.getNorm() + (stepDist * i), start.position.getAngle().plus(step.times(i))), inBend));
+            }
+        // } else { // switch to linear interpolation
+        //     double distance = start.position.getDistance(end.position);
+        //     Translation2d stepLinear = end.position.minus(start.position).div(distance).times(ArmSetpoints.interpolationDistance);
+        //     int pointCountLinear = (int)(distance/ArmSetpoints.interpolationDistance);
+        //     for (int i = 1; i <= pointCountLinear; i++){
+        //         boolean inBend = i < pointCountLinear/2 ? start.inBend : end.inBend;
+        //         path.add(new ArmPoint(start.position.plus(stepLinear.times(i)), inBend));
+        //     }
+        // }
+
+        path.add(end);
+        
+        //TODO: add wrist interpolation or other way to time wrist movement
+
         return path;
     }
+
+    // /** interpolates linearly between all points */
+    // public static List<ArmPoint> interpolateArmPath(List<ArmPoint> points){
+    //     List<ArmPoint> path = (List<ArmPoint>) new ArrayList<ArmPoint>();
+    //     for (int i = 0; i < points.size()+1; i++) {
+    //         path.addAll(interpolateArmPath(points.get(i), points.get(i+1)));
+    //     }
+    //     return path;
+    // }
 
     /** returns the closest armPoint to the current armPosition 
      * @param armPoints possible arm setpoints
@@ -71,7 +122,7 @@ public class ArmPathplannerUtil {
                 closestPoint = i;
             }
         }
-        SmartDashboard.putNumber("closest point", closestPoint);
+        // SmartDashboard.putNumber("closest point", closestPoint);
         return closestPoint;
     }
 

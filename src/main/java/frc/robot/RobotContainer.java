@@ -5,7 +5,7 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
-import frc.robot.Constants.ArmMap;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmTestAngles;
 import frc.robot.Constants.OperatorConstants;
@@ -43,8 +43,8 @@ import frc.robot.subsystems.Arm;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    // private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    // private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     // private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -54,18 +54,18 @@ public class RobotContainer {
     // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     public Arm arm;
     private Gripper gripper;
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
 
     // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // private final CommandXboxController m_driverController =
+  //     new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -115,9 +115,12 @@ public class RobotContainer {
         // joystick.b().onTrue(new ArmCommandFollowPath(arm, ArmSetpoints.armPaths[0][1], () -> false));
         // joystick.b().onTrue(new ArmCommandFollowPath(arm, GenPath.generateSmoothPath(new ArmPoint(arm.getArmPosition()), () -> ArmSetpoints.intermediatePoints[ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, () -> arm.getArmPosition())][1], ArmSetpoints.armSetPoints[1], 5, 10), () -> false));
         // joystick.y().onTrue(new ArmCommandFollowPath(arm, GenPath.generateSmoothPath(new ArmPoint(arm.getArmPosition()), () -> ArmSetpoints.intermediatePoints[ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, () -> arm.getArmPosition())][4], ArmSetpoints.armSetPoints[4], 5, 10), () -> false));
-        joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
+        joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
+        // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
+        joystick.x().onTrue(new ArmCommandPathToPoint(arm, 2));
         joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
-        joystick.a().onTrue(new ArmCommandPathToPoint(arm, 0));
+        joystick.rightBumper().onTrue(new ArmCommandPathToPoint(arm, 0));
+
         //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
@@ -129,7 +132,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**

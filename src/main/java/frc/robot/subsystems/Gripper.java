@@ -47,7 +47,7 @@ public class Gripper extends SubsystemBase {
   }
   public double getGripperPosition(){
     double gripperPosition = gripper.getPosition().getValueAsDouble() * (2d * Math.PI);
-    SmartDashboard.putNumber("Gripper pose", gripperPosition);
+    // SmartDashboard.putNumber("Gripper pose", gripperPosition);
     return gripperPosition;
   } 
   public void setGripperPosition(double position) {

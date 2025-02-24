@@ -4,12 +4,16 @@
 
 package frc.robot.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.ArmSetpoints;
+import frc.robot.subsystems.Arm;
 
 /** a single setpoint for an arm position */
 public class ArmPoint {
-    public Translation2d position = ArmSetpoints.home;
+    public Translation2d position;
     public boolean inBend = false;
     public double wristFlip, wristTwist = 0;
     public ArmPoint(Translation2d point, boolean inBend, double wristFlip, double wristTwist) {
@@ -29,5 +33,12 @@ public class ArmPoint {
     }
     public ArmPoint(Translation2d point) {
         this.position = point;
+    }
+    public static List<ArmPoint> fromTranslations(List<Translation2d> points, boolean inBend) {
+        List<ArmPoint> ret = new ArrayList<>();
+        for (int i = 0; i < points.size(); i++) {
+            ret.add(new ArmPoint(points.get(i), inBend));
+        }
+        return ret;
     }
 }

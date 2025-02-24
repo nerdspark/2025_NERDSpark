@@ -31,7 +31,7 @@ public class ArmCommandGripper extends Command {
     startTime = Timer.getFPGATimestamp();
     if(gripperClose.get()){
       gripper.closeGripper();
-    }else{
+    } else {
       gripper.openGripper();
     }
   }

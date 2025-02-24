@@ -3,8 +3,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.fasterxml.jackson.databind.introspect.DefaultAccessorNamingStrategy.FirstCharBasedValidator;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmSetpoints;
 import frc.robot.util.ArmPoint;
 
 public class GenPath {
@@ -19,7 +23,7 @@ public class GenPath {
      * @param numPoints Number of points lying between the arc endpoints.
      * @return A list of ArmPoint points describing a path along the circular arc.
      */
-    public static List<ArmPoint> getArcPoints(Translation2d p1,
+    public static List<Translation2d> getArcPoints(Translation2d p1,
                                                    Translation2d p2,
                                                    Translation2d p3,
                                                    double radius,
@@ -48,16 +52,45 @@ public class GenPath {
         Rotation2d phiF = (qf.minus(qc)).getAngle();
 
         // Interpolate points on the arc between the endpoints
-        List<ArmPoint> ret = new ArrayList<>();
+        List<Translation2d> ret = new ArrayList<>();
         for (int i = 0; i < numPoints + 2; i++) {
             double t = (double) i / (numPoints + 1);
             Rotation2d phi = interpolate(phiI, phiF, t);
             // Create a point at the given angle and radius, then translate back by qc and p2
             Translation2d q = fromPolar(radius, phi).plus(qc);
             Translation2d p = q.plus(p2);
-            ret.add(new ArmPoint(p));
+            ret.add((p));
         }
         return ret;
+    }
+
+    /** adds inflection points for inBend reversal */
+    public static List<ArmPoint> generateInflectionPoints(List<ArmPoint> points) {
+        for (int i = 0; i < points.size() - 1; i++) {
+            if (points.get(i).inBend != points.get(i+1).inBend) {
+                Translation2d first = points.get(i).position;
+                Translation2d second = points.get(i+1).position;
+                double totalLength = ArmConstants.baseStageLength + ArmConstants.secondStageLength;
+                double firstToInflection = totalLength - first.getNorm();
+                double secondToInflection = totalLength - second.getNorm();
+                double fraction = firstToInflection/(firstToInflection + secondToInflection);
+                Rotation2d angleDiff = second.getAngle().minus(first.getAngle());
+                Rotation2d angle = ((angleDiff).times(fraction)).plus(first.getAngle());
+                ArmPoint inflectionPoint1 = new ArmPoint(new Translation2d(totalLength, angle.minus(angleDiff.times(0.1).times(fraction))), points.get(i).inBend);
+                ArmPoint inflectionPoint2 = new ArmPoint(new Translation2d(totalLength, angle.plus(angleDiff.times(0.1).times(1-fraction))), points.get(i+1).inBend);
+                points.add(i+1, inflectionPoint1);
+                points.add(i+2, inflectionPoint2);
+                i+=2;
+                System.out.println("fraction" + fraction);
+                System.out.println("anglediff" + angleDiff.getDegrees());
+            }
+        }
+        int i = 0;
+        for (ArmPoint point : points) {
+            System.out.println(point.position +""+ i +""+ point.inBend);
+            i++;
+        }
+        return points;
     }
 
     /**
@@ -71,27 +104,38 @@ public class GenPath {
     public static List<ArmPoint> generateSmoothPath(List<ArmPoint> points,
                                                            double radius,
                                                            int numPoints) {
+        for (int i = 0; i < points.size() -1; i++) {
+            if (points.get(i).position.getDistance(points.get(i+1).position) < 0.001 && (points.get(i).inBend == points.get(i).inBend)) {
+                points.remove(i+1);
+                i--;
+            }
+        }
         List<ArmPoint> ret = new ArrayList<>();
         if (points.isEmpty()) {
             return ret;
         }
         ret.add(points.get(0));
         for (int i = 0; i < points.size() - 2; i++) {
-            List<ArmPoint> arcPoints = getArcPoints(points.get(i).position, points.get(i + 1).position, points.get(i + 2).position, radius, numPoints);
+            if ((points.get(i).position.getDistance(points.get(i+1).position) > ArmConstants.arcRadius*2) && (points.get(i+1).position.getDistance(points.get(i+2).position) > ArmConstants.arcRadius*2)) {
+                List<ArmPoint> arcPoints = ArmPoint.fromTranslations(getArcPoints(points.get(i).position, points.get(i + 1).position, points.get(i + 2).position, radius, numPoints), points.get(i+1).inBend);
             ret.addAll(arcPoints);
+            } else {
+                ret.add(points.get(i));
+            }
         }
         ret.add(points.get(points.size() - 1));
         return ret;
     }
 
-    public static ArmPath generateSmoothPath(ArmPoint start, List<ArmPoint> points, ArmPoint end, 
+    public static List<ArmPoint> generateSmoothPath(ArmPoint start, List<ArmPoint> points, ArmPoint end, 
     double radius,
     int numPoints) {
         List<ArmPoint> temp = new ArrayList<>();
         temp.addAll(points);
         temp.add(0, start);
         temp.add(end);
-        return new ArmPath(generateSmoothPath(temp, radius, numPoints), end);
+        List<ArmPoint> ret = generateSmoothPath(temp, radius, numPoints);
+        return ret;
     }
 
     /**

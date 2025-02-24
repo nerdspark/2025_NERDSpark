@@ -14,21 +14,20 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmMap;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.util.ArmPath;
 import frc.robot.util.ArmPathplannerUtil;
+import frc.robot.util.ArmPoint;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmCommandFollowPath extends Command {
   private Arm arm;
     private ArmPath path;
-    private Supplier<Boolean> inBend;
     /** Creates a new ArmCommand. */
-    public ArmCommandFollowPath(Arm arm, ArmPath path, Supplier<Boolean> inBend) {
+    public ArmCommandFollowPath(Arm arm, ArmPath path) {
         this.arm = arm;
         this.path = path;
-        this.inBend = inBend;
         addRequirements(arm);
     }
 
@@ -40,13 +39,14 @@ public class ArmCommandFollowPath extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
-    SmartDashboard.putBoolean("Check", false);
+    // SmartDashboard.putBoolean("Check", false);
     if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())){
-      SmartDashboard.putBoolean("Check", true);
-      arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), inBend.get());
-    }else{
+      // SmartDashboard.putBoolean("Check", true);
+      arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), path.points.get(path.getTranslations().size() - 1).inBend);
+    } else {
+      ArmPoint nextPoint = ArmPathplannerUtil.getNextPoint(path.points, arm.getArmPosition());
       Rotation2d direction = ArmPathplannerUtil.ArmPathChooser(path.getTranslations(), arm.getArmPosition());
-      arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmMap.velocity));
+      arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmConstants.velocity), nextPoint.inBend);
     }
       // if ((path.getTranslations().get((path.getTranslations().size()-1)/4)).getDistance(arm.getArmPosition()) < 20.0){
         arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);

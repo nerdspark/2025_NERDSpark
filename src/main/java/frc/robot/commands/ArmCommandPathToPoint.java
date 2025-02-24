@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Rotation;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -13,8 +14,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmMap;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.subsystems.Arm;
 import frc.robot.util.ArmPath;
@@ -26,13 +28,12 @@ import frc.robot.util.GenPath;
 public class ArmCommandPathToPoint extends Command {
   private Arm arm;
     private ArmPath path;
-    private Supplier<Boolean> inBend;
     private int setPoint;
+    private boolean ended = false;
     /** path to the specified armPoint */ // TODO: add inflection point generation and hardstop avoidance to automatic path generation
     public ArmCommandPathToPoint(Arm arm, int setPoint) {
       this.setPoint = setPoint;
         this.arm = arm;
-        this.inBend = () -> false;
         addRequirements(arm);
     }
 
@@ -40,24 +41,35 @@ public class ArmCommandPathToPoint extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    ended = false;
     int closestPoint = ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, arm.getArmPosition());
     if (closestPoint != setPoint) {
-      path = GenPath.generateSmoothPath(new ArmPoint(arm.getArmPosition()), ArmSetpoints.intermediatePoints[closestPoint][setPoint], ArmSetpoints.armSetPoints[setPoint], ArmMap.arcRadius, ArmMap.arcPoints);
+      List<ArmPoint> temp = new ArrayList<>();
+      temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend()));
+      temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPoint]);
+      temp.add(ArmSetpoints.armSetPoints[setPoint]);
+      // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
+      path = new ArmPath(GenPath.generateInflectionPoints(temp));
     } else {
       path = new ArmPath(List.of(ArmSetpoints.armSetPoints[setPoint]));
     }
+    System.out.println(path.toStringList().toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
-    SmartDashboard.putBoolean("Check", false);
-    if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())){
-      SmartDashboard.putBoolean("Check", true);
-      arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), inBend.get());
-    }else{
+    if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())) {
+      ended = true;
+    }
+    // SmartDashboard.putBoolean("Check", false);
+    if (ended){
+      // SmartDashboard.putBoolean("Check", true);
+      arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), path.points.get(path.getTranslations().size() - 1).inBend);
+    } else {
+      ArmPoint nextPoint = ArmPathplannerUtil.getNextPoint(path.points, arm.getArmPosition());
       Rotation2d direction = ArmPathplannerUtil.ArmPathChooser(path.getTranslations(), arm.getArmPosition());
-      arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmMap.velocity));
+      arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmConstants.velocity), nextPoint.inBend);
     }
       // if ((path.getTranslations().get((path.getTranslations().size()-1)/4)).getDistance(arm.getArmPosition()) < 20.0){
         arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);

@@ -15,6 +15,7 @@ public class ArmPath {
     public List<ArmPoint> points = (List<ArmPoint>) new ArrayList<ArmPoint>();
     //TODO: add and incorporate optional inflection point
     
+    
     /** interpolates linearly betwen points */
     public ArmPath(List<ArmPoint> points) {
         for (int i = 0; i < points.size()-1; i++) { // interpolate between each point
@@ -54,6 +55,13 @@ public class ArmPath {
             translations.add(point.position);
         }
         return translations;
+    }
+    public List<String> toStringList() {
+        List<String> Strings = new ArrayList<String>();
+        for (ArmPoint point : points) {
+            Strings.add(point.position + "" + point.inBend);
+        }
+        return Strings;
     }
 
    

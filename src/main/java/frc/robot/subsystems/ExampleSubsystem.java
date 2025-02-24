@@ -43,7 +43,7 @@ public class ExampleSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Distance", getDistance());
+    // SmartDashboard.putNumber("Distance", getDistance());
   }
 
   public double getDistance() {
