@@ -37,11 +37,12 @@ public final class Constants {
     public static final double lookAheadDistance = 10.0;
     public static final double endDistance = 7.0;
     public static final double linearApproximationTime = 0.05; // seconds
-    public static final double velocity = 4;
+    public static final double velocity = 11;
     public static final double maxMotorVelocity = 2;
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
     public static double interpolationDistance = 0.1; // inches
+    public static final double interpolationAngle = 1; // deg
 
     public static final int shoulderMotorLeftPort = 41;
     public static final int shoulderMotorRightPort = 42;
