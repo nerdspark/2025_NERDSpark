@@ -96,7 +96,7 @@ public final class Constants {
     public static final double gripperOffset = 0;
     public static final double shoulderOffset = -0.287 / 2.0 / Math.PI; // TODO fidn these, radians, fwd = 0
     public static final double elbowOffset = 2.340 / 2.0 / Math.PI; // TODO find these, negative of measurement
-    public static final double wristFlipOffset = (0.38) / 2.0 / Math.PI;
+    public static final double wristFlipOffset = (0.38) / 2.0 / Math.PI; // TODO 2.25.2025: retune (should be approx 0.50 / 2PI)
     public static final double wristTwistOffset = -0.35 / 2.0 / Math.PI;
 
     /** wrist flip belting ratio between elbow and the wrist */
@@ -147,6 +147,8 @@ public final class Constants {
       armSetPoints[4] = new ArmPoint(new Translation2d(23.27, 38.46));
       armSetPoints[5] = new ArmPoint(new Translation2d(0.0, ArmConstants.baseStageLength+ArmConstants.secondStageLength));
     }
+    
+
 
     /**
      * contains a list of intermediate points from first index to second index

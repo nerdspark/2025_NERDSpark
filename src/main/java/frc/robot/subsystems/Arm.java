@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.io.Console;
+import java.util.ArrayList;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -67,7 +68,7 @@ public class Arm extends SubsystemBase {
     shoulderconfig.Feedback = new FeedbackConfigs()
         .withFeedbackRotorOffset(ArmConstants.shoulderOffset)
         .withSensorToMechanismRatio(ArmConstants.shoulderRadPerRot);
-    shoulderconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.3);
+    shoulderconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
     shoulderconfig.Slot0 = new Slot0Configs()
         .withKP(ArmGains.shoulderP)
         .withKI(ArmGains.shoulderI)
@@ -101,7 +102,7 @@ public class Arm extends SubsystemBase {
     elbowconfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.elbowOffset)
       .withSensorToMechanismRatio(ArmConstants.elbowRadPerRot);
-    elbowconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+    elbowconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
     elbowconfig.Slot0 = new Slot0Configs()
       .withKP(ArmGains.elbowP)
       .withKI(ArmGains.elbowI)
@@ -163,7 +164,7 @@ public class Arm extends SubsystemBase {
     wristTwist
       .getConfigurator()
       .apply(wristTwistConfig.withMotorOutput(new MotorOutputConfigs()
-      .withInverted(InvertedValue.CounterClockwise_Positive)
+      .withInverted(InvertedValue.Clockwise_Positive)
           .withNeutralMode(NeutralModeValue.Coast)));
 
 
@@ -329,6 +330,7 @@ public class Arm extends SubsystemBase {
     return wristTwistPosition;
   }
   public void setWristTwistPosition(double position) {
+    position = MathUtil.clamp(position, 0, Math.PI/2.0);
     position -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
     position += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
     position /= (2d*Math.PI);
