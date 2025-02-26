@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Arm;
 import org.ironmaple.simulation.SimulatedArena;
+import frc.robot.subsystems.Arm;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
@@ -87,14 +88,6 @@ public class Robot extends TimedRobot {
     public void autonomousExit() {}
 
     @Override
-    public void teleopInit() {
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
-        }
-        m_arm.loadPreferences();
-    }
-
-    @Override
     public void teleopPeriodic() {
         if (m_joystick.getTrigger()) {
             // Here, we run PID control like normal.
@@ -103,7 +96,25 @@ public class Robot extends TimedRobot {
             // Otherwise, we disable the motor.
             m_arm.stop();
           }
-    }
+  }
+
+  /** This function is called periodically during autonomous. */
+  @Override
+  public void autonomousPeriodic() {}
+
+  @Override
+  public void teleopInit() {
+    m_robotContainer.arm.resetOffsets();
+    m_arm.loadPreferences();
+// TODO: remove after testing
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    } 
+  }
 
     @Override
     public void teleopExit() {}

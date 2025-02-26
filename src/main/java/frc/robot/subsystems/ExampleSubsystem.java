@@ -4,12 +4,18 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.CANrange;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ExampleSubsystem extends SubsystemBase {
+  private CANrange sensor;
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
+  public ExampleSubsystem() {
+    sensor = new CANrange(3);
+  }
 
   /**
    * Example command factory method.
@@ -37,7 +43,11 @@ public class ExampleSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // SmartDashboard.putNumber("Distance", getDistance());
+  }
+
+  public double getDistance() {
+    return sensor.getDistance().getValueAsDouble();
   }
 
   @Override
