@@ -42,6 +42,7 @@ public final class Constants {
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
     public static double interpolationDistance = 0.1; // inches
+    public static int rangePortMiddle;
 
     public static final int shoulderMotorLeftPort = 41;
     public static final int shoulderMotorRightPort = 42;
@@ -50,16 +51,19 @@ public final class Constants {
     public static final int wristFlipMotorPort = 45;
     public static final int wristTwistMotorPort = 46;
     public static final int gripperMotorPort = 47;
+    public static final int rangeMiddlePort = 34;
+    public static final int rangeLeftPort = 31;
+    public static final int rangeRightPort = 32;
 
 
     public static final double currentLimitShoulder = 15.0;
     public static final double currentLimitElbow = 10.0;
     public static final double currentLimitWristFlip = 10.0; //40.0
     public static final double currentLimitWristTwist = 5.0;
-    public static final double currentLimitGripperOpen = 3.0;
-    public static final double currentLimitGripperClose = 10.0;
-    public static final double gripperPowerClose = 0.1;
-    public static final double gripperPowerOpen = -0.04;
+    public static final double currentLimitGripperOpen = 10.0;
+    public static final double currentLimitGripperClose = 30.0;
+    public static final double gripperPowerClose = 1.0;
+    public static final double gripperPowerOpen = -0.1;
 
     //shoulder true offset: 34.513 deg below forward horizontal
     //shoulder gearbox: 75:1

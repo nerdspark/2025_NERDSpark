@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -23,6 +25,9 @@ import frc.robot.Constants.ArmGains;
 public class Gripper extends SubsystemBase {
   private TalonFX gripper;
   private TalonFXConfiguration gripperConfig = new TalonFXConfiguration();
+  private CANrange sensorMiddle;
+  private CANrange sensorLeft;
+  private CANrange sensorRight;
 
   /** Creates a new Gripper. */
   public Gripper() {
@@ -44,6 +49,15 @@ public class Gripper extends SubsystemBase {
         gripper
           .getConfigurator()
           .apply(gripperConfig);
+    sensorMiddle = new CANrange(ArmConstants.rangeMiddlePort, "rio");
+    sensorLeft = new CANrange(ArmConstants.rangeLeftPort, "rio");
+    sensorRight = new CANrange(ArmConstants.rangeRightPort, "rio");
+    CANrangeConfiguration sensorMiddleConfig = new CANrangeConfiguration();
+    CANrangeConfiguration sensorLeftConfig = new CANrangeConfiguration();
+    CANrangeConfiguration sensorRightConfig = new CANrangeConfiguration();
+    sensorMiddle.getConfigurator().apply(sensorMiddleConfig);
+    sensorLeft.getConfigurator().apply(sensorLeftConfig);
+    sensorRight.getConfigurator().apply(sensorRightConfig);
   }
   public double getGripperPosition(){
     double gripperPosition = gripper.getPosition().getValueAsDouble() * (2d * Math.PI);
@@ -70,8 +84,28 @@ public class Gripper extends SubsystemBase {
   public void stopGripper() {
     gripper.stopMotor();
   }
+  public double getRangeRightDistance() {
+    return sensorRight.getDistance().getValueAsDouble();
+  }
+  public double getRangeLeftDistance() {
+    return sensorLeft.getDistance().getValueAsDouble();
+  }
+  public double getRangeMiddleDistance() {
+    return sensorMiddle.getDistance().getValueAsDouble();
+  }
+  public boolean getMiddleDetected(){
+    return sensorMiddle.getIsDetected().getValue();
+  }
+  public boolean getLeftDetected(){
+    return sensorLeft.getIsDetected().getValue();
+  }
+  public boolean getRightDetected(){
+    return sensorRight.getIsDetected().getValue();
+  }
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());
+    SmartDashboard.putNumber("l + r sensor", (getRangeLeftDistance() + getRangeRightDistance()) / 2);
     // This method will be called once per scheduler run
   }
 }

@@ -4,17 +4,22 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
+import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.hardware.CANrange;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
 public class ExampleSubsystem extends SubsystemBase {
-  private CANrange sensor;
+  private CANrange sensorMiddle;
+  private CANrange sensorLeft;
+  private CANrange sensorRight;
   /** Creates a new ExampleSubsystem. */
   public ExampleSubsystem() {
-    sensor = new CANrange(3);
+    
   }
 
   /**
@@ -45,10 +50,7 @@ public class ExampleSubsystem extends SubsystemBase {
   public void periodic() {
     // SmartDashboard.putNumber("Distance", getDistance());
   }
-
-  public double getDistance() {
-    return sensor.getDistance().getValueAsDouble();
-  }
+  
 
   @Override
   public void simulationPeriodic() {

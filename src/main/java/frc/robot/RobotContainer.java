@@ -14,6 +14,7 @@ import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandFollowPath;
 import frc.robot.commands.ArmCommandGripper;
+import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import frc.robot.subsystems.Arm;
 
@@ -71,6 +73,8 @@ public class RobotContainer {
   public RobotContainer() {
     arm = new Arm();
     gripper = new Gripper();
+    SignalLogger.setPath("/media/sda1/armLog");
+    SignalLogger.start();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -120,7 +124,8 @@ public class RobotContainer {
         joystick.x().onTrue(new ArmCommandPathToPoint(arm, 2));
         joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
         joystick.rightBumper().onTrue(new ArmCommandPathToPoint(arm, 0));
-
+        gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+        joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
         //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
