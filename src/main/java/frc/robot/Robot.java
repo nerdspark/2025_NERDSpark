@@ -4,63 +4,98 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.Utils;
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Arm;
+import org.ironmaple.simulation.SimulatedArena;
 import frc.robot.subsystems.Arm;
 
-/**
- * The methods in this class are called automatically corresponding to each mode, as described in
- * the TimedRobot documentation. If you change the name of this class or the package after creating
- * this project, you must also update the Main.java file in the project.
- */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+    private Command m_autonomousCommand;
+    private final Arm m_arm = new Arm();
+    private final Joystick m_joystick = new Joystick(OperatorConstants.kJoystickPort);
 
-  private final RobotContainer m_robotContainer;
+    private final RobotContainer m_robotContainer;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  public Robot() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-  }
+    private final boolean kUseLimelight = false;
 
-  /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
-   * that you want ran during disabled, autonomous, teleoperated and test.
-   *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
-   * SmartDashboard integrated updating.
-   */
-  @Override
-  public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
-    // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
-  }
-
-  /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() {}
-
-  @Override
-  public void disabledPeriodic() {}
-
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    public Robot() {
+        m_robotContainer = new RobotContainer();
     }
+
+    @Override
+    public void robotInit() {
+        DogLog.setOptions(new DogLogOptions()
+                .withLogExtras(true)
+                .withCaptureDs(true)
+                .withNtPublish(true)
+                .withCaptureNt(true));
+        DogLog.setPdh(new PowerDistribution());
+    }
+
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+
+        /*
+         * This example of adding Limelight is very simple and may not be sufficient for on-field use.
+         * Users typically need to provide a standard deviation that scales with the distance to target
+         * and changes with number of tags available.
+         *
+         * This example is sufficient to show that vision integration is possible, though exact implementation
+         * of how to use vision should be tuned per-robot and to the team's specification.
+         */
+        // if (kUseLimelight) {
+        //     var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        //     if (llMeasurement != null) {
+        //         m_robotContainer.drivetrain.addVisionMeasurement(
+        //                 llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
+        //     }
+        // }
+    }
+
+    @Override
+    public void disabledInit() {
+        m_arm.stop();
+    }
+
+    @Override
+    public void disabledPeriodic() {}
+
+    @Override
+    public void disabledExit() {}
+
+    @Override
+    public void autonomousInit() {
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+        if (m_autonomousCommand != null) {
+            m_autonomousCommand.schedule();
+        }
+    }
+
+    @Override
+    public void autonomousPeriodic() {}
+
+    @Override
+    public void autonomousExit() {}
+
+    @Override
+    public void teleopPeriodic() {
+        if (m_joystick.getTrigger()) {
+            // Here, we run PID control like normal.
+            m_arm.reachSetpoint();
+          } else {
+            // Otherwise, we disable the motor.
+            m_arm.stop();
+          }
   }
 
   /** This function is called periodically during autonomous. */
@@ -69,35 +104,43 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    m_robotContainer.arm.resetOffsets(); // TODO: remove after testing
+    m_robotContainer.arm.resetOffsets();
+    m_arm.loadPreferences();
+// TODO: remove after testing
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    } 
+  }
+
+    @Override
+    public void teleopExit() {}
+
+    @Override
+    public void testInit() {
+        CommandScheduler.getInstance().cancelAll();
     }
-  }
 
-  /** This function is called periodically during operator control. */
-  @Override
-  public void teleopPeriodic() {}
+    @Override
+    public void testPeriodic() {}
 
-  @Override
-  public void testInit() {
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
-  }
+    @Override
+    public void testExit() {}
 
-  /** This function is called periodically during test mode. */
-  @Override
-  public void testPeriodic() {}
+    @Override
+    public void simulationPeriodic() {
+        DogLog.log("Simulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+        DogLog.log("Simulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        m_arm.simulationPeriodic();
+    }
 
-  /** This function is called once when the robot is first started up. */
-  @Override
-  public void simulationInit() {}
-
-  /** This function is called periodically whilst in simulation. */
-  @Override
-  public void simulationPeriodic() {}
+    @Override
+    public void close() {
+        m_arm.close();
+        super.close();
+    }
 }
+
