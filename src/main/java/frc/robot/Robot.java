@@ -36,12 +36,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        DogLog.setOptions(new DogLogOptions()
-                .withLogExtras(true)
-                .withCaptureDs(true)
-                .withNtPublish(true)
-                .withCaptureNt(true));
-        DogLog.setPdh(new PowerDistribution());
+        // DogLog.setOptions(new DogLogOptions()
+        //         .withLogExtras(true)
+        //         .withCaptureDs(true)
+        //         .withNtPublish(true)
+        //         .withCaptureNt(true));
+        // DogLog.setPdh(new PowerDistribution());
     }
 
     @Override
@@ -125,8 +125,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-        DogLog.log("Simulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
-        DogLog.log("Simulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
+        // DogLog.log("Simulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+        // DogLog.log("Simulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
         m_arm.simulationPeriodic();
     }
 

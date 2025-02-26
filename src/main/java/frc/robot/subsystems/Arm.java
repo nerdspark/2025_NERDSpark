@@ -47,6 +47,7 @@ public class Arm extends SubsystemBase {
 
   private TalonFX shoulderLeft, shoulderRight, elbowLeft, elbowRight, wristFlip, wristTwist;
   
+  public boolean finishedMoving = false;
 
   /** Creates a new Arm. */
   public Arm() {

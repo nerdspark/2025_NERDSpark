@@ -62,14 +62,15 @@ public class RobotContainer {
     private Gripper gripper;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    // private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController joystick = new CommandXboxController(0);
+    private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
+
 
     // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     
 
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
 
   // The robot's subsystems and commands are defined here...
@@ -132,16 +133,10 @@ public class RobotContainer {
         // drivetrain.registerTelemetry(logger::telemeterize);
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    joystick.x().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    joystick.a().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
-    joystick.y().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f))));
-    joystick.b().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 1.0f, 1.0f))));
+    // joystick.x().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+    // joystick.a().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+    // joystick.y().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f))));
+    // joystick.b().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 1.0f, 1.0f))));
 
       //       // Drivetrain will execute this command periodically
       //       drivetrain.applyRequest(() ->
@@ -179,6 +174,8 @@ public class RobotContainer {
         joystick.rightBumper().onTrue(new ArmCommandPathToPoint(arm, 0));
         gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
         joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
+        armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+        armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
         //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);

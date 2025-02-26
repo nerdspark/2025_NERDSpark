@@ -12,13 +12,16 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.subsystems.Arm;
+// import frc.robot.subsystems.LEDSubsytem.LEDSubsystem;
 import frc.robot.util.ArmPath;
 import frc.robot.util.ArmPathplannerUtil;
 import frc.robot.util.ArmPoint;
@@ -42,6 +45,7 @@ public class ArmCommandPathToPoint extends Command {
   @Override
   public void initialize() {
     ended = false;
+    arm.finishedMoving = false;
     int closestPoint = ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, arm.getArmPosition());
     if (closestPoint != setPoint) {
       List<ArmPoint> temp = new ArrayList<>();
@@ -61,15 +65,18 @@ public class ArmCommandPathToPoint extends Command {
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
     if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())) {
       ended = true;
+      arm.finishedMoving = true;
     }
     // SmartDashboard.putBoolean("Check", false);
     if (ended){
       // SmartDashboard.putBoolean("Check", true);
       arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), path.points.get(path.getTranslations().size() - 1).inBend);
+      // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f)));
     } else {
       ArmPoint nextPoint = ArmPathplannerUtil.getNextPoint(path.points, arm.getArmPosition());
       Rotation2d direction = ArmPathplannerUtil.ArmPathChooser(path.getTranslations(), arm.getArmPosition());
       arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmConstants.velocity), nextPoint.inBend);
+      // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f)));
     }
       // if ((path.getTranslations().get((path.getTranslations().size()-1)/4)).getDistance(arm.getArmPosition()) < 20.0){
         arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);
