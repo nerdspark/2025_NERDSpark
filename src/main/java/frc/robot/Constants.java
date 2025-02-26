@@ -284,6 +284,30 @@ public final class Constants {
     public static final double testGripperAngle = Units.degreesToRadians(30);
   }
 
+  public static class IntakeConstants {
+    public static final int intakeDeployMotorPort = 0;
+    public static final int intakeGrabberMotorPort = 0;
+    public static final double intakeDeployCurrentLimit = 10;
+    public static final double intakeGrabberCurrentLimit = 10;
+
+    public static final double deploykP = 0;
+    public static final double deploykI = 0;
+    public static final double deploykD = 0;
+    public static final double deploykG = 0;
+    public static final double grabberkP = 0;
+    public static final double grabberkI = 0;
+    public static final double grabberkD = 0;
+    public static final double grabberkG = 0;
+
+    public static final double deployOffset = 0;
+    public static final double deployRadPerRot = 0;
+    public static final double grabberOffset = 0;
+    public static final double grabberRadPerRot = 0;
+
+    public static final double setpoint1 = 0;
+    public static final double setpoint2 = 1;
+    public static final double setpoint3 = 2;
+  }
 
 }
 
