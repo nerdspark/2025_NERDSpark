@@ -67,8 +67,8 @@ public class ArmPathplannerUtil {
         // path.add(start);
 
         //interpolate polarly every 1 degree
-        Rotation2d step = Rotation2d.fromDegrees(0.1);
-        int pointCount = (int) ((end.position.getAngle().minus(start.position.getAngle())).getDegrees() / 0.1);
+        Rotation2d step = Rotation2d.fromDegrees(ArmConstants.interpolationAngle);
+        int pointCount = (int) ((end.position.getAngle().minus(start.position.getAngle())).getDegrees() / ArmConstants.interpolationAngle);
         double stepDist = (end.position.getNorm() - start.position.getNorm()) / (pointCount);
 
         if (pointCount < 0) {

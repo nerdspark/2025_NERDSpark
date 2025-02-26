@@ -18,13 +18,17 @@ import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.Gripper;
 import frc.robot.util.ArmPath;
 import frc.robot.util.ArmPathplannerUtil;
 import frc.robot.util.ArmPoint;
 import frc.robot.util.GenPath;
 import frc.robot.Telemetry;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -58,9 +62,15 @@ public class RobotContainer {
     private Gripper gripper;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
+    // private final CommandXboxController joystick = new CommandXboxController(0);
 
     // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+
+    
+
+  // The robot's subsystems and commands are defined here...
+  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
 
   // The robot's subsystems and commands are defined here...
   // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -77,6 +87,9 @@ public class RobotContainer {
     SignalLogger.start();
     // Configure the trigger bindings
     configureBindings();
+    // drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
+    // m_LedSubsystem.setDefaultCommand(m_LedSubsystem.runPattern(LEDPattern.solid(Color.kRed)).withName("On"));
+
   }
 
   /**
@@ -90,6 +103,46 @@ public class RobotContainer {
    */
   private void configureBindings() {
       // drivetrain.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            // drivetrain.applyRequest(() ->
+                // drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    // .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    // .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+              // )
+              // m_LedSubsystem.runPattern()
+        // );
+
+      
+
+        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
+            // point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        // ));
+
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        // reset the field-centric heading on left bumper press
+        // joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        // drivetrain.registerTelemetry(logger::telemeterize);
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+
+    new Trigger(m_exampleSubsystem::exampleCondition)
+        .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // cancelling on release.
+    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    joystick.x().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+    joystick.a().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+    joystick.y().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f))));
+    joystick.b().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 1.0f, 1.0f))));
+
       //       // Drivetrain will execute this command periodically
       //       drivetrain.applyRequest(() ->
       //           drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)

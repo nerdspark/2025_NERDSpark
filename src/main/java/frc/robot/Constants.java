@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import java.lang.annotation.Documented;
 import java.lang.reflect.Array;
 import java.rmi.MarshalException;
@@ -30,6 +31,27 @@ public final class Constants {
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kMotorPort = 0;
+    public static final int kEncoderAChannel = 0;
+    public static final int kEncoderBChannel = 1;
+    public static final int kJoystickPort = 0;
+  
+    public static final String kArmPositionKey = "ArmPosition";
+    public static final String kArmPKey = "ArmP";
+  
+    // The P gain for the PID controller that drives this arm.
+    public static final double kDefaultArmKp = 50.0;
+    public static final double kDefaultArmSetpointDegrees = 75.0;
+  
+    // distance per pulse = (angle per revolution) / (pulses per revolution)
+    //  = (2 * PI rads) / (4096 pulses)
+    public static final double kArmEncoderDistPerPulse = 2.0 * Math.PI / 4096;
+  
+    public static final double kArmReduction = 200;
+    public static final double kArmMass = 8.0; // Kilograms
+    public static final double kArmLength = Units.inchesToMeters(30);
+    public static final double kMinAngleRads = Units.degreesToRadians(-75);
+    public static final double kMaxAngleRads = Units.degreesToRadians(255);
   }
 
   public static class ArmConstants {
@@ -37,12 +59,13 @@ public final class Constants {
     public static final double lookAheadDistance = 10.0;
     public static final double endDistance = 7.0;
     public static final double linearApproximationTime = 0.05; // seconds
-    public static final double velocity = 4;
+    public static final double velocity = 11;
     public static final double maxMotorVelocity = 2;
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
     public static double interpolationDistance = 0.1; // inches
     public static int rangePortMiddle;
+    public static final double interpolationAngle = 1; // deg
 
     public static final int shoulderMotorLeftPort = 41;
     public static final int shoulderMotorRightPort = 42;
@@ -288,6 +311,30 @@ public final class Constants {
     public static final double testGripperAngle = Units.degreesToRadians(30);
   }
 
+  public static class IntakeConstants {
+    public static final int intakeDeployMotorPort = 0;
+    public static final int intakeGrabberMotorPort = 0;
+    public static final double intakeDeployCurrentLimit = 10;
+    public static final double intakeGrabberCurrentLimit = 10;
+
+    public static final double deploykP = 0;
+    public static final double deploykI = 0;
+    public static final double deploykD = 0;
+    public static final double deploykG = 0;
+    public static final double grabberkP = 0;
+    public static final double grabberkI = 0;
+    public static final double grabberkD = 0;
+    public static final double grabberkG = 0;
+
+    public static final double deployOffset = 0;
+    public static final double deployRadPerRot = 0;
+    public static final double grabberOffset = 0;
+    public static final double grabberRadPerRot = 0;
+
+    public static final double setpoint1 = 0;
+    public static final double setpoint2 = 1;
+    public static final double setpoint3 = 2;
+  }
 
 }
 
