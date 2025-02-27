@@ -312,8 +312,8 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int intakeDeployMotorPort = 0;
-    public static final int intakeGrabberMotorPort = 0;
+    public static final int intakeDeployMotorPort = 33;
+    public static final int intakeGrabberMotorPort = 51;
     public static final double intakeDeployCurrentLimit = 10;
     public static final double intakeGrabberCurrentLimit = 10;
 
@@ -327,9 +327,9 @@ public final class Constants {
     public static final double grabberkG = 0;
 
     public static final double deployOffset = 0;
-    public static final double deployRadPerRot = 0;
+    public static final double deployRadPerRot = 20.0;
     public static final double grabberOffset = 0;
-    public static final double grabberRadPerRot = 0;
+    public static final double grabberRadPerRot = 5.0;
 
     public static final double setpoint1 = 0;
     public static final double setpoint2 = 1;

@@ -20,6 +20,7 @@ import frc.robot.commands.ArmCommandWrist;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.Intake;
 import frc.robot.util.ArmPath;
 import frc.robot.util.ArmPathplannerUtil;
 import frc.robot.util.ArmPoint;
@@ -60,6 +61,7 @@ public class RobotContainer {
     // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
     public Arm arm;
     private Gripper gripper;
+    private Intake intake;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
@@ -84,6 +86,7 @@ public class RobotContainer {
   public RobotContainer() {
     arm = new Arm();
     gripper = new Gripper();
+    intake = new Intake();
     SignalLogger.setPath("/media/sda1/armLog");
     SignalLogger.start();
     // Configure the trigger bindings

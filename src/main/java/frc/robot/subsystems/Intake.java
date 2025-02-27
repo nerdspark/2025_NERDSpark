@@ -17,6 +17,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
@@ -78,6 +79,8 @@ public class Intake extends SubsystemBase {
   }
 
   public double getIntakeDeployPosition() {
+    double intake = intakeDeployMotor.getPosition().getValueAsDouble();
+    SmartDashboard.putNumber("intake", intake);
     return intakeDeployMotor.getPosition().getValueAsDouble();
   }  
 
@@ -86,7 +89,7 @@ public class Intake extends SubsystemBase {
   }
   public void stopIntake() {
     intakeDeployMotor.stopMotor();
-    intakeGrabberMotor. stopMotor();
+    intakeGrabberMotor.stopMotor();
   }
 
   public void resetOffsets() {
@@ -95,11 +98,12 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeDeployPosition(double target) {
-    intakeDeployMotor.setPosition(target);
+    intakeDeployMotor.setPosition(target / IntakeConstants.deployRadPerRot);
   }
 
   @Override
   public void periodic() {
+    getIntakeDeployPosition();
     // This method will be called once per scheduler run
   }
 }
