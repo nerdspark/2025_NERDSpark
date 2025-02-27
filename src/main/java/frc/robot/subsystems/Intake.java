@@ -45,10 +45,10 @@ public class Intake extends SubsystemBase {
 
       intakeDeployMotorConfig.Feedback = new FeedbackConfigs()
         .withFeedbackRotorOffset(IntakeConstants.deployOffset)
-        .withSensorToMechanismRatio(IntakeConstants.deployRadPerRot);
+        .withSensorToMechanismRatio(IntakeConstants.deployGearRatio);
         intakeGrabberMotorConfig.Feedback = new FeedbackConfigs()
         .withFeedbackRotorOffset(IntakeConstants.grabberOffset)
-        .withSensorToMechanismRatio(IntakeConstants.grabberRadPerRot);
+        .withSensorToMechanismRatio(IntakeConstants.grabberGearRatio);
 
         intakeDeployMotorConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
         intakeGrabberMotorConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
@@ -76,12 +76,14 @@ public class Intake extends SubsystemBase {
       .apply(intakeGrabberMotorConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive) // set
         .withNeutralMode(NeutralModeValue.Coast)));
+
+        intakeDeployMotor.setPosition(IntakeConstants.deployOffset);
   }
 
   public double getIntakeDeployPosition() {
     double intake = intakeDeployMotor.getPosition().getValueAsDouble();
     SmartDashboard.putNumber("intake", intake);
-    return intakeDeployMotor.getPosition().getValueAsDouble();
+    return intake;
   }  
 
   public double getIntakeGrabberPosition() { // returns relative to deploy motor
@@ -98,7 +100,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeDeployPosition(double target) {
-    intakeDeployMotor.setPosition(target / IntakeConstants.deployRadPerRot);
+    intakeDeployMotor.setPosition(target);
   }
 
   @Override

@@ -326,14 +326,16 @@ public final class Constants {
     public static final double grabberkD = 0;
     public static final double grabberkG = 0;
 
-    public static final double deployOffset = 0;
-    public static final double deployRadPerRot = 20.0;
+    public static final double deployOffset = 0.404541015625;
+    public static final double deployGearRatio = 20.0;
     public static final double grabberOffset = 0;
-    public static final double grabberRadPerRot = 5.0;
+    public static final double grabberGearRatio = 5.0;
 
-    public static final double setpoint1 = 0;
-    public static final double setpoint2 = 1;
-    public static final double setpoint3 = 2;
+    public static final double setpoint0 = 0d;
+    public static final double setpoint30 = 1d/12d;
+    public static final double setpoint45 = 0.125;
+    public static final double setpoint60 = 1d/6d;
+    public static final double setpoint90 = .25;
   }
 
 }
