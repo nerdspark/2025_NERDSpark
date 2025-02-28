@@ -18,6 +18,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -28,6 +33,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.AllianceFlipUtil;
 
@@ -55,7 +61,8 @@ private final ProfiledPIDController driveController =
   private double thetaErrorAbs;
   private Translation2d lastSetpointTranslation;
     private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
-  
+  private Supplier<Translation2d> linearFF = () -> Translation2d.kZero;
+  private DoubleSupplier omegaFF = () -> 0.0;
 
   /** Drives to the specified pose under full software control. */
   public DriveToPose(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier) {
@@ -65,6 +72,18 @@ private final ProfiledPIDController driveController =
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
+    /** Drives to the specified pose under full software control. */
+    public DriveToPose(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier,
+     Supplier<Translation2d> linearFF,
+      DoubleSupplier omegaFF) {
+      this.drive = drive;
+      this.poseSupplier = poseSupplier;
+      this.linearFF = linearFF;
+      this.omegaFF = omegaFF;
+      addRequirements(drive);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    }
+  
   
   @Override
   public void initialize() {
@@ -136,14 +155,35 @@ private final ProfiledPIDController driveController =
         Math.abs((currentPose.getRotation().minus(targetPose.getRotation())).getRadians());
     if (thetaErrorAbs < thetaController.getPositionTolerance()) thetaVelocity = 0.0;
 
-    // Command speeds
-    var driveVelocity =
+
+    Translation2d driveVelocity =
         new Pose2d(
                 new Translation2d(),
                 currentPose.getTranslation().minus(targetPose.getTranslation()).getAngle())
-            .transformBy(new Transform2d(new Translation2d(driveVelocityScalar, 0.0), new Rotation2d()))
+            .transformBy(new Transform2d(driveVelocityScalar, 0.0, new Rotation2d()))
             .getTranslation();
-    
+
+    // Scale feedback velocities by input ff
+    final double linearS = linearFF.get().getNorm() * 3.0;
+    final double thetaS = Math.abs(omegaFF.getAsDouble()) * 3.0;
+    DogLog.log("DriveToPose/driveVelocity.X", driveVelocity.getX());
+    DogLog.log("DriveToPose/driveVelocity.Y", driveVelocity.getY());
+    DogLog.log("DriveToPose/thetaVelocity", thetaVelocity);
+    DogLog.log("DriveToPose/linearS", linearS);
+    DogLog.log("DriveToPose/thetaS", thetaS);
+
+
+    if(linearS >0)
+    driveVelocity =
+        driveVelocity.interpolate(linearFF.get().times(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)), linearS);
+    if(thetaS >0 )
+    thetaVelocity =
+        MathUtil.interpolate(
+            thetaVelocity, omegaFF.getAsDouble() * RotationsPerSecond.of(0.75).in(RadiansPerSecond), thetaS);
+  
+            DogLog.log("DriveToPose/driveVelocity.X_I", driveVelocity.getX());
+            DogLog.log("DriveToPose/driveVelocity.Y_I", driveVelocity.getY());
+            DogLog.log("DriveToPose/thetaVelocity_I", thetaVelocity);
 
     
     drive.setControl(driveToPoseRequest.withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(driveVelocity.getX(),driveVelocity.getY(),
@@ -204,5 +244,7 @@ private final ProfiledPIDController driveController =
     public boolean isFinished() {
         return this.atGoal();
     }
+
+  
     
 }

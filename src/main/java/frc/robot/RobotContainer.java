@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoScoreCommand;
+import frc.robot.commands.Autos;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -37,7 +38,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer {
   private SlewRateLimiter xLimiter = new SlewRateLimiter(10);
   private SlewRateLimiter yLimiter = new SlewRateLimiter(10);
-  private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+  private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -94,23 +96,23 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // For Amogh's gamepad only
-    drivetrain.setDefaultCommand(
-      drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftY(),0.1) * MaxSpeed))) 
-          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftX(),0.1) * MaxSpeed)) )
-          .withRotationalRate(zLimiter.calculate(MathUtil.applyDeadband(-joystick.getRightTriggerAxis(),0.1) * MaxAngularRate))
-        )
-    );
-
-
+    // // For Amogh's gamepad only
     // drivetrain.setDefaultCommand(
     //   drivetrain.applyRequest(() ->
-    //     drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(joystick.getRawAxis(0)) * MaxSpeed)) 
-    //       .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(joystick.getRawAxis(3)) * MaxSpeed)) 
-    //       .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+    //     drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftY(),0.1) * MaxSpeed))) 
+    //       .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftX(),0.1) * MaxSpeed)) )
+    //       .withRotationalRate(zLimiter.calculate(MathUtil.applyDeadband(-joystick.getRightTriggerAxis(),0.1) * MaxAngularRate))
     //     )
     // );
+
+
+    drivetrain.setDefaultCommand(
+      drivetrain.applyRequest(() ->
+        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+        )
+    );
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain.applyRequest(() ->
@@ -145,19 +147,30 @@ public class RobotContainer {
     // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
     // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
-    joystick.y().onTrue(AutoScoreCommand.getAutoDriveToReefCommandXY( drivetrain,
+    joystick.y().whileTrue(Autos.getAutoDriveCommandXY( drivetrain,
     () -> drivetrain.getState().Pose, 
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch())
-    .until(() -> joystick.x().getAsBoolean()));
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    () -> scoringSubsystem.getLevel()));
+  
 
     // joystick.leftBumper().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.leftBumper().onTrue(AutoScoreCommand.getAutoDriveToReefCommand(drivetrain,
+    joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch())
-    .until(() -> joystick.rightBumper().getAsBoolean()));
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    ()->scoringSubsystem.getLevel(),
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
+
+    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
 
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()

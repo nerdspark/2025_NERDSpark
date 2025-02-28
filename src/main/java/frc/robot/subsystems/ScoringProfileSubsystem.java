@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.lang.constant.Constable;
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,13 +25,22 @@ import frc.robot.util.AllianceFlipUtil;
 
 public class ScoringProfileSubsystem extends SubsystemBase {
 
-  private int branch = 9;
-  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L1;
 
+
+
+  
+  private int branch = 9;
+  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L5;
+  private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
   private Pose2d selectedBranchPose = new Pose2d();
+  private Pose2d selectedCoralStationPose = new Pose2d();
+
+  private static final int [] branches = {5,4,3,2,1,0,11,10,9,8,7,6}; // Needed as the button board is assembled in incorrect orientation
+
 
   /** Creates a new ExampleSubsystem. */
-  public ScoringProfileSubsystem() {}
+  public ScoringProfileSubsystem() {  
+  }
 
   /**
    * Example command factory method.
@@ -59,18 +70,25 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-  if(!Constants.Vision.USE_WO_BUTTON_BOARD) {
+  if(Constants.Vision.USE_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
       if(DriverStation.getStickButton(1, i+1)) {
-        branch = i; 
+        branch = branches[i]; //Adjusting for incorrect button board orientation.
       }
     }
 
-    for(int j=12; j<17; j++) {
+    for(int j=12; j<18; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
         reefLevel = FieldConstants.ReefLevel.values()[j-12];
       }
     }
+
+    for(int j=18; j<20; j++) {
+      if(DriverStation.getStickButton(1, j+1)) {
+        coralStationSide = FieldConstants.CoralStations.values()[j-18];
+      }
+    }
+
   }
   else {
     if(DriverStation.getStickButtonPressed(0, 7)) {
@@ -79,13 +97,19 @@ public class ScoringProfileSubsystem extends SubsystemBase {
         branch = 0;
       }
     }
-      DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
-    
+          
   }
-
-
+    DogLog.log("ScoringProfileSubSystem/Selected Branch", branch);
+    DogLog.log("ScoringProfileSubSystem/Selected ReefLevel", reefLevel);
+    DogLog.log("ScoringProfileSubSystem/Selected CoralStation", coralStationSide);
 
     selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefLevel).toPose2d());
+    if(coralStationSide == FieldConstants.CoralStations.LEFT) {
+      selectedCoralStationPose = AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace);
+    }
+    else {
+      selectedCoralStationPose = AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace);
+    }
 
     // DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
     // DogLog.log("ScoringProfileSubSystem/Selected level", reefHeight);
@@ -113,9 +137,25 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   public Pose2d getSelectedBranchPose() {
     return selectedBranchPose;
   }
+  public Pose2d getSelectedCoralStationPose() {
+    return selectedCoralStationPose;
+  }
+
+  public FieldConstants.CoralStations getCoralStationSide() {
+    return coralStationSide;
+  }
+
+  public void setCoralStationSide(FieldConstants.CoralStations coralStationSide) {
+    this.coralStationSide = coralStationSide;
+  }
 
   public Pose2d getRobotPoseForSelectedBranch() {
-    return selectedBranchPose.plus(new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+    return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
+
+  }
+
+  public Pose2d getRobotPoseForSelectedCoralStation() {
+    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide));
   }
 
 }

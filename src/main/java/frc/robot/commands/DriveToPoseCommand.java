@@ -151,14 +151,6 @@ public class DriveToPoseCommand extends Command {
         DogLog.log("DriveToPoseCommand/goalPose.Y", targetPoseSupplier.get().getY());
         DogLog.log("DriveToPoseCommand/goalPose.Angle", targetPoseSupplier.get().getRotation().getDegrees());
 
-        if((targetPoseSupplier.get().getTranslation().getDistance(currentPoseProvider.get().getTranslation()) 
-        > AllianceFlipUtil.apply(FieldConstants.Reef.center).getDistance(currentPoseProvider.get().getTranslation()))){
-           DogLog.log("DriveToPoseCommand/GoalPose", "Out of Range");
-        }else{
-            DogLog.log("DriveToPoseCommand/GoalPose", "In Range");
-        }       
-
-
         var xSpeed = xController.calculate(robotPose.getX());
         if (xController.atGoal()) {
             xSpeed = 0;
@@ -205,9 +197,8 @@ public class DriveToPoseCommand extends Command {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return ((targetPoseSupplier.get().getTranslation().getDistance(currentPoseProvider.get().getTranslation()) 
-        > AllianceFlipUtil.apply(FieldConstants.Reef.center).getDistance(currentPoseProvider.get().getTranslation())) ||
-        xController.atGoal() && yController.atGoal() && omegaController.atGoal());
+        return
+        xController.atGoal() && yController.atGoal() && omegaController.atGoal();
     }
     
 }

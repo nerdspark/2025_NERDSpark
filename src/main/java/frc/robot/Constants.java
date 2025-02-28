@@ -8,6 +8,7 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Map;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -22,7 +23,10 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.FieldConstants.CoralStations;
+import frc.robot.FieldConstants.ReefLevel;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 
@@ -45,7 +49,7 @@ public static class Vision {
 
         public static final boolean USE_VISION = true;
 
-        public static final boolean USE_WO_BUTTON_BOARD = true;
+        public static final boolean USE_BUTTON_BOARD = true;
 
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
@@ -84,102 +88,42 @@ public static class Vision {
         public static final double VELOCITY_TOLERANCE_X = 4;
         public static final double VELOCITY_TOLERANCE_Y = 4;
         public static final double VELOCITY_TOLERANCE_OMEGA = 5;
-        public static final double kPXController = 2.6; //2.5
-        public static final double kIXController = 0.01d;
+        public static final double kPXController = 10; //2.5
+        public static final double kIXController = 0.01d ; //0.01d
         public static final double kDXController = 0d;
-        public static final double kPYController = 2.4; //2.5
-        public static final double kIYController = 0.01d; //0.1d;
-        public static final double kDYController = 0.01d;
+        public static final double kPYController = 10; //2.5
+        public static final double kIYController = 0.01d ;//0.01
+        public static final double kDYController = 0.0d; //0.01d
         public static final double kIzoneX = 1.0d;
         public static final double kIzoneY = 1.0d;
-        public static final double kPThetaController = 0.25; //2
+        public static final double kPThetaController = 0.5; //2
         public static final double kIThetaController = 0.0;
         public static final double kDThetaController = 0.0; //0.0041
         public static final double IZone = 1.0d;
         // public static final double autoTurnCeiling = 5.0;
 
         public static final double  kPoseAmbiguityThreshold = 0.2;
-         public static final double  kSingleTagDistanceThreshold =2.0;
+        public static final double  kSingleTagDistanceThreshold =2.0;
 
-        
-  //      public static HashMap<String, Pose2d> reefPositions = new HashMap<>();
+        public static final Map<ReefLevel, Transform2d> reefLevelOffsetsMap = new HashMap<>();
+        static {
 
-//         static {        
+          reefLevelOffsetsMap.put(ReefLevel.L0, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d()));
 
-//           reefPositions.put("A0", FieldConstants.Reef.branchPositions.get(0).get(FieldConstants.ReefHeight.L1).toPose2d().plus(new Transform2d(0,0, new Rotation2d(Math.toRadians(180)))));
+        }
 
-// //          reefPositions.put("A0", new Pose2d(2, 2, new Rotation2d()));
-//           reefPositions.put("A1", new Pose2d());
-//           reefPositions.put("A2", new Pose2d());
-//           reefPositions.put("A3", new Pose2d());
-//           reefPositions.put("A4", new Pose2d());
+        public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
+        static {
+          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d()));
+          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d()));
+         
+        }
 
-//           reefPositions.put("B0", FieldConstants.Reef.branchPositions.get(4).get(FieldConstants.ReefHeight.L1).toPose2d().plus(new Transform2d(0,0, new Rotation2d(Math.toRadians(180)))));
-//           reefPositions.put("B1", new Pose2d());
-//           reefPositions.put("B2", new Pose2d());
-//           reefPositions.put("B3", new Pose2d());
-//           reefPositions.put("B4", new Pose2d());
-
-//           reefPositions.put("C0", new Pose2d(7, 2, new Rotation2d(Math.toRadians(270))));
-//           reefPositions.put("C1", new Pose2d());
-//           reefPositions.put("C2", new Pose2d());
-//           reefPositions.put("C3", new Pose2d());
-//           reefPositions.put("C4", new Pose2d());
-
-//           reefPositions.put("D0", new Pose2d());
-//           reefPositions.put("D1", new Pose2d());
-//           reefPositions.put("D2", new Pose2d());
-//           reefPositions.put("D3", new Pose2d());
-//           reefPositions.put("D4", new Pose2d());
-
-//           reefPositions.put("E0", new Pose2d());
-//           reefPositions.put("E1", new Pose2d());
-//           reefPositions.put("E2", new Pose2d());
-//           reefPositions.put("E3", new Pose2d());
-//           reefPositions.put("E4", new Pose2d());
-
-//           reefPositions.put("F0", new Pose2d());
-//           reefPositions.put("F1", new Pose2d());
-//           reefPositions.put("F2", new Pose2d());
-//           reefPositions.put("F3", new Pose2d());
-//           reefPositions.put("F4", new Pose2d());
-
-//           reefPositions.put("G0", new Pose2d());
-//           reefPositions.put("G1", new Pose2d());
-//           reefPositions.put("G2", new Pose2d());
-//           reefPositions.put("G3", new Pose2d());
-//           reefPositions.put("G4", new Pose2d());
-
-//           reefPositions.put("H0", new Pose2d());
-//           reefPositions.put("H1", new Pose2d());
-//           reefPositions.put("H2", new Pose2d());
-//           reefPositions.put("H3", new Pose2d());
-//           reefPositions.put("H4", new Pose2d());
-
-//           reefPositions.put("I0", new Pose2d());
-//           reefPositions.put("I1", new Pose2d());
-//           reefPositions.put("I2", new Pose2d());
-//           reefPositions.put("I3", new Pose2d());
-//           reefPositions.put("I4", new Pose2d());
-
-//           reefPositions.put("J0", new Pose2d());
-//           reefPositions.put("J1", new Pose2d());
-//           reefPositions.put("J2", new Pose2d());
-//           reefPositions.put("J3", new Pose2d());
-//           reefPositions.put("J4", new Pose2d());
-
-//           reefPositions.put("K0", new Pose2d());
-//           reefPositions.put("K1", new Pose2d());
-//           reefPositions.put("K2", new Pose2d());
-//           reefPositions.put("K3", new Pose2d());
-//           reefPositions.put("K4", new Pose2d());
-
-//           reefPositions.put("L0", new Pose2d());
-//           reefPositions.put("L1", new Pose2d());
-//           reefPositions.put("L2", new Pose2d());
-//           reefPositions.put("L3", new Pose2d());
-//           reefPositions.put("L4", new Pose2d());
-        
 
 //         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {
 //           for (FieldConstants.ReefHeight height : FieldConstants.ReefHeight.values()) {
@@ -189,6 +133,8 @@ public static class Vision {
 //       }
 //     }
   }
+
+  
         
     public static InterpolatingDoubleTreeMap joystickMap = new InterpolatingDoubleTreeMap();
     static {

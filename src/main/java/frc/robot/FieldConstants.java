@@ -51,6 +51,8 @@ public class FieldConstants {
   }
 
   public static class CoralStation {
+    public static final double stationLength = Units.inchesToMeters(79.750);
+
     public static final Pose2d leftCenterFace =
         new Pose2d(
             Units.inchesToMeters(33.526),
@@ -167,11 +169,13 @@ public class FieldConstants {
  
 
   public enum ReefLevel {
-    L0(0,Units.inchesToMeters(18.0), 0),
+    L0(0,Units.inchesToMeters(25.0), 0),
     L1(1,Units.inchesToMeters(25.0), 0),
-    L2(2,Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
-    L3(3,Units.inchesToMeters(47.625 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
-    L4(5,Units.inchesToMeters(72), -90);
+    L2(2,Units.inchesToMeters(25.0), 0),
+    L3(3,Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
+    L4(4,Units.inchesToMeters(47.625 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
+    L5(5,Units.inchesToMeters(72), -90);
+
 
     ReefLevel(int level, double height, double pitch) {
       this.height = height;
@@ -193,9 +197,15 @@ public class FieldConstants {
 
   }
 
-  public record CoralObjective(int branchId, ReefLevel reefLevel) {}
+  public enum CoralStations {   
+    LEFT(0),
+    RIGHT(1);
 
-  public record AlgaeObjective(int id) {}
+    CoralStations(int side) {
+      this.side = side;
+    }
+    public final int side;
 
+  }
 
 }
