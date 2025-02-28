@@ -9,6 +9,13 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmTestAngles;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoScoreCommand;
+import frc.robot.commands.Autos;
+import frc.robot.commands.DriveToPoseCommand;
+import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.PoseEstimatorSubsystem;
+import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.Constants.WristTestAngles;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandAngles;
@@ -31,16 +38,22 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.subsystems.Arm;
 
 /**
@@ -50,15 +63,23 @@ import frc.robot.subsystems.Arm;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    // private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    // private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+  private SlewRateLimiter xLimiter = new SlewRateLimiter(10);
+  private SlewRateLimiter yLimiter = new SlewRateLimiter(10);
+  private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    
+  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
-    // private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            // .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-            // .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    // private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    // private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+    private final Telemetry logger = new Telemetry(MaxSpeed);
+
+    private final CommandXboxController joystick = new CommandXboxController(0);
+    private final Joystick buttonBoard = new Joystick(1);
+
     public Arm arm;
     private Gripper gripper;
     private Intake intake;
@@ -70,7 +91,12 @@ public class RobotContainer {
 
     // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    
+
+    // public final  Vision vision = new Vision(Constants.Vision.kCameraName, Constants.Vision.kRobotToCam);
+    public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+
+    public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
+
 
   // The robot's subsystems and commands are defined here...
   private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
@@ -82,8 +108,17 @@ public class RobotContainer {
   // private final CommandXboxController m_driverController =
   //     new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
+  /* Path follower */
+  private final SendableChooser<Command> autoChooser;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+
+    autoChooser = AutoBuilder.buildAutoChooser("Tests");
+    SmartDashboard.putData("Auto Mode", autoChooser);
+
+    // drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
     arm = new Arm();
     gripper = new Gripper();
     intake = new Intake();
@@ -106,71 +141,29 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-      // drivetrain.setDefaultCommand(
-            // Drivetrain will execute this command periodically
-            // drivetrain.applyRequest(() ->
-                // drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                    // .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                    // .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-              // )
-              // m_LedSubsystem.runPattern()
-        // );
 
-      
 
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-            // point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
 
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+    drivetrain.setDefaultCommand(
+      drivetrain.applyRequest(() ->
+        drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+        )
+    );
 
-        // reset the field-centric heading on left bumper press
-        // joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    joystick.b().whileTrue(drivetrain.applyRequest(() ->
+      point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
+    ));
 
-        // drivetrain.registerTelemetry(logger::telemeterize);
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    // joystick.x().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    // joystick.a().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
-    // joystick.y().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f))));
-    // joystick.b().whileTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 1.0f, 1.0f))));
+    // reset the field-centric 
+    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-      //       // Drivetrain will execute this command periodically
-      //       drivetrain.applyRequest(() ->
-      //           drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-      //               .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-      //               .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-      //       )
-      //   );
-
-      //   joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-      //   joystick.b().whileTrue(drivetrain.applyRequest(() ->
-      //       point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-      //   ));
-
-      //   // Run SysId routines when holding back/start and X/Y.
-      //   // Note that each routine should be run exactly once in a single log.
-      //   joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-      //   joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-      //   joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-      //   joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-      //   // reset the field-centric heading on left bumper press
-      //   joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        // joystick.rightBumper().onTrue(new ArmCommand(arm, () -> ReefSetPoints.l1Reef, () -> false));
-        // // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
-        // joystick.x().onTrue(new ArmCommandAngles(arm, () -> ArmTestAngles.testElbowAngle, () -> ArmTestAngles.testShoulderAngle));
-        // joystick.y().onTrue(new ArmCommandFollowPath(arm, ArmSetpoints.armPaths[1][4], () -> false));
-        // joystick.b().onTrue(new ArmCommandFollowPath(arm, ArmSetpoints.armPaths[0][1], () -> false));
-        // joystick.b().onTrue(new ArmCommandFollowPath(arm, GenPath.generateSmoothPath(new ArmPoint(arm.getArmPosition()), () -> ArmSetpoints.intermediatePoints[ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, () -> arm.getArmPosition())][1], ArmSetpoints.armSetPoints[1], 5, 10), () -> false));
-        // joystick.y().onTrue(new ArmCommandFollowPath(arm, GenPath.generateSmoothPath(new ArmPoint(arm.getArmPosition()), () -> ArmSetpoints.intermediatePoints[ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, () -> arm.getArmPosition())][4], ArmSetpoints.armSetPoints[4], 5, 10), () -> false));
-        joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
+    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
+    joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
         // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
         joystick.x().onTrue(new ArmCommandPathToPoint(arm, 2));
         joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
@@ -188,9 +181,53 @@ public class RobotContainer {
         // joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    /* Manually start logging with left bumper before running any tests,
+     * and stop logging with right bumper after we're done with ALL tests.
+     * This isn't necessary but is convenient to reduce the size of the hoot file */
+    SignalLogger.setPath("/media/sda1/ctre-logs/");
+    // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    
+        /*
+     * Joystick Y = quasistatic forward
+     * Joystick A = quasistatic reverse
+     * Joystick B = dynamic forward
+     * Joystick X = dyanmic reverse
+     */
+    // joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    joystick.y().whileTrue(Autos.getAutoDriveCommandXY( drivetrain,
+    () -> drivetrain.getState().Pose, 
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    () -> scoringSubsystem.getLevel()));
+  
+
+    // joystick.leftBumper().onTrue(new DriveToPose(drivetrain,
+    // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
+    // ).until(() -> joystick.rightBumper().getAsBoolean()));
+
+    joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    ()->scoringSubsystem.getLevel(),
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
+
+    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
+
+    // joystick.y().onTrue(new DriveToPose(drivetrain,
+    // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
+    // ).until(() -> joystick.x().getAsBoolean()));
+ 
   }
 
   /**
@@ -199,7 +236,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Commands.print("No autonomous command configured");
+    /* Run the path selected from the auto chooser */
+    return autoChooser.getSelected();
+
   }
 }
