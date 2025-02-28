@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -99,8 +100,14 @@ public class Intake extends SubsystemBase {
     intakeDeployMotor.setPosition(Constants.ArmConstants.elbowOffset);
   }
 
-  public void setIntakeDeployPosition(double target) {
-    intakeDeployMotor.setPosition(target);
+  public void resetIntakeDeployPosition(double offset) {
+    intakeDeployMotor.setPosition(offset);
+  }
+  public void setDeployPosition(double target){
+    intakeDeployMotor.setControl(new PositionVoltage(target).withPosition(target));
+  }
+  public void setGrabberIntake(double target){
+    intakeGrabberMotor.set(target);
   }
 
   @Override

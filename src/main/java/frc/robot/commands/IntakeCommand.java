@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
@@ -28,7 +29,8 @@ public class IntakeCommand extends Command {private Intake intake;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setIntakeDeployPosition(position.get());
+    intake.setDeployPosition(position.get());
+    intake.setGrabberIntake(IntakeConstants.grabberSetIntake);
   }
 
   // Called once the command ends or is interrupted.

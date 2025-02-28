@@ -314,22 +314,23 @@ public final class Constants {
   public static class IntakeConstants {
     public static final int intakeDeployMotorPort = 33;
     public static final int intakeGrabberMotorPort = 51;
-    public static final double intakeDeployCurrentLimit = 10;
+    public static final double intakeDeployCurrentLimit = 30; //40
     public static final double intakeGrabberCurrentLimit = 10;
 
-    public static final double deploykP = 0;
+    public static final double deploykP = 8; //7
     public static final double deploykI = 0;
-    public static final double deploykD = 0;
-    public static final double deploykG = 0;
+    public static final double deploykD = 0.5;
+    public static final double deploykG = 0.4;
     public static final double grabberkP = 0;
     public static final double grabberkI = 0;
     public static final double grabberkD = 0;
     public static final double grabberkG = 0;
 
-    public static final double deployOffset = 0.404541015625;
+    public static final double deployOffset = 0.46;
     public static final double deployGearRatio = 20.0;
     public static final double grabberOffset = 0;
     public static final double grabberGearRatio = 5.0;
+    public static final double grabberSetIntake = 0.0; //-0.5
 
     public static final double setpoint0 = 0d;
     public static final double setpoint30 = 1d/12d;
