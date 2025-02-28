@@ -279,11 +279,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
 
-        DogLog.log("BatteryVoltage", RobotController.getBatteryVoltage());
-        DogLog.log("Drive/OdometryPose", getState().Pose);
-        DogLog.log("Drive/TargetStates", getState().ModuleTargets);
-        DogLog.log("Drive/MeasuredStates", getState().ModuleStates);
-        DogLog.log("Drive/MeasuredSpeeds", getState().Speeds);
+        // DogLog.log("BatteryVoltage", RobotController.getBatteryVoltage());
+        // DogLog.log("Drive/OdometryPose", getState().Pose);
+        // DogLog.log("Drive/TargetStates", getState().ModuleTargets);
+        // DogLog.log("Drive/MeasuredStates", getState().ModuleStates);
+        // DogLog.log("Drive/MeasuredSpeeds", getState().Speeds);
 
     
 

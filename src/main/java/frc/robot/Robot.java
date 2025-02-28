@@ -11,13 +11,23 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Arm;
 import org.ironmaple.simulation.SimulatedArena;
+import frc.robot.subsystems.Arm;
 
 public class Robot extends TimedRobot {
     private Command m_autonomousCommand;
+    private final Arm m_arm = new Arm();
+    private final Joystick m_joystick = new Joystick(OperatorConstants.kJoystickPort);
 
     private final RobotContainer m_robotContainer;
 
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
     private final boolean kUseLimelight = false;
 
     public Robot() {
@@ -38,6 +48,7 @@ public class Robot extends TimedRobot {
                 .withCaptureNt(true));
                 DogLog.setPdh(new PowerDistribution());
         }
+
     }
 
     @Override
@@ -62,7 +73,8 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -80,20 +92,29 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void autonomousPeriodic() {}
-
-    @Override
     public void autonomousExit() {}
 
     @Override
-    public void teleopInit() {
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.cancel();
-        }
-    }
+    public void teleopPeriodic() {
+   
+  }
 
-    @Override
-    public void teleopPeriodic() {}
+  /** This function is called periodically during autonomous. */
+  @Override
+  public void autonomousPeriodic() {}
+
+  @Override
+  public void teleopInit() {
+    m_robotContainer.arm.resetOffsets();
+// TODO: remove after testing
+    // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.cancel();
+    } 
+  }
 
     @Override
     public void teleopExit() {}
@@ -113,6 +134,12 @@ public class Robot extends TimedRobot {
     public void simulationPeriodic() {
         DogLog.log("Simulation/CoralPoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
         DogLog.log("Simulation/AlgaePoses", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
-        
+
+    }
+
+    @Override
+    public void close() {
+        super.close();
     }
 }
+

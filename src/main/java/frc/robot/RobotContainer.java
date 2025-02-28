@@ -5,6 +5,9 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmSetpoints;
+import frc.robot.Constants.ArmTestAngles;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.Autos;
@@ -13,21 +16,45 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
+import frc.robot.Constants.WristTestAngles;
+import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ArmCommandAngles;
+import frc.robot.commands.ArmCommandFollowPath;
+import frc.robot.commands.ArmCommandGripper;
+import frc.robot.commands.ArmCommandGripperAutoClose;
+import frc.robot.commands.ArmCommandPathToPoint;
+import frc.robot.commands.ArmCommandWrist;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.LEDSubsytem;
+import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.Intake;
+import frc.robot.util.ArmPath;
+import frc.robot.util.ArmPathplannerUtil;
+import frc.robot.util.ArmPoint;
+import frc.robot.util.GenPath;
+import frc.robot.Telemetry;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import frc.robot.subsystems.Arm;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,8 +80,16 @@ public class RobotContainer {
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final Joystick buttonBoard = new Joystick(1);
 
+    public Arm arm;
+    private Gripper gripper;
+    private Intake intake;
+    // private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    private final CommandXboxController joystick = new CommandXboxController(0);
+    private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
+
+
+    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
 
     // public final  Vision vision = new Vision(Constants.Vision.kCameraName, Constants.Vision.kRobotToCam);
@@ -64,11 +99,14 @@ public class RobotContainer {
 
 
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+
+  // The robot's subsystems and commands are defined here...
+  // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // private final CommandXboxController m_driverController =
+  //     new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /* Path follower */
   private final SendableChooser<Command> autoChooser;
@@ -80,8 +118,16 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Tests");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
+    // drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
+    arm = new Arm();
+    gripper = new Gripper();
+    intake = new Intake();
+    SignalLogger.setPath("/media/sda1/armLog");
+    SignalLogger.start();
+    // Configure the trigger bindings
     configureBindings();
     // drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
+    // m_LedSubsystem.setDefaultCommand(m_LedSubsystem.runPattern(LEDPattern.solid(Color.kRed)).withName("On"));
 
   }
 
@@ -96,14 +142,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    // // For Amogh's gamepad only
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.applyRequest(() ->
-    //     drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftY(),0.1) * MaxSpeed))) 
-    //       .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(MathUtil.applyDeadband(-joystick.getLeftX(),0.1) * MaxSpeed)) )
-    //       .withRotationalRate(zLimiter.calculate(MathUtil.applyDeadband(-joystick.getRightTriggerAxis(),0.1) * MaxAngularRate))
-    //     )
-    // );
 
 
     drivetrain.setDefaultCommand(
@@ -125,9 +163,23 @@ public class RobotContainer {
 
     drivetrain.registerTelemetry(logger::telemeterize);
     // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
+    joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
+        // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
+        joystick.x().onTrue(new ArmCommandPathToPoint(arm, 2));
+        joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
+        joystick.rightBumper().onTrue(new ArmCommandPathToPoint(arm, 0));
+        gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+        joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
+        armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+        armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+        //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+        // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+        //drivetrain.registerTelemetry(logger::telemeterize);
+        joystick.rightTrigger().onTrue(new ArmCommandGripper(gripper, () -> true));
+        joystick.leftTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
+        
+        // joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     /* Manually start logging with left bumper before running any tests,
      * and stop logging with right bumper after we're done with ALL tests.
@@ -186,5 +238,6 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     /* Run the path selected from the auto chooser */
     return autoChooser.getSelected();
+
   }
 }
