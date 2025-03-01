@@ -55,6 +55,24 @@ public class ArmPathplannerUtil {
         }
         return closestArmPoint;
     }
+    public static int getNextPointIndex(List<ArmPoint> armPaths, Translation2d position) {
+        ArmPoint closestArmPoint = new ArmPoint(new Translation2d(1000000,1000000));
+        int index = 0;
+        for (int i = armPaths.size() - 1; i >= 0; i-- ){
+            // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).position.getDistance(position));
+            if (armPaths.get(i).position.getDistance(position) < ArmConstants.lookAheadDistance){
+                Rotation2d angle = armPaths.get(i).position.minus(position).getAngle();
+                // SmartDashboard.putBoolean("on path", true);
+                // SmartDashboard.putNumber("target point angle", angle.getDegrees());
+                return i;
+            }
+            if (armPaths.get(i).position.getDistance(position) < closestArmPoint.position.getNorm()){
+                closestArmPoint = armPaths.get(i);
+                index = i;
+            }
+        }
+        return index;
+    }
    
 
     /** checks if the arm is at the end of the path */

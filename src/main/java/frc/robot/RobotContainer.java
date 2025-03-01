@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmTestAngles;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.Autos;
@@ -25,6 +26,7 @@ import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.OpenGripperCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.Gripper;
@@ -47,6 +49,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
@@ -167,18 +172,26 @@ public class RobotContainer {
     // joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
     //     // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
     //     joystick.x().onTrue(new ArmCommandPathToPoint(arm, 2));
-    //     joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
+        joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
     //     joystick.rightBumper().onTrue(new ArmCommandPathToPoint(arm, 0));
-    //     gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+        gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
     //     joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
-    //     armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    //     armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+        armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+        armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
     //     //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
     //     // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
         //drivetrain.registerTelemetry(logger::telemeterize);
         joystick.rightTrigger().onTrue(new ArmCommandGripper(gripper, () -> true));
         joystick.leftTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
-        joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
+        // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
+        joystick.b().onTrue(
+            ((new ArmCommandPathToPoint(arm, 1).alongWith((new IntakeCommand(intake, () -> Constants.intakeTransferPosition, () -> 0.0).alongWith(new OpenGripperCommand(gripper))).until(armFinishedMoving)
+              .andThen(((new IntakeCommand(intake, () -> Constants.intakeTransferPosition, () -> IntakeConstants.grabberSetIntake))
+            .withTimeout(2).andThen(new IntakeCommand(intake, () -> IntakeConstants.deployOffset, () -> 0.0).andThen(new WaitCommand(1).andThen(new ArmCommandGripper(gripper, () -> true))))))))));
+              
+        joystick.b().onFalse(new ArmCommandPathToPoint(arm, 0));
+            
+          
         
         // joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
@@ -217,7 +230,7 @@ public class RobotContainer {
     // ()->scoringSubsystem.getLevel(),
     // ()->-joystick.getRightY(),
     // ()->-joystick.getRightX(),
-    // ()->-joystick.getLeftX()));
+    // ()->-joystick.getLeftX())).alongWith(new ArmCommandPathToPoint(arm, scoringSubsystem.getLevel().level + 1));
 
     // joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     // () -> drivetrain.getState().Pose,

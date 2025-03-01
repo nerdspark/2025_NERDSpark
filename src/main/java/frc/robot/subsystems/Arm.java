@@ -325,15 +325,15 @@ public class Arm extends SubsystemBase {
 }
   public double getWristTwistPosition(){
     double wristTwistPosition = (wristTwist.getPosition().getValueAsDouble() * (2d * Math.PI));
-    wristTwistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-    wristTwistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
+    wristTwistPosition -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+    wristTwistPosition += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
     // SmartDashboard.putNumber("wrist twist position", wristTwistPosition);
     return wristTwistPosition;
   }
   public void setWristTwistPosition(double position) {
-    position = MathUtil.clamp(position, 0, Math.PI/2.0);
-    position -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-    position += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
+    position = MathUtil.clamp(position, 0, Math.PI * 0.5);
+    position += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+    position -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
     position /= (2d*Math.PI);
 
     // SmartDashboard.putNumber("wrist twist position set raw", position);
@@ -443,8 +443,9 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("wrist flip amp", wristFlip.getStatorCurrent().getValueAsDouble());
     // SmartDashboard.putNumber("wrist Twist output", wristTwist.getClosedLoopOutput().getValueAsDouble());
     // SmartDashboard.putNumber("wrist Twist amp", wristTwist.getStatorCurrent().getValueAsDouble());
-    // SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
-    // SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
+    SmartDashboard.putNumber("wrist twist pos", getWristTwistPosition());
+    SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
+    SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());
     // SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getDutyCycle().getValueAsDouble());
     // This method will be called once per scheduler run

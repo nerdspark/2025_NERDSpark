@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.FieldConstants.CoralStations;
 import frc.robot.FieldConstants.ReefLevel;
@@ -52,6 +53,7 @@ import frc.robot.util.ArmPoint;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static final double intakeTransferPosition = 0.33;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -78,7 +80,7 @@ public final class Constants {
     public static final double kMaxAngleRads = Units.degreesToRadians(255);
   }
 
-  public static boolean DOGLOG_ENABLED = true;
+  public static boolean DOGLOG_ENABLED = false;
 
 public static class Vision {
 
@@ -201,10 +203,10 @@ public static class Vision {
   public static class ArmConstants {
 
     public static final double lookAheadDistance = 10.0;
-    public static final double endDistance = 7.0;
+    public static final double endDistance = 4.0;
     public static final double linearApproximationTime = 0.05; // seconds
-    public static final double velocity = 11;
-    public static final double maxMotorVelocity = 2;
+    public static final double velocity = 7;
+    public static final double maxMotorVelocity = 0.1;
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
     public static double interpolationDistance = 0.1; // inches
@@ -225,8 +227,8 @@ public static class Vision {
 
     public static final double currentLimitShoulder = 15.0;
     public static final double currentLimitElbow = 10.0;
-    public static final double currentLimitWristFlip = 10.0; //40.0
-    public static final double currentLimitWristTwist = 5.0;
+    public static final double currentLimitWristFlip = 12.0; //40.0
+    public static final double currentLimitWristTwist = 10.0;
     public static final double currentLimitGripperOpen = 10.0;
     public static final double currentLimitGripperClose = 30.0;
     public static final double gripperPowerClose = 1.0;
@@ -268,7 +270,7 @@ public static class Vision {
     public static final double shoulderOffset = -0.287 / 2.0 / Math.PI; // TODO fidn these, radians, fwd = 0
     public static final double elbowOffset = 2.340 / 2.0 / Math.PI; // TODO find these, negative of measurement
     public static final double wristFlipOffset = (0.38) / 2.0 / Math.PI; // TODO 2.25.2025: retune (should be approx 0.50 / 2PI)
-    public static final double wristTwistOffset = -0.35 / 2.0 / Math.PI;
+    public static final double wristTwistOffset = 0.35 / 2.0 / Math.PI;
 
     /** wrist flip belting ratio between elbow and the wrist */
     public static final double wristFlipToElbowRatio = 1.0/(35.0 / 49.0);
@@ -303,7 +305,7 @@ public static class Vision {
     /**
      * contains a list of endpoints
      * @home 0
-     * @groundPickup 1
+     * @transfer 1
      * @L1Reef 2
      * @L2Reef 3
      * @L3Reef 4
@@ -312,7 +314,7 @@ public static class Vision {
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
       armSetPoints[0] = new ArmPoint(ArmSetpoints.home, false, 0.0, 0.0);
-      armSetPoints[1] = new ArmPoint(new Translation2d(46.82, -12.48), Units.degreesToRadians(0), 0.0);
+      armSetPoints[1] = new ArmPoint(new Translation2d(19, 7), true, -3.2, Math.PI*0.5);
       armSetPoints[2] = new ArmPoint(new Translation2d(20.0, 35.0), true);
       armSetPoints[3] = new ArmPoint(new Translation2d(20.0, 16.0));
       armSetPoints[4] = new ArmPoint(new Translation2d(23.27, 38.46));
@@ -324,7 +326,7 @@ public static class Vision {
     /**
      * contains a list of intermediate points from first index to second index
      * @home 0
-     * @groundPickup 1
+     * @transfer 1
      * @L1Reef 2
      * @L2Reef 3
      * @L3Reef 4
@@ -334,7 +336,7 @@ public static class Vision {
     public static List<ArmPoint>[][] intermediatePoints = new List[ArmSetpoints.setPointCount][ArmSetpoints.setPointCount]; 
     static{
       // intermediatePoints[0][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(22.43, 30.52)), new ArmPoint(new Translation2d(47.519, 10.114)));
-
+intermediatePoints[1][0] = (List<ArmPoint>) List.of((armSetPoints[5]));
 
       // intermediatePoints[1][4] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(30.0, 24.0)));
 
@@ -380,7 +382,7 @@ public static class Vision {
     /**
      * contains a full path between two points
      * @home 0
-     * @groundPickup 1
+     * @transfer 1
      * @L1Reef 2
      * @L2Reef 3
      * @L3Reef 4
@@ -418,7 +420,7 @@ public static class Vision {
       public static final double wristFlipP = 20.0; //20.0
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 0.0;
-      public static final double wristTwistP = 15.0; //15.0
+      public static final double wristTwistP = 10.0; //15.0
       public static final double wristTwistI = 0.0;
       public static final double wristTwistD = 0.0;
       public static final double gripperP = 0.0; // 10.0
@@ -458,12 +460,12 @@ public static class Vision {
   public static class IntakeConstants {
     public static final int intakeDeployMotorPort = 33;
     public static final int intakeGrabberMotorPort = 51;
-    public static final double intakeDeployCurrentLimit = 30; //40
+    public static final double intakeDeployCurrentLimit = 40; //40
     public static final double intakeGrabberCurrentLimit = 10;
 
     public static final double deploykP = 8; //7
     public static final double deploykI = 0;
-    public static final double deploykD = 0.5;
+    public static final double deploykD = 0.1;
     public static final double deploykG = 0.4;
     public static final double grabberkP = 0;
     public static final double grabberkI = 0;
@@ -474,7 +476,7 @@ public static class Vision {
     public static final double deployGearRatio = 20.0;
     public static final double grabberOffset = 0;
     public static final double grabberGearRatio = 5.0;
-    public static final double grabberSetIntake = 0.0; //-0.5
+    public static final double grabberSetIntake = 1.0; //-0.5
 
     public static final double setpoint0 = 0d;
     public static final double setpoint30 = 1d/12d;

@@ -78,10 +78,13 @@ public class ArmCommandPathToPoint extends Command {
       arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmConstants.velocity), nextPoint.inBend);
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f)));
     }
-      // if ((path.getTranslations().get((path.getTranslations().size()-1)/4)).getDistance(arm.getArmPosition()) < 20.0){
+      if ((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.8)){
         arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);
-        arm.setWristTwistPosition(path.points.get(path.points.size() - 1).wristTwist);
-      // }
+      }
+      if ((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.7)){
+      arm.setWristTwistPosition(path.points.get(path.points.size() - 1).wristTwist);
+      }
+
   }
 
   // Called once the command ends or is interrupted.

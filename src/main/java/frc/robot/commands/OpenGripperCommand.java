@@ -6,37 +6,43 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Gripper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCommand extends Command {private Intake intake;
-    private Supplier<Double> position, grabberSetPower;
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand(Intake intake, Supplier<Double> position, Supplier<Double> grabberSetPower) {
-    this.intake = intake;
-        this.position = position;
-        addRequirements(intake);
-        this.grabberSetPower = grabberSetPower;
+public class OpenGripperCommand extends Command {
+  private Gripper gripper;
+  /** Creates a new ArmCommandGripperOpen. */
+  public OpenGripperCommand(Gripper gripper) {
+    this.gripper = gripper;
+    addRequirements(gripper);
+    
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+      gripper.openGripper();
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setDeployPosition(position.get());
-    intake.setGrabberIntake(grabberSetPower.get());
+
+      gripper.openGripper();
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    gripper.stopGripper();
+  }
 
   // Returns true when the command should end.
   @Override

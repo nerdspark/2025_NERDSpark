@@ -102,6 +102,9 @@ public class Gripper extends SubsystemBase {
   public boolean getRightDetected(){
     return sensorRight.getIsDetected().getValue();
   }
+  public boolean getDetected(){
+    return getMiddleDetected() || getLeftDetected() || getRightDetected();
+  }
   @Override
   public void periodic() {
     SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());
