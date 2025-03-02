@@ -247,6 +247,11 @@ import org.photonvision.EstimatedRobotPose;
         NetworkTableEntry relbotpose = llTable.getEntry("targetpose_cameraspace");
         return relbotpose.getDoubleArray(new double[6]);
       }
+
+      public double[] getBotPose() {
+        NetworkTableEntry botpose = llTable.getEntry("botpose");
+        return botpose.getDoubleArray(new double[6]);
+      }
     
       public void setPipelineNumber(int i) {
         llTable.getEntry("pipeline").setNumber(i);

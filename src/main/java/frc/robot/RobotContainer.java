@@ -93,16 +93,20 @@ public class RobotContainer {
   private void configureBindings() {
 
     drivetrain.setDefaultCommand(
-      drivetrain.applyRequest(() ->
+       drivetrain.applyRequest(() ->
         drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed)) 
           .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) 
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
-    );
+        );
 
     joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
     joystick.b().whileTrue(drivetrain.applyRequest(() ->
       point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
+    ));
+    joystick.y().toggleOnTrue(new DriveToPoseCommand(drivetrain, () -> drivetrain.getState().Pose,
+    () -> poseEstimatorSubsystem.getCoralPose(),
+    () -> drivetrain.getState().Pose.getRotation()
     ));
 
 

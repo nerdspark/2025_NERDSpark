@@ -91,21 +91,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
     
             }
-            if (visionFront.getObjectClass()=="algae"){
-                Pose2d pose = getCurrentPose();
-                double poseX = pose.getX();
-                double poseY = pose.getY();
-                Rotation2d gyro = new Rotation2d(0);
-    
-    
-                double ty = visionFront.getTy();
-                
-                double distance = (kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((30+ty) * (Math.PI / 180));
-                Pose2d algaePose = new Pose2d(distance * Math.sin(gyro.getRadians()) + poseX - kLimeLightXOffset, distance * Math.cos(gyro.getRadians()) + poseY - kLimeLightYOffset, gyro);
-                
-                SmartDashboard.putNumber("algaeX", algaePose.getX());
-                SmartDashboard.putNumber("algaeY", algaePose.getY());
-                }
+            //if (visionFront.getObjectClass()=="algae"){
+            Pose2d algaePose = getCoralPose();
+            
+            SmartDashboard.putNumber("algaeX", algaePose.getX());
+            SmartDashboard.putNumber("algaeY", algaePose.getY());
+               // }
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -117,6 +108,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putString("Robot Pose", getFomattedPose());
         }
         SmartDashboard.putBoolean("tV", visionFront.hasTarget());
+        //SmartDashboard.putString("class", visionFront.getObjectClass());
               
     }
 
@@ -147,6 +139,24 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     public void setCurrentPose(Pose2d newPose) {
         //driveTrain.seedFieldRelative(newPose);
         driveTrain.resetPose(newPose);
+    }
+
+    public Pose2d getCoralPose() {
+    
+        Pose2d pose = getCurrentPose();
+        double poseX = pose.getX();
+        double poseY = pose.getY();
+        //Rotation2d gyro = new Rotation2d(30);
+        Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
+                // double tx = visionFront.getTx();
+                // double ty = visionFront.getTy();
+
+        double tx = 0;
+        double ty = -20.0;
+                
+        double distance = (kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((30+ty) * (Math.PI / 180)) + 0.2032;
+        Pose2d algaePose = new Pose2d(distance * Math.sin(gyro.getRadians()+tx) + poseX, distance * Math.cos(gyro.getRadians()+tx) + poseY, gyro);
+        return algaePose;
     }
 
     /**
