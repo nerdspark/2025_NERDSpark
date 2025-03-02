@@ -91,10 +91,8 @@ public final class Autos {
 
     double rotationDiff = offset.getRotation().getDegrees();
 
-    if(reefLevel.get() == ReefLevel.L5) return goal;
+    // if(reefLevel.get() == ReefLevel.L5) return goal;
       
-    maxDistanceReefLineup = 1.5;
-    
     DogLog.log("AutoScoreCommand/offset" , offset);   
 
     DogLog.log("AutoScoreCommand/goalPose" , goal);
@@ -105,24 +103,30 @@ public final class Autos {
     DogLog.log("AutoScoreCommand/offsetY" , offset.getY());
     DogLog.log("AutoScoreCommand/rotationDiff" , rotationDiff);
 
-   
-    double shiftXT =
-    MathUtil.clamp(
-        (yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
-        0.0,
-        1.0);
 
-    double shiftYT =
-        MathUtil.clamp(yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength),
-        0.0, 1.0);
+    double shiftXT = reefLevel.get() == ReefLevel.L5 ? 
+      MathUtil.clamp(((yDistance) / (Reef.faceLength)) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
+      0.0,1.0) :
+      MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
+      0.0,1.0); ;
+
+      double shiftYT = reefLevel.get() == ReefLevel.L5 ? 
+      MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / -Reef.faceLength), 0.0, 1.0):
+      MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
+
+    //double shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0) ;
 
     
-        DogLog.log("AutoScoreCommand/shiftXT" , shiftXT);
+        DogLog.log("AutoScoreCommand/shiftXT" , shiftXT); 
         DogLog.log("AutoScoreCommand/shiftYT" , shiftYT);
-        DogLog.log("AutoScoreCommand/shiftedGoalPose", goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup, Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()) , new Rotation2d())));
 
-    return goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
+        goal = reefLevel.get() == ReefLevel.L5 ? 
+               goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()))
+              : goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
+        DogLog.log("AutoScoreCommand/shiftedGoalPose", goal);
+        
+        return goal;
   }
 
    /** Get drive target. */
