@@ -9,6 +9,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.commands.Autos;
+import frc.robot.commands.ClimbCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
@@ -40,6 +41,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climb;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -82,6 +84,7 @@ public class RobotContainer {
 
 
   private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  private final Climb m_ClimbSubsystem = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
 
 
@@ -157,6 +160,8 @@ public class RobotContainer {
         joystick.leftTrigger().whileTrue(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).until(() -> intake.hasCoral()));
           
         joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
+        joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
+        joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
         
 
     /* Manually start logging with left bumper before running any tests,

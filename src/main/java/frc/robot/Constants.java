@@ -320,6 +320,10 @@ public static class Vision {
     public static final double wristFlipToElbowRatio = 1.0/(35.0 / 49.0);
     public static final double wristTwistToElbowRatio = 1.0/(35.0 / 49.0);
     public static final double wristTwistToFlipRatio = -1.0 / 1.0;
+    public static final double rightServoOffset = 0.0;
+    public static final double leftServoOffset = 0.0;
+    public static final double onCloseServoPosition = 0.3;
+    public static final double onOpenServoPosition = 0;
   }
 
   public static class ArmSetpoints {

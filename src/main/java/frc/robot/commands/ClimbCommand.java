@@ -5,31 +5,37 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climb;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ClimbCommand extends Command {
   private double m_position;
   private Climb m_climber;
+  private Supplier<Boolean> close;
   /** Creates a new ClimbCommand. */
-  public ClimbCommand(Climb climber, double position) {
+  public ClimbCommand(Climb climber, Supplier<Boolean> close) {
     // Use addRequirements() here to declare subsystem dependencies. 
-    m_climber=climber;
-    m_position=position;
+    this.m_climber=climber;
+    // m_climber = climber;
+    this.close = close;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //m_climber.setPosition(m_position);
-    
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_climber.setServoPosition(m_position);
+    if (close.get()) {
+      m_climber.setServoPosition(Constants.ArmConstants.onCloseServoPosition);
+    } else {
+      m_climber.setServoPosition(Constants.ArmConstants.onOpenServoPosition);
+    }
   }
 
   // Called once the command ends or is interrupted.
