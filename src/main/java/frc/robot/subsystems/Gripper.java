@@ -31,7 +31,7 @@ public class Gripper extends SubsystemBase {
 
   /** Creates a new Gripper. */
   public Gripper() {
-    gripper = new TalonFX(ArmConstants.gripperMotorPort, "rio");
+    gripper = new TalonFX(ArmConstants.gripperMotorPort, ArmConstants.armCanBus);
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen)
           .withStatorCurrentLimitEnable(true);
@@ -49,9 +49,9 @@ public class Gripper extends SubsystemBase {
         gripper
           .getConfigurator()
           .apply(gripperConfig);
-    sensorMiddle = new CANrange(ArmConstants.rangeMiddlePort, "rio");
-    sensorLeft = new CANrange(ArmConstants.rangeLeftPort, "rio");
-    sensorRight = new CANrange(ArmConstants.rangeRightPort, "rio");
+    sensorMiddle = new CANrange(ArmConstants.rangeMiddlePort, ArmConstants.armCanBus);
+    sensorLeft = new CANrange(ArmConstants.rangeLeftPort, ArmConstants.armCanBus);
+    sensorRight = new CANrange(ArmConstants.rangeRightPort, ArmConstants.armCanBus);
     CANrangeConfiguration sensorMiddleConfig = new CANrangeConfiguration();
     CANrangeConfiguration sensorLeftConfig = new CANrangeConfiguration();
     CANrangeConfiguration sensorRightConfig = new CANrangeConfiguration();

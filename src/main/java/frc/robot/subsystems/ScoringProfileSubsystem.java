@@ -80,6 +80,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     for(int j=12; j<18; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
         reefLevel = FieldConstants.ReefLevel.values()[j-12];
+        // System.out.println("J: " + j + "; reeflevel: " + reefLevel.level);
       }
     }
 
@@ -126,6 +127,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return branch;
   }
   public FieldConstants.ReefLevel getLevel() {
+    SmartDashboard.putNumber("reeflevel", reefLevel.level);
     return reefLevel;
   }
   public void setBranch(char branch) {

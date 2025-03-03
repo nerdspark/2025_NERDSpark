@@ -29,11 +29,12 @@ import frc.robot.Constants.IntakeConstants;
 public class Intake extends SubsystemBase {
   private TalonFX intakeDeployMotor;
   private TalonFX intakeGrabberMotor;
+  private boolean hasCoral = false;
 
   /** Creates a new Intake. */
   public Intake() {
-    intakeDeployMotor = new TalonFX(IntakeConstants.intakeDeployMotorPort, "rio");
-    intakeGrabberMotor = new TalonFX(IntakeConstants.intakeGrabberMotorPort, "rio");
+    intakeDeployMotor = new TalonFX(IntakeConstants.intakeDeployMotorPort, IntakeConstants.intakeCANBus);
+    intakeGrabberMotor = new TalonFX(IntakeConstants.intakeGrabberMotorPort, IntakeConstants.intakeCANBus);
 
     TalonFXConfiguration intakeDeployMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration intakeGrabberMotorConfig = new TalonFXConfiguration();
@@ -108,6 +109,9 @@ public class Intake extends SubsystemBase {
   }
   public void setGrabberIntake(double target){
     intakeGrabberMotor.set(target);
+  }
+  public boolean hasCoral() {
+    return hasCoral;
   }
 
   @Override

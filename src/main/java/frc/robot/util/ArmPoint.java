@@ -7,7 +7,9 @@ package frc.robot.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.subsystems.Arm;
 
@@ -18,21 +20,41 @@ public class ArmPoint {
     public double wristFlip, wristTwist = 0;
     public ArmPoint(Translation2d point, boolean inBend, double wristFlip, double wristTwist) {
         this.position = point;
+        if (position.getNorm() > ArmConstants.totalStageLength) {
+            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
+        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
+        }
         this.inBend = inBend;
         this.wristFlip = wristFlip;
         this.wristTwist = wristTwist;
     }
     public ArmPoint(Translation2d point, boolean inBend) {
         this.position = point;
+        if (position.getNorm() > ArmConstants.totalStageLength) {
+            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
+        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
+        }
         this.inBend = inBend;
     }
     public ArmPoint(Translation2d point, double wristFlip, double wristTwist) {
         this.position = point;
+        if (position.getNorm() > ArmConstants.totalStageLength) {
+            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
+        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
+        }
         this.wristFlip = wristFlip;
         this.wristTwist = wristTwist;
     }
     public ArmPoint(Translation2d point) {
         this.position = point;
+        if (position.getNorm() > ArmConstants.totalStageLength) {
+            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
+        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
+        }
     }
     public static List<ArmPoint> fromTranslations(List<Translation2d> points, boolean inBend) {
         List<ArmPoint> ret = new ArrayList<>();

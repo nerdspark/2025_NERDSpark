@@ -52,12 +52,12 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   public Arm() {
     
-    shoulderLeft = new TalonFX(ArmConstants.shoulderMotorLeftPort, "rio"); 
-    shoulderRight = new TalonFX(ArmConstants.shoulderMotorRightPort, "rio"); 
-    elbowLeft = new TalonFX(ArmConstants.elbowMotorLeftPort, "rio");
-    elbowRight = new TalonFX(ArmConstants.elbowMotorRightPort, "rio");
-    wristFlip = new TalonFX(ArmConstants.wristFlipMotorPort, "rio");
-    wristTwist = new TalonFX(ArmConstants.wristTwistMotorPort, "rio");
+    shoulderLeft = new TalonFX(ArmConstants.shoulderMotorLeftPort, ArmConstants.armCanBus); 
+    shoulderRight = new TalonFX(ArmConstants.shoulderMotorRightPort, ArmConstants.armCanBus); 
+    elbowLeft = new TalonFX(ArmConstants.elbowMotorLeftPort, ArmConstants.armCanBus);
+    elbowRight = new TalonFX(ArmConstants.elbowMotorRightPort, ArmConstants.armCanBus);
+    wristFlip = new TalonFX(ArmConstants.wristFlipMotorPort, ArmConstants.armCanBus);
+    wristTwist = new TalonFX(ArmConstants.wristTwistMotorPort, ArmConstants.armCanBus);
     
     TalonFXConfiguration shoulderconfig = new TalonFXConfiguration();
     TalonFXConfiguration elbowconfig = new TalonFXConfiguration();
@@ -360,7 +360,7 @@ public class Arm extends SubsystemBase {
   
   public double getElbowPosition() {
     double elbowPose = (elbowLeft.getPosition().getValueAsDouble() + elbowRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
-    // SmartDashboard.putNumber("elbow position", elbowPose);
+    SmartDashboard.putNumber("elbow position", elbowPose);
     // SmartDashboard.putNumber("elbow adjustment factor", shoulderLeft.getPosition()*24.0/42.0);
     // SmartDashboard.putNumber("elbow to shoulder", elbowPose - shoulderLeft.getPosition());
     return elbowPose;
@@ -397,7 +397,7 @@ public class Arm extends SubsystemBase {
   public double getShoulderPosition() {
     
     double position = (shoulderLeft.getPosition().getValueAsDouble() + shoulderRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
-    // SmartDashboard.putNumber("shoulder position", position);
+    SmartDashboard.putNumber("shoulder position", position);
 
     return position;
 }
@@ -435,8 +435,8 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // getShoulderPosition();
-    // getElbowPosition();
+    getShoulderPosition();
+    getElbowPosition();
     // getWristFlipPosition();
     // getWristTwistPosition();
     // SmartDashboard.putNumber("wrist flip output", wristFlip.getClosedLoopOutput().getValueAsDouble());
@@ -444,6 +444,7 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("wrist Twist output", wristTwist.getClosedLoopOutput().getValueAsDouble());
     // SmartDashboard.putNumber("wrist Twist amp", wristTwist.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("wrist twist pos", getWristTwistPosition());
+    SmartDashboard.putNumber("wrist flip pos", getWristFlipPosition());
     SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
     SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());

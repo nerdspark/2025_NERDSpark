@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Rotation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,10 +32,10 @@ import frc.robot.util.GenPath;
 public class ArmCommandPathToPoint extends Command {
   private Arm arm;
     private ArmPath path;
-    private int setPoint;
-    private boolean ended = false;
+    private IntSupplier setPoint;
+    private int setPointInt;
     /** path to the specified armPoint */ // TODO: add inflection point generation and hardstop avoidance to automatic path generation
-    public ArmCommandPathToPoint(Arm arm, int setPoint) {
+    public ArmCommandPathToPoint(Arm arm, IntSupplier setPoint) {
       this.setPoint = setPoint;
         this.arm = arm;
         addRequirements(arm);
@@ -44,31 +45,37 @@ public class ArmCommandPathToPoint extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ended = false;
     arm.finishedMoving = false;
+    calculatePath();
+  }
+  public void calculatePath() {
+    setPointInt = setPoint.getAsInt();
     int closestPoint = ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, arm.getArmPosition());
-    if (closestPoint != setPoint) {
+    if (closestPoint != setPointInt) {
       List<ArmPoint> temp = new ArrayList<>();
       temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend()));
-      temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPoint]);
-      temp.add(ArmSetpoints.armSetPoints[setPoint]);
+      temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPointInt]);
+      temp.add(ArmSetpoints.armSetPoints[setPointInt]);
       // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
       path = new ArmPath(GenPath.generateInflectionPoints(temp));
     } else {
-      path = new ArmPath(List.of(ArmSetpoints.armSetPoints[setPoint]));
+      path = new ArmPath(List.of(ArmSetpoints.armSetPoints[setPointInt]));
     }
-    System.out.println(path.toStringList().toString());
+    // System.out.println(path.toStringList().toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
     if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())) {
-      ended = true;
       arm.finishedMoving = true;
     }
+    if (setPointInt != setPoint.getAsInt()) {
+      calculatePath();
+      arm.finishedMoving = false;
+    }
     // SmartDashboard.putBoolean("Check", false);
-    if (ended){
+    if (arm.finishedMoving){
       // SmartDashboard.putBoolean("Check", true);
       arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), path.points.get(path.getTranslations().size() - 1).inBend);
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f)));
@@ -78,11 +85,12 @@ public class ArmCommandPathToPoint extends Command {
       arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmConstants.velocity), nextPoint.inBend);
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f)));
     }
-      if ((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.8)){
-        arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);
-      }
-      if ((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.7)){
-      arm.setWristTwistPosition(path.points.get(path.points.size() - 1).wristTwist);
+
+      if (((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.5) || arm.finishedMoving)){
+        arm.setWristTwistPosition(path.points.get(path.points.size() - 1).wristTwist);
+        if ((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.65) || arm.finishedMoving){
+          arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);
+        }
       }
 
   }
