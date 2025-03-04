@@ -11,6 +11,7 @@ import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,8 +48,8 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(MaxSpeed);
@@ -58,7 +59,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
 
-    // public final  Vision vision = new Vision(Constants.Vision.kCameraName, Constants.Vision.kRobotToCam);
+    //public final Vision vision = new Vision(Constants.Vision.kCameraName, Constants.Vision.kRobotToCam);
     public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
 
   // The robot's subsystems and commands are defined here...
@@ -76,7 +77,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Tests");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
-    configureBindings();
+    //configureBindings();
     // drivetrain.resetPose(new Pose2d(3, 3, new Rotation2d()));
 
   }
@@ -91,29 +92,29 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-
-    drivetrain.setDefaultCommand(
+      //drivetrain.setDefaultCommand(new CoralPoseReturner(ll));
+     drivetrain.setDefaultCommand(
        drivetrain.applyRequest(() ->
         drive.withVelocityX(xLimiter.calculate(Constants.joystickMap.get(-joystick.getRightY()) * MaxSpeed)) 
-          .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) 
-          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+           .withVelocityY(yLimiter.calculate(Constants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) 
+           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick.b().whileTrue(drivetrain.applyRequest(() ->
-      point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
-    ));
-    joystick.y().toggleOnTrue(new DriveToPoseCommand(drivetrain, () -> drivetrain.getState().Pose,
-    () -> poseEstimatorSubsystem.getCoralPose(),
-    () -> drivetrain.getState().Pose.getRotation()
-    ));
+    // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // joystick.b().whileTrue(drivetrain.applyRequest(() ->
+    //   point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
+    // ));
+    // joystick.y().toggleOnTrue(new DriveToPoseCommand(drivetrain, () -> drivetrain.getState().Pose,
+    // () -> poseEstimatorSubsystem.getCoralPose(),
+    // () -> drivetrain.getState().Pose.getRotation()
+    // ));
 
 
-    // reset the field-centric 
-    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    // // reset the field-centric 
+    // joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.registerTelemetry(logger::telemeterize);
     // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
@@ -132,10 +133,10 @@ public class RobotContainer {
      * Joystick B = dynamic forward
      * Joystick X = dyanmic reverse
      */
-    joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 
   /**

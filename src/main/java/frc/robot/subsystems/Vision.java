@@ -75,6 +75,7 @@ import org.photonvision.EstimatedRobotPose;
          photonPoseEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
          photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+         
          llTable = NetworkTableInstance.getDefault().getTable("limelight");
 
          // Simulation
@@ -103,7 +104,6 @@ import org.photonvision.EstimatedRobotPose;
      }
 
      public void run(){
-
         optionalEstimatedRobotPose = getEstimatedGlobalPose(this.camera, this.photonPoseEstimator);
      }
  

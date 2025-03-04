@@ -146,17 +146,18 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         Pose2d pose = getCurrentPose();
         double poseX = pose.getX();
         double poseY = pose.getY();
-        //Rotation2d gyro = new Rotation2d(30);
-        Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
-                // double tx = visionFront.getTx();
-                // double ty = visionFront.getTy();
+        Rotation2d gyro = new Rotation2d(0);
+        //Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
+                double tx = visionFront.getTx();
+                double ty = visionFront.getTy();
 
-        double tx = 0;
-        double ty = -20.0;
+        //double tx = 0;
+        //double ty = -20.0;
                 
-        double distance = (kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((30+ty) * (Math.PI / 180)) + 0.2032;
-        Pose2d algaePose = new Pose2d(distance * Math.sin(gyro.getRadians()+tx) + poseX, distance * Math.cos(gyro.getRadians()+tx) + poseY, gyro);
-        return algaePose;
+        double distance = (kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((30+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180) + 0.2032;
+        Pose2d coralPose = new Pose2d(distance * Math.sin((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseX, distance * Math.cos((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseY, gyro);
+        SmartDashboard.putNumber("distance", distance);
+        return coralPose;
     }
 
     /**
