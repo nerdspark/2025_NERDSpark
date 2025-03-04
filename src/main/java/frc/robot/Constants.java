@@ -324,11 +324,12 @@ public static class Vision {
     public static final double leftServoOffset = 0.0;
     public static final double onCloseServoPosition = 0.3;
     public static final double onOpenServoPosition = 0;
+
   }
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 9;
+    public static final int setPointCount = 11;
     public static final Translation2d home = new Translation2d(14.0,18.0); //safest home and also closest possible distance arm is allowed to get to central joint
 
     /**
@@ -342,6 +343,8 @@ public static class Vision {
      * @stow (home except closer to other setpoints for faster movement) 6
      * @home 7
      * @transfer 8
+     * @climbPrepare 9
+     * @climbClose 10
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
@@ -354,6 +357,8 @@ public static class Vision {
       armSetPoints[4] = new ArmPoint(new Translation2d(33.0, 30.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), 2.7, 0);
       armSetPoints[6] = new ArmPoint(new Translation2d(22, 9), true, Units.degreesToRadians(45), 0);
+      armSetPoints[9] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(36)), true);
+      armSetPoints[10] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(22)), true);
 
       //clamp distance of all setpoints (probably unnecessary)
       // for (int i = 0; i < armSetPoints.length; i++) {

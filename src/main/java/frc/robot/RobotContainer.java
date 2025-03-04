@@ -13,6 +13,7 @@ import frc.robot.commands.ClimbCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandPathToPoint;
@@ -162,6 +163,9 @@ public class RobotContainer {
         joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
         joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
         joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
+
+        joystick.x().onTrue(new ArmCommand(arm, () -> Constants.ArmSetpoints.armSetPoints[9]));
+        joystick.b().onTrue(new ArmCommand(arm, () -> Constants.ArmSetpoints.armSetPoints[10]));
         
 
     /* Manually start logging with left bumper before running any tests,
