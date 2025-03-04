@@ -342,14 +342,14 @@ public static class Vision {
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
       armSetPoints[7] = new ArmPoint(home, false, Math.PI * 0.5, 0.0);
-      armSetPoints[8] = new ArmPoint(new Translation2d(19, 7), true, -3.2, Math.PI*0.5);
+      armSetPoints[8] = new ArmPoint(new Translation2d(19, 7), true, -2.75, Math.PI*0.5); //19, 7
       armSetPoints[0] = new ArmPoint(new Translation2d(33.0, 10.0), true, 0, Math.PI*0.5);
       armSetPoints[1] = new ArmPoint(new Translation2d(37.0, 10.0), true, 0, Math.PI*0.5);
       armSetPoints[2] = new ArmPoint(new Translation2d(34.0, 15.0), true, 0, Math.PI*0.5);
       armSetPoints[3] = new ArmPoint(new Translation2d(33.0, 20.0), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(33.0, 30.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), 2.7, 0);
-      armSetPoints[6] = new ArmPoint(new Translation2d(22, 9), true, Units.degreesToRadians(45), 0);
+      armSetPoints[6] = new ArmPoint(new Translation2d(22, 15), true, Units.degreesToRadians(-90), 0);
 
       //clamp distance of all setpoints (probably unnecessary)
       // for (int i = 0; i < armSetPoints.length; i++) {
@@ -420,6 +420,7 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
   public static class IntakeConstants {
     public static final int intakeDeployMotorPort = 33;
     public static final int intakeGrabberMotorPort = 51;
+    public static final int intakeRangePort = 3;
     public static final double intakeDeployCurrentLimit = 40; //40
     public static final double intakeGrabberCurrentLimit = 10;
     public static final String intakeCANBus = "canivore1";
@@ -447,8 +448,8 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double home = 0.45;
     public static final double deploy = -0.1;
 
-    public static final double intakeTransferPosition = 0.33;
-
+    public static final double intakeTransferPosition = 0.3;
+    public static final double intakePassive = -0.08;
 
     public static final double transferPowerRollers = 1.0; //-0.5
     public static final double intakePowerRollers = -1.0;

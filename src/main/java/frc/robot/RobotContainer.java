@@ -16,6 +16,7 @@ import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.IntakeCommandPickup;
 import frc.robot.commands.OpenGripperCommand;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.Gripper;
@@ -123,7 +124,8 @@ public class RobotContainer {
 
     gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
-    intake.setDefaultCommand(new IntakeCommand(intake, () -> IntakeConstants.home, () -> 0.0));
+    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
+
   }
 
 
@@ -150,11 +152,11 @@ public class RobotContainer {
 
 
         joystick.leftBumper().whileTrue(
-            ((new ArmCommandPathToPoint(arm, () -> 8).alongWith((new WaitCommand(1.0).andThen(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> 0.0).alongWith(new OpenGripperCommand(gripper)))).until(armFinishedMoving)
+            ((new ArmCommandPathToPoint(arm, () -> 8).alongWith(((new IntakeCommand(intake, () -> IntakeConstants.home, () -> 0.0).alongWith(new OpenGripperCommand(gripper)))).until(armFinishedMoving)
               .andThen(((new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
-            .withTimeout(2).andThen(new IntakeCommand(intake, () -> IntakeConstants.deployOffset, () -> 0.0).andThen(new WaitCommand(1).andThen(new ArmCommandGripper(gripper, () -> true))))))))));
+            .withTimeout(4).andThen(new ArmCommandGripper(gripper, () -> true))))))));
               
-        joystick.leftTrigger().whileTrue(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).until(() -> intake.hasCoral()));
+        joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
         joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
         

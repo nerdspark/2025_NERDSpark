@@ -6,21 +6,19 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCommand extends Command {private Intake intake;
-    private Supplier<Double> position, grabberSetPower;
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand(Intake intake, Supplier<Double> position, Supplier<Double> grabberSetPower) {
+public class IntakeCommandPickup extends Command {private Intake intake;
+  private Supplier<Double> position, grabberSetPower;
+  /** Creates a new IntakeCommandPickup. */
+  public IntakeCommandPickup(Intake intake, Supplier<Double> position, Supplier<Double> grabberSetPower) {
     this.intake = intake;
         this.position = position;
         addRequirements(intake);
         this.grabberSetPower = grabberSetPower;
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -32,9 +30,9 @@ public class IntakeCommand extends Command {private Intake intake;
   public void execute() {
     intake.setDeployPosition(position.get());
     intake.setGrabberIntake(grabberSetPower.get());
-    // if((intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1)){
-    //   intake.setGrabberIntake(IntakeConstants.intakePassive);
-    // }
+    if((intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1)){
+      intake.setGrabberIntake(0.0);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -44,6 +42,7 @@ public class IntakeCommand extends Command {private Intake intake;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+
+    return (intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1);
   }
 }
