@@ -99,7 +99,7 @@ public static class Vision {
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
-                AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);          
+                AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);          
 
         //Do not change these. Actual values will be calculated by the vision system.
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
