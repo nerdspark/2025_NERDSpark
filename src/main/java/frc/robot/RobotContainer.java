@@ -29,6 +29,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -81,12 +82,15 @@ public class RobotContainer {
     public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
     public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
 
-    public final ScoringProfileSubsystem scoringSubsystem;
+    public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
 
   private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
   private final Climb m_ClimbSubsystem = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
+  private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+  .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
+  .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
 
 
   /* Path follower */
@@ -96,7 +100,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    scoringSubsystem = new ScoringProfileSubsystem();
+    // scoringSubsystem = new ScoringProfileSubsystem();
 
     autoChooser = AutoBuilder.buildAutoChooser("Tests");
     SmartDashboard.putData("Auto Mode", autoChooser);
@@ -219,8 +223,16 @@ public class RobotContainer {
  
   }
   private void configureLEDs() {
+    LEDPattern greenPattern = LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f));
+    LEDPattern bluePattern = LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f));
+      
+    
     armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
     armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+    drivetrainFinishedMoving.onTrue(m_LedSubsystem.runPattern(greenPattern.blink(Seconds.of(0.5))));
+    drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(bluePattern.blink(Seconds.of(0.5))));
+
+
   }
 
   /**
