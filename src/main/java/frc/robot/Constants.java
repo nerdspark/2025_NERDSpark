@@ -116,6 +116,8 @@ public static class Vision {
 
         public static final boolean USE_BUTTON_BOARD = true;
 
+
+
         public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
@@ -170,6 +172,7 @@ public static class Vision {
         public static final double  kPoseAmbiguityThreshold = 0.2;
         public static final double  kSingleTagDistanceThreshold =2.0;
 
+
         public static final Map<ReefLevel, Transform2d> reefLevelOffsetsMap = new HashMap<>();
         static {
 
@@ -179,8 +182,16 @@ public static class Vision {
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d()));
-
         }
+        public static final double kAlgaeCenterHeight = 0.2032; //in meters
+        public static final double kLimeLightHeight = 0.1143;
+        public static final double kLimeLightXOffset = -0.073025;
+        public static final double kLimeLightYOffset = 0.10795;
+    
+
+
+
+        
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
@@ -188,7 +199,7 @@ public static class Vision {
           coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d()));
          
         }
-
+      }
 
 //         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {
 //           for (FieldConstants.ReefHeight height : FieldConstants.ReefHeight.values()) {
@@ -197,7 +208,7 @@ public static class Vision {
 //         }
 //       }
 //     }
-  }
+  
   
 
   public final class ArmGains {
@@ -320,11 +331,16 @@ public static class Vision {
     public static final double wristFlipToElbowRatio = 1.0/(35.0 / 49.0);
     public static final double wristTwistToElbowRatio = 1.0/(35.0 / 49.0);
     public static final double wristTwistToFlipRatio = -1.0 / 1.0;
+    public static final double rightServoOffset = 0.0;
+    public static final double leftServoOffset = 0.0;
+    public static final double onCloseServoPosition = 0.3;
+    public static final double onOpenServoPosition = 0;
+
   }
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 9;
+    public static final int setPointCount = 11;
     public static final Translation2d home = new Translation2d(14.0,18.0); //safest home and also closest possible distance arm is allowed to get to central joint
 
     /**
@@ -338,6 +354,8 @@ public static class Vision {
      * @stow (home except closer to other setpoints for faster movement) 6
      * @home 7
      * @transfer 8
+     * @climbPrepare 9
+     * @climbClose 10
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
@@ -350,6 +368,8 @@ public static class Vision {
       armSetPoints[4] = new ArmPoint(new Translation2d(33.0, 30.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), 2.7, 0);
       armSetPoints[6] = new ArmPoint(new Translation2d(22, 15), true, Units.degreesToRadians(-90), 0);
+      armSetPoints[9] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(36)), true);
+      armSetPoints[10] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(22)), true);
 
       //clamp distance of all setpoints (probably unnecessary)
       // for (int i = 0; i < armSetPoints.length; i++) {
@@ -456,4 +476,3 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
   }
 
 }
-

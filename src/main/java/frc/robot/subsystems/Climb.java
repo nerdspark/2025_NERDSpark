@@ -10,13 +10,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 
 public class Climb extends SubsystemBase {
   /** Creates a new Climb. */
-private TalonFX ClimbMoter;
 
   public Climb() {
-    ClimbMoter= new TalonFX(3);
     
   }
 
@@ -24,8 +23,8 @@ private Servo ClimbServoRight = new Servo(8);
 private Servo ClimbServoLeft = new Servo(9);
 
 public void setServoPosition(double value){
-  ClimbServoRight.setAngle(value);
-  ClimbServoLeft.setAngle(value);
+  ClimbServoRight.setAngle(value + ArmConstants.rightServoOffset);
+  ClimbServoLeft.setAngle(-value - ArmConstants.leftServoOffset);
 }
 
 
@@ -33,16 +32,8 @@ public void setServoPosition(double value){
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    // ClimbServoRight.getAngle();
   }
 
-public void setPosition(double value){
-  ClimbMoter.setControl(new PositionDutyCycle(value));
-}
-
-public double getPosition(){
-  return ClimbMoter.getPosition().getValueAsDouble();
-
-}
 
 }

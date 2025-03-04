@@ -8,6 +8,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.util.ArmPoint;
+
 import java.util.function.Supplier;
 
 public class ArmCommand extends Command {
@@ -15,10 +17,10 @@ public class ArmCommand extends Command {
     private Supplier<Translation2d> position;
     private Supplier<Boolean> inBend;
     /** Creates a new ArmCommand. */
-    public ArmCommand(Arm arm, Supplier<Translation2d> position, Supplier<Boolean> inBend) {
+    public ArmCommand(Arm arm, Supplier<ArmPoint> point) {
         this.arm = arm;
-        this.position = position;
-        this.inBend = inBend;
+        this.position = () -> point.get().position;
+        inBend = () -> point.get().inBend;
         addRequirements(arm);
     }
 

@@ -55,6 +55,10 @@ import org.photonvision.EstimatedRobotPose;
  import org.photonvision.targeting.PhotonTrackedTarget;
 
 import dev.doglog.DogLog;
+ import edu.wpi.first.networktables.NetworkTable;
+ import edu.wpi.first.networktables.NetworkTableEntry;
+ import edu.wpi.first.networktables.NetworkTableInstance;
+
  
  
  public class Vision implements Runnable {
@@ -62,6 +66,8 @@ import dev.doglog.DogLog;
      private final PhotonPoseEstimator photonPoseEstimator;
      private Matrix<N3, N1> curStdDevs;
      private String cameraName;
+
+     private final NetworkTable llTable;
 
      private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
  
@@ -78,6 +84,7 @@ import dev.doglog.DogLog;
          photonPoseEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
          photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+         llTable = NetworkTableInstance.getDefault().getTable("limelight");
 
          // Simulation
          if (Robot.isSimulation()) {
@@ -105,7 +112,6 @@ import dev.doglog.DogLog;
      }
 
      public void run(){
-
         optionalEstimatedRobotPose = getEstimatedGlobalPose(this.camera, this.photonPoseEstimator);
      }
  
@@ -226,6 +232,46 @@ import dev.doglog.DogLog;
      public Matrix<N3, N1> getEstimationStdDevs() {
          return curStdDevs;
      }
+
+     // - LimeLight
+
+     public double getTx() {
+        return llTable.getEntry("tx").getDouble(0.0);
+      }
+    
+      public double getTy() {
+        return llTable.getEntry("ty").getDouble(0.0);
+      }
+    
+      public double getTa() {
+        return llTable.getEntry("ta").getDouble(0.0);
+      }
+    
+      public boolean hasTarget() {
+        return llTable.getEntry("tv").getDouble(0.0) == 1.0;
+      }
+    
+      public long getID() {
+        return llTable.getEntry("tid").getInteger(0);
+      }
+    
+      public double[] getRelBotPose() {
+        NetworkTableEntry relbotpose = llTable.getEntry("targetpose_cameraspace");
+        return relbotpose.getDoubleArray(new double[6]);
+      }
+
+      public double[] getBotPose() {
+        NetworkTableEntry botpose = llTable.getEntry("botpose");
+        return botpose.getDoubleArray(new double[6]);
+      }
+    
+      public void setPipelineNumber(int i) {
+        llTable.getEntry("pipeline").setNumber(i);
+      }
+
+      public String getObjectClass() {
+        return llTable.getEntry("tclass").getString("none");
+      }
  
      // ----- Simulation
  
