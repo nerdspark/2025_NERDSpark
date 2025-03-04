@@ -172,6 +172,11 @@ public static class Vision {
         public static final double  kPoseAmbiguityThreshold = 0.2;
         public static final double  kSingleTagDistanceThreshold =2.0;
 
+        public static final double kAlgaeCenterHeight = 0.2032; //in meters
+        public static final double kLimeLightHeight = 0.1143;
+        public static final double kLimeLightXOffset = -0.073025;
+        public static final double kLimeLightYOffset = 0.10795;
+
 
         public static final Map<ReefLevel, Transform2d> reefLevelOffsetsMap = new HashMap<>();
         static {
@@ -183,15 +188,11 @@ public static class Vision {
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d()));
           
-        public static final double kAlgaeCenterHeight = 0.2032; //in meters
-        public static final double kLimeLightHeight = 0.1143;
-        public static final double kLimeLightXOffset = -0.073025;
-        public static final double kLimeLightYOffset = 0.10795;
     }
 
 
 
-        }
+  
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
@@ -199,6 +200,7 @@ public static class Vision {
           coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d()));
          
         }
+    }
 
 
 //         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {
@@ -208,7 +210,7 @@ public static class Vision {
 //         }
 //       }
 //     }
-  }
+  
   
 
   public final class ArmGains {
