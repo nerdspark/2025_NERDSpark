@@ -4,6 +4,8 @@ import static frc.robot.Constants.Vision.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -31,14 +33,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 
+import frc.robot.util.CoralObject;
+
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
     private final CommandSwerveDrivetrain driveTrain;
-    private Vision visionFront ;
-    private Vision visionBack ;
+    private Vision visionFront;
+    private Vision visionBack;
     private static Notifier allNotifier;
-   
+    private static List<CoralObject> corals = new ArrayList<>();
        
         private Field2d field = new Field2d(); 
           
@@ -108,12 +112,39 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
              }
 
-            //if (visionFront.getObjectClass()=="algae"){
-            Pose2d algaePose = getCoralPose();
+            Pose2d coralPose = getCoralPose();
+            if (visionFront.hasTarget()) {
+                double hb = visionFront.getHB();
+                CoralObject coral = new CoralObject(coralPose, hb, 0);
+                coral.setCoralDistance(coral.calcDistance(coral.getPose()));
+                corals.add(coral);
+            }
+
+            if (corals.size() > 2) {
+                int size = corals.size() - 2;
+                Pose2d coralPoseLast = corals.get(size).getPose();
+                double coralXLast = coralPoseLast.getX();
+                double coralYLast = coralPoseLast.getY();
+                SmartDashboard.putNumber("coralXLast", coralXLast);
+                SmartDashboard.putNumber("coralYLast", coralYLast);
+            }
             
-            SmartDashboard.putNumber("algaeX", algaePose.getX());
-            SmartDashboard.putNumber("algaeY", algaePose.getY());
-               // }
+            double[] xys = visionFront.getCoordinates();
+            if (xys.length == 8) {
+            SmartDashboard.putNumber("x0", xys[0]);
+            SmartDashboard.putNumber("y0", xys[1]);
+            SmartDashboard.putNumber("x1", xys[2]);
+            SmartDashboard.putNumber("y1", xys[3]);
+            SmartDashboard.putNumber("x2", xys[4]);
+            SmartDashboard.putNumber("y2", xys[5]);
+            SmartDashboard.putNumber("x3", xys[6]);
+            SmartDashboard.putNumber("y3", xys[7]);
+        }
+            SmartDashboard.putNumber("coralX", coralPose.getX());
+            SmartDashboard.putNumber("coralY", coralPose.getY());
+
+            
+            
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -167,10 +198,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         Pose2d pose = getCurrentPose();
         double poseX = pose.getX();
         double poseY = pose.getY();
-        Rotation2d gyro = new Rotation2d(0);
+        Rotation2d gyro = new Rotation2d(0); //change to pigeon gyro asap
         //Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
-                double tx = visionFront.getTx();
-                double ty = visionFront.getTy();
+        double tx = visionFront.getTx();
+        double ty = visionFront.getTy();
 
         //double tx = 0;
         //double ty = -20.0;
@@ -198,4 +229,4 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             }
         }
     }
-} 
+}

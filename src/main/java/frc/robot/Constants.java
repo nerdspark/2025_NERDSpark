@@ -173,9 +173,14 @@ public static class Vision {
         public static final double  kSingleTagDistanceThreshold =2.0;
 
         public static final double kAlgaeCenterHeight = 0.2032; //in meters
+
+        public static final double kCoralCenterUprightHeight = 0.225425; //in meters
+        public static final double kCoralCenterFallenHeight = 0.0508; //in meters
+
         public static final double kLimeLightHeight = 0.1143;
         public static final double kLimeLightXOffset = -0.073025;
         public static final double kLimeLightYOffset = 0.10795;
+        public static final double kLimeLightAOD = 15.0;
 
 
         public static final Map<ReefLevel, Transform2d> reefLevelOffsetsMap = new HashMap<>();

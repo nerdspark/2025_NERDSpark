@@ -272,7 +272,18 @@ import dev.doglog.DogLog;
       public String getObjectClass() {
         return llTable.getEntry("tclass").getString("none");
       }
- 
+
+      public double getHB() {
+        return llTable.getEntry("hb").getDouble(0.0);
+      }
+      
+      public double[] getCoordinates() {
+        double coords[] = new double[8];
+        if (llTable.getEntry("tcornxy").getDoubleArray(new double[1]).length == 8) {
+          coords = llTable.getEntry("tcornxy").getDoubleArray(new double[1]);
+        }
+        return coords;
+      }
      // ----- Simulation
  
      public void simulationPeriodic(Pose2d robotSimPose) {

@@ -88,8 +88,8 @@ public class RobotContainer {
     public final ScoringProfileSubsystem scoringSubsystem;
 
 
-  private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private final Climb m_ClimbSubsystem = new Climb();
+  //private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  //private final Climb m_ClimbSubsystem = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
 
 
@@ -167,8 +167,8 @@ public class RobotContainer {
         joystick.leftTrigger().whileTrue(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).until(() -> intake.hasCoral()));
           
         joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
-        joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
-        joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
+        //joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
+        //joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
 
         joystick.x().onTrue(new ArmCommand(arm, () -> Constants.ArmSetpoints.armSetPoints[9]));
         joystick.b().onTrue(new ArmCommand(arm, () -> Constants.ArmSetpoints.armSetPoints[10]));
@@ -226,8 +226,8 @@ public class RobotContainer {
  
   }
   private void configureLEDs() {
-    armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+    //armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+    //armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
 
   }
 
