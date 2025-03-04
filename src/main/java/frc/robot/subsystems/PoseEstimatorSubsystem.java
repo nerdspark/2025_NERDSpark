@@ -1,11 +1,6 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Vision.kCameraNameFront;
-import static frc.robot.Constants.Vision.kRobotToCamFront;
-import static frc.robot.Constants.Vision.kCameraNameBack;
-import static frc.robot.Constants.Vision.kRobotToCamBack;
-import static frc.robot.Constants.Vision.kTagLayout;
-import static frc.robot.Constants.Vision.USE_VISION;
+import static frc.robot.Constants.Vision.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,11 +23,13 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
@@ -110,6 +107,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
              }
 
+            //if (visionFront.getObjectClass()=="algae"){
+            Pose2d algaePose = getCoralPose();
+            
+            SmartDashboard.putNumber("algaeX", algaePose.getX());
+            SmartDashboard.putNumber("algaeY", algaePose.getY());
+               // }
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -124,6 +127,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
 
         }
+        SmartDashboard.putBoolean("tV", visionFront.hasTarget());
+        //SmartDashboard.putString("class", visionFront.getObjectClass());
               
     }
 
@@ -135,7 +140,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     private String getFomattedPose(Pose2d pose) {
-      
         return String.format(
                 "(%.3f, %.3f) %.2f degrees",
                 pose.getX(), pose.getY(), pose.getRotation().getDegrees());
@@ -155,6 +159,25 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     public void setCurrentPose(Pose2d newPose) {
         //driveTrain.seedFieldRelative(newPose);
         driveTrain.resetPose(newPose);
+    }
+
+    public Pose2d getCoralPose() {
+    
+        Pose2d pose = getCurrentPose();
+        double poseX = pose.getX();
+        double poseY = pose.getY();
+        Rotation2d gyro = new Rotation2d(0);
+        //Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
+                double tx = visionFront.getTx();
+                double ty = visionFront.getTy();
+
+        //double tx = 0;
+        //double ty = -20.0;
+                
+        double distance = (kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((30+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180) + 0.2032;
+        Pose2d coralPose = new Pose2d(distance * Math.sin((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseX, distance * Math.cos((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseY, gyro);
+        SmartDashboard.putNumber("distance", distance);
+        return coralPose;
     }
 
     /**
