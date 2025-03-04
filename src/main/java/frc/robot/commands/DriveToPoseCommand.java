@@ -9,19 +9,28 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.Constants.Vision.*;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.AllianceFlipUtil;
 
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 
-
+import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.FieldCentric;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+
+import dev.doglog.DogLog;
 
 /** An example command that uses an example subsystem. */
 public class DriveToPoseCommand extends Command {
@@ -32,6 +41,8 @@ public class DriveToPoseCommand extends Command {
 
     private final Supplier<Pose2d> currentPoseProvider;
     private final Supplier<Rotation2d> robotAngle;
+
+
     // private  final Pose2d goalPose;
 
     private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
@@ -50,7 +61,12 @@ public class DriveToPoseCommand extends Command {
             Constants.Vision.kDThetaController,
             OMEGA_CONSTRATINTS);
 
-    private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
+  //  private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
+
+    private final FieldCentric fieldCentricSwerveRequest = new FieldCentric()
+    .withSteerRequestType(SteerRequestType.MotionMagicExpo)
+    .withDriveRequestType(DriveRequestType.Velocity)
+    .withForwardPerspective(ForwardPerspectiveValue.BlueAlliance);
 
     /**
      * Creates a new ExampleCommand.
@@ -91,7 +107,7 @@ public class DriveToPoseCommand extends Command {
     @Override
     public void initialize() {
 
-        SmartDashboard.putString("DriveToPoseCommand", "Initialize");
+        DogLog.log("DriveToPoseCommand", "Initialize");
 
         var robotPose = currentPoseProvider.get();
         omegaController.reset(
@@ -100,17 +116,18 @@ public class DriveToPoseCommand extends Command {
         xController.reset(robotPose.getX(), drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
         yController.reset(robotPose.getY(), drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
 
-        SmartDashboard.putNumber(
-                "YawVelocity",
+        DogLog.log(
+                "DriveToPoseCommand/YawVelocity",
                 drivetrainSubsystem.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond * 180.0 / Math.PI);
-        SmartDashboard.putNumber(
-                "FieldVelocityX", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
-        SmartDashboard.putNumber(
-                "FieldVelocityY", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
+        DogLog.log(
+                "DriveToPoseCommand/FieldVelocityX", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vxMetersPerSecond);
+        DogLog.log(
+                "DriveToPoseCommand/FieldVelocityY", drivetrainSubsystem.getCurrentRobotChassisSpeeds().vyMetersPerSecond);
 
         omegaController.setGoal(targetPoseSupplier.get().getRotation().getDegrees());
         xController.setGoal(targetPoseSupplier.get().getX());
         yController.setGoal(targetPoseSupplier.get().getY());
+
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -120,59 +137,68 @@ public class DriveToPoseCommand extends Command {
         // SmartDashboard.putString("DriveToPoseCommand", "Execute");
 
         var robotPose = currentPoseProvider.get();
-        SmartDashboard.putNumber("DriveToPoseCommand robotPose.X", robotPose.getX());
-        SmartDashboard.putNumber("DriveToPoseCommand robotPose.Y", robotPose.getY());
-        SmartDashboard.putNumber(
-                "DriveToPoseCommand robotAngle", robotAngle.get().getDegrees());
+        var targetPose = targetPoseSupplier.get();
 
-        SmartDashboard.putNumber(
-                "DriveToPoseCommand goalPose.X", targetPoseSupplier.get().getX());
-        SmartDashboard.putNumber(
-                "DriveToPoseCommand goalPose.Y", targetPoseSupplier.get().getY());
-        SmartDashboard.putNumber(
-                "DriveToPoseCommand goalPose.Angle",
-                targetPoseSupplier.get().getRotation().getDegrees());
+        omegaController.setGoal(targetPoseSupplier.get().getRotation().getDegrees());
+        xController.setGoal(targetPoseSupplier.get().getX());
+        yController.setGoal(targetPoseSupplier.get().getY());
+
+        DogLog.log("DriveToPoseCommand/robotPose.X", robotPose.getX());
+        DogLog.log("DriveToPoseCommand/robotPose.Y", robotPose.getY());
+        DogLog.log("DriveToPoseCommand/robotAngle", robotAngle.get().getDegrees());
+
+        DogLog.log("DriveToPoseCommand/goalPose.X", targetPoseSupplier.get().getX());
+        DogLog.log("DriveToPoseCommand/goalPose.Y", targetPoseSupplier.get().getY());
+        DogLog.log("DriveToPoseCommand/goalPose.Angle", targetPoseSupplier.get().getRotation().getDegrees());
 
         var xSpeed = xController.calculate(robotPose.getX());
         if (xController.atGoal()) {
             xSpeed = 0;
         }
+        DogLog.log("DriveToPoseCommand/X Speed", xSpeed);
 
         var ySpeed = yController.calculate(robotPose.getY());
         if (yController.atGoal()) {
             ySpeed = 0;
         }
-    
+
+        DogLog.log("DriveToPoseCommand/Y Speed", ySpeed);
+
         var omegaSpeed = omegaController.calculate(robotAngle.get().getDegrees());
         if (omegaController.atGoal()) {
             omegaSpeed = 0;
         }
 
-        SmartDashboard.putNumber("DriveToPose X Speed", xSpeed);
-        SmartDashboard.putNumber("DriveToPose Y Speed", ySpeed);
-
-        SmartDashboard.putNumber("DriveToPose omega Speed", omegaSpeed);
-
+        DogLog.log("DriveToPoseCommand/Omega Speed", omegaSpeed);
+       
         ChassisSpeeds chassisSpeeds;
         chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 xSpeed,
                 ySpeed,
                 omegaSpeed,
                 robotAngle.get());
-        drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(chassisSpeeds));
+                
+      //  drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(chassisSpeeds).withDriveRequestType(DriveRequestType.Velocity));
+
+        drivetrainSubsystem.setControl(
+        fieldCentricSwerveRequest.withVelocityX(xSpeed).withVelocityY(ySpeed).withRotationalRate(omegaSpeed));
     }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        // ChassisSpeeds zeroChassisSpeeds = new ChassisSpeeds();
-        // drivetrainSubsystem.setControl(driveToPoseRequest.withSpeeds(zeroChassisSpeeds));
-        drivetrainSubsystem.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+ 
+       // drivetrainSubsystem.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+
+       drivetrainSubsystem.setControl(new SwerveRequest.Idle());
+
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return xController.atGoal() && yController.atGoal() && omegaController.atGoal();
+        return
+        xController.atGoal() && yController.atGoal() && omegaController.atGoal();
     }
+    
 }

@@ -4,26 +4,22 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
-
-import com.pathplanner.lib.path.PathPlannerPath;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Arm;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class ArmCommandWrist extends Command {
+  private Arm arm;
+  private Supplier<Double> wristFlip, wristTwist, gripper;
+  /** Creates a new ArmCommandWrist. */
+  public ArmCommandWrist(Arm arm, Supplier<Double> wristFlip, Supplier<Double> wristTwist) {
+    this.arm = arm;
+    this.wristFlip = wristFlip;
+    this.wristTwist = wristTwist;
+    this.gripper = gripper;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -33,7 +29,8 @@ public class ExampleCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    arm.setWristFlipPosition(wristFlip.get());
+    arm.setWristTwistPosition(wristTwist.get());
   }
 
   // Called once the command ends or is interrupted.
