@@ -104,7 +104,6 @@ public class RobotContainer {
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
   private Climb climb = new Climb();
-  private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
   private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
   .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);

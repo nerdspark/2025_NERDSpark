@@ -169,8 +169,8 @@ public static class Vision {
         public static final double IZone = 1.0d;
         // public static final double autoTurnCeiling = 5.0;
 
-        public static final double  kPoseAmbiguityThreshold = 0.2;
-        public static final double  kSingleTagDistanceThreshold =2.0;
+        public static final double kPoseAmbiguityThreshold = 0.2;
+        public static final double kSingleTagDistanceThreshold = 2.0;
 
         public static final double kAlgaeCenterHeight = 0.2032; //in meters
 
@@ -196,10 +196,6 @@ public static class Vision {
           reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d()));
 
         }
-        public static final double kAlgaeCenterHeight = 0.2032; //in meters
-        public static final double kLimeLightHeight = 0.1143;
-        public static final double kLimeLightXOffset = -0.073025;
-        public static final double kLimeLightYOffset = 0.10795;
     
 
 
