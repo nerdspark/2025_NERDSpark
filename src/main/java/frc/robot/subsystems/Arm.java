@@ -49,6 +49,8 @@ public class Arm extends SubsystemBase {
   
   public boolean finishedMoving = false;
 
+  private double wristTwistPosition = 0.0;
+  private double wristFlipPosition = 0.0;
   /** Creates a new Arm. */
   public Arm() {
     
@@ -331,13 +333,9 @@ public class Arm extends SubsystemBase {
     return wristTwistPosition;
   }
   public void setWristTwistPosition(double position) {
-    position = MathUtil.clamp(position, 0, Math.PI * 0.5);
-    position += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-    position -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
-    position /= (2d*Math.PI);
+    wristTwistPosition = position;
+        // SmartDashboard.putNumber("wrist twist position set raw", position);
 
-    // SmartDashboard.putNumber("wrist twist position set raw", position);
-    wristTwist.setControl(new PositionVoltage(position).withPosition(position));
 
   }
   public double getWristFlipPosition(){
@@ -348,14 +346,26 @@ public class Arm extends SubsystemBase {
   }
 
   public void setWristFlipPosition(double position) {
+    wristFlipPosition = position;
 // ratio = oo: wrist change amount -oo
 // ratio = 1: wrist change amount 0
 // ratio = 0: wrist change amount 1
-    position += getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
-    position /= (2d*Math.PI);
-
     // SmartDashboard.putNumber("wrist flip position set raw", position);
-    wristFlip.setControl(new PositionVoltage(position).withPosition(position));
+
+  }
+  public void updateWristSetpoints() {
+    double flipPosition = wristFlipPosition;
+    flipPosition += getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
+    flipPosition /= (2d*Math.PI);
+    wristFlip.setControl(new PositionVoltage(flipPosition).withPosition(flipPosition));
+
+    double twistPosition = wristTwistPosition;
+    twistPosition = MathUtil.clamp(twistPosition, 0, Math.PI * 0.5);
+    twistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+    twistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
+    twistPosition /= (2d*Math.PI);
+    wristTwist.setControl(new PositionVoltage(twistPosition).withPosition(twistPosition));
+
   }
   
   public double getElbowPosition() {
@@ -435,6 +445,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    updateWristSetpoints();
     getShoulderPosition();
     getElbowPosition();
     // getWristFlipPosition();
