@@ -5,6 +5,8 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Map;
+
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
@@ -232,16 +234,43 @@ public class RobotContainer {
  
   }
   private void configureLEDs() {
-    LEDPattern greenPattern = LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f));
+    LEDPattern greenPattern = LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f));
     LEDPattern bluePattern = LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f));
       
     
-    armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+    // armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+    // armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
 
-    drivetrainFinishedMoving.onTrue(m_LedSubsystem.runPattern(greenPattern.blink(Seconds.of(0.5))));
-    drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(bluePattern.blink(Seconds.of(0.5))));
+    // drivetrainFinishedMoving.onTrue(m_LedSubsystem.runPattern(greenPattern.blink(Seconds.of(0.5))));
+    // drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(bluePattern.blink(Seconds.of(0.5))));
 
+    // Color step1 = new Color();
+    // Color step2 = new Color();
+    
+    //   if(armFinishedMoving.getAsBoolean()) {
+    //     step1 = new Color(0.0f, 0.0f, 1.0f); // blue
+    //   } else {
+    //     step1 = new Color(1.0f, 0.0f, 0.0f); // green
+    //   }
+    //   if(drivetrainFinishedMoving.getAsBoolean()) {
+    //     step2 = new Color(0.0f, 1.0f, 0.0f); // red
+    //   } else {
+    //     step2 = new Color(1.0f, 1.0f, 0.0f); // yellow
+    //   }
+    //   LEDPattern steps = LEDPattern.steps(Map.of(0, step1, 0.5, step2))
+    //     .scrollAtRelativeSpeed(Percent.per(Second).of(40));
+    //   m_LedSubsystem.runPattern(steps);
+
+
+    
+    
+    
+    
+    
+
+  //  drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.gradient(LED, greenPattern, bluePattern)));
+    // intake status
+    // error states
 
   }
 

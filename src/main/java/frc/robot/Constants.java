@@ -475,4 +475,6 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double intakePowerRollers = -1.0;
   }
 
+  public static final double scrollSpeed = 40; 
+
 }
