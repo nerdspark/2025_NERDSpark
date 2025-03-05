@@ -87,7 +87,7 @@ public class RobotContainer {
     private Intake intake;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
+    // private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
 
 
 
@@ -103,7 +103,9 @@ public class RobotContainer {
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private Climb climb = new Climb();
+
+  // private Climb climb = new Climb();
+  private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
   private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
   .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
@@ -121,9 +123,9 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser("Tests");
     SmartDashboard.putData("Auto Mode", autoChooser);
 
-    arm = new Arm();
-    gripper = new Gripper();
-    intake = new Intake();
+    // arm = new Arm();
+    // gripper = new Gripper();
+    // intake = new Intake();
     SignalLogger.setPath("/media/sda1/armLog");
     SignalLogger.start();
     configureBindings();
@@ -136,21 +138,21 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getLeftY()) * MaxSpeed))
-          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getLeftX()) * MaxSpeed))
-          .withRotationalRate(zLimiter.calculate(-joystick.getRightX() * MaxAngularRate))
+        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
 
 
 
-    arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
+    // arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
 
-    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+    // gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
-    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
+    // intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
-    climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
+    // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
 
   }
 
@@ -189,24 +191,24 @@ public class RobotContainer {
     // drivetrain.registerTelemetry(logger::telemeterize);
     //     joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
         //drivetrain.registerTelemetry(logger::telemeterize);
-        joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> true));
-        joystick.rightTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
+        // joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> true));
+        // joystick.rightTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
         // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
 
 
-        joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
+        // joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
-        joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
+        // joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
         joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
         //joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
         //joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
         // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
-        joystick.y().onTrue(new ClimbCommand(climb, () -> true));
+        // joystick.y().onTrue(new ClimbCommand(climb, () -> true));
         // joystick.back().whileTrue(new ClimbCommand(climb, () -> false));
 
-        joystick.x().onTrue(new ArmCommandPathToPoint(arm, () -> 9).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
-        joystick.b().whileTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
+        // joystick.x().onTrue(new ArmCommandPathToPoint(arm, () -> 9).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
+        // joystick.b().whileTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
         
 
     /* Manually start logging with left bumper before running any tests,
@@ -253,7 +255,7 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level)));
+    // joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level)));
 
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
