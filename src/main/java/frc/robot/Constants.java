@@ -53,7 +53,7 @@ import frc.robot.util.ArmPoint;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static boolean DOGLOG_ENABLED = false;
+  public static boolean DOGLOG_ENABLED = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -114,20 +114,21 @@ public static class Vision {
 
         public static final boolean USE_VISION = true;
 
-        public static final boolean USE_BUTTON_BOARD = false;
+        public static final boolean USE_BUTTON_BOARD = true;
 
 
 
         public static final String kCameraNameFront = "LeftCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
-                new Transform3d(new Translation3d(Units.inchesToMeters(12), Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, 7.5, Math.toRadians(22.5))); //0
+                new Transform3d(new Translation3d(-Units.inchesToMeters(12), -Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0
+                , Math.toRadians(0), Math.toRadians(-157.5))); //0
 
 
         public static final String kCameraNameBack = "RightCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamBack =
-                new Transform3d(new Translation3d(Units.inchesToMeters(12), -Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, 7.5, Math.toRadians(-22.5))); //180
+                new Transform3d(new Translation3d(-Units.inchesToMeters(12), Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, Math.toRadians(0), Math.toRadians(157.5))); //180
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -193,13 +194,12 @@ public static class Vision {
         public static final Map<ReefLevel, Transform2d> reefLevelOffsetsMap = new HashMap<>();
         static {
 
-          reefLevelOffsetsMap.put(ReefLevel.L0, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d()));
-
+          reefLevelOffsetsMap.put(ReefLevel.L0, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
         }
     
 
@@ -209,8 +209,8 @@ public static class Vision {
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
-          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d()));
-          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d()));
+          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(6), 0, new Rotation2d(Math.toRadians(180))));
          
         }
     }
