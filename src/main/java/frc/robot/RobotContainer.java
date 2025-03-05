@@ -97,8 +97,8 @@ public class RobotContainer {
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
 
-  private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private final Climb m_ClimbSubsystem = new Climb();
+  // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  private Climb climb = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
   private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
@@ -146,6 +146,8 @@ public class RobotContainer {
 
     intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
+    climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
+
   }
 
 
@@ -177,8 +179,8 @@ public class RobotContainer {
         joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
         joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
-        joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
-        joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
+        joystick.y().whileTrue(new ClimbCommand(climb, () -> true));
+        // joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
 
         joystick.x().onTrue(new ArmCommand(arm, () -> Constants.ArmSetpoints.armSetPoints[9]));
         joystick.b().onTrue(new ArmCommand(arm, () -> Constants.ArmSetpoints.armSetPoints[10]));

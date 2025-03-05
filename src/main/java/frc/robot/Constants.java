@@ -237,18 +237,18 @@ public static class Vision {
       public static final double elbowA = 0.0;
   }
   public static class ArmVelocityGains{
-    public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
+    public static final double shoulderP = 0.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 20.0;//20.0
+      public static final double elbowP = 0.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.25; // 0.25
+      public static final double shoulderG = 0.0; // 0.25
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.3;//0.3
+      public static final double elbowG = 0.0;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
@@ -333,8 +333,10 @@ public static class Vision {
     public static final double wristTwistToFlipRatio = -1.0 / 1.0;
     public static final double rightServoOffset = 0.0;
     public static final double leftServoOffset = 0.0;
-    public static final double onCloseServoPosition = 0.3;
-    public static final double onOpenServoPosition = 0;
+    // public static final double onCloseServoPosition = 0.3;
+    // public static final double onOpenServoPosition = 0;
+    // public static final double openServoPosition = 1;
+    // public static final double closeServoPosition = 0;
 
   }
 
