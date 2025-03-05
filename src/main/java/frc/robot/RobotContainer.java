@@ -7,6 +7,9 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.Map;
 
+import java.util.Map;
+
+import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
@@ -19,6 +22,7 @@ import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandPathToPoint;
+import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandPickup;
 import frc.robot.commands.OpenGripperCommand;
@@ -40,6 +44,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
@@ -167,11 +172,8 @@ public class RobotContainer {
         // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
 
 
-        joystick.leftBumper().whileTrue(
-            ((new ArmCommandPathToPoint(arm, () -> 8).alongWith(((new IntakeCommand(intake, () -> IntakeConstants.home, () -> 0.0).alongWith(new OpenGripperCommand(gripper)))).until(armFinishedMoving)
-              .andThen(((new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
-            .withTimeout(4).andThen(new ArmCommandGripper(gripper, () -> true))))))));
-              
+        joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
+        
         joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
         joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));

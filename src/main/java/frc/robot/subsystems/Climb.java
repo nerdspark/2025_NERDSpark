@@ -19,12 +19,12 @@ public class Climb extends SubsystemBase {
     
   }
 
-private Servo ClimbServoRight = new Servo(8);
-private Servo ClimbServoLeft = new Servo(9);
+// private Servo ClimbServoRight = new Servo(8);
+// private Servo ClimbServoLeft = new Servo(9);
 
 public void setServoPosition(double value){
-  ClimbServoRight.setAngle(value + ArmConstants.rightServoOffset);
-  ClimbServoLeft.setAngle(-value - ArmConstants.leftServoOffset);
+  // ClimbServoRight.setAngle(value + ArmConstants.rightServoOffset);
+  // ClimbServoLeft.setAngle(-value - ArmConstants.leftServoOffset);
 }
 
 

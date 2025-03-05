@@ -7,6 +7,7 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -29,9 +30,10 @@ public class IntakeCommandPickup extends Command {private Intake intake;
   @Override
   public void execute() {
     intake.setDeployPosition(position.get());
-    intake.setGrabberIntake(grabberSetPower.get());
     if((intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1)){
-      intake.setGrabberIntake(0.0);
+      intake.setGrabberIntake(IntakeConstants.intakePassive);
+    } else {
+      intake.setGrabberIntake(grabberSetPower.get());
     }
   }
 

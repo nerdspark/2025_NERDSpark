@@ -212,16 +212,16 @@ public static class Vision {
   
 
   public final class ArmGains {
-      public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
+      public static final double shoulderP = 70.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 20.0;//20.0
+      public static final double elbowP = 30.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double wristFlipP = 20.0; //20.0
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 0.0;
-      public static final double wristTwistP = 10.0; //15.0
+      public static final double wristTwistP = 15.0; //15.0
       public static final double wristTwistI = 0.0;
       public static final double wristTwistD = 0.0;
       public static final double gripperP = 0.0; // 10.0
@@ -237,10 +237,10 @@ public static class Vision {
       public static final double elbowA = 0.0;
   }
   public static class ArmVelocityGains{
-    public static final double shoulderP = 20.0; //TODO CHANGE SOME OF THIS LATER //52.0
+    public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 10.0;//20.0
+      public static final double elbowP = 20.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
@@ -279,14 +279,14 @@ public static class Vision {
     public static final String armCanBus = "canivore1";
 
 
-    public static final double currentLimitShoulder = 15.0;
-    public static final double currentLimitElbow = 10.0;
+    public static final double currentLimitShoulder = 35.0;
+    public static final double currentLimitElbow = 25.0;
     public static final double currentLimitWristFlip = 12.0; //40.0
     public static final double currentLimitWristTwist = 10.0;
-    public static final double currentLimitGripperOpen = 10.0;
-    public static final double currentLimitGripperClose = 30.0;
+    public static final double currentLimitGripperOpen = 8.0;
+    public static final double currentLimitGripperClose = 25.0;
     public static final double gripperPowerClose = 1.0;
-    public static final double gripperPowerOpen = -0.1;
+    public static final double gripperPowerOpen = -0.2;
 
     //shoulder true offset: 34.513 deg below forward horizontal
     //shoulder gearbox: 75:1
@@ -340,7 +340,7 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 11;
+    public static final int setPointCount = 12;
     public static final Translation2d home = new Translation2d(14.0,18.0); //safest home and also closest possible distance arm is allowed to get to central joint
 
     /**
@@ -356,18 +356,20 @@ public static class Vision {
      * @transfer 8
      * @climbPrepare 9
      * @climbClose 10
+     * @transferPullOut 11
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
       armSetPoints[7] = new ArmPoint(home, false, Math.PI * 0.5, 0.0);
-      armSetPoints[8] = new ArmPoint(new Translation2d(19, 7), true, -2.75, Math.PI*0.5); //19, 7
-      armSetPoints[0] = new ArmPoint(new Translation2d(33.0, 10.0), true, 0, Math.PI*0.5);
-      armSetPoints[1] = new ArmPoint(new Translation2d(37.0, 10.0), true, 0, Math.PI*0.5);
-      armSetPoints[2] = new ArmPoint(new Translation2d(34.0, 15.0), true, 0, Math.PI*0.5);
-      armSetPoints[3] = new ArmPoint(new Translation2d(33.0, 20.0), true, 0.611, 0.0);
-      armSetPoints[4] = new ArmPoint(new Translation2d(33.0, 30.0), true, 0.611, 0.0);
+      armSetPoints[8] = new ArmPoint(new Translation2d(19, 7), true, -2.9, 1.45); //19, 7
+      armSetPoints[11] = new ArmPoint(new Translation2d(16, 18), true, -2.6, 1.45); //19, 7
+      armSetPoints[0] = new ArmPoint(new Translation2d(27.0, 0.0), true, 0, 1.45);
+      armSetPoints[1] = new ArmPoint(new Translation2d(31.0, 0.0), true, 0, 1.45);
+      armSetPoints[2] = new ArmPoint(new Translation2d(28.0, 5.0), true, 0, 1.45);
+      armSetPoints[3] = new ArmPoint(new Translation2d(27.0, 10.0), true, 0.611, 0.0);
+      armSetPoints[4] = new ArmPoint(new Translation2d(27.0, 20.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), 2.7, 0);
-      armSetPoints[6] = new ArmPoint(new Translation2d(22, 15), true, Units.degreesToRadians(-90), 0);
+      armSetPoints[6] = new ArmPoint(new Translation2d(19, 16), true, Units.degreesToRadians(-0), 1.45);
       armSetPoints[9] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(36)), true);
       armSetPoints[10] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(22)), true);
 
@@ -466,9 +468,9 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double setpoint90 = .25;
 
     public static final double home = 0.45;
-    public static final double deploy = -0.1;
+    public static final double deploy = -0.05;
 
-    public static final double intakeTransferPosition = 0.3;
+    public static final double intakeTransferPosition = 0.27;
     public static final double intakePassive = -0.08;
 
     public static final double transferPowerRollers = 1.0; //-0.5
