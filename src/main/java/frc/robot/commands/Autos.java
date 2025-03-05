@@ -4,10 +4,15 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants.ArmSetpoints;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.FieldConstants.ReefLevel;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.Intake;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -21,6 +26,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
@@ -63,6 +72,20 @@ public final class Autos {
           
   }
 
+  public static Command getTransferCommand(Arm arm, Intake intake, Gripper gripper) {
+    return 
+          new SequentialCommandGroup(
+            new OpenGripperCommand(gripper)
+              .until(() -> arm.finishedMoving).andThen(new WaitCommand(0.1)), 
+            new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> 0.0)
+              .withTimeout(0.4), 
+            new ArmCommandGripperForceClose(gripper)
+              .alongWith(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
+                .withTimeout(0.4))
+          .deadlineFor(new ArmCommandPathToPoint(arm, () -> 8))
+          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.25));
+  }
+
   
   public static Command getAutoDriveCommandXY(
      CommandSwerveDrivetrain drive,
@@ -88,10 +111,8 @@ public final class Autos {
 
     double rotationDiff = offset.getRotation().getDegrees();
 
-    if(reefLevel.get() == ReefLevel.L5) return goal;
+    // if(reefLevel.get() == ReefLevel.L5) return goal;
       
-    maxDistanceReefLineup = 1.5;
-    
     DogLog.log("AutoScoreCommand/offset" , offset);   
 
     DogLog.log("AutoScoreCommand/goalPose" , goal);
@@ -102,24 +123,30 @@ public final class Autos {
     DogLog.log("AutoScoreCommand/offsetY" , offset.getY());
     DogLog.log("AutoScoreCommand/rotationDiff" , rotationDiff);
 
-   
-    double shiftXT =
-    MathUtil.clamp(
-        (yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
-        0.0,
-        1.0);
 
-    double shiftYT =
-        MathUtil.clamp(yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength),
-        0.0, 1.0);
+    double shiftXT = reefLevel.get() == ReefLevel.L5 ? 
+      MathUtil.clamp(((yDistance) / (Reef.faceLength)) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
+      0.0,1.0) :
+      MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
+      0.0,1.0); ;
+
+      double shiftYT = reefLevel.get() == ReefLevel.L5 ? 
+      MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / -Reef.faceLength), 0.0, 1.0):
+      MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
+
+    //double shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0) ;
 
     
-        DogLog.log("AutoScoreCommand/shiftXT" , shiftXT);
+        DogLog.log("AutoScoreCommand/shiftXT" , shiftXT); 
         DogLog.log("AutoScoreCommand/shiftYT" , shiftYT);
-        DogLog.log("AutoScoreCommand/shiftedGoalPose", goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup, Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()) , new Rotation2d())));
 
-    return goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
+        goal = reefLevel.get() == ReefLevel.L5 ? 
+               goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()))
+              : goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
+        DogLog.log("AutoScoreCommand/shiftedGoalPose", goal);
+        
+        return goal;
   }
 
    /** Get drive target. */

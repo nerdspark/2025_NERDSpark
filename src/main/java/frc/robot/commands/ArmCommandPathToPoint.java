@@ -34,6 +34,7 @@ public class ArmCommandPathToPoint extends Command {
     private ArmPath path;
     private IntSupplier setPoint;
     private int setPointInt;
+    private double initialWristFlip, initialWristTwist;
     /** path to the specified armPoint */ // TODO: add inflection point generation and hardstop avoidance to automatic path generation
     public ArmCommandPathToPoint(Arm arm, IntSupplier setPoint) {
       this.setPoint = setPoint;
@@ -45,8 +46,11 @@ public class ArmCommandPathToPoint extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    initialWristFlip = arm.getWristFlipPosition();
+    initialWristTwist = arm.getWristTwistPosition();
     arm.finishedMoving = false;
     calculatePath();
+
   }
   public void calculatePath() {
     setPointInt = setPoint.getAsInt();
@@ -86,11 +90,20 @@ public class ArmCommandPathToPoint extends Command {
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f)));
     }
 
-      if (((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.5) || arm.finishedMoving)){
-        arm.setWristTwistPosition(path.points.get(path.points.size() - 1).wristTwist);
-        if ((ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition()) > path.points.size() * 0.65) || arm.finishedMoving){
-          arm.setWristFlipPosition(path.points.get(path.points.size() - 1).wristFlip);
+    int nextPointIndex = ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition());
+    double pathProgress = nextPointIndex/path.points.size();
+    double finalWristFlip = path.points.get(path.points.size() - 1).wristFlip;
+    double finalWristTwist = path.points.get(path.points.size() - 1).wristTwist;
+      if (((pathProgress > 0.65) || arm.finishedMoving)){
+        arm.setWristTwistPosition(finalWristTwist);
+        if ((pathProgress > 0.8) || arm.finishedMoving){
+          arm.setWristFlipPosition(finalWristFlip);
         }
+      } else {
+        arm.setWristFlipPosition((pathProgress * (finalWristFlip-initialWristFlip)) + initialWristFlip);
+        arm.setWristTwistPosition((pathProgress * (finalWristTwist-initialWristTwist)) + initialWristTwist);
+        // arm.stopWrist();
+        
       }
 
   }

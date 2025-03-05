@@ -13,6 +13,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,11 +26,9 @@ import frc.robot.util.AllianceFlipUtil;
 
 public class ScoringProfileSubsystem extends SubsystemBase {
 
-
-
-
-  
-  private int branch = 9;
+ 
+  private int branch = 2;
+  private int level = 0;
   private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L5;
   private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
   private Pose2d selectedBranchPose = new Pose2d();
@@ -96,6 +95,13 @@ public class ScoringProfileSubsystem extends SubsystemBase {
       branch++;
       if(branch > 11) {
         branch = 0;
+      }
+    }
+    if(DriverStation.getStickButtonPressed(0, 1)) {
+      level++;
+      reefLevel = FieldConstants.ReefLevel.fromLevel(level);
+      if(level > 5) {
+        level = 0;
       }
     }
           

@@ -11,7 +11,8 @@ import frc.robot.subsystems.Gripper;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmCommandGripperAutoClose extends Command {
   private Gripper gripper;
-  private double startTime = Timer.getFPGATimestamp();
+  private double startTimeToClose = Timer.getFPGATimestamp();
+  private double startTimeToOpen = Timer.getFPGATimestamp();
   private double min = 0.02;
   private double max = 0.15;
   /** Creates a new ArmCommandGripperAutoClose. */
@@ -30,18 +31,21 @@ public class ArmCommandGripperAutoClose extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double minRange = Math.min(gripper.getRangeLeftDistance(), Math.min(gripper.getRangeMiddleDistance(), gripper.getRangeRightDistance()));
-    boolean rangeTrue = (minRange < max);
+    // double minRange = Math.min(gripper.getRangeLeftDistance(), Math.min(gripper.getRangeMiddleDistance(), gripper.getRangeRightDistance()));
+    // boolean rangeTrue = (minRange < max);
     boolean rangeDetected = (gripper.getLeftDetected() && (gripper.getRangeLeftDistance() < max)) || (gripper.getMiddleDetected() && (gripper.getRangeMiddleDistance() < max)) || (gripper.getRightDetected() && (gripper.getRangeRightDistance() < max));
-    if(!rangeTrue){
-      startTime = Timer.getFPGATimestamp();
+    if(!rangeDetected){
+      startTimeToClose = Timer.getFPGATimestamp();
     }
-    if (rangeDetected){
+    if(rangeDetected){
+      startTimeToOpen = Timer.getFPGATimestamp();
+    }
+    if (rangeDetected && Math.abs(startTimeToClose - Timer.getFPGATimestamp()) > 0.05){
       gripper.closeGripper();
     }
-    // else{
-    //   gripper.openGripper();
-    // }
+    else if (Math.abs(startTimeToOpen - Timer.getFPGATimestamp()) > 0.05) {
+      gripper.stopGripper();
+    }
   }
 
   // Called once the command ends or is interrupted.

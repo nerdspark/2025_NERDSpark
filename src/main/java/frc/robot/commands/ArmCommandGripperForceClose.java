@@ -12,13 +12,11 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Gripper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ArmCommandGripper extends Command {
+public class ArmCommandGripperForceClose extends Command {
   private Gripper gripper;
-  private Supplier<Boolean> gripperClose;
   private double startTime = Timer.getFPGATimestamp();
-  public ArmCommandGripper(Gripper gripper, Supplier<Boolean> gripperClose) {
+  public ArmCommandGripperForceClose(Gripper gripper) {
     this.gripper = gripper;
-    this.gripperClose = gripperClose;
     addRequirements(gripper);
     
     // Use addRequirements() here to declare subsystem dependencies.
@@ -27,36 +25,27 @@ public class ArmCommandGripper extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    startTime = Timer.getFPGATimestamp();
-    if(gripperClose.get()){
+    
       gripper.closeGripper();
-    } else {
-      gripper.openGripper();
-    }
+
+  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(gripperClose.get()){
-      gripper.closeGripper();
-    } else {
-      gripper.openGripper();
-    }
+   gripper.closeGripper();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    gripper.stopGripper();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if ((Timer.getFPGATimestamp() - startTime > 1) && !gripperClose.get()){
-      return true;
-    }
+
     return false;
   }
 }
