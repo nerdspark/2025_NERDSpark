@@ -148,6 +148,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 SmartDashboard.putNumber("y2", xys[5]);
                 SmartDashboard.putNumber("x3", xys[6]);
                 SmartDashboard.putNumber("y3", xys[7]);
+            } else {
+                SmartDashboard.putString("coord", "error");
             }
             SmartDashboard.putNumber("coralX", coralPose.getX());
             SmartDashboard.putNumber("coralY", coralPose.getY());
@@ -232,17 +234,29 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         double[] xys = visionFront.getCoordinates();
         if (xys.length == 8) {
             boundingHeight = xys[5] - xys[3];
-            boundingHeight = xys[2] - xys[0];
+            boundingWidth = xys[2] - xys[0];
+            SmartDashboard.putNumber("x0", xys[0]);
+            SmartDashboard.putNumber("y0", xys[1]);
+            SmartDashboard.putNumber("x1", xys[2]);
+            SmartDashboard.putNumber("y1", xys[3]);
+            SmartDashboard.putNumber("x2", xys[4]);
+            SmartDashboard.putNumber("y2", xys[5]);
+            SmartDashboard.putNumber("x3", xys[6]);
+            SmartDashboard.putNumber("y3", xys[7]);
+            SmartDashboard.putNumber("boundingHeight", boundingHeight);
+            SmartDashboard.putNumber("boundingWidth", boundingWidth);
         }
 
         double distance = 0.0;
 
         if (boundingHeight > boundingWidth) {               
             distance = (Constants.Vision.kCoralCenterUprightHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
+            SmartDashboard.putString("orientation", "upright");
         } else {
             distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
+            SmartDashboard.putString("orientation", "fallen");
         }
-        Pose2d coralPose = new Pose2d(distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + poseX, distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + poseY, yaw);
+        Pose2d coralPose = new Pose2d(distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + poseX, distance + poseY, yaw);
         SmartDashboard.putNumber("distance", distance);
         return coralPose;
     }
