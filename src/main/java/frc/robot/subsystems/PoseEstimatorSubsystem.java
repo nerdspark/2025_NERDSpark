@@ -153,7 +153,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("coralY", coralPose.getY());
             
 
-            SmartDashboard.putNumber("pigeon",gyro.getGyro().getDegrees());
+            SmartDashboard.putNumber("pigeon", gyro.getGyro().getDegrees());
             
         }
         else {
@@ -218,7 +218,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         Pose2d pose = getCurrentPose();
         double poseX = pose.getX();
         double poseY = pose.getY();
-        Rotation2d gyro = new Rotation2d(0); //change to pigeon gyro asap
+        Rotation2d yaw = gyro.getGyro(); //change to pigeon gyro asap
         //Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
         double tx = visionFront.getTx();
         double ty = visionFront.getTy();
@@ -242,7 +242,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         } else {
             distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
         }
-        Pose2d coralPose = new Pose2d(distance * Math.sin((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseX, distance * Math.cos((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseY, gyro);
+        Pose2d coralPose = new Pose2d(distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + poseX, distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + poseY, yaw);
         SmartDashboard.putNumber("distance", distance);
         return coralPose;
     }
