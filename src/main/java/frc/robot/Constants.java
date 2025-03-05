@@ -121,13 +121,13 @@ public static class Vision {
         public static final String kCameraNameFront = "LeftCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
-                new Transform3d(new Translation3d(Units.inchesToMeters(12), Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, 7.5, Math.toRadians(22.5))); //0
+                new Transform3d(new Translation3d(Units.inchesToMeters(12), Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, Math.toRadians(7.5), Math.toRadians(-22.5))); //0
 
 
         public static final String kCameraNameBack = "RightCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamBack =
-                new Transform3d(new Translation3d(Units.inchesToMeters(12), -Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, 7.5, Math.toRadians(-22.5))); //180
+                new Transform3d(new Translation3d(Units.inchesToMeters(12), -Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, Math.toRadians(7.5), Math.toRadians(22.5))); //180
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -293,7 +293,7 @@ public static class Vision {
     //shoulder true offset: 34.513 deg below forward horizontal
     //shoulder gearbox: 75:1
     //shoulder stage 0: 36:26
-    public static final double shoulderGearRatio = 75.0*36.0/26.0;
+    public static final double shoulderGearRatio = 125.0*36.0/26.0;
     
     // elbow true offset: 122.198 deg above forward horizontal
     // elbow gearbox: 75:1
