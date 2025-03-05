@@ -176,7 +176,12 @@ public static class Vision {
 
         public static final double kCoralCenterUprightHeight = 0.225425; //in meters
         public static final double kCoralCenterFallenHeight = 0.0508; //in meters
-
+        //Testboard Dims.
+        // public static final double kLimeLightHeight = 0.120;
+        // public static final double kLimeLightXOffset = 0;
+        // public static final double kLimeLightYOffset = 0;
+        // public static final double kLimeLightAOD = -15.0;
+        //Comp. Dims.
         public static final double kLimeLightHeight = 0.56552592;
         public static final double kLimeLightXOffset = -0.17145;
         public static final double kLimeLightYOffset = -0.18415;

@@ -295,6 +295,11 @@ import dev.doglog.DogLog;
         }
         return yaw;
       }
+
+      public double getFPS() {
+        double[] hw = llTable.getEntry("hw").getDoubleArray(new double[5]);
+        return hw[0];
+      }
      // ----- Simulation
  
      public void simulationPeriodic(Pose2d robotSimPose) {

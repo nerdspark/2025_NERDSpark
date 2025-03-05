@@ -37,7 +37,7 @@ public class CoralObject {
         return hb;
     }
 
-    public void setCoralTick(double hb) {
+    public void setCoralHB(double hb) {
         this.hb = hb;
     }
 
