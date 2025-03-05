@@ -8,9 +8,11 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import edu.wpi.first.wpilibj.motorcontrol.*;
 
 public class Climb extends SubsystemBase {
   /** Creates a new Climb. */
@@ -19,12 +21,21 @@ public class Climb extends SubsystemBase {
     
   }
 
-private Servo ClimbServoRight = new Servo(8);
-private Servo ClimbServoLeft = new Servo(9);
+private PWM climbServoRight = new PWM(0);
+private PWM climbServoLeft = new PWM(1);
 
-public void setServoPosition(double value){
-  ClimbServoRight.setAngle(value + ArmConstants.rightServoOffset);
-  ClimbServoLeft.setAngle(-value - ArmConstants.leftServoOffset);
+// public void setServoPosition(double value){
+//   // climbServoRight.setAngle(value + ArmConstants.rightServoOffset);
+//   // climbServoLeft.setAngle(-value - ArmConstants.leftServoOffset);
+// }
+
+public void setServoOpen() {
+  climbServoRight.setPosition(0);
+  climbServoLeft.setPosition(1);
+}
+public void setServoClose() {
+  climbServoRight.setPosition(1);
+  climbServoLeft.setPosition(0);
 }
 
 

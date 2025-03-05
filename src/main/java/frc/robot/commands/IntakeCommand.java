@@ -32,6 +32,9 @@ public class IntakeCommand extends Command {private Intake intake;
   public void execute() {
     intake.setDeployPosition(position.get());
     intake.setGrabberIntake(grabberSetPower.get());
+    // if((intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1)){
+    //   intake.setGrabberIntake(IntakeConstants.intakePassive);
+    // }
   }
 
   // Called once the command ends or is interrupted.

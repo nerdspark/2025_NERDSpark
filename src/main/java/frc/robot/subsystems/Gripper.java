@@ -107,8 +107,8 @@ public class Gripper extends SubsystemBase {
   }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());
-    SmartDashboard.putNumber("l + r sensor", (getRangeLeftDistance() + getRangeRightDistance()) / 2);
+    // SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());
+    // SmartDashboard.putNumber("l + r sensor", (getRangeLeftDistance() + getRangeRightDistance()) / 2);
     // This method will be called once per scheduler run
   }
 }

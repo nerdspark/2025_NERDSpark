@@ -81,7 +81,7 @@ public class FieldConstants {
     static {
       // Initialize faces
     //   var aprilTagLayout = AprilTagLayoutType.OFFICIAL.getLayout();
-    AprilTagFieldLayout  aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    AprilTagFieldLayout  aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
       centerFaces[0] = aprilTagLayout.getTagPose(18).get().toPose2d();
       centerFaces[1] = aprilTagLayout.getTagPose(19).get().toPose2d();
@@ -186,9 +186,9 @@ public class FieldConstants {
 
     public static ReefLevel fromLevel(int level) {
       return Arrays.stream(values())
-          .filter(height -> height.ordinal() == level)
+          .filter(reefLevel -> reefLevel.ordinal() == level)
           .findFirst()
-          .orElse(L4);
+          .orElse(L0);
     }
 
     public final double height;
