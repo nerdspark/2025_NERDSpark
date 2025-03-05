@@ -186,9 +186,9 @@ public class FieldConstants {
 
     public static ReefLevel fromLevel(int level) {
       return Arrays.stream(values())
-          .filter(height -> height.ordinal() == level)
+          .filter(reefLevel -> reefLevel.ordinal() == level)
           .findFirst()
-          .orElse(L4);
+          .orElse(L0);
     }
 
     public final double height;

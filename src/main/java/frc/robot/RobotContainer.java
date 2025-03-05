@@ -87,6 +87,8 @@ public class RobotContainer {
     private Intake intake;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
+    private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
+
 
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -168,6 +170,22 @@ public class RobotContainer {
 
     joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
+    // joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
+    //     // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
+    //     joystick.x().onTrue(new ArmCommandPathToPoint(arm, 2));
+    //     joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
+    //     joystick.rightBumper().onTrue(new ArmCommandPathToPoint(arm, 0));
+    //     gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+    //     joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
+    //     armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
+    //     armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+    //     //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+    //     // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
+    //     //drivetrain.registerTelemetry(logger::telemeterize);
+    //     joystick.rightTrigger().onTrue(new ArmCommandGripper(gripper, () -> true));
+    //     joystick.leftTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
     // drivetrain.registerTelemetry(logger::telemeterize);
     //     joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
         //drivetrain.registerTelemetry(logger::telemeterize);
