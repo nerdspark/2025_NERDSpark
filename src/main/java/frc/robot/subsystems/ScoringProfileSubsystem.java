@@ -29,7 +29,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
  
   private int branch = 2;
   private int level = 0;
-  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L5;
+  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L4;
   private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
   private Pose2d selectedBranchPose = new Pose2d();
   private Pose2d selectedCoralStationPose = new Pose2d();
