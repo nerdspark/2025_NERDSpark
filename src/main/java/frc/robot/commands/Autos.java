@@ -76,7 +76,7 @@ public final class Autos {
     return 
           new SequentialCommandGroup(
             new OpenGripperCommand(gripper)
-              .until(() -> arm.finishedMoving), 
+              .until(() -> arm.finishedMoving).andThen(new WaitCommand(0.25)), 
             new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> 0.0)
               .withTimeout(0.25), 
             new ArmCommandGripperForceClose(gripper)

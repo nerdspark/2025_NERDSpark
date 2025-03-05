@@ -237,18 +237,18 @@ public static class Vision {
       public static final double elbowA = 0.0;
   }
   public static class ArmVelocityGains{
-    public static final double shoulderP = 0.0; //TODO CHANGE SOME OF THIS LATER //52.0
+    public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 0.0;//20.0
+      public static final double elbowP = 20.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.0; // 0.25
+      public static final double shoulderG = 0.25; // 0.25
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.0;//0.3
+      public static final double elbowG = 0.3;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
@@ -371,9 +371,9 @@ public static class Vision {
       armSetPoints[3] = new ArmPoint(new Translation2d(27.0, 10.0), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(27.0, 20.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), 2.7, 0);
-      armSetPoints[6] = new ArmPoint(new Translation2d(19, 16), true, Units.degreesToRadians(-0), 1.45);
-      armSetPoints[9] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(36)), true);
-      armSetPoints[10] = new ArmPoint(new Translation2d(24, Rotation2d.fromDegrees(22)), true);
+      armSetPoints[6] = new ArmPoint(new Translation2d(19, 18), true, Units.degreesToRadians(-90), 1.45);
+      armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), true);
+      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), true);
 
       //clamp distance of all setpoints (probably unnecessary)
       // for (int i = 0; i < armSetPoints.length; i++) {
