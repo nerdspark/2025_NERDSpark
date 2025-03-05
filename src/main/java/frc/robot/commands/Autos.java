@@ -76,12 +76,12 @@ public final class Autos {
     return 
           new SequentialCommandGroup(
             new OpenGripperCommand(gripper)
-              .until(() -> arm.finishedMoving).andThen(new WaitCommand(0.25)), 
+              .until(() -> arm.finishedMoving).andThen(new WaitCommand(0.1)), 
             new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> 0.0)
-              .withTimeout(0.25), 
+              .withTimeout(0.4), 
             new ArmCommandGripperForceClose(gripper)
               .alongWith(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
-                .withTimeout(0.25))
+                .withTimeout(0.4))
           .deadlineFor(new ArmCommandPathToPoint(arm, () -> 8))
           .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.25));
   }

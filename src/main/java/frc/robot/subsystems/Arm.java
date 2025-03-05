@@ -48,6 +48,9 @@ public class Arm extends SubsystemBase {
   private TalonFX shoulderLeft, shoulderRight, elbowLeft, elbowRight, wristFlip, wristTwist;
   
   public boolean finishedMoving = false;
+  private boolean wristStopped = false;
+  private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
+
 
   private double wristTwistPosition = 0.0;
   private double wristFlipPosition = 0.0;
@@ -61,24 +64,23 @@ public class Arm extends SubsystemBase {
     wristFlip = new TalonFX(ArmConstants.wristFlipMotorPort, ArmConstants.armCanBus);
     wristTwist = new TalonFX(ArmConstants.wristTwistMotorPort, ArmConstants.armCanBus);
     
-    TalonFXConfiguration shoulderconfig = new TalonFXConfiguration();
-    TalonFXConfiguration elbowconfig = new TalonFXConfiguration();
+    TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
     TalonFXConfiguration wristTwistConfig = new TalonFXConfiguration();
     TalonFXConfiguration wristFlipConfig = new TalonFXConfiguration();
-    shoulderconfig.CurrentLimits = new CurrentLimitsConfigs()
+    shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
         .withStatorCurrentLimitEnable(true);
-    shoulderconfig.Feedback = new FeedbackConfigs()
+    shoulderConfig.Feedback = new FeedbackConfigs()
         .withFeedbackRotorOffset(ArmConstants.shoulderOffset)
         .withSensorToMechanismRatio(ArmConstants.shoulderRadPerRot);
-    shoulderconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
-    shoulderconfig.Slot0 = new Slot0Configs()
+    shoulderConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
+    shoulderConfig.Slot0 = new Slot0Configs()
         .withKP(ArmGains.shoulderP)
         .withKI(ArmGains.shoulderI)
         .withKD(ArmGains.shoulderD)
         .withKG(ArmGains.shoulderG)
         .withGravityType(GravityTypeValue.Arm_Cosine);
-    shoulderconfig.Slot1 = new Slot1Configs()
+    shoulderConfig.Slot1 = new Slot1Configs()
         .withKP(ArmVelocityGains.shoulderP)
         .withKI(ArmVelocityGains.shoulderI)
         .withKD(ArmVelocityGains.shoulderD)
@@ -88,31 +90,31 @@ public class Arm extends SubsystemBase {
 
     shoulderLeft
       .getConfigurator()
-      .apply(shoulderconfig.withMotorOutput(new MotorOutputConfigs()
+      .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
         .withNeutralMode(NeutralModeValue.Coast)));
     
     shoulderRight
       .getConfigurator()
-      .apply(shoulderconfig.withMotorOutput(new MotorOutputConfigs()
+      .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
         .withNeutralMode(NeutralModeValue.Coast)));
 
 
-    elbowconfig.CurrentLimits = new CurrentLimitsConfigs()
+    elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
       .withStatorCurrentLimit(ArmConstants.currentLimitElbow)
       .withStatorCurrentLimitEnable(true);
-    elbowconfig.Feedback = new FeedbackConfigs()
+    elbowConfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.elbowOffset)
       .withSensorToMechanismRatio(ArmConstants.elbowRadPerRot);
-    elbowconfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
-    elbowconfig.Slot0 = new Slot0Configs()
+    elbowConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03);
+    elbowConfig.Slot0 = new Slot0Configs()
       .withKP(ArmGains.elbowP)
       .withKI(ArmGains.elbowI)
       .withKD(ArmGains.elbowD)
       .withKG(ArmGains.elbowG)
       .withGravityType(GravityTypeValue.Arm_Cosine);
-    elbowconfig.Slot1 = new Slot1Configs()
+    elbowConfig.Slot1 = new Slot1Configs()
       .withKP(ArmVelocityGains.elbowP)
       .withKI(ArmVelocityGains.elbowI)
       .withKD(ArmVelocityGains.elbowD)
@@ -121,13 +123,13 @@ public class Arm extends SubsystemBase {
         
     elbowLeft
       .getConfigurator()
-      .apply(elbowconfig.withMotorOutput(new MotorOutputConfigs()
+      .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
           .withNeutralMode(NeutralModeValue.Coast)));
 
     elbowRight
       .getConfigurator()
-      .apply(elbowconfig.withMotorOutput(new MotorOutputConfigs()
+      .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.Clockwise_Positive)
           .withNeutralMode(NeutralModeValue.Coast)));
 
@@ -325,6 +327,9 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("elbow Right Position error", position - elbowRight.getPosition().getValueAsDouble());
 
 }
+public void stopWrist() {
+  wristStopped = true;
+}
   public double getWristTwistPosition(){
     double wristTwistPosition = (wristTwist.getPosition().getValueAsDouble() * (2d * Math.PI));
     wristTwistPosition -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
@@ -334,6 +339,7 @@ public class Arm extends SubsystemBase {
   }
   public void setWristTwistPosition(double position) {
     wristTwistPosition = position;
+    wristStopped = false;
         // SmartDashboard.putNumber("wrist twist position set raw", position);
 
 
@@ -347,6 +353,7 @@ public class Arm extends SubsystemBase {
 
   public void setWristFlipPosition(double position) {
     wristFlipPosition = position;
+    wristStopped = false;
 // ratio = oo: wrist change amount -oo
 // ratio = 1: wrist change amount 0
 // ratio = 0: wrist change amount 1
@@ -354,17 +361,22 @@ public class Arm extends SubsystemBase {
 
   }
   public void updateWristSetpoints() {
-    double flipPosition = wristFlipPosition;
-    flipPosition += getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
-    flipPosition /= (2d*Math.PI);
-    wristFlip.setControl(new PositionVoltage(flipPosition).withPosition(flipPosition));
+    if (wristStopped) {
+      wristFlip.stopMotor();
+      wristTwist.stopMotor();
+    } else {
+      double flipPosition = wristFlipPosition;
+      flipPosition += getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
+      flipPosition /= (2d*Math.PI);
+      wristFlip.setControl(new PositionVoltage(flipPosition).withPosition(flipPosition));
 
-    double twistPosition = wristTwistPosition;
-    twistPosition = MathUtil.clamp(twistPosition, 0, Math.PI * 0.5);
-    twistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-    twistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
-    twistPosition /= (2d*Math.PI);
-    wristTwist.setControl(new PositionVoltage(twistPosition).withPosition(twistPosition));
+      double twistPosition = wristTwistPosition;
+      twistPosition = MathUtil.clamp(twistPosition, 0, Math.PI * 0.5);
+      twistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
+      twistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
+      twistPosition /= (2d*Math.PI);
+      wristTwist.setControl(new PositionVoltage(twistPosition).withPosition(twistPosition));
+    }
 
   }
   
@@ -375,6 +387,17 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("elbow to shoulder", elbowPose - shoulderLeft.getPosition());
     return elbowPose;
     //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
+}
+public void setShoulderPower(double power) {
+  shoulderLeft.set(power);
+  shoulderRight.set(power);
+}
+public void setShoulderAmpLimit(double amplimit) {
+  
+  shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
+  .withStatorCurrentLimit(amplimit);
+  shoulderLeft.getConfigurator().apply(shoulderConfig);
+  shoulderRight.getConfigurator().apply(shoulderConfig);
 }
 
 
@@ -459,7 +482,8 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
     SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());
-    // SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getDutyCycle().getValueAsDouble());
+    SmartDashboard.putNumber("right shoulder amp", shoulderRight.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getStatorCurrent().getValueAsDouble());
     // This method will be called once per scheduler run
   }
 }

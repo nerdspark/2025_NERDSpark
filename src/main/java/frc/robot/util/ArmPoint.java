@@ -63,4 +63,7 @@ public class ArmPoint {
         }
         return ret;
     }
+    public ArmPoint withWristFlip(double wristFlipPos) {
+        return new ArmPoint(position, inBend, wristFlipPos, wristTwist);
+    }
 }

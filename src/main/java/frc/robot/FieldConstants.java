@@ -81,7 +81,7 @@ public class FieldConstants {
     static {
       // Initialize faces
     //   var aprilTagLayout = AprilTagLayoutType.OFFICIAL.getLayout();
-    AprilTagFieldLayout  aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    AprilTagFieldLayout  aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
       centerFaces[0] = aprilTagLayout.getTagPose(18).get().toPose2d();
       centerFaces[1] = aprilTagLayout.getTagPose(19).get().toPose2d();
