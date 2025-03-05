@@ -15,11 +15,12 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.Utils;
-
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -32,8 +33,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-
+import frc.robot.generated.TunerConstants;
 import frc.robot.util.CoralObject;
+import frc.robot.subsystems.Gyro;
 
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
@@ -42,6 +44,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private Vision visionFront;
     private Vision visionBack;
     private static Notifier allNotifier;
+
+    //private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId);
+    //private PIDController GyroPID = new PIDController(Constants.gyroP, Constants.gyroI, Constants.gyroD);
+    //public double targetAngle = 0;
+    //private Rotation2d gyroResetAngle = new Rotation2d();
+
+    private static Gyro gyro = new Gyro();
     private static List<CoralObject> corals = new ArrayList<>();
        
         private Field2d field = new Field2d(); 
@@ -142,8 +151,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             }
             SmartDashboard.putNumber("coralX", coralPose.getX());
             SmartDashboard.putNumber("coralY", coralPose.getY());
-
             
+
+            SmartDashboard.putNumber("pigeon",gyro.getGyro().getDegrees());
             
         }
         else {
@@ -163,6 +173,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         //SmartDashboard.putString("class", visionFront.getObjectClass());
               
     }
+
+    // public Rotation2d getGyro() {
+    //     return new Rotation2d(-gyro.getYaw().getValueAsDouble()*Math.PI/180).minus(gyroResetAngle);
+    //   }
+    
+    //   public void resetGyro() {
+    //     gyroResetAngle = getGyro().plus(gyroResetAngle);
+    //     targetAngle = 0;
+    //   }
+    
 
     private String getFomattedPose() {
         var pose = getCurrentPose();

@@ -182,6 +182,8 @@ public static class Vision {
         public static final double kLimeLightYOffset = -0.18415;
         public static final double kLimeLightAOD = -15.0;
 
+        
+
 
         public static final Map<ReefLevel, Transform2d> reefLevelOffsetsMap = new HashMap<>();
         static {
@@ -194,8 +196,7 @@ public static class Vision {
           reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d()));
           
     }
-
-
+    
 
   
 
@@ -206,6 +207,10 @@ public static class Vision {
          
         }
     }
+
+    public static final double gyroP = 2;
+    public static final double gyroI = 0.0;
+    public static final double gyroD = 0.00;
 
 
 //         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {

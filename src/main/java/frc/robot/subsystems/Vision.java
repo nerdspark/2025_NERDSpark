@@ -284,6 +284,17 @@ import dev.doglog.DogLog;
         }
         return coords;
       }
+
+      public double getYaw() {
+        double[] botpose = getBotPose();
+        double yaw = 0.0;
+        if (botpose.length == 6) {
+            yaw = botpose[5];
+        } else {
+            yaw = 0.0;
+        }
+        return yaw;
+      }
      // ----- Simulation
  
      public void simulationPeriodic(Pose2d robotSimPose) {
