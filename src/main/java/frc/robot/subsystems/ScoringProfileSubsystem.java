@@ -13,6 +13,7 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -78,6 +79,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     for(int j=12; j<18; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
         reefLevel = FieldConstants.ReefLevel.values()[j-12];
+        // System.out.println("J: " + j + "; reeflevel: " + reefLevel.level);
       }
     }
 
@@ -131,6 +133,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return branch;
   }
   public FieldConstants.ReefLevel getLevel() {
+    SmartDashboard.putNumber("reeflevel", reefLevel.level);
     return reefLevel;
   }
   public void setBranch(char branch) {

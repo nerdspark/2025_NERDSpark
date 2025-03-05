@@ -4,11 +4,15 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants.ArmSetpoints;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.FieldConstants.ReefLevel;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.Intake;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -22,12 +26,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public final class Autos {
   /** Example static factory for an autonomous command. */
-  public static Command exampleAuto(ExampleSubsystem subsystem) {
-    return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
-  }
+  
 
   private Autos() {
     throw new UnsupportedOperationException("This is a utility class!");
@@ -64,6 +70,20 @@ public final class Autos {
        () -> getLinearVelocityFromJoysticks(linearFF_X.getAsDouble(),linearFF_Y.getAsDouble()), omegaFF);
           
           
+  }
+
+  public static Command getTransferCommand(Arm arm, Intake intake, Gripper gripper) {
+    return 
+          new SequentialCommandGroup(
+            new OpenGripperCommand(gripper)
+              .until(() -> arm.finishedMoving).andThen(new WaitCommand(0.25)), 
+            new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> 0.0)
+              .withTimeout(0.25), 
+            new ArmCommandGripperForceClose(gripper)
+              .alongWith(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
+                .withTimeout(0.25))
+          .deadlineFor(new ArmCommandPathToPoint(arm, () -> 8))
+          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.25));
   }
 
   

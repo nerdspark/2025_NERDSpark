@@ -8,17 +8,19 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {private Intake intake;
-    private Supplier<Double> position;
+    private Supplier<Double> position, grabberSetPower;
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(Intake intake, Supplier<Double> position) {
+  public IntakeCommand(Intake intake, Supplier<Double> position, Supplier<Double> grabberSetPower) {
     this.intake = intake;
         this.position = position;
         addRequirements(intake);
+        this.grabberSetPower = grabberSetPower;
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +30,11 @@ public class IntakeCommand extends Command {private Intake intake;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setIntakeDeployPosition(position.get());
+    intake.setDeployPosition(position.get());
+    intake.setGrabberIntake(grabberSetPower.get());
+    // if((intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1)){
+    //   intake.setGrabberIntake(IntakeConstants.intakePassive);
+    // }
   }
 
   // Called once the command ends or is interrupted.

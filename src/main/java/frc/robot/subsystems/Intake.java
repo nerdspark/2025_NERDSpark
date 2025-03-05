@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -11,6 +12,8 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -28,11 +31,13 @@ import frc.robot.Constants.IntakeConstants;
 public class Intake extends SubsystemBase {
   private TalonFX intakeDeployMotor;
   private TalonFX intakeGrabberMotor;
+  private CANrange sensorIntake;
+  private boolean hasCoral = false;
 
   /** Creates a new Intake. */
   public Intake() {
-    intakeDeployMotor = new TalonFX(IntakeConstants.intakeDeployMotorPort, "rio");
-    intakeGrabberMotor = new TalonFX(IntakeConstants.intakeGrabberMotorPort, "rio");
+    intakeDeployMotor = new TalonFX(IntakeConstants.intakeDeployMotorPort, IntakeConstants.intakeCANBus);
+    intakeGrabberMotor = new TalonFX(IntakeConstants.intakeGrabberMotorPort, IntakeConstants.intakeCANBus);
 
     TalonFXConfiguration intakeDeployMotorConfig = new TalonFXConfiguration();
     TalonFXConfiguration intakeGrabberMotorConfig = new TalonFXConfiguration();
@@ -78,6 +83,9 @@ public class Intake extends SubsystemBase {
         .withNeutralMode(NeutralModeValue.Coast)));
 
         intakeDeployMotor.setPosition(IntakeConstants.deployOffset);
+        sensorIntake = new CANrange(IntakeConstants.intakeRangePort, ArmConstants.armCanBus);
+        CANrangeConfiguration sensorIntakeConfig = new CANrangeConfiguration();
+        sensorIntake.getConfigurator().apply(sensorIntakeConfig);
   }
 
   public double getIntakeDeployPosition() {
@@ -99,13 +107,29 @@ public class Intake extends SubsystemBase {
     intakeDeployMotor.setPosition(Constants.ArmConstants.elbowOffset);
   }
 
-  public void setIntakeDeployPosition(double target) {
-    intakeDeployMotor.setPosition(target);
+  public void resetIntakeDeployPosition(double offset) {
+    intakeDeployMotor.setPosition(offset);
+  }
+  public void setDeployPosition(double target){
+    intakeDeployMotor.setControl(new PositionVoltage(target).withPosition(target));
+  }
+  public void setGrabberIntake(double target){
+    intakeGrabberMotor.set(target);
+  }
+  public double getRangeIntakeDistance() {
+    return sensorIntake.getDistance().getValueAsDouble();
+  }
+  public boolean getRangeIntakeDetected(){
+    return sensorIntake.getIsDetected().getValue();
+  }
+  public boolean hasCoral() {
+    return hasCoral;
   }
 
   @Override
   public void periodic() {
-    getIntakeDeployPosition();
+    SmartDashboard.putNumber("intake range", getRangeIntakeDistance());
+    SmartDashboard.putBoolean("intake detected", getRangeIntakeDetected());
     // This method will be called once per scheduler run
   }
 }
