@@ -101,7 +101,9 @@ public class RobotContainer {
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
 
+
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+
   // private Climb climb = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
   private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
@@ -198,6 +200,9 @@ public class RobotContainer {
         
         // joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
+        //joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
+        //joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
+        //joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
         // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
         // joystick.y().onTrue(new ClimbCommand(climb, () -> true));
         // joystick.back().whileTrue(new ClimbCommand(climb, () -> false));
@@ -258,6 +263,7 @@ public class RobotContainer {
  
   }
   private void configureLEDs() {
+
     LEDPattern greenPattern = LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f));
     LEDPattern bluePattern = LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f));
       

@@ -272,7 +272,34 @@ import dev.doglog.DogLog;
       public String getObjectClass() {
         return llTable.getEntry("tclass").getString("none");
       }
- 
+
+      public double getHB() {
+        return llTable.getEntry("hb").getDouble(0.0);
+      }
+      
+      public double[] getCoordinates() {
+        double coords[] = new double[8];
+        if (llTable.getEntry("tcornxy").getDoubleArray(new double[1]).length == 8) {
+          coords = llTable.getEntry("tcornxy").getDoubleArray(new double[1]);
+        }
+        return coords;
+      }
+
+      public double getYaw() {
+        double[] botpose = getBotPose();
+        double yaw = 0.0;
+        if (botpose.length == 6) {
+            yaw = botpose[5];
+        } else {
+            yaw = 0.0;
+        }
+        return yaw;
+      }
+
+      public double getFPS() {
+        double[] hw = llTable.getEntry("hw").getDoubleArray(new double[5]);
+        return hw[0];
+      }
      // ----- Simulation
  
      public void simulationPeriodic(Pose2d robotSimPose) {
