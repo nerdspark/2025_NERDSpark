@@ -165,6 +165,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             //}
             SmartDashboard.putNumber("coralX", coralPose.getX());
             SmartDashboard.putNumber("coralY", coralPose.getY());
+            SmartDashboard.putNumber("coralOrientation", coralPose.getRotation().getDegrees());
 
             
 
@@ -188,15 +189,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         //SmartDashboard.putString("class", visionFront.getObjectClass());
               
     }
-
-    // public Rotation2d getGyro() {
-    //     return new Rotation2d(-gyro.getYaw().getValueAsDouble()*Math.PI/180).minus(gyroResetAngle);
-    //   }
-    
-    //   public void resetGyro() {
-    //     gyroResetAngle = getGyro().plus(gyroResetAngle);
-    //     targetAngle = 0;
-    //   }
     
 
     private String getFomattedPose() {
@@ -252,33 +244,38 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         if (xys.length != 0) { //debug
             boundingHeight = xys[5] - xys[3];
             boundingWidth = xys[2] - xys[0];
-            SmartDashboard.putNumber("x0", xys[0]);
-            SmartDashboard.putNumber("y0", xys[1]);
-            SmartDashboard.putNumber("x1", xys[2]);
-            SmartDashboard.putNumber("y1", xys[3]);
-            SmartDashboard.putNumber("x2", xys[4]);
-            SmartDashboard.putNumber("y2", xys[5]);
-            SmartDashboard.putNumber("x3", xys[6]);
-            SmartDashboard.putNumber("y3", xys[7]);
+            // SmartDashboard.putNumber("x0", xys[0]);
+            // SmartDashboard.putNumber("y0", xys[1]);
+            // SmartDashboard.putNumber("x1", xys[2]);
+            // SmartDashboard.putNumber("y1", xys[3]);
+            // SmartDashboard.putNumber("x2", xys[4]);
+            // SmartDashboard.putNumber("y2", xys[5]);
+            // SmartDashboard.putNumber("x3", xys[6]);
+            // SmartDashboard.putNumber("y3", xys[7]);
             SmartDashboard.putNumber("boundingHeight", boundingHeight);
             SmartDashboard.putNumber("boundingWidth", boundingWidth);
         }
 
         double distance = 0.0;
+        double widthAtParallel = Constants.Vision.kCoralCenterFallenHeight / Constants.Vision.kCoralCenterUprightHeight * boundingHeight;
+        double theta = 0.0;
 
         if (boundingHeight > boundingWidth) {               
-            distance = (Constants.Vision.kCoralCenterUprightHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
+            //distance = (Constants.Vision.kCoralCenterUprightHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
             SmartDashboard.putString("orientation", "upright");
         } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
             distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
             SmartDashboard.putString("orientation", "fallen");
+            theta = Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel);
+
         } else {
             distance = 0.0;
             SmartDashboard.putString("orientation", "");
         }
 
-        if (distance > 0.78) {
-            Pose2d coralPose = new Pose2d(distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX, distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY, yaw);
+        if (distance > 0.) {
+            Rotation2d coralOrientation = new Rotation2d(theta);
+            Pose2d coralPose = new Pose2d(distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX, distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY, coralOrientation);
             SmartDashboard.putNumber("distance", distance);
             return coralPose;
         } else {

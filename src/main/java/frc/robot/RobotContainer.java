@@ -200,7 +200,7 @@ public class RobotContainer {
         
         // joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
-        joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
+        //joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
         //joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
         //joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
         // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
