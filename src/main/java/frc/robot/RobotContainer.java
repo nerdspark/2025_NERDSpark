@@ -27,6 +27,7 @@ import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandPickup;
+import frc.robot.commands.LEDCommand;
 import frc.robot.commands.OpenGripperCommand;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.Gripper;
@@ -101,12 +102,13 @@ public class RobotContainer {
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
 
-  // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
   // private Climb climb = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
   private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
   .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
+  private Trigger hasCoral = new Trigger(() -> intake.hasCoral());
 
 
   /* Path follower */
@@ -285,7 +287,11 @@ public class RobotContainer {
     //     .scrollAtRelativeSpeed(Percent.per(Second).of(40));
     //   m_LedSubsystem.runPattern(steps);
 
-
+    Color[] colors = m_LedSubsystem.updateStepColor(armFinishedMoving, drivetrainFinishedMoving, hasCoral);
+    m_LedSubsystem.setDefaultCommand(
+     new LEDCommand(m_LedSubsystem, armFinishedMoving, drivetrainFinishedMoving, hasCoral)
+    );
+    
     
     
     
