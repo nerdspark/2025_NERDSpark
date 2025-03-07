@@ -16,6 +16,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.spark.config.SmartMotionConfigAccessor;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -144,25 +145,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 SmartDashboard.putNumber("hbLast", corals.get(size).getHB());
             }
 
-            // for (int i = 0; i < corals.size(); i++) {
-                
-            // }
-
             
             
-            double[] xys = visionFront.getCoordinates();
-            // if (xys.length == 8) {
-            //     SmartDashboard.putNumber("x0", xys[0]);
-            //     SmartDashboard.putNumber("y0", xys[1]);
-            //     SmartDashboard.putNumber("x1", xys[2]);
-            //     SmartDashboard.putNumber("y1", xys[3]);
-            //     SmartDashboard.putNumber("x2", xys[4]);
-            //     SmartDashboard.putNumber("y2", xys[5]);
-            //     SmartDashboard.putNumber("x3", xys[6]);
-            //     SmartDashboard.putNumber("y3", xys[7]);
-            // } else {
-            //     SmartDashboard.putString("coord", "error");
-            //}
             SmartDashboard.putNumber("coralX", coralPose.getX());
             SmartDashboard.putNumber("coralY", coralPose.getY());
             SmartDashboard.putNumber("coralOrientation", coralPose.getRotation().getDegrees());
@@ -185,9 +169,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
 
         }
-        SmartDashboard.putBoolean("tV", visionFront.hasTarget());
-        //SmartDashboard.putString("class", visionFront.getObjectClass());
-              
+        SmartDashboard.putBoolean("tV", visionFront.hasTarget());              
     }
     
 
@@ -222,7 +204,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     public Pose2d getCoralPose() {
         Rotation2d yaw = gyro.getGyro();
-        //Pose2d pose = new Pose2d(0,0, yaw);
+
         Pose2d pose = getCurrentPose();
         double poseX = pose.getX();
         double poseY = pose.getY();
@@ -230,7 +212,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("poseX", poseX);
         SmartDashboard.putNumber("poseY", poseY);
 
-        //Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
         double tx = visionFront.getTx();
         double ty = visionFront.getTy();
         //DriverStation.getMatchTime();
@@ -238,40 +219,41 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         double boundingHeight = 0.0;
         double boundingWidth = 0.0;       
 
-        //double tx = 0;
-        //double ty = -20.0;
         double[] xys = visionFront.getCoordinates();
         if (xys.length != 0) { //debug
             boundingHeight = xys[5] - xys[3];
             boundingWidth = xys[2] - xys[0];
-            // SmartDashboard.putNumber("x0", xys[0]);
-            // SmartDashboard.putNumber("y0", xys[1]);
-            // SmartDashboard.putNumber("x1", xys[2]);
-            // SmartDashboard.putNumber("y1", xys[3]);
-            // SmartDashboard.putNumber("x2", xys[4]);
-            // SmartDashboard.putNumber("y2", xys[5]);
-            // SmartDashboard.putNumber("x3", xys[6]);
-            // SmartDashboard.putNumber("y3", xys[7]);
             SmartDashboard.putNumber("boundingHeight", boundingHeight);
             SmartDashboard.putNumber("boundingWidth", boundingWidth);
         }
 
         double distance = 0.0;
-        double widthAtParallel = Constants.Vision.kCoralCenterFallenHeight / Constants.Vision.kCoralCenterUprightHeight * boundingHeight;
+        double widthAtParallel = 2.76016 * boundingHeight;
         double theta = 0.0;
-
+        double threshTheta = Math.atan(boundingHeight / widthAtParallel);
+        double thresh = widthAtParallel * Math.cos(threshTheta) + boundingHeight * Math.cos(Math.PI / 2 - threshTheta);
         if (boundingHeight > boundingWidth) {               
             //distance = (Constants.Vision.kCoralCenterUprightHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
             SmartDashboard.putString("orientation", "upright");
         } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
             distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
             SmartDashboard.putString("orientation", "fallen");
-            theta = Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel);
-
+            
+            theta = (Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)) * 180 / Math.PI;
+            SmartDashboard.putNumber("a", theta);
+            SmartDashboard.putNumber("ratio1", boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight));
+            SmartDashboard.putNumber("widthAtParallel", widthAtParallel);
+            if (boundingWidth > thresh) {
+                theta = 2 * threshTheta - (Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel));
+            } else {
+                theta = ((Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)));
+            }
         } else {
             distance = 0.0;
             SmartDashboard.putString("orientation", "");
         }
+        SmartDashboard.putNumber("a", theta);
+        //SmartDashboard.putNumber("thresh", thresh);
 
         if (distance > 0.) {
             Rotation2d coralOrientation = new Rotation2d(theta);
