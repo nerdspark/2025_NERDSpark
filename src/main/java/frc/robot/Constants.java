@@ -388,9 +388,9 @@ public static class Vision {
     static{
       armSetPoints[7] = new ArmPoint(home, false, Math.PI * 0.5, 0.0);
 
-      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 2.0), true, -0.5, 1.45);
-      armSetPoints[1] = new ArmPoint(new Translation2d(25.0, 2.0), true, -0.5, 1.45);
-      armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 7.0), true, -0.5, 1.45);
+      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 7.0), true, -0.5, 1.45);
+      armSetPoints[1] = new ArmPoint(new Translation2d(25.0, 7.0), true, -0.5, 1.45);
+      armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 12.0), true, -0.5, 1.45);
       armSetPoints[3] = new ArmPoint(new Translation2d(16.5, 16.25), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(16.5, 32.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(92)), false, 2.15, 0.3);
@@ -406,8 +406,8 @@ public static class Vision {
       armSetPoints[8] = new ArmPoint(new Translation2d(home.getNorm(),Rotation2d.fromDegrees(20)), true, -2.9, 1.45); //19, 7
       armSetPoints[11] = new ArmPoint(new Translation2d(home.getNorm(), Rotation2d.fromDegrees(40)), true, -2.6, 1.45); //19, 7
 
-      armSetPoints[12] = new ArmPoint(new Translation2d(20.5, 14), true, 0.3, 1.45); //19, 7
-      armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(1.45); //19, 7
+      armSetPoints[12] = new ArmPoint(new Translation2d(24.7, 10.4), true, 0.8, 1.45); //19, 7
+      // armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(1.45); //19, 7
       armSetPoints[14] = new ArmPoint(home);
 
 

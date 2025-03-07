@@ -250,7 +250,8 @@ public class RobotContainer {
     // ()->-joystick.getLeftX()));
 
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level)));;
-
+    joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[12]));
+    joystick.b().whileTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[13]));
     joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> false));
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
