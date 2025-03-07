@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 
 public class LEDSubsytem extends SubsystemBase {
-  private static final int kPort = 9;
-  private static final int kLength = 120;
+  private static final int kPort = Constants.LEDConstants.kPort;
+  private static final int kLength = Constants.LEDConstants.kLength;
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
@@ -29,10 +29,10 @@ public class LEDSubsytem extends SubsystemBase {
   private Trigger armFinishedMoving;
   private Trigger driveTrainFinishedMoving;
   private Trigger hasCoral;
-  public Arm arm;
+  private Arm arm;
   private Intake intake;
-  public ScoringProfileSubsystem scoringSubsystem;
-  public PoseEstimatorSubsystem poseEstimatorSubsystem;
+  private ScoringProfileSubsystem scoringSubsystem;
+  private PoseEstimatorSubsystem poseEstimatorSubsystem;
 
 
   public LEDSubsytem() {
@@ -41,11 +41,11 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setLength(kLength);
     m_led.start();
 
-    armFinishedMoving = new Trigger(() -> arm.finishedMoving);
-    driveTrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
-    hasCoral = new Trigger(() -> intake.hasCoral());
+    // armFinishedMoving = new Trigger(() -> arm.finishedMoving);
+    // driveTrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+    // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
+    // .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
+    // hasCoral = new Trigger(() -> intake.hasCoral());
     
 
     // Set the default command to turn the strip off, otherwise the last colors written by
@@ -60,35 +60,36 @@ public class LEDSubsytem extends SubsystemBase {
 
 
     m_led.setData(m_buffer);
-    getStepColor(armFinishedMoving, driveTrainFinishedMoving);
+    
   }
 
-  public void getStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving) {
+  public Color[] updateStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
     this.armFinishedMoving = armFinishedMoving;
     this.driveTrainFinishedMoving = driveTrainFinishedMoving;
+    this.hasCoral = hasCoral;
     Color step1 = new Color();
     Color step2 = new Color();
     Color step3 = new Color();
 
     
-      if(armFinishedMoving.getAsBoolean()) {
-        step1 = new Color(0.0f, 0.0f, 1.0f); // blue
+      if(armFinishedMoving.getAsBoolean()) { // 
+        step1 = new Color(1.0f, 1.0f, 0.0f); // yellow
       } else {
-        step1 = new Color(1.0f, 0.0f, 0.0f); // green
+        step1 = new Color(1.0f, 0.0f, 1.0f); // cyan
       }
-      if(driveTrainFinishedMoving.getAsBoolean()) {
-        step2 = new Color(0.0f, 1.0f, 0.0f); // red
+      if(driveTrainFinishedMoving.getAsBoolean()) { // 
+        step2 = new Color(0.0f, 1.0f, 1.0f); // magenta
       } else {
-        step2 = new Color(1.0f, 1.0f, 0.0f); // yellow
+        step2 = new Color(0.0f, 0.0f, 1.0f); // blue
       }
-      if (hasCoral.getAsBoolean()) {
-        // step3 =  new Color(0.0f, 0.0f, 1.0f); 
+      if (hasCoral.getAsBoolean()) { // 
+        step3 =  new Color(1.0f, 0.0f, 0.0f); // green
       } else {
-        // step3 = new Color(1.0f, 1.0f, 0.0f); 
+        step3 = new Color(0.0f, 1.0f, 0.0f);  // red
 
       } 
-      runPattern(LEDPattern.steps(Map.of(0, step1, 0.5, step2))
-        .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.scrollSpeed)));
+      Color[] returnArray = {step1, step2, step3};
+return returnArray;
   }
 
   /**

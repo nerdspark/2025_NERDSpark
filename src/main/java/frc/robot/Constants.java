@@ -482,7 +482,7 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double home = 0.45;
     public static final double deploy = -0.06;
     public static final double climb = 0.05;
-    ;
+    
 
     public static final double intakeTransferPosition = 0.25;
     public static final double intakePassive = -0.08;
@@ -491,6 +491,13 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double intakePowerRollers = -1.0;
   }
 
-  public static final double scrollSpeed = 40; 
+  public static class LEDConstants {
+    public static final double scrollSpeed = 40; 
+    public static final double numOfSteps = 3.0;
+    public static final int kPort = 9;
+    public static final int kLength = 120;
+
+  }
+
 
 }
