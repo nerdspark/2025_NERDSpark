@@ -92,12 +92,12 @@ public class RobotContainer {
 
 
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
 
 
     public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
-    public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    // public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
 
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -112,7 +112,7 @@ public class RobotContainer {
 
 
   /* Path follower */
-  private final SendableChooser<Command> autoChooser;
+  // private final SendableChooser<Command> autoChooser;
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -120,37 +120,38 @@ public class RobotContainer {
 
     // scoringSubsystem = new ScoringProfileSubsystem();
 
-    autoChooser = AutoBuilder.buildAutoChooser("Tests");
-    SmartDashboard.putData("Auto Mode", autoChooser);
-
-    // arm = new Arm();
-    // gripper = new Gripper();
-    // intake = new Intake();
+    // autoChooser = AutoBuilder.buildAutoChooser("Tests");
+    // SmartDashboard.putData("Auto Mode", autoChooser);
+    // m_LedSubsystem = new LEDSubsytem();
+    // climb = new Climb();
+    arm = new Arm();
+    gripper = new Gripper();
+    intake = new Intake();
     SignalLogger.setPath("/media/sda1/armLog");
     SignalLogger.start();
     configureBindings();
     configureDefaultCommands();
     configureLEDs();
-    drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
+    // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
 
   }
   
   private void configureDefaultCommands() {
-    drivetrain.setDefaultCommand(
-      drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
-          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
-          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
-        )
-        );
+    // drivetrain.setDefaultCommand(
+    //   drivetrain.applyRequest(() ->
+    //     drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+    //       .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+    //       .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+    //     )
+    //     );
 
 
 
-    // arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
+    arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
 
-    // gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
-    // intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
+    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
 
@@ -170,9 +171,9 @@ public class RobotContainer {
 
 
 
-    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    // joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.registerTelemetry(logger::telemeterize);
     // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
     // joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
     //     // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
@@ -196,10 +197,15 @@ public class RobotContainer {
         // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
 
 
-        // joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
+        joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
-        // joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
+        joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
+        
+
+        //joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
+        //joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
+        //joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
         // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
         // joystick.y().onTrue(new ClimbCommand(climb, () -> true));
         // joystick.back().whileTrue(new ClimbCommand(climb, () -> false));
@@ -215,17 +221,6 @@ public class RobotContainer {
     // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     
-        /*
-     * Joystick Y = quasistatic forward
-     * Joystick A = quasistatic reverse
-     * Joystick B = dynamic forward
-     * Joystick X = dyanmic reverse
-     */
-    // joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
 
     // joystick.y().whileTrue(Autos.getAutoDriveCommandXY( drivetrain,
     // () -> drivetrain.getState().Pose, 
@@ -237,29 +232,31 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.povDown().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    ()->scoringSubsystem.getLevel(),
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX())); //.alongWith(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))));
+    // joystick.povDown().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    // () -> drivetrain.getState().Pose,
+    // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    // ()->scoringSubsystem.getLevel(),
+    // ()->-joystick.getRightY(),
+    // ()->-joystick.getRightX(),
+    // ()->-joystick.getLeftX())); //.alongWith(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))));
 
-    joystick.povUp().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
+    // joystick.povUp().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    // () -> drivetrain.getState().Pose,
+    // () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
+    // ()->-joystick.getRightY(),
+    // ()->-joystick.getRightX(),
+    // ()->-joystick.getLeftX()));
 
-    // joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level)));
+    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level)));;
 
+    joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> false));
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
  
   }
   private void configureLEDs() {
+
     LEDPattern greenPattern = LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f));
     LEDPattern bluePattern = LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f));
       
@@ -311,7 +308,9 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     /* Run the path selected from the auto chooser */
-    return autoChooser.getSelected();
+    return new Command() {
+      
+    };//autoChooser.getSelected();
 
   }
 }

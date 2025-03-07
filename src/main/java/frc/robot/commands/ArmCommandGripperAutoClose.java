@@ -44,7 +44,7 @@ public class ArmCommandGripperAutoClose extends Command {
       gripper.closeGripper();
     }
     else if (Math.abs(startTimeToOpen - Timer.getFPGATimestamp()) > 0.05) {
-      gripper.stopGripper();
+      gripper.closeGripperWeak();
     }
   }
 

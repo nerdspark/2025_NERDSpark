@@ -33,6 +33,8 @@ public class Intake extends SubsystemBase {
   private TalonFX intakeGrabberMotor;
   private CANrange sensorIntake;
   private boolean hasCoral = false;
+  public boolean finishedMovingToTransfer = false;
+  private double deployTarget = 0;
 
   /** Creates a new Intake. */
   public Intake() {
@@ -91,6 +93,7 @@ public class Intake extends SubsystemBase {
   public double getIntakeDeployPosition() {
     double intake = intakeDeployMotor.getPosition().getValueAsDouble();
     SmartDashboard.putNumber("intake", intake);
+    deployTarget = intake;
     return intake;
   }  
 
@@ -110,11 +113,13 @@ public class Intake extends SubsystemBase {
   public void resetIntakeDeployPosition(double offset) {
     intakeDeployMotor.setPosition(offset);
   }
-  public void setDeployPosition(double target){
+  public void setDeployTarget(double target){
     intakeDeployMotor.setControl(new PositionVoltage(target).withPosition(target));
   }
   public void setGrabberIntake(double target){
     intakeGrabberMotor.set(target);
+  }public void setDeployPower(double target){
+    intakeDeployMotor.set(target);
   }
   public double getRangeIntakeDistance() {
     return sensorIntake.getDistance().getValueAsDouble();
@@ -128,6 +133,10 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
+    
+    finishedMovingToTransfer =getIntakeDeployPosition() < IntakeConstants.intakeTransferPosition;
+    
+
     SmartDashboard.putNumber("intake range", getRangeIntakeDistance());
     SmartDashboard.putBoolean("intake detected", getRangeIntakeDetected());
     // This method will be called once per scheduler run

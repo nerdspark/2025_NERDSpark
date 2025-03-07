@@ -26,7 +26,6 @@ public class OpenGripperCommand extends Command {
   @Override
   public void initialize() {
 
-      gripper.openGripper();
 
   }
 

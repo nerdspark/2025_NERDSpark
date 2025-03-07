@@ -4,6 +4,8 @@ import static frc.robot.Constants.Vision.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -13,11 +15,12 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.Utils;
-
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -28,16 +31,27 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.generated.TunerConstants;
+import frc.robot.util.CoralObject;
+import frc.robot.subsystems.Gyro;
 
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
 
     private final CommandSwerveDrivetrain driveTrain;
-    private Vision visionFront ;
-    private Vision visionBack ;
+    private Vision visionFront;
+    private Vision visionBack;
     private static Notifier allNotifier;
-   
+
+    //private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId);
+    //private PIDController GyroPID = new PIDController(Constants.gyroP, Constants.gyroI, Constants.gyroD);
+    //public double targetAngle = 0;
+    //private Rotation2d gyroResetAngle = new Rotation2d();
+
+    private static Gyro gyro = new Gyro();
+    private static List<CoralObject> corals = new ArrayList<>();
        
         private Field2d field = new Field2d(); 
           
@@ -107,12 +121,56 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
              }
 
-            //if (visionFront.getObjectClass()=="algae"){
-            Pose2d algaePose = getCoralPose();
+            //Coral pose code 
+
+            Pose2d coralPose = getCoralPose();
+
+            if (visionFront.hasTarget()) {
+                double hb = visionFront.getHB();
+                CoralObject coral = new CoralObject(coralPose, hb, 0);
+                coral.setCoralDistance(coral.calcDistance(coral.getPose()));
+                SmartDashboard.putNumber("hb", coral.getHB());
+                corals.add(coral);
+            }
+
+            if (corals.size() > 2) {
+                int size = corals.size() - 2;
+                Pose2d coralPoseLast = corals.get(size).getPose();
+                double coralXLast = coralPoseLast.getX();
+                double coralYLast = coralPoseLast.getY();
+                SmartDashboard.putNumber("coralXLast", coralXLast);
+                SmartDashboard.putNumber("coralYLast", coralYLast);
+
+                SmartDashboard.putNumber("hbLast", corals.get(size).getHB());
+            }
+
+            // for (int i = 0; i < corals.size(); i++) {
+                
+            // }
+
             
-            SmartDashboard.putNumber("algaeX", algaePose.getX());
-            SmartDashboard.putNumber("algaeY", algaePose.getY());
-               // }
+            
+            double[] xys = visionFront.getCoordinates();
+            // if (xys.length == 8) {
+            //     SmartDashboard.putNumber("x0", xys[0]);
+            //     SmartDashboard.putNumber("y0", xys[1]);
+            //     SmartDashboard.putNumber("x1", xys[2]);
+            //     SmartDashboard.putNumber("y1", xys[3]);
+            //     SmartDashboard.putNumber("x2", xys[4]);
+            //     SmartDashboard.putNumber("y2", xys[5]);
+            //     SmartDashboard.putNumber("x3", xys[6]);
+            //     SmartDashboard.putNumber("y3", xys[7]);
+            // } else {
+            //     SmartDashboard.putString("coord", "error");
+            //}
+            SmartDashboard.putNumber("coralX", coralPose.getX());
+            SmartDashboard.putNumber("coralY", coralPose.getY());
+            SmartDashboard.putNumber("coralOrientation", coralPose.getRotation().getDegrees());
+
+            
+
+            SmartDashboard.putNumber("pigeon", gyro.getGyro().getDegrees());
+            
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -131,6 +189,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         //SmartDashboard.putString("class", visionFront.getObjectClass());
               
     }
+    
 
     private String getFomattedPose() {
         var pose = getCurrentPose();
@@ -162,22 +221,66 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     }
 
     public Pose2d getCoralPose() {
-    
+        Rotation2d yaw = gyro.getGyro();
+        //Pose2d pose = new Pose2d(0,0, yaw);
         Pose2d pose = getCurrentPose();
         double poseX = pose.getX();
         double poseY = pose.getY();
-        Rotation2d gyro = new Rotation2d(0);
+
+        SmartDashboard.putNumber("poseX", poseX);
+        SmartDashboard.putNumber("poseY", poseY);
+
         //Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
-                double tx = visionFront.getTx();
-                double ty = visionFront.getTy();
+        double tx = visionFront.getTx();
+        double ty = visionFront.getTy();
+        //DriverStation.getMatchTime();
+
+        double boundingHeight = 0.0;
+        double boundingWidth = 0.0;       
 
         //double tx = 0;
         //double ty = -20.0;
-                
-        double distance = (kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((30+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180) + 0.2032;
-        Pose2d coralPose = new Pose2d(distance * Math.sin((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseX, distance * Math.cos((gyro.getDegrees()+tx) * (Math.PI / 180)) + poseY, gyro);
-        SmartDashboard.putNumber("distance", distance);
-        return coralPose;
+        double[] xys = visionFront.getCoordinates();
+        if (xys.length != 0) { //debug
+            boundingHeight = xys[5] - xys[3];
+            boundingWidth = xys[2] - xys[0];
+            // SmartDashboard.putNumber("x0", xys[0]);
+            // SmartDashboard.putNumber("y0", xys[1]);
+            // SmartDashboard.putNumber("x1", xys[2]);
+            // SmartDashboard.putNumber("y1", xys[3]);
+            // SmartDashboard.putNumber("x2", xys[4]);
+            // SmartDashboard.putNumber("y2", xys[5]);
+            // SmartDashboard.putNumber("x3", xys[6]);
+            // SmartDashboard.putNumber("y3", xys[7]);
+            SmartDashboard.putNumber("boundingHeight", boundingHeight);
+            SmartDashboard.putNumber("boundingWidth", boundingWidth);
+        }
+
+        double distance = 0.0;
+        double widthAtParallel = Constants.Vision.kCoralCenterFallenHeight / Constants.Vision.kCoralCenterUprightHeight * boundingHeight;
+        double theta = 0.0;
+
+        if (boundingHeight > boundingWidth) {               
+            //distance = (Constants.Vision.kCoralCenterUprightHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
+            SmartDashboard.putString("orientation", "upright");
+        } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
+            distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
+            SmartDashboard.putString("orientation", "fallen");
+            theta = Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel);
+
+        } else {
+            distance = 0.0;
+            SmartDashboard.putString("orientation", "");
+        }
+
+        if (distance > 0.) {
+            Rotation2d coralOrientation = new Rotation2d(theta);
+            Pose2d coralPose = new Pose2d(distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX, distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY, coralOrientation);
+            SmartDashboard.putNumber("distance", distance);
+            return coralPose;
+        } else {
+            return new Pose2d(0,0, new Rotation2d(0.0));
+        }
     }
 
     /**
@@ -197,4 +300,4 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             }
         }
     }
-} 
+}
