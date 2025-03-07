@@ -244,7 +244,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("ratio1", boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight));
             SmartDashboard.putNumber("widthAtParallel", widthAtParallel);
             if (boundingWidth > thresh) {
-                theta = 2 * threshTheta - (Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel));
+                theta = 2 * threshTheta - ((Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)));
             } else {
                 theta = ((Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)));
             }
