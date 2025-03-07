@@ -6,20 +6,20 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCommandPickup extends Command {private Intake intake;
-  private Supplier<Double> position, grabberSetPower;
-  /** Creates a new IntakeCommandPickup. */
-  public IntakeCommandPickup(Intake intake, Supplier<Double> position, Supplier<Double> grabberSetPower) {
+public class IntakeCommandPower extends Command {private Intake intake;
+    private Supplier<Double> power;
+  /** Creates a new IntakeCommand. */
+  public IntakeCommandPower(Intake intake, Supplier<Double> power) {
     this.intake = intake;
-        this.position = position;
+        this.power = power;
         addRequirements(intake);
-        this.grabberSetPower = grabberSetPower;
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -29,12 +29,10 @@ public class IntakeCommandPickup extends Command {private Intake intake;
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setDeployTarget(position.get());
-    if((intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1)){
-      intake.setGrabberIntake(IntakeConstants.intakePassive);
-    } else {
-      intake.setGrabberIntake(grabberSetPower.get());
-    }
+    intake.setDeployPower(power.get());
+    // if((intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1)){
+    //   intake.setGrabberIntake(IntakeConstants.intakePassive);
+    // }
   }
 
   // Called once the command ends or is interrupted.
@@ -44,7 +42,6 @@ public class IntakeCommandPickup extends Command {private Intake intake;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
-    return (intake.getRangeIntakeDetected()) && (intake.getRangeIntakeDistance() < 0.1);
+    return false;
   }
 }

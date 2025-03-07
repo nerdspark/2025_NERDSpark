@@ -73,13 +73,24 @@ public class Gripper extends SubsystemBase {
           .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
     gripper.getConfigurator().apply(gripperConfig);
     gripper.set(ArmConstants.gripperPowerOpen);
-
+  }
+  public void openGripperStrong(){
+    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
+          .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
+    gripper.getConfigurator().apply(gripperConfig);
+    gripper.set(-ArmConstants.gripperPowerClose);
   }
   public void closeGripper(){
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
     gripper.getConfigurator().apply(gripperConfig);
     gripper.set(ArmConstants.gripperPowerClose);
+  }
+  public void closeGripperWeak(){
+    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
+          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
+    gripper.getConfigurator().apply(gripperConfig);
+    gripper.set(-ArmConstants.gripperPowerOpen);
   }
   public void stopGripper() {
     gripper.stopMotor();

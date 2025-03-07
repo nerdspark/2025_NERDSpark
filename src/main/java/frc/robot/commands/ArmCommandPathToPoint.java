@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -110,14 +111,14 @@ public class ArmCommandPathToPoint extends Command {
     double pathProgress = nextPointIndex/path.points.size();
     double finalWristFlip = path.points.get(path.points.size() - 1).wristFlip;
     double finalWristTwist = path.points.get(path.points.size() - 1).wristTwist;
-      if (((pathProgress > 0.65) || arm.finishedMoving)){
+      if (((pathProgress > 0.95) || arm.finishedMoving)){
         arm.setWristTwistPosition(finalWristTwist);
-        if ((pathProgress > 0.8) || arm.finishedMoving){
+        if ((pathProgress > 0.95) || arm.finishedMoving){
           arm.setWristFlipPosition(finalWristFlip);
         }
       } else {
         arm.setWristFlipPosition((pathProgress * (finalWristFlip-initialWristFlip)) + initialWristFlip);
-        arm.setWristTwistPosition((pathProgress * (finalWristTwist-initialWristTwist)) + initialWristTwist);
+        arm.setWristTwistPosition((MathUtil.clamp((pathProgress - 0.8)*10, 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);
         // arm.stopWrist();
         
       }

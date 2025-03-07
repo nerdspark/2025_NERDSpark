@@ -78,15 +78,13 @@ public final class Autos {
   public static Command getTransferCommand(Arm arm, Intake intake, Gripper gripper) {
     return 
           new SequentialCommandGroup(
-            new OpenGripperCommand(gripper)
-              .until(() -> arm.finishedMoving && arm.wristFinishedMoving).andThen(new OpenGripperCommand(gripper).withTimeout(0.10)).withTimeout(1.0), 
-            new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> 0.0)
-              .withTimeout(0.3), 
+            new OpenGripperCommandStrong(gripper).until(() -> arm.finishedMoving && arm.wristFinishedMoving), 
+            new OpenGripperCommandStrong(gripper).alongWith(new IntakeCommandPower(intake, () -> IntakeConstants.transferPowerDeploy)).until(() -> intake.finishedMovingToTransfer).withTimeout(0.65), 
             new ArmCommandGripperForceClose(gripper)
               .alongWith(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
-                .withTimeout(0.3))
+                .withTimeout(0.2))
           .deadlineFor(new ArmCommandPathToPoint(arm, () -> 8))
-          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.20));
+          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.15));
   }
 
   public static Command getDropOffCommand(Arm arm, Gripper gripper) {
@@ -100,9 +98,9 @@ public final class Autos {
   public static Command getDropReefOffCommand(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return 
       new SequentialCommandGroup(
-        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(12, new Rotation2d(arm.getWristFlipPosition() + (arm.getWristFlipPosition() > (Math.PI*0.5) ? (Math.PI*0.5) : (-Math.PI*0.5)) )))).alongWith( 
-          new WaitCommand(0.07).andThen(new ArmCommandGripper(gripper, () -> false))).withTimeout(0.22), 
-        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(10, new Rotation2d(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() < 8 ? 0 : Math.PI)))).withTimeout(0.4)).onlyIf(() -> (setPointIndex.getAsInt() == 3 || setPointIndex.getAsInt() == 4)).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.30));
+        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(12, new Rotation2d(arm.getWristFlipPosition() + (arm.getWristFlipPosition() > (Math.PI*0.5) ? (Math.PI*0.5) : (-Math.PI*0.5)) ))))
+          .alongWith(new WaitCommand(0.07).andThen(new ArmCommandGripper(gripper, () -> false))).withTimeout(0.15), 
+        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(10, new Rotation2d(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() < 8 ? 0 : Math.PI)))).withTimeout(0.2)).onlyIf(() -> (setPointIndex.getAsInt() == 3 || setPointIndex.getAsInt() == 4)).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.30));
   }
 
   
