@@ -105,12 +105,12 @@ public class RobotContainer {
   private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
   // private Climb climb = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
-  private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
-  .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
-  .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
   private Trigger hasCoral = new Trigger(() -> intake.hasCoral());
-
-
+  // private Trigger driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+  // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
+  // .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
+  private Trigger driveTrainFinishedMoving = new Trigger(() -> true);
+  
   /* Path follower */
   // private final SendableChooser<Command> autoChooser;
   
@@ -131,7 +131,6 @@ public class RobotContainer {
     SignalLogger.start();
     configureBindings();
     configureDefaultCommands();
-    configureLEDs();
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
 
   }
@@ -154,6 +153,9 @@ public class RobotContainer {
     intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
+    m_LedSubsystem.setDefaultCommand(
+     new LEDCommand(m_LedSubsystem, armFinishedMoving, driveTrainFinishedMoving, hasCoral)
+    );
 
   }
 
@@ -255,52 +257,6 @@ public class RobotContainer {
     // ).until(() -> joystick.x().getAsBoolean()));
  
   }
-  private void configureLEDs() {
-
-    LEDPattern greenPattern = LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f));
-    LEDPattern bluePattern = LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f));
-      
-    
-    // armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    // armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
-
-    // drivetrainFinishedMoving.onTrue(m_LedSubsystem.runPattern(greenPattern.blink(Seconds.of(0.5))));
-    // drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(bluePattern.blink(Seconds.of(0.5))));
-
-    // Color step1 = new Color();
-    // Color step2 = new Color();
-    
-    //   if(armFinishedMoving.getAsBoolean()) {
-    //     step1 = new Color(0.0f, 0.0f, 1.0f); // blue
-    //   } else {
-    //     step1 = new Color(1.0f, 0.0f, 0.0f); // green
-    //   }
-    //   if(drivetrainFinishedMoving.getAsBoolean()) {
-    //     step2 = new Color(0.0f, 1.0f, 0.0f); // red
-    //   } else {
-    //     step2 = new Color(1.0f, 1.0f, 0.0f); // yellow
-    //   }
-    //   LEDPattern steps = LEDPattern.steps(Map.of(0, step1, 0.5, step2))
-    //     .scrollAtRelativeSpeed(Percent.per(Second).of(40));
-    //   m_LedSubsystem.runPattern(steps);
-
-    Color[] colors = m_LedSubsystem.updateStepColor(armFinishedMoving, drivetrainFinishedMoving, hasCoral);
-    m_LedSubsystem.setDefaultCommand(
-     new LEDCommand(m_LedSubsystem, armFinishedMoving, drivetrainFinishedMoving, hasCoral)
-    );
-    
-    
-    
-    
-    
-    
-
-  //  drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.gradient(LED, greenPattern, bluePattern)));
-    // intake status
-    // error states
-
-  }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
