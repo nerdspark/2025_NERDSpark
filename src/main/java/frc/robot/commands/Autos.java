@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.FieldConstants;
@@ -13,8 +14,10 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
+import frc.robot.util.ArmPoint;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
 import dev.doglog.DogLog;
@@ -76,14 +79,30 @@ public final class Autos {
     return 
           new SequentialCommandGroup(
             new OpenGripperCommand(gripper)
-              .until(() -> arm.finishedMoving).andThen(new WaitCommand(0.1)), 
+              .until(() -> arm.finishedMoving && arm.wristFinishedMoving).andThen(new OpenGripperCommand(gripper).withTimeout(0.10)).withTimeout(1.0), 
             new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> 0.0)
-              .withTimeout(0.4), 
+              .withTimeout(0.3), 
             new ArmCommandGripperForceClose(gripper)
               .alongWith(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
-                .withTimeout(0.4))
+                .withTimeout(0.3))
           .deadlineFor(new ArmCommandPathToPoint(arm, () -> 8))
-          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.25));
+          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.20));
+  }
+
+  public static Command getDropOffCommand(Arm arm, Gripper gripper) {
+
+    return 
+      new SequentialCommandGroup(
+        new ArmCommandPathToPoint(arm, () -> new ArmPoint(arm.getArmPosition().plus(new Translation2d(8, new Rotation2d(arm.getWristFlipPosition() - Math.PI))), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition())).withTimeout(0.5), 
+        new ArmCommandGripper(gripper, () -> false).withTimeout(0.5));
+  }
+
+  public static Command getDropReefOffCommand(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
+    return 
+      new SequentialCommandGroup(
+        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(12, new Rotation2d(arm.getWristFlipPosition() + (arm.getWristFlipPosition() > (Math.PI*0.5) ? (Math.PI*0.5) : (-Math.PI*0.5)) )))).alongWith( 
+          new WaitCommand(0.07).andThen(new ArmCommandGripper(gripper, () -> false))).withTimeout(0.22), 
+        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(10, new Rotation2d(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() < 8 ? 0 : Math.PI)))).withTimeout(0.4)).onlyIf(() -> (setPointIndex.getAsInt() == 3 || setPointIndex.getAsInt() == 4)).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.30));
   }
 
   

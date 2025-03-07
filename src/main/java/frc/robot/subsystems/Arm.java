@@ -48,6 +48,7 @@ public class Arm extends SubsystemBase {
   private TalonFX shoulderLeft, shoulderRight, elbowLeft, elbowRight, wristFlip, wristTwist;
   
   public boolean finishedMoving = false;
+  public boolean wristFinishedMoving = false;
   private boolean wristStopped = false;
   private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
 
@@ -340,6 +341,7 @@ public void stopWrist() {
   public void setWristTwistPosition(double position) {
     wristTwistPosition = position;
     wristStopped = false;
+    wristFinishedMoving = false;
         // SmartDashboard.putNumber("wrist twist position set raw", position);
 
 
@@ -354,6 +356,7 @@ public void stopWrist() {
   public void setWristFlipPosition(double position) {
     wristFlipPosition = position;
     wristStopped = false;
+    wristFinishedMoving = false;
 // ratio = oo: wrist change amount -oo
 // ratio = 1: wrist change amount 0
 // ratio = 0: wrist change amount 1
@@ -471,6 +474,11 @@ public void setShoulderAmpLimit(double amplimit) {
     updateWristSetpoints();
     getShoulderPosition();
     getElbowPosition();
+    if (Math.abs(getWristFlipPosition() - wristFlipPosition) < 0.2 && Math.abs(getWristTwistPosition() - wristTwistPosition) < 0.2) {
+      wristFinishedMoving = true;
+    } else {
+      wristFinishedMoving = false;
+    }
     // getWristFlipPosition();
     // getWristTwistPosition();
     // SmartDashboard.putNumber("wrist flip output", wristFlip.getClosedLoopOutput().getValueAsDouble());

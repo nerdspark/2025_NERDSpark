@@ -276,10 +276,10 @@ public static class Vision {
     
   public static class ArmConstants {
 
-    public static final double lookAheadDistance = 10.0;
-    public static final double endDistance = 10.0;
+    public static final double lookAheadDistance = 13.0;
+    public static final double endDistance = 8.0;
     public static final double linearApproximationTime = 0.1; // seconds
-    public static final double velocity = 25;
+    public static final double velocity = 55;
     public static final double maxMotorVelocity = 0.5;
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
@@ -363,7 +363,7 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 12;
+    public static final int setPointCount = 15;
     public static final Translation2d home = new Translation2d(14.0,18.0); //safest home and also closest possible distance arm is allowed to get to central joint
 
     /**
@@ -380,19 +380,22 @@ public static class Vision {
      * @climbPrepare 9
      * @climbClose 10
      * @transferPullOut 11
+     * @shelfPickUp 12
+     * @shelfPickUpOppositeSide 13
+     * @groundPickUp 14
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
       armSetPoints[7] = new ArmPoint(home, false, Math.PI * 0.5, 0.0);
 
-      armSetPoints[0] = new ArmPoint(new Translation2d(27.0, 2.0), true, -0.5, 1.45);
-      armSetPoints[1] = new ArmPoint(new Translation2d(31.0, 2.0), true, -0.5, 1.45);
-      armSetPoints[2] = new ArmPoint(new Translation2d(29.0, 7.0), true, -0.5, 1.45);
-      armSetPoints[3] = new ArmPoint(new Translation2d(24.0, 16.25), true, 0.611, 0.0);
-      armSetPoints[4] = new ArmPoint(new Translation2d(24.0, 32.0), true, 0.611, 0.0);
-      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(100)), 2.5, 0.3);
+      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 2.0), true, -0.5, 1.45);
+      armSetPoints[1] = new ArmPoint(new Translation2d(25.0, 2.0), true, -0.5, 1.45);
+      armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 7.0), true, -0.5, 1.45);
+      armSetPoints[3] = new ArmPoint(new Translation2d(16.5, 16.25), true, 0.611, 0.0);
+      armSetPoints[4] = new ArmPoint(new Translation2d(16.5, 32.0), true, 0.611, 0.0);
+      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.15, 0.3);
       
-      armSetPoints[6] = new ArmPoint(new Translation2d(19, 18), true, Units.degreesToRadians(-90), 1.45);
+      armSetPoints[6] = new ArmPoint(new Translation2d(21, 10), true, Units.degreesToRadians(20), 1.45);
       
       // armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(50)), false);
       // armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(0)), false);
@@ -401,7 +404,13 @@ public static class Vision {
 
       
       armSetPoints[8] = new ArmPoint(new Translation2d(home.getNorm(),Rotation2d.fromDegrees(20)), true, -2.9, 1.45); //19, 7
-      armSetPoints[11] = new ArmPoint(new Translation2d(16, 18), true, -2.6, 1.45); //19, 7
+      armSetPoints[11] = new ArmPoint(new Translation2d(10, 21), true, -2.6, 1.45); //19, 7
+
+      armSetPoints[12] = new ArmPoint(new Translation2d(20.5, 14), true, 0.3, 1.45); //19, 7
+      armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(1.45); //19, 7
+      armSetPoints[14] = new ArmPoint(home);
+
+
 
       //clamp distance of all setpoints (probably unnecessary)
       // for (int i = 0; i < armSetPoints.length; i++) {
