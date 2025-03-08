@@ -18,6 +18,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.DriveToCoral;
 import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
@@ -149,7 +150,7 @@ public class RobotContainer {
         )
         );
     
-    joystick.y().toggleOnTrue(new DriveToPose(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn(corals).get(0).getPose()));
+    joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn(corals).get(0).getPose()));
 
 
 
