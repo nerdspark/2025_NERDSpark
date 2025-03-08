@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueCenter3_1v2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueCenter3_2v2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BlueCenter3_3v2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "CenterAuton",
+  "choreoAuto": false
+}
