@@ -122,11 +122,24 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             if(visionEstBack.isPresent()) {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
             }   
+
+            //coral code
             
             CoralObject newCoral = newCoral(false);
-            Pose2d coralPose = newCoral.getPose();
-            SmartDashboard.putNumber("coralX", coralPose.getX());
-            SmartDashboard.putNumber("coralY", coralPose.getY());
+            if (!newCoral.getIgnored() && visionFront.hasTarget()) {
+                corals.add(newCoral); 
+            }
+
+            if (corals.size() > 0) {
+                int size = corals.size();
+                CoralObject lastCoral = corals.get(size - 1);
+                Pose2d lastCoralPose = lastCoral.getPose();
+                SmartDashboard.putNumber("lastCoralX", lastCoralPose.getX());
+                SmartDashboard.putNumber("lastCoralY", lastCoralPose.getY());
+            }
+            // Pose2d coralPose = newCoral.getPose();
+            // SmartDashboard.putNumber("coralX", coralPose.getX());
+            // SmartDashboard.putNumber("coralY", coralPose.getY());
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -176,8 +189,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     public CoralObject newCoral(boolean targeted) {
         Rotation2d yaw = gyro.getGyro();
-
-        Pose2d pose = getCurrentPose();
+        Pose2d pose = new Pose2d(0.0,0.0,yaw);
+        //Pose2d pose = getCurrentPose();
         double poseX = pose.getX();
         double poseY = pose.getY();
 
