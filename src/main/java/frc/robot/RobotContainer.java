@@ -66,26 +66,26 @@ import frc.robot.subsystems.Climb;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  private SlewRateLimiter xLimiter = new SlewRateLimiter(10);
-  private SlewRateLimiter yLimiter = new SlewRateLimiter(10);
-  private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    
-  private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+//   private SlewRateLimiter xLimiter = new SlewRateLimiter(10);
+//   private SlewRateLimiter yLimiter = new SlewRateLimiter(10);
+//   private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    
+//   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+//     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    /* Setting up bindings for necessary control of the swerve drive platform */
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+//     /* Setting up bindings for necessary control of the swerve drive platform */
+//     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+//              .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+//      private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+//     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+//     private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    private final CommandXboxController joystick = new CommandXboxController(0);
-    private final Joystick buttonBoard = new Joystick(1);
+     private final CommandXboxController joystick = new CommandXboxController(0);
+//     private final Joystick buttonBoard = new Joystick(1);
 
-    public Arm arm;
-    private Gripper gripper;
-    private Intake intake;
+    // public Arm arm;
+    // private Gripper gripper;
+    // private Intake intake;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     // private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
@@ -96,16 +96,17 @@ public class RobotContainer {
 
 
 
-    public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
-    // public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    // public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
+    // // public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
 
-    public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
+    // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
 
   private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
   // private Climb climb = new Climb();
-  private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
-  private Trigger hasCoral = new Trigger(() -> intake.hasCoral());
+
+  private Trigger armFinishedMoving = new Trigger(() -> true);//new Trigger(() -> arm.finishedMoving);
+  private Trigger hasCoral = new Trigger(() -> false);//new Trigger(() -> intake.hasCoral());
   // private Trigger driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
   // .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
@@ -123,14 +124,14 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser("Tests");
     // SmartDashboard.putData("Auto Mode", autoChooser);
     // m_LedSubsystem = new LEDSubsytem();
-    // climb = new Climb();
-    arm = new Arm();
-    gripper = new Gripper();
-    intake = new Intake();
-    SignalLogger.setPath("/media/sda1/armLog");
-    SignalLogger.start();
+    // // climb = new Climb();
+    // arm = new Arm();
+    // gripper = new Gripper();
+    // intake = new Intake();
+    // SignalLogger.setPath("/media/sda1/armLog");
+    // SignalLogger.start();
     configureBindings();
-    configureDefaultCommands();
+    // configureDefaultCommands();
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
 
   }
@@ -146,16 +147,13 @@ public class RobotContainer {
 
 
 
-    arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
+    // arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
 
-    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+    // gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
-    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
+    // intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
-    m_LedSubsystem.setDefaultCommand(
-     new LEDCommand(m_LedSubsystem, armFinishedMoving, driveTrainFinishedMoving, hasCoral)
-    );
 
   }
 
@@ -199,9 +197,9 @@ public class RobotContainer {
         // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
 
 
-        joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
+        // joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
-        joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
+        // joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
           
         
 
@@ -219,7 +217,7 @@ public class RobotContainer {
     /* Manually start logging with left bumper before running any tests,
      * and stop logging with right bumper after we're done with ALL tests.
      * This isn't necessary but is convenient to reduce the size of the hoot file */
-    SignalLogger.setPath("/media/sda1/ctre-logs/");
+    // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     
@@ -249,12 +247,27 @@ public class RobotContainer {
     // ()->-joystick.getRightX(),
     // ()->-joystick.getLeftX()));
 
-    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level)));;
+    // joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level)));;
 
-    joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> false));
+    // joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> false));
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
+
+    Color[] returnColors = m_LedSubsystem.updateStepColor(armFinishedMoving, driveTrainFinishedMoving, hasCoral);
+    joystick.y().onTrue(m_LedSubsystem.runPattern(
+      LEDPattern.steps(
+        Map.of(
+          0,
+          returnColors[0], 
+          1 / Constants.LEDConstants.numOfSteps, 
+          returnColors[1], 
+          2 / Constants.LEDConstants.numOfSteps, 
+          returnColors[2]
+        )
+      )
+      .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    ));
  
   }
   /**

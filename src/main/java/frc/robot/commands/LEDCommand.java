@@ -44,23 +44,23 @@ public class LEDCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Color[] returnColors = ledSubsytem.updateStepColor(armFinishedMoving, driveTrainFinishedMoving, hasCoral);
-    ledSubsytem.runPattern(
-      LEDPattern.steps(
-        Map.of(
-          0,
-          returnColors[0], 
-          1 / Constants.LEDConstants.numOfSteps, 
-          returnColors[1], 
-          2 / Constants.LEDConstants.numOfSteps, 
-          returnColors[2]
-        )
-      )
-      .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
-    );
+    // Color[] returnColors = ledSubsytem.updateStepColor(armFinishedMoving, driveTrainFinishedMoving, hasCoral);
+    // ledSubsytem.runPattern(
+    //   LEDPattern.steps(
+    //     Map.of(
+    //       0,
+    //       returnColors[0], 
+    //       1 / Constants.LEDConstants.numOfSteps, 
+    //       returnColors[1], 
+    //       2 / Constants.LEDConstants.numOfSteps, 
+    //       returnColors[2]
+    //     )
+    //   )
+    //   .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    // );
   }
 
-  // Called once the command ends or is interrupted.
+  // Caled once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
 

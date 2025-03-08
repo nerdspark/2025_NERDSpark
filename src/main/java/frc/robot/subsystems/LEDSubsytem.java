@@ -24,7 +24,7 @@ public class LEDSubsytem extends SubsystemBase {
   private static final int kLength = 120;
 
   private final AddressableLED m_led;
-  private final AddressableLEDBuffer m_buffer;
+  public final AddressableLEDBuffer m_buffer;
 
 
   public LEDSubsytem() {
@@ -66,7 +66,7 @@ public class LEDSubsytem extends SubsystemBase {
         step3 = new Color(0.0f, 1.0f, 0.0f);  // red
 
       } 
-
+      
       Color[] colors = {step1, step2, step3};
       return colors;
   }
