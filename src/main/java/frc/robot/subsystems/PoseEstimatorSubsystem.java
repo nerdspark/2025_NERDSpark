@@ -28,6 +28,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -213,6 +214,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         boolean ignored = false;
         boolean targeted = false;
 
+        Translation2d offset = new Translation2d(-0.5588, new Rotation2d((yaw.getDegrees() + ty) * Math.PI / 180));
+
         //DriverStation.getMatchTime();
 
         double boundingHeight = 0.0;
@@ -227,28 +230,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
 
         double distance = 0.0;
-        //double widthAtParallel = 2.76016 * boundingHeight;
         double theta = 0.0;
-        //double threshTheta = Math.atan(boundingHeight / widthAtParallel);
-        //double thresh = widthAtParallel * Math.cos(threshTheta) + boundingHeight * Math.cos(Math.PI / 2 - threshTheta);
         if (boundingHeight > boundingWidth) {               
-            //distance = (Constants.Vision.kCoralCenterUprightHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
-            //SmartDashboard.putString("orientation", "upright");
             upfall = false;
             ignored = true;
         } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
             distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
-            //SmartDashboard.putString("orientation", "fallen");
-            
-            //theta = (Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)) * 180 / Math.PI;
-            //SmartDashboard.putNumber("a", theta);
-            //SmartDashboard.putNumber("ratio1", boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight));
-            //SmartDashboard.putNumber("widthAtParallel", widthAtParallel);
-            //if (boundingWidth > thresh) {
-                //theta = 2 * threshTheta - ((Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)));
-            //} else {
-                //theta = ((Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)));
-            //}
             upfall = true;
             ignored = false;
         } else {
@@ -256,12 +243,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putString("orientation", "");
             ignored = true;
         }
-        //SmartDashboard.putNumber("a", theta);
-        //SmartDashboard.putNumber("thresh", thresh);
-
         if (distance > 0.0) {
             Rotation2d coralOrientation = new   Rotation2d(theta);
-            Pose2d coralPose = new Pose2d(-distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX, -distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY, yaw);
+            Pose2d coralPose = new Pose2d(-distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX + offset.getX(), -distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY + offset.getY(), yaw);
             SmartDashboard.putNumber("distance", distance);
             ignored = false;
             CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
