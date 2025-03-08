@@ -284,7 +284,7 @@ public static class Vision {
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
     public static final double interpolationDistance = 0.1; // inches
-    public static final double interpolationAngle = 1; // deg
+    public static final double interpolationAngle = 0.5; // deg
 
     public static final int shoulderMotorLeftPort = 41;
     public static final int shoulderMotorRightPort = 42;
@@ -388,9 +388,9 @@ public static class Vision {
     static{
       armSetPoints[7] = new ArmPoint(home, false, Math.PI * 0.5, 0.0);
 
-      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 2.0), true, -0.5, 1.45);
-      armSetPoints[1] = new ArmPoint(new Translation2d(25.0, 2.0), true, -0.5, 1.45);
-      armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 7.0), true, -0.5, 1.45);
+      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 7.0), true, -0.5, 1.45);
+      armSetPoints[1] = new ArmPoint(new Translation2d(25.0, 7.0), true, -0.5, 1.45);
+      armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 12.0), true, -0.5, 1.45);
       armSetPoints[3] = new ArmPoint(new Translation2d(16.5, 16.25), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(16.5, 32.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(92)), false, 2.15, 0.3);
@@ -406,9 +406,9 @@ public static class Vision {
       armSetPoints[8] = new ArmPoint(new Translation2d(home.getNorm(),Rotation2d.fromDegrees(20)), true, -2.9, 1.45); //19, 7
       armSetPoints[11] = new ArmPoint(new Translation2d(home.getNorm(), Rotation2d.fromDegrees(40)), true, -2.6, 1.45); //19, 7
 
-      armSetPoints[12] = new ArmPoint(new Translation2d(20.5, 14), true, 0.3, 1.45); //19, 7
+      armSetPoints[12] = new ArmPoint(new Translation2d(24.7, 10.4), true, 0.8, 1.45); //19, 7
       armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(1.45); //19, 7
-      armSetPoints[14] = new ArmPoint(home);
+      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.9), true, 0.0, Math.PI);
 
 
 
@@ -431,6 +431,7 @@ public static class Vision {
     static{
       // intermediatePoints[0][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(22.43, 30.52)), new ArmPoint(new Translation2d(47.519, 10.114)));
 intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)))));
+intermediatePoints[6][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
 // intermediatePoints[6][5] = List.of(armSetPoints[6].withWristFlip(Units.degreesToRadians(45)));
       // intermediatePoints[1][4] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(30.0, 24.0)));
 
@@ -519,6 +520,12 @@ intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double intakePowerRollers = -1.0;
   }
 
-  public static final double scrollSpeed = 40; 
+  public static class LEDConstants {
+    public static final double scrollSpeed = 40; 
+    public static final double numOfSteps = 3.0;
+    public static final int kPort = 9;
+    public static final int kLength = 120;
+
+  }
 
 }

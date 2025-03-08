@@ -87,13 +87,13 @@ public final class Autos {
           .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.15));
   }
 
-  public static Command getDropOffCommand(Arm arm, Gripper gripper) {
+  // public static Command getDropOffCommand(Arm arm, Gripper gripper) {
 
-    return 
-      new SequentialCommandGroup(
-        new ArmCommandPathToPoint(arm, () -> new ArmPoint(arm.getArmPosition().plus(new Translation2d(8, new Rotation2d(arm.getWristFlipPosition() - Math.PI))), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition())).withTimeout(0.5), 
-        new ArmCommandGripper(gripper, () -> false).withTimeout(0.5));
-  }
+  //   return 
+  //     new SequentialCommandGroup(
+  //       new ArmCommandPathToPoint(arm, () -> new ArmPoint(arm.getArmPosition().plus(new Translation2d(8, new Rotation2d(arm.getWristFlipPosition() - Math.PI))), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition())).withTimeout(0.5), 
+  //       new ArmCommandGripper(gripper, () -> false).withTimeout(0.5));
+  // }
 
   public static Command getDropReefOffCommand(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return 
