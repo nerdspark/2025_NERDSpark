@@ -75,7 +75,7 @@ public class ArmCommandPathToPoint extends Command {
         // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       } else {
-        path = new ArmPath(List.of(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()), setPoint.get()));
+        path = new ArmPath(GenPath.generateInflectionPoints(List.of(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()), setPoint.get())));
       }
     
     // System.out.println(path.toStringList().toString());
@@ -84,12 +84,13 @@ public class ArmCommandPathToPoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
-    System.out.println("ArmCommandPathToPoint/execute");
+    // System.out.println("ArmCommandPathToPoint/execute");
     if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())) {
       arm.finishedMoving = true;
     }
     if (setPointIntSupplier != null) {
       if (setPointIndex != setPointIntSupplier.getAsInt()) {
+        System.out.println("recalculate");
         setPointIndex = setPointIntSupplier.getAsInt();
         setPoint = () -> ArmSetpoints.armSetPoints[setPointIndex];
         calculatePath();

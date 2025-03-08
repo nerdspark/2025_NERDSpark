@@ -78,14 +78,14 @@ public class ScoringProfileSubsystem extends SubsystemBase {
       }
     }
 
-    for(int j=12; j<17; j++) {
+    for(int j=13; j<18; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
-        reefLevel = FieldConstants.ReefLevel.values()[j-12];
+        reefLevel = FieldConstants.ReefLevel.values()[j-13];
         // System.out.println("J: " + j + "; reeflevel: " + reefLevel.level);
       }
     }
 
-    isBackwards = reefLevel == ReefLevel.L4 || reefLevel == ReefLevel.L1 || reefLevel == ReefLevel.L1Top ? false : DriverStation.getStickButton(1, 17);
+    isBackwards = reefLevel == ReefLevel.L4 || reefLevel == ReefLevel.L1 || reefLevel == ReefLevel.L1Top ? false : DriverStation.getStickButton(1, 12);
 
     for(int j=18; j<20; j++) {
       if(DriverStation.getStickButton(1, j+1)) {

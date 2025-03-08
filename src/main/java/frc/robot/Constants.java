@@ -236,10 +236,10 @@ public static class Vision {
   public final class ArmGains {
       public static final double shoulderP = 80.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
-      public static final double shoulderD = 0.0;
+      public static final double shoulderD = 10.0;
       public static final double elbowP = 45.0;//20.0
       public static final double elbowI = 0.0;
-      public static final double elbowD = 0.0;
+      public static final double elbowD = 10.0;
       public static final double wristFlipP = 20.0; //20.0
       public static final double wristFlipG = 0.0; //20.0 
       public static final double wristFlipI = 0.0;
@@ -260,10 +260,10 @@ public static class Vision {
       public static final double elbowA = 0.0;
   }
   public static class ArmVelocityGains{
-    public static final double shoulderP = 52.0; //TODO CHANGE SOME OF THIS LATER //52.0
+    public static final double shoulderP = 5.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 20.0;//20.0
+      public static final double elbowP = 2.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
@@ -279,11 +279,11 @@ public static class Vision {
     
   public static class ArmConstants {
 
-    public static final double lookAheadDistance = 13.0;
+    public static final double lookAheadDistance = 22.0;
     public static final double endDistance = 8.0;
-    public static final double linearApproximationTime = 0.1; // seconds
-    public static final double velocity = 55;
-    public static final double maxMotorVelocity = 0.5;
+    public static final double linearApproximationTime = 0.2; // seconds
+    public static final double velocity = 120;
+    public static final double maxMotorVelocity = 600.0;
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
     public static final double interpolationDistance = 0.1; // inches
@@ -413,7 +413,7 @@ public static class Vision {
 
       armSetPoints[12] = new ArmPoint(new Translation2d(24.7, 10.4), true, 0.8, -1.45); //19, 7
       armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(-1.45); //19, 7
-      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.9), true, 0.0, 0);
+      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.9), true, -0.2, -0.2);
 
 
       armSetPoints[15] = new ArmPoint(new Translation2d(14, 20), false, (2.0*Math.PI) - 0.611, Math.PI);
@@ -527,7 +527,8 @@ intermediatePoints[6][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translati
     public static final double transferPowerRollers = 1.0; //-0.5
     public static final double intakePowerRollers = -1.0;
 
-    public static final double intakeThrowPosition = 0.25;
+    public static final double intakeThrowPreparePosition = 0.3;
+    public static final double intakeThrowPosition = 0.17;
     public static final double intakeThrowPower = 1;
   }
 

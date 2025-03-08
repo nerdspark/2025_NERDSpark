@@ -94,7 +94,7 @@ public class ArmPathplannerUtil {
             step = step.times(-1);
             stepDist *= -1;
         }
-        if (pointCount > 5) { // continue interpolation polarly
+        if (pointCount > 3 || end.position.getDistance(start.position) < 10) { // continue interpolation polarly
             for (int i = 1; i <= pointCount; i++){
                 boolean inBend = i < pointCount/2 ? start.inBend : end.inBend;
                 path.add(new ArmPoint(new Translation2d(start.position.getNorm() + (stepDist * i), start.position.getAngle().plus(step.times(i))), inBend));

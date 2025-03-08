@@ -153,7 +153,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
     NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5));
     NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 6));
-    NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakePassive));
+    NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPreparePosition, () -> IntakeConstants.intakePassive));
     NamedCommands.registerCommand("intakeThrow", new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakeThrowPower)
       .withTimeout(0.5)
       .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> 0.0)));
@@ -275,7 +275,7 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level)));;
+    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level + 1))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level + 1)));;
     joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
     joystick.b().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
     joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> false));

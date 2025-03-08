@@ -288,10 +288,10 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("target pos y", position.getY());
     currentMaxV = Math.max(Math.abs(shoulderVelocity), Math.abs(elbowVelocity));
     // SmartDashboard.putNumber("current max v", currentMaxV);
-    if(currentMaxV > ArmConstants.maxMotorVelocity){
-      shoulderVelocity = shoulderVelocity * (ArmConstants.maxMotorVelocity/currentMaxV);
-      elbowVelocity = elbowVelocity * (ArmConstants.maxMotorVelocity/currentMaxV);
-    }
+    // if(currentMaxV > ArmConstants.maxMotorVelocity){
+    //   shoulderVelocity = shoulderVelocity * (ArmConstants.maxMotorVelocity/currentMaxV);
+    //   elbowVelocity = elbowVelocity * (ArmConstants.maxMotorVelocity/currentMaxV);
+    // }
     if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
       // SmartDashboard.putBoolean("shoulder soft limit triggered", true);
       
