@@ -63,19 +63,19 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8472468916518769,
-      "rotationDegrees": -55.607
+      "rotationDegrees": 124.393
     },
     {
       "waypointRelativePos": 0.9751332149200745,
-      "rotationDegrees": -55.607
+      "rotationDegrees": 124.393
     },
     {
       "waypointRelativePos": 1.486678507992877,
-      "rotationDegrees": 142.12500000000003
+      "rotationDegrees": -37.875
     },
     {
       "waypointRelativePos": 2.3019538188277044,
-      "rotationDegrees": 142.12500000000003
+      "rotationDegrees": -37.875
     }
   ],
   "constraintZones": [
@@ -112,7 +112,12 @@
       "name": "armToStow",
       "waypointRelativePos": 0.33070866141732924,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "armToStow"
+        }
+      }
     },
     {
       "name": "intakePrepareThrow",
@@ -149,13 +154,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "CenterAuton",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": false
 }

@@ -84,6 +84,7 @@ public class ArmCommandPathToPoint extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
+    System.out.println("ArmCommandPathToPoint/execute");
     if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())) {
       arm.finishedMoving = true;
     }

@@ -47,11 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.5257548845470648,
-      "rotationDegrees": -147.65
+      "rotationDegrees": 32.35
     },
     {
       "waypointRelativePos": 1.101243339254005,
-      "rotationDegrees": -147.65
+      "rotationDegrees": 32.35
     }
   ],
   "constraintZones": [],
@@ -80,13 +80,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -121.86597769360361
+    "rotation": 58.134
   },
   "reversed": false,
   "folder": "CenterAuton",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

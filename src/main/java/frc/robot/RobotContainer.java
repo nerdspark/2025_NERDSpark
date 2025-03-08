@@ -6,7 +6,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Map;
-
+import java.util.jar.Attributes.Name;
 import java.util.Map;
 
 import frc.robot.Constants.ArmConstants;
@@ -54,6 +54,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.SignalLogger;
@@ -99,12 +100,12 @@ public class RobotContainer {
 
 
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain;
 
 
 
     public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
-    public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    public final PoseEstimatorSubsystem poseEstimatorSubsystem;
 
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -125,22 +126,22 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-
-
-    // autoChooser = AutoBuilder.buildAutoChooser("Tests");
-    // SmartDashboard.putData("Auto Mode", autoChooser);
-    // m_LedSubsystem = new LEDSubsytem();
+    drivetrain = TunerConstants.createDrivetrain();
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
     arm = new Arm();
     gripper = new Gripper();
     intake = new Intake();
+
     configureNamedCommands();
-    configureAutoChooser();
-    SignalLogger.setPath("/media/sda1/armLog");
-    SignalLogger.start();
+
+
+    // SignalLogger.setPath("/media/sda1/armLog");
+    // SignalLogger.start();
     configureBindings();
     configureDefaultCommands();
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
+    configureAutoChooser();
 
     PathfindingCommand.warmupCommand().schedule();
 
@@ -156,9 +157,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("intakeThrow", new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakeThrowPower)
       .withTimeout(0.5)
       .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> 0.0)));
-    
-        
+    NamedCommands.registerCommand("test", new InstantCommand(()-> System.out.println("test")));
   }
+
+
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
@@ -172,9 +174,9 @@ public class RobotContainer {
 
     // arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
 
-    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+    // gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
-    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
+    // intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
     // m_LedSubsystem.setDefaultCommand(
@@ -284,7 +286,7 @@ public class RobotContainer {
   }
 
   private void configureAutoChooser() {
-    DataLogManager.log("Configuring auto chooser");
+    // DataLogManager.log("Configuring auto chooser");
     autoChooser = AutoBuilder.buildAutoChooser();
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
