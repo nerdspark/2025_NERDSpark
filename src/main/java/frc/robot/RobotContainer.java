@@ -23,6 +23,7 @@ import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
+import frc.robot.commands.ArmCommandGripperAutoCloseNeutralOpen;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.IntakeCommand;
@@ -250,8 +251,8 @@ public class RobotContainer {
     // ()->-joystick.getLeftX()));
 
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level)));;
-    joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[12]));
-    joystick.b().whileTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[13]));
+    joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    joystick.b().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
     joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> false));
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()

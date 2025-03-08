@@ -374,7 +374,7 @@ public void stopWrist() {
       wristFlip.setControl(new PositionVoltage(flipPosition).withPosition(flipPosition));
 
       double twistPosition = wristTwistPosition;
-      twistPosition = MathUtil.clamp(twistPosition, 0, Math.PI * 0.5);
+      twistPosition = MathUtil.clamp(twistPosition, 0, Math.PI * 1.0);
       twistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
       twistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
       twistPosition /= (2d*Math.PI);
