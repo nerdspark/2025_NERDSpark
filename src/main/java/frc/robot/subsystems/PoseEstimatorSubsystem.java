@@ -246,6 +246,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         if (distance > 0.0) {
             Rotation2d coralOrientation = new   Rotation2d(theta);
             Pose2d coralPose = new Pose2d(-distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX + offset.getX(), -distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY + offset.getY(), yaw);
+            //Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
             SmartDashboard.putNumber("distance", distance);
             ignored = false;
             CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
@@ -254,6 +255,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             Pose2d zeroed = new Pose2d(0,0, new Rotation2d(0.0));
             ignored = true;
             CoralObject newCoral = new CoralObject(zeroed, hb, distance, upfall, targeted, ignored);
+            // Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
+            // SmartDashboard.putNumber("distance", distance);
+            // ignored = false;
+            // CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
             return newCoral;
         }
     }
