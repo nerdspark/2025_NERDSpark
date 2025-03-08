@@ -214,7 +214,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         boolean ignored = false;
         boolean targeted = false;
 
-        Translation2d offset = new Translation2d(-0.5588, new Rotation2d((yaw.getDegrees() + ty) * Math.PI / 180));
+        Translation2d offset = new Translation2d(-0.5588, new Rotation2d((yaw.getDegrees() + tx) * Math.PI / 180));
 
         //DriverStation.getMatchTime();
 
