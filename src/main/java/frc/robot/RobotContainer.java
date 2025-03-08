@@ -19,6 +19,7 @@ import frc.robot.commands.ClimbCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.ArmPoint;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
@@ -151,11 +152,13 @@ public class RobotContainer {
     NamedCommands.registerCommand("gripperToGroundIntake", new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
     NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false));
     NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
-    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5));
-    NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 6));
+    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5).alongWith(new ArmCommandGripper(gripper, () -> true)));
+    NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
     NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPreparePosition, () -> IntakeConstants.intakePassive));
-    NamedCommands.registerCommand("intakeThrow", new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakeThrowPower)
-      .withTimeout(0.5)
+    NamedCommands.registerCommand("intakeThrow", new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakePassive)
+    .withTimeout(0.25)
+    .andThen(new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakeThrowPower))
+    .withTimeout(0.2)
       .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> 0.0)));
     NamedCommands.registerCommand("test", new InstantCommand(()-> System.out.println("test")));
   }

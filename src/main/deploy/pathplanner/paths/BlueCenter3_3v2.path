@@ -16,15 +16,15 @@
     },
     {
       "anchor": {
-        "x": 1.591,
+        "x": 1.65,
         "y": 2.398
       },
       "prevControl": {
-        "x": 1.342088723016711,
+        "x": 1.4010887230167108,
         "y": 2.374693859381092
       },
       "nextControl": {
-        "x": 1.874659090909091,
+        "x": 1.933659090909091,
         "y": 2.424559659090909
       },
       "isLocked": false,
@@ -61,13 +61,23 @@
       "name": "gripperToGroundIntake",
       "waypointRelativePos": 0.09898762654667986,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "gripperToGroundIntake"
+        }
+      }
     },
     {
       "name": "armToL4",
       "waypointRelativePos": 1.3273340832395846,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "armToL4"
+        }
+      }
     }
   ],
   "globalConstraints": {

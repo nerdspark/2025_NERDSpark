@@ -57,13 +57,23 @@
       "name": "gripperToGroundIntake",
       "waypointRelativePos": 0.10348706411698867,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "gripperToGroundIntake"
+        }
+      }
     },
     {
       "name": "armToL4",
       "waypointRelativePos": 1.2553430821147287,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "armToL4"
+        }
+      }
     }
   ],
   "globalConstraints": {

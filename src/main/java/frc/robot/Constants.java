@@ -240,7 +240,7 @@ public static class Vision {
       public static final double elbowP = 45.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 10.0;
-      public static final double wristFlipP = 20.0; //20.0
+      public static final double wristFlipP = 35.0; //20.0
       public static final double wristFlipG = 0.0; //20.0 
       public static final double wristFlipI = 0.0;
       public static final double wristFlipD = 1.1;
@@ -366,7 +366,7 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 17;
+    public static final int setPointCount = 18;
     public static final Translation2d home = new Translation2d(14.0,17.5); //safest home and also closest possible distance arm is allowed to get to central joint
 
     /**
@@ -398,7 +398,7 @@ public static class Vision {
       armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 12.0), true, -0.5, -1.45);
       armSetPoints[3] = new ArmPoint(new Translation2d(16.5, 16.25), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(16.5, 32.0), true, 0.611, 0.0);
-      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(92)), false, 2.5, -Math.PI);
+      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(92)), false, 2.3, -Math.PI);
       
       armSetPoints[6] = new ArmPoint(new Translation2d(20, 11), true, Units.degreesToRadians(-190), -1.45);
       
@@ -413,11 +413,13 @@ public static class Vision {
 
       armSetPoints[12] = new ArmPoint(new Translation2d(24.7, 10.4), true, 0.8, -1.45); //19, 7
       armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(-1.45); //19, 7
-      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.9), true, -0.2, -0.2);
+      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.0), true, 0.1, -0.2);
 
 
       armSetPoints[15] = new ArmPoint(new Translation2d(14, 20), false, (2.0*Math.PI) - 0.611, Math.PI);
       armSetPoints[16] = new ArmPoint(new Translation2d(14, 20), false, Math.PI - 0.611, Math.PI);
+
+      armSetPoints[17] = armSetPoints[6].add(new Translation2d(-5, 14)).withWristFlip(0);
 
 
       //clamp distance of all setpoints (probably unnecessary)
@@ -527,8 +529,8 @@ intermediatePoints[6][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translati
     public static final double transferPowerRollers = 1.0; //-0.5
     public static final double intakePowerRollers = -1.0;
 
-    public static final double intakeThrowPreparePosition = 0.3;
-    public static final double intakeThrowPosition = 0.17;
+    public static final double intakeThrowPreparePosition = 0.37;
+    public static final double intakeThrowPosition = 0.12;
     public static final double intakeThrowPower = 1;
   }
 

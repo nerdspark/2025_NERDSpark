@@ -33,15 +33,15 @@
     {
       "anchor": {
         "x": 1.598,
-        "y": 5.565
+        "y": 5.315
       },
       "prevControl": {
         "x": 1.6384717014015495,
-        "y": 5.811702333563476
+        "y": 5.561702333563476
       },
       "nextControl": {
         "x": 1.555568181818182,
-        "y": 5.306349431818182
+        "y": 5.056349431818182
       },
       "isLocked": false,
       "linkedName": null
@@ -110,7 +110,7 @@
   "eventMarkers": [
     {
       "name": "armToStow",
-      "waypointRelativePos": 0.33070866141732924,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -123,25 +123,45 @@
       "name": "intakePrepareThrow",
       "waypointRelativePos": 0.7019122609673597,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intakePrepareThrow"
+        }
+      }
     },
     {
       "name": "intakeThrow",
       "waypointRelativePos": 0.8503937007874018,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intakeThrow"
+        }
+      }
     },
     {
       "name": "gripperToGroundIntake",
       "waypointRelativePos": 1.1068616422946926,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "gripperToGroundIntake"
+        }
+      }
     },
     {
       "name": "armToL4",
       "waypointRelativePos": 2.5309336332958665,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "armToL4"
+        }
+      }
     }
   ],
   "globalConstraints": {
