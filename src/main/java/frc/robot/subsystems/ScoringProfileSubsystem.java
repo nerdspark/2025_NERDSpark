@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.util.AllianceFlipUtil;
 
 public class ScoringProfileSubsystem extends SubsystemBase {
@@ -29,7 +30,8 @@ public class ScoringProfileSubsystem extends SubsystemBase {
  
   private int branch = 2;
   private int level = 0;
-  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L4;
+  private boolean isBackwards = false;
+  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L3;
   private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
   private Pose2d selectedBranchPose = new Pose2d();
   private Pose2d selectedCoralStationPose = new Pose2d();
@@ -76,12 +78,14 @@ public class ScoringProfileSubsystem extends SubsystemBase {
       }
     }
 
-    for(int j=12; j<18; j++) {
+    for(int j=12; j<17; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
         reefLevel = FieldConstants.ReefLevel.values()[j-12];
         // System.out.println("J: " + j + "; reeflevel: " + reefLevel.level);
       }
     }
+
+    isBackwards = reefLevel == ReefLevel.L4 || reefLevel == ReefLevel.L1 || reefLevel == ReefLevel.L1Top ? false : DriverStation.getStickButton(1, 17);
 
     for(int j=18; j<20; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
@@ -158,8 +162,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public Pose2d getRobotPoseForSelectedBranch() {
-    return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
-
+    return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel).plus(new Transform2d(0, 0, Rotation2d.fromDegrees(isBackwards ? 180 : 0))));
   }
 
   public Pose2d getRobotPoseForSelectedCoralStation() {

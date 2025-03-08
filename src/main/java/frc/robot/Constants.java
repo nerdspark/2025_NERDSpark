@@ -195,12 +195,14 @@ public static class Vision {
         public static final Map<ReefLevel, Transform2d> reefLevelOffsetsMap = new HashMap<>();
         static {
 
-          reefLevelOffsetsMap.put(ReefLevel.L0, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
+          // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L5, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          
+          
         }
     
 
@@ -364,7 +366,7 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 15;
+    public static final int setPointCount = 17;
     public static final Translation2d home = new Translation2d(14.0,17.5); //safest home and also closest possible distance arm is allowed to get to central joint
 
     /**
@@ -384,6 +386,8 @@ public static class Vision {
      * @shelfPickUp 12
      * @shelfPickUpOppositeSide 13
      * @groundPickUp 14
+     * @L2Backwards 15
+     * @L3Backwards 16
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
@@ -411,6 +415,9 @@ public static class Vision {
       armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(-1.45); //19, 7
       armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.9), true, 0.0, 0);
 
+
+      armSetPoints[15] = new ArmPoint(new Translation2d(14, 20), false, (2.0*Math.PI) - 0.611, Math.PI);
+      armSetPoints[16] = new ArmPoint(new Translation2d(14, 20), false, Math.PI - 0.611, Math.PI);
 
 
       //clamp distance of all setpoints (probably unnecessary)

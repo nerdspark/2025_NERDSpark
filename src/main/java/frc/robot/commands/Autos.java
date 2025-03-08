@@ -140,13 +140,13 @@ public final class Autos {
     DogLog.log("AutoScoreCommand/rotationDiff" , rotationDiff);
 
 
-    double shiftXT = reefLevel.get() != ReefLevel.L5 ? 
+    double shiftXT = reefLevel.get() != ReefLevel.L4 ? 
       MathUtil.clamp(((yDistance) / (Reef.faceLength *2 )) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
       0.0,1.0) :
       MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
       0.0,1.0); ;
 
-      double shiftYT = reefLevel.get() == ReefLevel.L5 ? 
+      double shiftYT = reefLevel.get() == ReefLevel.L4 ? 
       MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0):
       MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / -Reef.faceLength), 0.0, 1.0);
 
@@ -156,7 +156,7 @@ public final class Autos {
         DogLog.log("AutoScoreCommand/shiftXT" , shiftXT); 
         DogLog.log("AutoScoreCommand/shiftYT" , shiftYT);
 
-        goal = reefLevel.get() != ReefLevel.L5 ? 
+        goal = reefLevel.get() != ReefLevel.L4 ? 
                goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()))
               : goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
