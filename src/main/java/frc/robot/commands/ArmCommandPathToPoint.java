@@ -15,7 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -118,7 +118,7 @@ public class ArmCommandPathToPoint extends Command {
         }
       } else {
         arm.setWristFlipPosition((pathProgress * (finalWristFlip-initialWristFlip)) + initialWristFlip);
-        arm.setWristTwistPosition((MathUtil.clamp((pathProgress - 0.8)*10, 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);
+        arm.setWristTwistPosition((MathUtil.clamp((pathProgress - 0.6)*5, 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);
         // arm.stopWrist();
         
       }

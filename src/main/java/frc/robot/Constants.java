@@ -53,7 +53,6 @@ import frc.robot.util.ArmPoint;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static boolean DOGLOG_ENABLED = true;
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -112,23 +111,25 @@ public final class Constants {
 
 public static class Vision {
 
+        public static boolean DOGLOG_ENABLED = false;
+
         public static final boolean USE_VISION = true;
 
         public static final boolean USE_BUTTON_BOARD = true;
 
 
 
-        public static final String kCameraNameFront = "LeftCamera";
+        public static final String kCameraNameFront = "FrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamFront =
-                new Transform3d(new Translation3d(-Units.inchesToMeters(12), -Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0
-                , Math.toRadians(0), Math.toRadians(-157.5))); //0
+                new Transform3d(new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(0), Units.inchesToMeters(13)), new Rotation3d(0
+                , Math.toRadians(0), Math.toRadians(0))); //0
 
 
-        public static final String kCameraNameBack = "RightCamera";
+        public static final String kCameraNameBack = "BackCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCamBack =
-                new Transform3d(new Translation3d(-Units.inchesToMeters(12), Units.inchesToMeters(2), Units.inchesToMeters(13.5)), new Rotation3d(0, Math.toRadians(0), Math.toRadians(157.5))); //180
+                new Transform3d(new Translation3d(-Units.inchesToMeters(12), Units.inchesToMeters(0), Units.inchesToMeters(9)), new Rotation3d(0, Math.toRadians(0), Math.toRadians(180))); //180
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -237,13 +238,13 @@ public static class Vision {
       public static final double elbowP = 45.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
-      public static final double wristFlipP = 15.0; //20.0
-      public static final double wristFlipG = 0.5; //20.0
+      public static final double wristFlipP = 20.0; //20.0
+      public static final double wristFlipG = 0.0; //20.0 
       public static final double wristFlipI = 0.0;
-      public static final double wristFlipD = 0.0;
-      public static final double wristTwistP = 25.0; //15.0
+      public static final double wristFlipD = 1.1;
+      public static final double wristTwistP = 30.0; //15.0
       public static final double wristTwistI = 0.0;
-      public static final double wristTwistD = 0.0;
+      public static final double wristTwistD = 1.1;
       public static final double gripperP = 0.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
@@ -302,8 +303,8 @@ public static class Vision {
     public static final double currentLimitShoulderClimb = 200.0;
     public static final double currentLimitShoulder = 45.0;
     public static final double currentLimitElbow = 45.0;
-    public static final double currentLimitWristFlip = 25.0; //40.0
-    public static final double currentLimitWristTwist = 25.0;
+    public static final double currentLimitWristFlip = 65.0; //40.0
+    public static final double currentLimitWristTwist = 35.0;
     public static final double currentLimitGripperOpen = 5.0;
     public static final double currentLimitGripperClose = 30.0;
     public static final double gripperPowerClose = 1.0;
@@ -388,14 +389,14 @@ public static class Vision {
     static{
       armSetPoints[7] = new ArmPoint(home, false, Math.PI * 0.5, 0.0);
 
-      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 7.0), true, -0.5, 1.45);
-      armSetPoints[1] = new ArmPoint(new Translation2d(25.0, 7.0), true, -0.5, 1.45);
-      armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 12.0), true, -0.5, 1.45);
+      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 7.0), true, -0.5, -1.45);
+      armSetPoints[1] = new ArmPoint(new Translation2d(25.0, 7.0), true, -0.5, -1.45);
+      armSetPoints[2] = new ArmPoint(new Translation2d(23.0, 12.0), true, -0.5, -1.45);
       armSetPoints[3] = new ArmPoint(new Translation2d(16.5, 16.25), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(16.5, 32.0), true, 0.611, 0.0);
-      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(92)), false, 2.15, 0.3);
+      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(92)), false, 2.5, -Math.PI);
       
-      armSetPoints[6] = new ArmPoint(new Translation2d(20, 11), true, Units.degreesToRadians(-190), 1.45);
+      armSetPoints[6] = new ArmPoint(new Translation2d(20, 11), true, Units.degreesToRadians(-190), -1.45);
       
       // armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(50)), false);
       // armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(0)), false);
@@ -403,12 +404,12 @@ public static class Vision {
       armSetPoints[10] = new ArmPoint(new Translation2d(30.0, 18.0), false, Units.degreesToRadians(-90), 0.0);
 
       
-      armSetPoints[8] = new ArmPoint(new Translation2d(home.getNorm(),Rotation2d.fromDegrees(20)), true, -2.9, 1.45); //19, 7
-      armSetPoints[11] = new ArmPoint(new Translation2d(home.getNorm(), Rotation2d.fromDegrees(40)), true, -2.6, 1.45); //19, 7
+      armSetPoints[8] = new ArmPoint(new Translation2d(home.getNorm(),Rotation2d.fromDegrees(20)), true, -2.9, -1.45); //19, 7
+      armSetPoints[11] = new ArmPoint(new Translation2d(home.getNorm(), Rotation2d.fromDegrees(40)), true, -2.6, -1.45); //19, 7
 
-      armSetPoints[12] = new ArmPoint(new Translation2d(24.7, 10.4), true, 0.8, 1.45); //19, 7
-      armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(1.45); //19, 7
-      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.9), true, 0.0, Math.PI);
+      armSetPoints[12] = new ArmPoint(new Translation2d(24.7, 10.4), true, 0.8, -1.45); //19, 7
+      armSetPoints[13] = armSetPoints[7].withWristFlip(2.5).withWristTwist(-1.45); //19, 7
+      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.9), true, 0.0, 0);
 
 
 

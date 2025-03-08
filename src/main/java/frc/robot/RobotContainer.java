@@ -85,10 +85,10 @@ public class RobotContainer {
      private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-    private final Joystick buttonBoard = new Joystick(1);
+    // private final Joystick buttonBoard = new Joystick(1);
 
     public Arm arm;
     private Gripper gripper;
@@ -99,17 +99,17 @@ public class RobotContainer {
 
 
 
-    // public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
 
 
     public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
-    // public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
 
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
 
-  private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
   // private Climb climb = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
   private Trigger hasCoral = new Trigger(() -> intake.hasCoral());
@@ -125,22 +125,21 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    configureNamedCommands();
 
-    // scoringSubsystem = new ScoringProfileSubsystem();
 
     // autoChooser = AutoBuilder.buildAutoChooser("Tests");
     // SmartDashboard.putData("Auto Mode", autoChooser);
     // m_LedSubsystem = new LEDSubsytem();
-    // climb = new Climb();
     arm = new Arm();
     gripper = new Gripper();
     intake = new Intake();
+    configureNamedCommands();
+    configureAutoChooser();
     SignalLogger.setPath("/media/sda1/armLog");
     SignalLogger.start();
     configureBindings();
     configureDefaultCommands();
-    configureAutoChooser();
+    
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
 
     PathfindingCommand.warmupCommand().schedule();
@@ -161,26 +160,26 @@ public class RobotContainer {
         
   }
   private void configureDefaultCommands() {
-    // drivetrain.setDefaultCommand(
-    //   drivetrain.applyRequest(() ->
-    //     drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
-    //       .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
-    //       .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
-    //     )
-    //     );
+    drivetrain.setDefaultCommand(
+      drivetrain.applyRequest(() ->
+        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+        )
+        );
 
 
 
-    arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
+    // arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
 
     gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
     intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
-    m_LedSubsystem.setDefaultCommand(
-     new LEDCommand(m_LedSubsystem, armFinishedMoving, driveTrainFinishedMoving, hasCoral)
-    );
+    // m_LedSubsystem.setDefaultCommand(
+    //  new LEDCommand(m_LedSubsystem, armFinishedMoving, driveTrainFinishedMoving, hasCoral)
+    // );
 
   }
 
@@ -244,7 +243,7 @@ public class RobotContainer {
     /* Manually start logging with left bumper before running any tests,
      * and stop logging with right bumper after we're done with ALL tests.
      * This isn't necessary but is convenient to reduce the size of the hoot file */
-    SignalLogger.setPath("/media/sda1/ctre-logs/");
+    // SignalLogger.setPath("/media/sda1/ctre-logs/");
     // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     
@@ -259,20 +258,20 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    // joystick.povDown().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    // () -> drivetrain.getState().Pose,
-    // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    // ()->scoringSubsystem.getLevel(),
-    // ()->-joystick.getRightY(),
-    // ()->-joystick.getRightX(),
-    // ()->-joystick.getLeftX())); //.alongWith(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))));
+    joystick.povDown().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    ()->scoringSubsystem.getLevel(),
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX())); //.alongWith(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))));
 
-    // joystick.povUp().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
-    // () -> drivetrain.getState().Pose,
-    // () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
-    // ()->-joystick.getRightY(),
-    // ()->-joystick.getRightX(),
-    // ()->-joystick.getLeftX()));
+    joystick.povUp().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
 
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level)));;
     joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));

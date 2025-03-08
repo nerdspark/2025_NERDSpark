@@ -20,7 +20,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
@@ -92,7 +92,7 @@ public class Intake extends SubsystemBase {
 
   public double getIntakeDeployPosition() {
     double intake = intakeDeployMotor.getPosition().getValueAsDouble();
-    SmartDashboard.putNumber("intake", intake);
+    // SmartDashboard.putNumber("intake", intake);
     deployTarget = intake;
     return intake;
   }  
@@ -137,8 +137,8 @@ public class Intake extends SubsystemBase {
     finishedMovingToTransfer =getIntakeDeployPosition() < IntakeConstants.intakeTransferPosition;
     
 
-    SmartDashboard.putNumber("intake range", getRangeIntakeDistance());
-    SmartDashboard.putBoolean("intake detected", getRangeIntakeDetected());
+    // SmartDashboard.putNumber("intake range", getRangeIntakeDistance());
+    // SmartDashboard.putBoolean("intake detected", getRangeIntakeDetected());
     // This method will be called once per scheduler run
   }
 }
