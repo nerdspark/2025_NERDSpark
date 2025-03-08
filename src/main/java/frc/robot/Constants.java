@@ -518,6 +518,9 @@ intermediatePoints[6][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translati
 
     public static final double transferPowerRollers = 1.0; //-0.5
     public static final double intakePowerRollers = -1.0;
+
+    public static final double intakeThrowPosition = 0.25;
+    public static final double intakeThrowPower = 1;
   }
 
   public static class LEDConstants {

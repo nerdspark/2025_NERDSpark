@@ -39,10 +39,12 @@ import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -57,6 +59,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
 
@@ -136,6 +140,19 @@ public class RobotContainer {
 
   }
   
+  private void configureNamedCommands(){
+    NamedCommands.registerCommand("gripperToGroundIntake", new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false));
+    NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
+    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5));
+    NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 6));
+    NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakePassive));
+    NamedCommands.registerCommand("intakeThrow", new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakeThrowPower)
+      .withTimeout(0.5)
+      .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> 0.0)));
+    
+        
+  }
   private void configureDefaultCommands() {
     // drivetrain.setDefaultCommand(
     //   drivetrain.applyRequest(() ->
