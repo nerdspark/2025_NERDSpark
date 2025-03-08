@@ -11,7 +11,7 @@ import java.util.function.DoubleSupplier;
 /** Add your docs here. */
 public class CoralArrayManager {
 
-    public CoralObject selectCoral(List<CoralObject> corals) {
+    public List<CoralObject> selectCoral(List<CoralObject> corals) {
         ArrayList<DoubleSupplier> distances = new ArrayList<>();
         int sizeCorals = corals.size();
         for (int i = 0; i < sizeCorals - 1; i++) {
@@ -51,7 +51,7 @@ public class CoralArrayManager {
             }
         }
 
-        return corals.get(0);
+        return corals;
     }
 
     public List<CoralObject> expiryFilter(List<CoralObject> corals, double hb, double fps) {

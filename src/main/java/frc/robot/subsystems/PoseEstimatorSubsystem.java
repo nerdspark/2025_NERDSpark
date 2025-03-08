@@ -35,7 +35,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.generated.TunerConstants;
+
 import frc.robot.util.CoralObject;
+import frc.robot.util.CoralArrayManager;
 import frc.robot.subsystems.Gyro;
 
 
@@ -53,6 +55,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     private static Gyro gyro = new Gyro();
     private static List<CoralObject> corals = new ArrayList<>();
+    private static CoralArrayManager coralManager = new CoralArrayManager();
        
         private Field2d field = new Field2d(); 
           
@@ -125,18 +128,24 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             //coral code
             
-            CoralObject newCoral = newCoral(false);
-            if (!newCoral.getIgnored() && visionFront.hasTarget()) {
-                corals.add(newCoral); 
-            }
+            // CoralObject newCoral = newCoral();
+            // if (!newCoral.getIgnored() && visionFront.hasTarget()) {
+            //     corals.add(newCoral); 
+            // }
 
+            
+
+            corals = coralArrayUpdateReturn(corals, false);
+            
             if (corals.size() > 0) {
                 int size = corals.size();
                 CoralObject lastCoral = corals.get(size - 1);
                 Pose2d lastCoralPose = lastCoral.getPose();
                 SmartDashboard.putNumber("lastCoralX", lastCoralPose.getX());
                 SmartDashboard.putNumber("lastCoralY", lastCoralPose.getY());
+                SmartDashboard.putNumber("size", size);
             }
+
             // Pose2d coralPose = newCoral.getPose();
             // SmartDashboard.putNumber("coralX", coralPose.getX());
             // SmartDashboard.putNumber("coralY", coralPose.getY());
@@ -187,10 +196,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         driveTrain.resetPose(newPose);
     }
 
-    public CoralObject newCoral(boolean targeted) {
+    public CoralObject newCoral() {
         Rotation2d yaw = gyro.getGyro();
-        Pose2d pose = new Pose2d(0.0,0.0,yaw);
-        //Pose2d pose = getCurrentPose();
+        //Pose2d pose = new Pose2d(0.0,0.0,yaw);
+        Pose2d pose = getCurrentPose();
         double poseX = pose.getX();
         double poseY = pose.getY();
 
@@ -202,6 +211,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         double hb = visionFront.getHB();
         boolean upfall = false;
         boolean ignored = false;
+        boolean targeted = false;
 
         //DriverStation.getMatchTime();
 
@@ -225,6 +235,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             //distance = (Constants.Vision.kCoralCenterUprightHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
             //SmartDashboard.putString("orientation", "upright");
             upfall = false;
+            ignored = true;
         } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
             distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos(tx * Math.PI / 180);
             //SmartDashboard.putString("orientation", "fallen");
@@ -239,9 +250,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 //theta = ((Math.acos(boundingWidth / Math.sqrt(widthAtParallel * widthAtParallel + boundingHeight * boundingHeight)) + Math.atan(boundingHeight / widthAtParallel)));
             //}
             upfall = true;
+            ignored = false;
         } else {
             distance = 0.0;
             SmartDashboard.putString("orientation", "");
+            ignored = true;
         }
         //SmartDashboard.putNumber("a", theta);
         //SmartDashboard.putNumber("thresh", thresh);
@@ -255,13 +268,26 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             return newCoral;
         } else {
             Pose2d zeroed = new Pose2d(0,0, new Rotation2d(0.0));
-            ignored = false;
+            ignored = true;
             CoralObject newCoral = new CoralObject(zeroed, hb, distance, upfall, targeted, ignored);
             return newCoral;
         }
 
         
 
+    }
+
+    public List<CoralObject> coralArrayUpdateReturn(List<CoralObject> corals, boolean targeting) {
+        if (!targeting) {
+            CoralObject newCoral = newCoral();
+            double hb = visionFront.getHB();
+            double fps = visionFront.getFPS();
+            corals.add(newCoral);
+            coralManager.expiryFilter(corals, hb, fps);
+            return corals;
+        } else {
+            return coralManager.selectCoral(corals);
+        }
     }
 
     /**

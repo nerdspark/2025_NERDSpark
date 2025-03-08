@@ -219,6 +219,8 @@ public static class Vision {
     public static final double gyroI = 0.0;
     public static final double gyroD = 0.00;
 
+    public static final String pigeonCanBus = "canivore1";
+
 
 //         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {
 //           for (FieldConstants.ReefHeight height : FieldConstants.ReefHeight.values()) {
