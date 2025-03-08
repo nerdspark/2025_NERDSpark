@@ -46,6 +46,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -60,6 +61,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathfindingCommand;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
@@ -117,11 +119,13 @@ public class RobotContainer {
   private Trigger driveTrainFinishedMoving = new Trigger(() -> true);
   
   /* Path follower */
-  // private final SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> autoChooser;
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    configureNamedCommands();
 
     // scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -136,7 +140,10 @@ public class RobotContainer {
     SignalLogger.start();
     configureBindings();
     configureDefaultCommands();
+    configureAutoChooser();
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
+
+    PathfindingCommand.warmupCommand().schedule();
 
   }
   
@@ -276,6 +283,13 @@ public class RobotContainer {
     // ).until(() -> joystick.x().getAsBoolean()));
  
   }
+
+  private void configureAutoChooser() {
+    DataLogManager.log("Configuring auto chooser");
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -283,9 +297,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     /* Run the path selected from the auto chooser */
-    return new Command() {
-      
-    };//autoChooser.getSelected();
+    // return new Command() {};
+    return autoChooser.getSelected();
 
   }
 }

@@ -20,8 +20,8 @@
         "y": 4.076
       },
       "prevControl": {
-        "x": 1.4020924513506743,
-        "y": 4.14631620084355
+        "x": 1.4020924513506725,
+        "y": 4.146316200843551
       },
       "nextControl": {
         "x": 1.881907548649327,
@@ -52,10 +52,23 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "gripperToGroundIntake",
+      "waypointRelativePos": 0.10348706411698867,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "armToL4",
+      "waypointRelativePos": 1.2553430821147287,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 4.863,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -71,5 +84,5 @@
     "velocity": 0.0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
