@@ -135,16 +135,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             
 
-            corals = coralArrayUpdateReturn(corals, false);
+            corals = coralArrayUpdateReturn(corals);
             
-            if (corals.size() > 0) {
-                int size = corals.size();
-                CoralObject lastCoral = corals.get(size - 1);
-                Pose2d lastCoralPose = lastCoral.getPose();
-                SmartDashboard.putNumber("lastCoralX", lastCoralPose.getX());
-                SmartDashboard.putNumber("lastCoralY", lastCoralPose.getY());
-                SmartDashboard.putNumber("size", size);
-            }
+            // if (corals.size() > 0) {
+            //     int size = corals.size();
+            //     CoralObject lastCoral = corals.get(size - 1);
+            //     Pose2d lastCoralPose = lastCoral.getPose();
+            //     SmartDashboard.putNumber("lastCoralX", lastCoralPose.getX());
+            //     SmartDashboard.putNumber("lastCoralY", lastCoralPose.getY());
+            //     SmartDashboard.putNumber("size", size);
+            // }
 
             // Pose2d coralPose = newCoral.getPose();
             // SmartDashboard.putNumber("coralX", coralPose.getX());
@@ -259,9 +259,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         //SmartDashboard.putNumber("a", theta);
         //SmartDashboard.putNumber("thresh", thresh);
 
-        if (distance > 0.) {
-            Rotation2d coralOrientation = new Rotation2d(theta);
-            Pose2d coralPose = new Pose2d(distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX, distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY, coralOrientation);
+        if (distance > 0.0) {
+            Rotation2d coralOrientation = new   Rotation2d(theta);
+            Pose2d coralPose = new Pose2d(-distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX, -distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY, yaw);
             SmartDashboard.putNumber("distance", distance);
             ignored = false;
             CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
@@ -272,13 +272,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             CoralObject newCoral = new CoralObject(zeroed, hb, distance, upfall, targeted, ignored);
             return newCoral;
         }
-
-        
-
     }
 
-    public List<CoralObject> coralArrayUpdateReturn(List<CoralObject> corals, boolean targeting) {
-        if (!targeting) {
+    public List<CoralObject> coralArrayUpdateReturn(List<CoralObject> corals) {
+        if (!Constants.Vision.kCoralTargeted) {
             CoralObject newCoral = newCoral();
             double hb = visionFront.getHB();
             double fps = visionFront.getFPS();

@@ -5,6 +5,8 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import java.util.Map;
@@ -16,9 +18,11 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.CoralObject;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
@@ -97,6 +101,7 @@ public class RobotContainer {
 
     public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
     public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    public List<CoralObject> corals = new ArrayList<>();
 
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -143,6 +148,8 @@ public class RobotContainer {
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
+    
+    joystick.y().toggleOnTrue(new DriveToPose(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn(corals).get(0).getPose()));
 
 
 

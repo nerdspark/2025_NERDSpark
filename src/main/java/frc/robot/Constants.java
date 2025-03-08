@@ -188,6 +188,8 @@ public static class Vision {
         public static final double kLimeLightYOffset = -0.18415;
         public static final double kLimeLightAOD = -15.0;
 
+        public static boolean kCoralTargeted = false;
+
         
 
 
