@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -53,10 +54,10 @@ public class DriveToPose extends Command {
 
 private final ProfiledPIDController driveController =
       new ProfiledPIDController(
-          50, 0, 0, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 2, 0
+          40, 0, 0, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          10, 0, 0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //16, 2, 0
+          3, 10, 0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
  private double driveErrorAbs;
   private double thetaErrorAbs;
   private Translation2d lastSetpointTranslation;
@@ -118,6 +119,10 @@ private final ProfiledPIDController driveController =
     // Get current and target pose
     var currentPose = drive.getState().Pose;
     var targetPose = poseSupplier.get();
+    Transform2d error = currentPose.minus(targetPose);
+        SmartDashboard.putNumber("X", error.getX());
+        SmartDashboard.putNumber("Y", error.getY());
+        SmartDashboard.putNumber("O", error.getRotation().getDegrees());
 
     // Calculate drive speed
     double currentDistance =

@@ -75,7 +75,10 @@ public class ArmCommandPathToPoint extends Command {
         // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       } else {
-        path = new ArmPath(GenPath.generateInflectionPoints(List.of(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()), setPoint.get())));
+        List<ArmPoint> temp = new ArrayList<>();
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()));
+        temp.add(setPoint.get());
+        path = new ArmPath(GenPath.generateInflectionPoints(temp));
       }
     
     // System.out.println(path.toStringList().toString());

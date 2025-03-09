@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.io.Console;
 import java.util.ArrayList;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -32,7 +33,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -392,7 +393,7 @@ public void stopWrist() {
     //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
 }
 public void setShoulderPower(double power) {
-  shoulderLeft.set(power);
+  shoulderLeft.set(-power);
   shoulderRight.set(power);
 }
 public void setShoulderAmpLimit(double amplimit) {
@@ -479,6 +480,11 @@ public void setShoulderAmpLimit(double amplimit) {
     } else {
       wristFinishedMoving = false;
     }
+    SignalLogger.writeDouble("shoulder Left amps", shoulderLeft.getStatorCurrent().getValueAsDouble());
+    SignalLogger.writeDouble("shoulder right amps", shoulderRight.getStatorCurrent().getValueAsDouble());
+    
+    SmartDashboard.putNumber("shoulder Left amps", shoulderLeft.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("shoulder right amps", shoulderRight.getStatorCurrent().getValueAsDouble());
     // getWristFlipPosition();
     // getWristTwistPosition();
     // SmartDashboard.putNumber("wrist flip output", wristFlip.getClosedLoopOutput().getValueAsDouble());

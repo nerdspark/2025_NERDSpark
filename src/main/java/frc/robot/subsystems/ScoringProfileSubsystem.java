@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,7 +37,8 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   private Pose2d selectedBranchPose = new Pose2d();
   private Pose2d selectedCoralStationPose = new Pose2d();
 
-  private static final int [] branches = {5,4,3,2,1,0,11,10,9,8,7,6}; // Needed as the button board is assembled in incorrect orientation
+  private static final int [] branchesSimon = {5,4,3,2,1,0,11,10,9,8,7,6}; // Needed as the button board is assembled in incorrect orientation
+  private static final int [] branchesSayan = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0}; // Needed as the button board is assembled in incorrect orientation
 
 
   /** Creates a new ExampleSubsystem. */
@@ -74,24 +76,26 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   if(Constants.Vision.USE_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
       if(DriverStation.getStickButton(1, i+1)) {
-        branch = branches[i]; //Adjusting for incorrect button board orientation.
+        branch = branchesSayan[i]; //Adjusting for incorrect button board orientation.
       }
     }
 
-    for(int j=13; j<18; j++) {
+    for(int j=12; j<17; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
-        reefLevel = FieldConstants.ReefLevel.values()[j-13];
+        reefLevel = FieldConstants.ReefLevel.values()[j-12];
         // System.out.println("J: " + j + "; reeflevel: " + reefLevel.level);
       }
     }
 
-    isBackwards = reefLevel == ReefLevel.L4 || reefLevel == ReefLevel.L1 || reefLevel == ReefLevel.L1Top ? false : DriverStation.getStickButton(1, 12);
 
-    for(int j=18; j<20; j++) {
-      if(DriverStation.getStickButton(1, j+1)) {
-        coralStationSide = FieldConstants.CoralStations.values()[j-18];
+    for(int k=17; k<19; k++) {
+      if(DriverStation.getStickButton(1, k+1)) {
+        coralStationSide = FieldConstants.CoralStations.values()[k-17];
       }
     }
+
+    isBackwards = (reefLevel != ReefLevel.L4) && DriverStation.getStickButton(1, 19);
+    
 
   }
   else {
@@ -130,6 +134,10 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
+    SmartDashboard.putBoolean("isbackwards", isBackwards);
+    SmartDashboard.putString("reeflevel", reefLevel.name());
+    SmartDashboard.putString("coralstationside", coralStationSide.name());
+    SmartDashboard.putNumber("branch", branch);
     // This method will be called once per scheduler run during simulation
   }
 

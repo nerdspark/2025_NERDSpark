@@ -35,6 +35,7 @@ this.shoulderPower = shoulderPower;
     @Override
     public void execute() {
         // arm.getArmPosition();
+        
         arm.setShoulderPower(shoulderPower);
     }
 
