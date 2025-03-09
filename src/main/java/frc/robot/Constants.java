@@ -282,7 +282,7 @@ public static class Vision {
     public static final double lookAheadDistance = 22.0;
     public static final double endDistance = 13.0;
     public static final double linearApproximationTime = 0.2; // seconds
-    public static final double velocity = 50;
+    public static final double velocity = 5;// does not seem to have any effect
     public static final double maxMotorVelocity = 400.0;
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
@@ -301,7 +301,9 @@ public static class Vision {
     public static final int rangeRightPort = 32;
     public static final String armCanBus = "canivore1";
 
-    public static final double shoulderPowerClimb = -0.1;
+    public static final double shoulderPowerClimb = -0.2;
+    public static final double shoulderPositionClimb = -0.10;
+    public static final double elbowPositionClimb = Units.degreesToRadians(50);
     public static final double currentLimitShoulderClimb = 100.0;
     public static final double currentLimitShoulder = 45.0;
     public static final double currentLimitElbow = 45.0;

@@ -94,13 +94,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast)));
+        .withNeutralMode(NeutralModeValue.Brake)));
     
     shoulderRight
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast)));
+        .withNeutralMode(NeutralModeValue.Brake)));
 
 
     elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -218,6 +218,31 @@ public class Arm extends SubsystemBase {
     //     .withInverted(InvertedValue.Clockwise_Positive)
     //       .withNeutralMode(NeutralModeValue.Brake)));
     resetOffsets();
+  }
+  public void setBrakeMode(boolean BrakeModeEnabled) {
+    if (BrakeModeEnabled) {
+      shoulderLeft
+        .getConfigurator()
+        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+          .withInverted(InvertedValue.CounterClockwise_Positive)
+          .withNeutralMode(NeutralModeValue.Brake)));
+      shoulderRight
+        .getConfigurator()
+        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+          .withInverted(InvertedValue.Clockwise_Positive)
+          .withNeutralMode(NeutralModeValue.Brake)));
+    } else {
+      shoulderLeft
+        .getConfigurator()
+        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+          .withInverted(InvertedValue.CounterClockwise_Positive)
+          .withNeutralMode(NeutralModeValue.Coast)));
+      shoulderRight
+        .getConfigurator()
+        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+          .withInverted(InvertedValue.Clockwise_Positive)
+          .withNeutralMode(NeutralModeValue.Coast)));
+    }
   }
   public void resetOffsets() {
     elbowRight.setPosition(Constants.ArmConstants.elbowOffset);

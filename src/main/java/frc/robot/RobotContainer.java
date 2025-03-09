@@ -21,6 +21,7 @@ import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.ArmPoint;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
@@ -46,7 +47,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -248,7 +249,7 @@ public class RobotContainer {
     /* Manually start logging with left bumper before running any tests,
      * and stop logging with right bumper after we're done with ALL tests.
      * This isn't necessary but is convenient to reduce the size of the hoot file */
-    // SignalLogger.setPath("/media/sda1/ctre-logs/");
+    SignalLogger.setPath("/media/sda1/ctre-logs/");
     // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     
@@ -290,8 +291,8 @@ public class RobotContainer {
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
 
-    joystick.povLeft().onTrue(new ArmCommandPathToPoint(arm, () -> 9).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
-    joystick.a().onTrue(new ArmCommandClimb(arm, -ArmConstants.shoulderPowerClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
+    joystick.povLeft().onTrue(new ArmCommandAngles(arm, () -> Units.degreesToRadians(30), () -> ArmConstants.elbowPositionClimb).alongWith(new ArmCommandWrist(arm, () -> -2.0, () -> 0.0).alongWith(new WaitCommand(0.5).andThen(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)))));
+    joystick.a().onTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb, ArmConstants.elbowPositionClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> 0.0)));
  
   }
 

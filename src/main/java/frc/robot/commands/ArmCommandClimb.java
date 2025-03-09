@@ -16,11 +16,12 @@ import java.util.function.Supplier;
 public class ArmCommandClimb extends Command {
     private Arm arm;
     private double shoulderPower;
+    private double elbowPosition;
     /** Creates a new ArmCommand. */
-    public ArmCommandClimb(Arm arm, double shoulderPower) {
+    public ArmCommandClimb(Arm arm, double shoulderPower, double elbowPosition) {
         this.arm = arm;
 this.shoulderPower = shoulderPower;
-
+this.elbowPosition = elbowPosition;
         addRequirements(arm);
     }
 
@@ -28,6 +29,7 @@ this.shoulderPower = shoulderPower;
     @Override
     public void initialize() {
         arm.setShoulderAmpLimit(ArmConstants.currentLimitShoulderClimb);
+        // arm.setBrakeMode(true);
         // arm.resetEncoders();
     }
 
@@ -35,8 +37,12 @@ this.shoulderPower = shoulderPower;
     @Override
     public void execute() {
         // arm.getArmPosition();
-        
-        arm.setShoulderPower(shoulderPower);
+        arm.setElbowPosition(elbowPosition);
+        if (arm.getShoulderPosition() > ArmConstants.shoulderPositionClimb * 2.0 * Math.PI) {
+            arm.setShoulderPower(shoulderPower);
+        } else {
+            arm.setShoulderPower(0);
+        }
     }
 
     // Called once the command ends or is interrupted.
@@ -51,6 +57,6 @@ this.shoulderPower = shoulderPower;
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return false;//arm.getShoulderPosition() < ArmConstants.shoulderPositionClimb * 2.0 * Math.PI;
     }
 }
