@@ -40,11 +40,11 @@ public class ArmCommandGripperAutoCloseNeutralOpen extends Command {
     if(rangeDetected){
       startTimeToOpen = Timer.getFPGATimestamp();
     }
-    if (rangeDetected && Math.abs(startTimeToClose - Timer.getFPGATimestamp()) > 0.05){
+    if (rangeDetected && Math.abs(startTimeToClose - Timer.getFPGATimestamp()) > 0.02){
       gripper.closeGripper();
     }
-    else if (Math.abs(startTimeToOpen - Timer.getFPGATimestamp()) > 0.05) {
-      gripper.openGripperStrong();
+    else if (!rangeDetected && Math.abs(startTimeToOpen - Timer.getFPGATimestamp()) > 0.02) {
+      gripper.openGripper();
     }
   }
 

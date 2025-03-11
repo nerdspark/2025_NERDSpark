@@ -181,8 +181,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             // field.getObject("VisionEstimation").setPoses();
 
             SmartDashboard.putData("Robot Pose in Field", field);
-            DogLog.log("PoseEstimator/Pose", getCurrentPose());
-            DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
+            // DogLog.log("PoseEstimator/Pose", getCurrentPose());
+            // DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
 
         }
         SmartDashboard.putBoolean("tV", visionFront.hasTarget());
@@ -227,8 +227,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         double poseX = pose.getX();
         double poseY = pose.getY();
 
-        SmartDashboard.putNumber("poseX", poseX);
-        SmartDashboard.putNumber("poseY", poseY);
+        // SmartDashboard.putNumber("poseX", poseX);
+        // SmartDashboard.putNumber("poseY", poseY);
 
         //Rotation2d gyro = new Rotation2d(visionFront.getBotPose()[6]);
         double tx = visionFront.getTx();

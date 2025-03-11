@@ -100,7 +100,7 @@ public final class Autos {
       new SequentialCommandGroup(
         new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(12, new Rotation2d(arm.getWristFlipPosition() + (arm.getWristFlipPosition() > (Math.PI*0.5) ? (Math.PI*0.5) : (-Math.PI*0.5)) ))))
           .alongWith(new WaitCommand(0.07).andThen(new ArmCommandGripper(gripper, () -> false))).withTimeout(0.15), 
-        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(10, new Rotation2d(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() < 8 ? 0 : Math.PI)))).withTimeout(0.2)).onlyIf(() -> (setPointIndex.getAsInt() == 3 || setPointIndex.getAsInt() == 4)).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.30));
+        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(10, new Rotation2d(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() < 8 ? 0 : Math.PI)))).withTimeout(0.1)).onlyIf(() -> (setPointIndex.getAsInt() == 3 || setPointIndex.getAsInt() == 4)).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.30));
   }
 
   
