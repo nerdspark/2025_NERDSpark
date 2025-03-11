@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.Utils;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
@@ -37,8 +39,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        
+        FollowPathCommand.warmupCommand().schedule();
 
-        Pathfinding.setPathfinder(new LocalADStar());
+        // Pathfinding.setPathfinder(new LocalADStar());
+        // PathfindingCommand.warmupCommand().schedule();
 
         if(!Vision.DOGLOG_ENABLED){
             DogLog.setEnabled(false);
