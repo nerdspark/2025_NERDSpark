@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.NerdQuestNav;
 import frc.robot.QuestNav5010;
 import frc.robot.Robot;
 import frc.robot.generated.TunerConstants;
@@ -64,7 +65,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean m_hasAppliedOperatorPerspective = false;
 
-    private QuestNav5010 QuestNAV = new QuestNav5010(new Transform3d(0.0078060059934204, -0.1898688208373141, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
+    //private QuestNav5010 QuestNAV = new QuestNav5010(new Transform3d(0.0078060059934204, -0.1898688208373141, 0, new Rotation3d(Rotation2d.fromDegrees(90)))); //0.0078060059934204, -0.1898688208373141 //0.088721055399996, 0.006748581115323929
+    // Find offsets for Quest and find degrees from zero
+    private NerdQuestNav QuestNAV = new NerdQuestNav(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(0))));
     private Field2d QField = new Field2d();
 
     /** Swerve request to apply during robot-centric path following */
@@ -211,7 +214,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
                 () -> QuestNAV.getRobotPose().get().toPose2d(), //() -> getState().Pose, // Supplier of current robot pose
-                QuestNAV::softReset, //this::resetPose, // Consumer for seeding pose against auto
+                pose -> QuestNAV.resetPose(new Pose3d(pose)), //this::resetPose, // Consumer for seeding pose against auto
                 () -> getState().Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
                 (speeds, feedforwards) -> setControl(

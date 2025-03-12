@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.estimator.ExtendedKalmanFilter;
+import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,6 +27,8 @@ import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -65,6 +69,8 @@ public class QuestNav5010 {
     private int _calculatedOffsetToRobotCenterCount = 0;
 
     private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
+    private Boolean firstRun = true;
+    private Distance softReseter = new Translation3d().getMeasureY();
 
     public enum QuestCommand {
         RESET(1);
@@ -101,14 +107,15 @@ public class QuestNav5010 {
 
 
     private void setupNetworkTables(String root) {
+        PubSubOption periodic = PubSubOption.periodic(0);
         networkTable = networkTableInstance.getTable(root);
         miso = networkTable.getIntegerTopic("miso").getEntry(0);
         mosi = networkTable.getIntegerTopic("mosi").publish();
-        frameCount = networkTable.getIntegerTopic("frameCount").subscribe(0);
-        timestamp = networkTable.getDoubleTopic("timestamp").subscribe(0.0);
-        position = networkTable.getFloatArrayTopic("position").subscribe(new float[3]);
+        frameCount = networkTable.getIntegerTopic("frameCount").subscribe(0, periodic);
+        timestamp = networkTable.getDoubleTopic("timestamp").subscribe(0.0, periodic);
+        position = networkTable.getFloatArrayTopic("position").subscribe(new float[3], periodic);
         quaternion = networkTable.getFloatArrayTopic("quaternion").subscribe(new float[4]);
-        eulerAngles = networkTable.getFloatArrayTopic("eulerAngles").subscribe(new float[3]);
+        eulerAngles = networkTable.getFloatArrayTopic("eulerAngles").subscribe(new float[3], periodic);
         battery = networkTable.getDoubleTopic("battery").subscribe(0.0);
     }
 
@@ -151,7 +158,18 @@ public class QuestNav5010 {
     public Translation3d getPosition() {
         Translation3d hardResetTransform = getProcessedPosition();
         Translation3d softResetTransformation = rotateAxes(hardResetTransform.minus(softResetPose.getTranslation()), softResetTransform.getRotation()).plus(softResetPose.getTranslation()).plus(softResetTransform.getTranslation());
-        return softResetTransformation;
+        if (DriverStation.isAutonomousEnabled()) {
+            if (firstRun) {
+                //SmartDashboard.putNumberArray("softReset", new Double[] {softResetTransformation.getX(), softResetTransformation.getY(), softResetTransformation.getZ()});
+                softReseter = softResetTransformation.getMeasureY().times(2);
+                firstRun = false;
+            }
+        }
+        Distance softY = softResetTransformation.getMeasureY().minus(softReseter);
+        return new Translation3d(softResetTransformation.getMeasureX(), softY.unaryMinus(), softResetTransformation.getMeasureZ());//.unaryMinus()
+        //}
+        //return softResetTransformation;
+        //return new Translation3d(softResetTransformation.getMeasureX(), softResetTransformation.getMeasureY().unaryMinus(), softResetTransformation.getMeasureZ());
     }
 
 
@@ -162,7 +180,7 @@ public class QuestNav5010 {
     public Rotation3d getRotation() {
         // TODO: To support weird rotations/mountings of quest, implement world axis
         // rotation
-       return getProcessedRotation().plus(softResetTransform.getRotation());
+       return getProcessedRotation().plus(softResetTransform.getRotation()).unaryMinus();
     }
 
     public double getConfidence() {
@@ -217,6 +235,7 @@ public class QuestNav5010 {
     public void resetPose(Pose3d pose) {
         initializedPosition = true;
         softReset(pose);
+        //hardReset(pose);
     }
 
     
@@ -241,25 +260,25 @@ public class QuestNav5010 {
         return 0;
     }
 
-    // private void updateVelocity() {
-    //     if (previousPose == null) {
-    //         previousPose = getRobotPose().get();
-    //         previousTime = timestamp.get();
-    //         return;
-    //     }
-    //     double currentTime = timestamp.get();
-    //     double deltaTime = currentTime - previousTime;
-    //     if (deltaTime == 0) {
-    //         return;
-    //     }
-    //     velocity = new ChassisSpeeds(
-    //             (getPosition().getX() - previousPose.getTranslation().getX()) / deltaTime,
-    //             (getPosition().getY() - previousPose.getTranslation().getY()) / deltaTime,
-    //             (getRotation().getZ() - previousPose.getRotation().getZ()) / deltaTime);
-    //     previousTime = currentTime;
-    //     previousPose = getRobotPose().get();
+    private void updateVelocity() {
+        if (previousPose == null) {
+            previousPose = getRobotPose().get();
+            previousTime = timestamp.get();
+            return;
+        }
+        double currentTime = timestamp.get();
+        double deltaTime = currentTime - previousTime;
+        if (deltaTime == 0) {
+            return;
+        }
+        velocity = new ChassisSpeeds(
+                (getPosition().getX() - previousPose.getTranslation().getX()) / deltaTime,
+                (getPosition().getY() - previousPose.getTranslation().getY()) / deltaTime,
+                (getRotation().getZ() - previousPose.getRotation().getZ()) / deltaTime);
+        previousTime = currentTime;
+        previousPose = getRobotPose().get();
 
-    // }
+    }
 
     public ChassisSpeeds getVelocity() {
         if (null != velocity) {
