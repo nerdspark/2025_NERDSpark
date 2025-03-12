@@ -254,20 +254,7 @@ public class RobotContainer {
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
 
-    Color[] returnColors = m_LedSubsystem.updateStepColor(armFinishedMoving, driveTrainFinishedMoving, hasCoral);
-    joystick.y().onTrue(m_LedSubsystem.runPattern(
-      LEDPattern.steps(
-        Map.of(
-          0,
-          returnColors[0], 
-          1 / Constants.LEDConstants.numOfSteps, 
-          returnColors[1], 
-          2 / Constants.LEDConstants.numOfSteps, 
-          returnColors[2]
-        )
-      )
-      .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
-    ));
+    
  
   }
   /**
