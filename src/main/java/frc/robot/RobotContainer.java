@@ -107,7 +107,7 @@ public class RobotContainer {
   // private Climb climb = new Climb();
 
   private Supplier<Boolean> armFinishedMoving = () -> true;//new Trigger(() -> arm.finishedMoving);
-  private Supplier<Boolean> hasCoral = () -> false;//new Trigger(() -> intake.hasCoral());
+  private Supplier<Boolean> hasCoral = () -> true;//new Trigger(() -> intake.hasCoral());
   private Supplier<Boolean> detectedCoral = () -> true;
   // private Trigger driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
