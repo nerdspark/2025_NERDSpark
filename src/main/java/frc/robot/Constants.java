@@ -521,11 +521,20 @@ intermediatePoints[6][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translati
   }
 
   public static class LEDConstants {
-    public static final double scrollSpeed = 40; 
-    public static final double numOfSteps = 3.0;
-    public static final int kPort = 9;
-    public static final int kLength = 120;
+    // public static final double scrollSpeed = 40; 
+    public static final double numOfSteps = 2.0;
+    public static final int kPort = 0;
+    public static final int kLength = 175;
+    public static final double blinkSeconds = 0.5;
+  }
 
+  public static class ClimbConstants {
+    public static final int climbServoRightChannel = 0;
+    public static final int climbServoLeftChannel = 1;
+    public static final int setServoOpenRight = 0;
+    public static final int setServoOpenLeft = 1;
+    public static final int closeServoOpenRight = 1;
+    public static final int closeServoOpenLeft = 0;
   }
 
 }

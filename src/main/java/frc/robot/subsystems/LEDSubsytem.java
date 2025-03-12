@@ -16,12 +16,11 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
 
 public class LEDSubsytem extends SubsystemBase {
-  private static final int kPort = 9;
-  private static final int kLength = 120;
+  private static final int kPort = Constants.LEDConstants.kPort;
+  private static final int kLength = Constants.LEDConstants.kLength;
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
@@ -42,32 +41,30 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
-  public Color[] updateStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
+  public Color[] updateStepColor(Supplier<Boolean> armFinishedMoving, Supplier<Boolean> hasCoral) {
     Color step1 = new Color();
     Color step2 = new Color();
-    Color step3 = new Color();
 
     
-      if(armFinishedMoving.getAsBoolean()) { // 
+      if(armFinishedMoving.get()) { // 
         step1 = new Color(1.0f, 1.0f, 0.0f); // yellow
       } else {
         step1 = new Color(1.0f, 0.0f, 1.0f); // cyan
       }
 
-      if(driveTrainFinishedMoving.getAsBoolean()) { // 
-        step2 = new Color(0.0f, 1.0f, 1.0f); // magenta
+      if(hasCoral.get()) { // 
+        step2 = new Color(1.0f, 0.0f, 0.0f); // green
       } else {
-        step2 = new Color(0.0f, 0.0f, 1.0f); // blue
+        step2 = new Color(0.0f, 1.0f, 0.0f); // red
       }
 
-      if (hasCoral.getAsBoolean()) { // 
-        step3 =  new Color(1.0f, 0.0f, 0.0f); // green
-      } else {
-        step3 = new Color(0.0f, 1.0f, 0.0f);  // red
+      // if (detectedCoral.get()) { // 
+      //   step3 =  new Color(1.0f, 0.0f, 0.0f); // green
+      // } else {
+      //   step3 = new Color(0.0f, 1.0f, 0.0f);  // red
+      // } 
 
-      } 
-
-      Color[] colors = {step1, step2, step3};
+      Color[] colors = {step1, step2};
       return colors;
   }
 
@@ -76,7 +73,7 @@ public class LEDSubsytem extends SubsystemBase {
    *
    * @param pattern the LED pattern to run
    */
-  public Command runPattern(LEDPattern pattern) {
-    return run(() -> pattern.applyTo(m_buffer));
+  public Command runPattern(Supplier<LEDPattern> pattern) {
+    return run(() -> pattern.get().applyTo(m_buffer));
   }
 }

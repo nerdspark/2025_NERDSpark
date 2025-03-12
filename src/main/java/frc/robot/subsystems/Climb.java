@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import edu.wpi.first.wpilibj.motorcontrol.*;
 
@@ -21,8 +22,8 @@ public class Climb extends SubsystemBase {
     
   }
 
-private PWM climbServoRight = new PWM(0);
-private PWM climbServoLeft = new PWM(1);
+private PWM climbServoRight = new PWM(Constants.ClimbConstants.climbServoRightChannel);
+private PWM climbServoLeft = new PWM(Constants.ClimbConstants.climbServoLeftChannel);
 
 // public void setServoPosition(double value){
 //   // climbServoRight.setAngle(value + ArmConstants.rightServoOffset);
@@ -30,12 +31,12 @@ private PWM climbServoLeft = new PWM(1);
 // }
 
 public void setServoOpen() {
-  climbServoRight.setPosition(0);
-  climbServoLeft.setPosition(1);
+  climbServoRight.setPosition(Constants.ClimbConstants.setServoOpenRight);
+  climbServoLeft.setPosition(Constants.ClimbConstants.setServoOpenLeft);
 }
 public void setServoClose() {
-  climbServoRight.setPosition(1);
-  climbServoLeft.setPosition(0);
+  climbServoRight.setPosition(Constants.ClimbConstants.closeServoOpenRight);
+  climbServoLeft.setPosition(Constants.ClimbConstants.closeServoOpenLeft);
 }
 
 
