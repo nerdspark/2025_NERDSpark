@@ -16,6 +16,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.ControllerRumble;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
@@ -135,11 +136,7 @@ public class RobotContainer {
     configureBindings();
     // configureDefaultCommands();
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
-    if (hasCoral.get()) {
-      joystick.setRumble(GenericHID.RumbleType.kLeftRumble, 0.5);
-    } else {
-      joystick.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
-    }
+    // joystick.y().onTrue(new ControllerRumble(hasCoral));
   }
   
   private void configureDefaultCommands() {
@@ -260,34 +257,30 @@ public class RobotContainer {
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
 
-  //   final Command noBlinkPattern = m_LedSubsystem.runPattern(
-  //     () -> LEDPattern.steps(
-  //     Map.of(
-  //       0,
-  //       m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[0], 
-  //       1 / Constants.LEDConstants.numOfSteps, 
-  //       m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[1]//, 
-  //     )
-  //   )
-  //   // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
-  //   );
-  //   final Command blinkPattern = m_LedSubsystem.runPattern(
-  //     () -> LEDPattern.steps(
-  //     Map.of(
-  //       0,
-  //       m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[0], 
-  //       1 / Constants.LEDConstants.numOfSteps, 
-  //       m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[1]
-  //     )
-  //   ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
-  //   // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
-  //   );
+    final Command noBlinkPattern = m_LedSubsystem.runPattern(
+      () -> LEDPattern.steps(
+      Map.of(
+        0,
+        m_LedSubsystem.updateStepColor(hasCoral)[0]
+      )
+    )
+    // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    );
+    final Command blinkPattern = m_LedSubsystem.runPattern(
+      () -> LEDPattern.steps(
+      Map.of(
+        0,
+        m_LedSubsystem.updateStepColor(hasCoral)[0] 
+      )
+    ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+    // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    );
 
-  //   if (detectedCoral.get()) {
-  //     joystick.y().onTrue(blinkPattern);
-  //   } else {
-  //     joystick.y().onTrue(noBlinkPattern);
-  //   }
+    if (detectedCoral.get()) {
+      joystick.y().onTrue(blinkPattern);
+    } else {
+      joystick.y().onTrue(noBlinkPattern);
+    }
   // }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
