@@ -6,7 +6,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Map;
-
+import java.util.function.Supplier;
 import java.util.Map;
 
 import frc.robot.Constants.ArmConstants;
@@ -105,12 +105,13 @@ public class RobotContainer {
   private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
   // private Climb climb = new Climb();
 
-  private Trigger armFinishedMoving = new Trigger(() -> true);//new Trigger(() -> arm.finishedMoving);
-  private Trigger hasCoral = new Trigger(() -> false);//new Trigger(() -> intake.hasCoral());
+  private Supplier<Boolean> armFinishedMoving = () -> true;//new Trigger(() -> arm.finishedMoving);
+  private Supplier<Boolean> hasCoral = () -> false;//new Trigger(() -> intake.hasCoral());
+  private Supplier<Boolean> detectedCoral = () -> true;
   // private Trigger driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
   // .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
-  private Trigger driveTrainFinishedMoving = new Trigger(() -> true);
+  // private Trigger driveTrainFinishedMoving = new Trigger(() -> true);
   
   /* Path follower */
   // private final SendableChooser<Command> autoChooser;
@@ -253,6 +254,35 @@ public class RobotContainer {
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
+
+    final Command noBlinkPattern = m_LedSubsystem.runPattern(
+      () -> LEDPattern.steps(
+      Map.of(
+        0,
+        m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[0], 
+        1 / Constants.LEDConstants.numOfSteps, 
+        m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[1]//, 
+      )
+    )
+    // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    );
+    final Command blinkPattern = m_LedSubsystem.runPattern(
+      () -> LEDPattern.steps(
+      Map.of(
+        0,
+        m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[0], 
+        1 / Constants.LEDConstants.numOfSteps, 
+        m_LedSubsystem.updateStepColor(armFinishedMoving, hasCoral)[1]
+      )
+    ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+    // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    );
+
+    if (detectedCoral.get()) {
+      joystick.y().onTrue(blinkPattern);
+    } else {
+      joystick.y().onTrue(noBlinkPattern);
+    }
 
     
  
