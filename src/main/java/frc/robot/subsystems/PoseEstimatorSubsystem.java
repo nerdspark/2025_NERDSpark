@@ -24,6 +24,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,6 +47,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private Vision visionBack;
     private static Notifier allNotifier;
 
+    Pose2d robotPose2d = new Pose2d();
+    StructPublisher<Pose2d> publisher;
+
+
     //private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId);
     //private PIDController GyroPID = new PIDController(Constants.gyroP, Constants.gyroI, Constants.gyroD);
     //public double targetAngle = 0;
@@ -53,7 +59,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private static Gyro gyro = new Gyro();
     private static List<CoralObject> corals = new ArrayList<>();
        
-        private Field2d field = new Field2d(); 
+    private Field2d field = new Field2d(); 
           
         // Simulation
     
@@ -70,7 +76,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 });
     
                 allNotifier.setName("runAll");
-                allNotifier.startPeriodic(0.02);  
+                allNotifier.startPeriodic(0.02);
+
+                publisher = NetworkTableInstance.getDefault()
+                .getStructTopic("Robot Pose AdvScope", Pose2d.struct).publish();
               
         }        
 
@@ -121,6 +130,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
              }
 
+             /*
             //Coral pose code 
 
             Pose2d coralPose = getCoralPose();
@@ -170,7 +180,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             
 
             SmartDashboard.putNumber("pigeon", gyro.getGyro().getDegrees());
-            
+          */  
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -178,9 +188,14 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
         if (getCurrentPose() != null) {
             field.setRobotPose(getCurrentPose());
+            robotPose2d = getCurrentPose();
+            publisher.set(robotPose2d);
+
             // field.getObject("VisionEstimation").setPoses();
 
             SmartDashboard.putData("Robot Pose in Field", field);
+            SmartDashboard.putString("Formatted Pose", getFomattedPose());
+
             // DogLog.log("PoseEstimator/Pose", getCurrentPose());
             // DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
 

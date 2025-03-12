@@ -14,6 +14,7 @@ public class AutoScoreCommand extends SequentialCommandGroup {
                           Supplier<Pose2d> robotPoseSupplier,
                          Supplier<Pose2d> goalPoseSupplier,
                          Supplier<ReefLevel> reefLevelSupplier,
+                         Supplier<Boolean> isBackWordSupplier,
                          DoubleSupplier linearFF_X,
                          DoubleSupplier linearFF_Y,
                          DoubleSupplier omegaFF
@@ -21,7 +22,7 @@ public class AutoScoreCommand extends SequentialCommandGroup {
 
         
     addCommands(     
-      Autos.getAutoDriveCommandReef(drive, robotPoseSupplier, goalPoseSupplier, reefLevelSupplier,linearFF_X,linearFF_Y, omegaFF)
+      Autos.getAutoDriveCommandReef(drive, robotPoseSupplier, goalPoseSupplier, reefLevelSupplier,isBackWordSupplier, linearFF_X,linearFF_Y, omegaFF)
         
     );
   }

@@ -94,7 +94,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
       }
     }
 
-    isBackwards = (reefLevel != ReefLevel.L4) && DriverStation.getStickButton(1, 19);
+    isBackwards =  DriverStation.getStickButton(1, 20);
     
 
   }
@@ -161,6 +161,10 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return selectedCoralStationPose;
   }
 
+  public boolean getIsBackwards() {
+    return isBackwards;
+  }
+
   public FieldConstants.CoralStations getCoralStationSide() {
     return coralStationSide;
   }
@@ -170,7 +174,14 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public Pose2d getRobotPoseForSelectedBranch() {
-    return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel).plus(new Transform2d(0, 0, Rotation2d.fromDegrees(isBackwards ? 180 : 0))));
+   
+    if(isBackwards && (reefLevel == ReefLevel.L2 || reefLevel == ReefLevel.L3)) {
+      return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel).plus(new Transform2d(0, 0, Rotation2d.fromDegrees(180))));
+    }
+    else {
+      return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
+    }
+
   }
 
   public Pose2d getRobotPoseForSelectedCoralStation() {
