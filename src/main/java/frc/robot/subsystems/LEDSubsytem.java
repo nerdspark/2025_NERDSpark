@@ -41,16 +41,8 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
-  public Color[] updateStepColor(Supplier<Boolean> armFinishedMoving, Supplier<Boolean> hasCoral) {
-    Color step1 = new Color();
+  public Color[] updateStepColor(Supplier<Boolean> hasCoral) {
     Color step2 = new Color();
-
-    
-      if(armFinishedMoving.get()) { // 
-        step1 = new Color(1.0f, 1.0f, 0.0f); // yellow
-      } else {
-        step1 = new Color(1.0f, 0.0f, 1.0f); // cyan
-      }
 
       if(hasCoral.get()) { // 
         step2 = new Color(1.0f, 0.0f, 0.0f); // green
@@ -64,7 +56,7 @@ public class LEDSubsytem extends SubsystemBase {
       //   step3 = new Color(0.0f, 1.0f, 0.0f);  // red
       // } 
 
-      Color[] colors = {step1, step2};
+      Color[] colors = {step2};
       return colors;
   }
 
