@@ -150,7 +150,9 @@ public class RobotContainer {
         )
         );
     
+    if (Constants.Vision.USE_LIMELIGHT) {    
     joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn(corals).get(0).getPose()));
+  }
     //joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> new Pose2d(2.0, 2.0, new Rotation2d(0))));
 
 

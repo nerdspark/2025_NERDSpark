@@ -190,6 +190,8 @@ public static class Vision {
 
         public static boolean kCoralTargeted = false;
 
+        public static final boolean USE_LIMELIGHT = true;
+
         
 
 

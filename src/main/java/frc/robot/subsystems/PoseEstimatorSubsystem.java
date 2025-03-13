@@ -129,6 +129,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             //coral code
             
+            if (Constants.Vision.USE_LIMELIGHT) {
+
             // CoralObject newCoral = newCoral();
             // if (!newCoral.getIgnored() && visionFront.hasTarget()) {
             //     corals.add(newCoral); 
@@ -150,6 +152,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             // Pose2d coralPose = newCoral.getPose();
             // SmartDashboard.putNumber("coralX", coralPose.getX());
             // SmartDashboard.putNumber("coralY", coralPose.getY());
+        }
         }
         else {
             if (allNotifier != null) allNotifier.close();
