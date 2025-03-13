@@ -9,15 +9,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.controller.PIDController;
-
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 
 public class Gyro extends SubsystemBase {
-  private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId);
+  private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId, Constants.pigeonCanBus);
   
   public static final double gyroP = 2;
   public static final double gyroI = 0.0;
   public static final double gyroD = 0.00;
+
+
 
   private PIDController GyroPID = new PIDController(gyroP, gyroI, gyroD);
 

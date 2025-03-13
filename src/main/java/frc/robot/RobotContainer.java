@@ -5,6 +5,8 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes.Name;
 import java.util.Map;
@@ -16,9 +18,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.DriveToCoral;
+import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
+import frc.robot.util.CoralObject;
 import frc.robot.util.ArmPoint;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandAngles;
@@ -110,8 +115,11 @@ public class RobotContainer {
 
 
 
-    // public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
-    public final PoseEstimatorSubsystem poseEstimatorSubsystem;
+    public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
+    public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
+    
+
+    // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
     public final ScoringProfileSubsystem scoringSubsystem;
 
@@ -175,6 +183,11 @@ public class RobotContainer {
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
+    
+    if (Constants.Vision.USE_LIMELIGHT) {    
+    joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose()));
+  }
+    //joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> new Pose2d(2.0, 2.0, new Rotation2d(0))));
 
 
 

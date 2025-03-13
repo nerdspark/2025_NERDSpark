@@ -189,6 +189,10 @@ public static class Vision {
         public static final double kLimeLightYOffset = -0.18415;
         public static final double kLimeLightAOD = -15.0;
 
+        public static boolean kCoralTargeted = false;
+
+        public static final boolean USE_LIMELIGHT = true;
+
         
 
 
@@ -221,6 +225,8 @@ public static class Vision {
     public static final double gyroP = 2;
     public static final double gyroI = 0.0;
     public static final double gyroD = 0.00;
+
+    public static final String pigeonCanBus = "canivore1";
 
 
 //         for (int i = 0; i < FieldConstants.Reef.branchPositions.size(); i++) {

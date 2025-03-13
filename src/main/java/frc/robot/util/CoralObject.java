@@ -11,18 +11,17 @@ public class CoralObject {
     private Pose2d pose;
     private double hb;
     private double distance;
+    private boolean upfall; //false - upright, true - fallen
+    private boolean targeted;
+    private boolean ignored;
     
-    public CoralObject(Pose2d pose, double hb, double distance) {
+    public CoralObject(Pose2d pose, double hb, double distance, boolean upfall, boolean targeted, boolean ignored) {
         this.pose = pose;
         this.hb = hb;
         this.distance = distance;
-    }
-
-    public double calcDistance(Pose2d pose) {
-        double x = pose.getX();
-        double y = pose.getY();
-        double distance = Math.sqrt(x * x + y * y);
-        return distance;
+        this.upfall = upfall;
+        this.targeted = targeted;
+        this.ignored = ignored;
     }
 
     public Pose2d getPose() {
@@ -47,5 +46,29 @@ public class CoralObject {
 
     public void setCoralDistance(double distance) {
         this.distance = distance;
+    }
+
+    public boolean getUpfall() {
+        return upfall;
+    }
+
+    public void setCoralUpfall(boolean upfall) {
+        this.upfall = upfall;
+    }
+
+    public boolean getTargeted() {
+        return targeted;
+    }
+
+    public void setCoralTargeted(boolean targeted) {
+        this.targeted = targeted;
+    }
+
+    public boolean getIgnored() {
+        return ignored;
+    }
+
+    public void setCoralIgnored(boolean ignored) {
+        this.ignored = ignored;
     }
 }
