@@ -17,7 +17,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
@@ -73,13 +73,24 @@ public class Gripper extends SubsystemBase {
           .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
     gripper.getConfigurator().apply(gripperConfig);
     gripper.set(ArmConstants.gripperPowerOpen);
-
+  }
+  public void openGripperStrong(){
+    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
+          .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
+    gripper.getConfigurator().apply(gripperConfig);
+    gripper.set(-ArmConstants.gripperPowerClose);
   }
   public void closeGripper(){
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
     gripper.getConfigurator().apply(gripperConfig);
     gripper.set(ArmConstants.gripperPowerClose);
+  }
+  public void closeGripperWeak(){
+    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
+          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
+    gripper.getConfigurator().apply(gripperConfig);
+    gripper.set(-ArmConstants.gripperPowerOpen);
   }
   public void stopGripper() {
     gripper.stopMotor();

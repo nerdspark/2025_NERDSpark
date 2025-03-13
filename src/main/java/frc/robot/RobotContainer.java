@@ -8,7 +8,7 @@ import static edu.wpi.first.units.Units.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import java.util.jar.Attributes.Name;
 import java.util.Map;
 
 import frc.robot.Constants.ArmConstants;
@@ -24,15 +24,20 @@ import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.CoralObject;
+import frc.robot.util.ArmPoint;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
+import frc.robot.commands.ArmCommandGripperAutoCloseNeutralOpen;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandPickup;
+import frc.robot.commands.LEDCommand;
 import frc.robot.commands.OpenGripperCommand;
+import frc.robot.commands.SetStowing;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
@@ -42,11 +47,16 @@ import frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.math.MathUsageId;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -54,12 +64,17 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathfindingCommand;
+
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
 
@@ -82,7 +97,7 @@ public class RobotContainer {
      private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final Joystick buttonBoard = new Joystick(1);
@@ -96,7 +111,7 @@ public class RobotContainer {
 
 
 
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public final CommandSwerveDrivetrain drivetrain;
 
 
 
@@ -106,41 +121,60 @@ public class RobotContainer {
 
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
+    public final ScoringProfileSubsystem scoringSubsystem;
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-
   // private Climb climb = new Climb();
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
-  private Trigger drivetrainFinishedMoving = new Trigger (() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
-  .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
-  .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
-
-
+  private Trigger hasCoral = new Trigger(() -> intake.hasCoral());
+  // private Trigger driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+  // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
+  // .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
+  private Trigger driveTrainFinishedMoving = new Trigger(() -> true);
+  
   /* Path follower */
-  private final SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> autoChooser;
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    // scoringSubsystem = new ScoringProfileSubsystem();
+    drivetrain = TunerConstants.createDrivetrain();
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    scoringSubsystem = new ScoringProfileSubsystem();
+    arm = new Arm();
+    gripper = new Gripper();
+    intake = new Intake();
 
-    autoChooser = AutoBuilder.buildAutoChooser("Tests");
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    configureNamedCommands();
 
-    // arm = new Arm();
-    // gripper = new Gripper();
-    // intake = new Intake();
-    SignalLogger.setPath("/media/sda1/armLog");
-    SignalLogger.start();
+
+    // SignalLogger.setPath("/media/sda1/armLog");
+    // SignalLogger.start();
     configureBindings();
     configureDefaultCommands();
-    configureLEDs();
-    drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
+    
+    // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
+    configureAutoChooser();
 
   }
   
+  private void configureNamedCommands(){
+    NamedCommands.registerCommand("gripperToGroundIntake", new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false));
+    NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
+    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5).alongWith(new ArmCommandGripper(gripper, () -> true)));
+    NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
+    NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPreparePosition, () -> IntakeConstants.intakePassive));
+    NamedCommands.registerCommand("intakeThrow", new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakePassive)
+    .withTimeout(0.45)
+    .andThen(new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakeThrowPower))
+    .withTimeout(0.35)
+      .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> 0.0)));
+    NamedCommands.registerCommand("test", new InstantCommand(()-> System.out.println("test")));
+  }
+
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
@@ -157,13 +191,16 @@ public class RobotContainer {
 
 
 
-    // arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
+    arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> (arm.stowing ? 6 : 7)));
 
-    // gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
-    // intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
+    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
+    // m_LedSubsystem.setDefaultCommand(
+    //  new LEDCommand(m_LedSubsystem, armFinishedMoving, driveTrainFinishedMoving, hasCoral)
+    // );
 
   }
 
@@ -181,9 +218,9 @@ public class RobotContainer {
 
 
 
-    joystick.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.registerTelemetry(logger::telemeterize);
     // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
     // joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
     //     // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
@@ -207,10 +244,8 @@ public class RobotContainer {
         // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
 
 
-        // joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
-        // joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
-          
+
         //joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
         //joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
         //joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
@@ -229,17 +264,6 @@ public class RobotContainer {
     // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
     
-        /*
-     * Joystick Y = quasistatic forward
-     * Joystick A = quasistatic reverse
-     * Joystick B = dynamic forward
-     * Joystick X = dyanmic reverse
-     */
-    // joystick.y().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // joystick.a().whileTrue(drivetrain.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // joystick.b().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // joystick.x().whileTrue(drivetrain.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
 
     // joystick.y().whileTrue(Autos.getAutoDriveCommandXY( drivetrain,
     // () -> drivetrain.getState().Pose, 
@@ -251,70 +275,61 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.povDown().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    joystick.rightTrigger().onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
+    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
+    joystick.rightTrigger().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
+    ()->scoringSubsystem.getIsBackwards(),
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX())); //.alongWith(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))));
+    ()->-joystick.getLeftX()));
 
-    joystick.povUp().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    joystick.leftBumper().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmSubstationTarget()));
+    joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    // joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level)));
 
+    // joystick.rightStick().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    // joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 13).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    // joystick.y().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false));
+    joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> true));
+
+
+    joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
+        
+    joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
+      
+
+    joystick.start().whileTrue(new SetStowing(arm, false)); 
+    joystick.back().whileTrue(new SetStowing(arm, true)); 
+
+    // joystick.x().onTrue(new ArmCommandPathToPoint(arm, () -> 12));
+    // joystick.a().onTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getIsBackwards() ? 12 : 13));
+
+    // joystick.y().onTrue(new ArmCommandPathToPoint(arm, () -> 15));
+    // joystick.b().onTrue(new ArmCommandPathToPoint(arm, () -> 16));
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
+
+    // joystick.povLeft().onTrue(new ArmCommandAngles(arm, () -> Units.degreesToRadians(30), () -> ArmConstants.elbowPositionClimb).alongWith(new ArmCommandWrist(arm, () -> -2.0, () -> 0.0).alongWith(new WaitCommand(0.5).andThen(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)))));
+    // joystick.a().onTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb, ArmConstants.elbowPositionClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> 0.0)));
  
   }
-  private void configureLEDs() {
 
-    LEDPattern greenPattern = LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f));
-    LEDPattern bluePattern = LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f));
-      
-    
-    // armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    // armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
+  private void configureAutoChooser() {
+    // DataLogManager.log("Configuring auto chooser");
+    autoChooser = AutoBuilder.buildAutoChooser();
 
-    // drivetrainFinishedMoving.onTrue(m_LedSubsystem.runPattern(greenPattern.blink(Seconds.of(0.5))));
-    // drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(bluePattern.blink(Seconds.of(0.5))));
-
-    // Color step1 = new Color();
-    // Color step2 = new Color();
-    
-    //   if(armFinishedMoving.getAsBoolean()) {
-    //     step1 = new Color(0.0f, 0.0f, 1.0f); // blue
-    //   } else {
-    //     step1 = new Color(1.0f, 0.0f, 0.0f); // green
-    //   }
-    //   if(drivetrainFinishedMoving.getAsBoolean()) {
-    //     step2 = new Color(0.0f, 1.0f, 0.0f); // red
-    //   } else {
-    //     step2 = new Color(1.0f, 1.0f, 0.0f); // yellow
-    //   }
-    //   LEDPattern steps = LEDPattern.steps(Map.of(0, step1, 0.5, step2))
-    //     .scrollAtRelativeSpeed(Percent.per(Second).of(40));
-    //   m_LedSubsystem.runPattern(steps);
-
-
-    
-    
-    
-    
-    
-
-  //  drivetrainFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.gradient(LED, greenPattern, bluePattern)));
-    // intake status
-    // error states
-
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
@@ -322,6 +337,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     /* Run the path selected from the auto chooser */
+    // return new Command() {};
     return autoChooser.getSelected();
 
   }

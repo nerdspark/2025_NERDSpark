@@ -22,6 +22,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,6 +44,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     public Vision visionBack;
     private static Notifier allNotifier;
 
+    Pose2d robotPose2d = new Pose2d();
+    StructPublisher<Pose2d> publisher;
+
+
     //private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId);
     //private PIDController GyroPID = new PIDController(Constants.gyroP, Constants.gyroI, Constants.gyroD);
     //public double targetAngle = 0;
@@ -48,7 +57,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     private static List<CoralObject> corals = new ArrayList<>();
     private static CoralArrayManager coralManager = new CoralArrayManager();
        
-        private Field2d field = new Field2d(); 
+    private Field2d field = new Field2d(); 
           
         // Simulation
     
@@ -65,7 +74,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 });
     
                 allNotifier.setName("runAll");
-                allNotifier.startPeriodic(0.02);  
+                allNotifier.startPeriodic(0.02);
+
+                publisher = NetworkTableInstance.getDefault()
+                .getStructTopic("Robot Pose AdvScope", Pose2d.struct).publish();
               
         }        
 
@@ -115,7 +127,29 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             if(visionEstBack.isPresent()) {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
-            }   
+             }
+
+             /*
+            //Coral pose code 
+
+            Pose2d coralPose = getCoralPose();
+
+            if (visionFront.hasTarget()) {
+                double hb = visionFront.getHB();
+                CoralObject coral = new CoralObject(coralPose, hb, 0);
+                coral.setCoralDistance(coral.calcDistance(coral.getPose()));
+                SmartDashboard.putNumber("hb", coral.getHB());
+                corals.add(coral);
+            }
+
+            if (corals.size() > 2) {
+                int size = corals.size() - 2;
+                Pose2d coralPoseLast = corals.get(size).getPose();
+                double coralXLast = coralPoseLast.getX();
+                double coralYLast = coralPoseLast.getY();
+                SmartDashboard.putNumber("coralXLast", coralXLast);
+                SmartDashboard.putNumber("coralYLast", coralYLast);
+*/
 
             //coral code
             
@@ -146,6 +180,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             // SmartDashboard.putNumber("coralX", coralPose.getX());
             // SmartDashboard.putNumber("coralY", coralPose.getY());
         }
+            //SmartDashboard.putNumber("pigeon", gyro.getGyro().getDegrees());
+       
         }
         else {
             if (allNotifier != null) allNotifier.close();
@@ -153,11 +189,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
         if (getCurrentPose() != null) {
             field.setRobotPose(getCurrentPose());
+            robotPose2d = getCurrentPose();
+            publisher.set(robotPose2d);
+
             // field.getObject("VisionEstimation").setPoses();
 
             SmartDashboard.putData("Robot Pose in Field", field);
-            DogLog.log("PoseEstimator/Pose", getCurrentPose());
-            DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
+            SmartDashboard.putString("Formatted Pose", getFomattedPose());
+
+            // DogLog.log("PoseEstimator/Pose", getCurrentPose());
+            // DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
 
         }
         SmartDashboard.putBoolean("tV", visionFront.hasTarget());              
@@ -200,8 +241,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         double poseX = pose.getX();
         double poseY = pose.getY();
 
-        SmartDashboard.putNumber("poseX", poseX);
-        SmartDashboard.putNumber("poseY", poseY);
+        // SmartDashboard.putNumber("poseX", poseX);
+        // SmartDashboard.putNumber("poseY", poseY);
 
         double tx = visionFront.getTx();
         double ty = visionFront.getTy();

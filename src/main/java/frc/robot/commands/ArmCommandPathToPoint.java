@@ -11,10 +11,11 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -32,16 +33,21 @@ import frc.robot.util.GenPath;
 public class ArmCommandPathToPoint extends Command {
   private Arm arm;
     private ArmPath path;
-    private IntSupplier setPoint;
-    private int setPointInt;
+    private IntSupplier setPointIntSupplier;
+    private int setPointIndex = -1;
+    private Supplier<ArmPoint> setPoint = null;
     private double initialWristFlip, initialWristTwist;
     /** path to the specified armPoint */ // TODO: add inflection point generation and hardstop avoidance to automatic path generation
-    public ArmCommandPathToPoint(Arm arm, IntSupplier setPoint) {
+    public ArmCommandPathToPoint(Arm arm, IntSupplier setPointIntSupplier) {
+      this.setPointIntSupplier = setPointIntSupplier;
+        this.arm = arm;
+        addRequirements(arm);
+    }
+    public ArmCommandPathToPoint(Arm arm, Supplier<ArmPoint> setPoint) {
       this.setPoint = setPoint;
         this.arm = arm;
         addRequirements(arm);
     }
-
 
   // Called when the command is initially scheduled.
   @Override
@@ -49,34 +55,50 @@ public class ArmCommandPathToPoint extends Command {
     initialWristFlip = arm.getWristFlipPosition();
     initialWristTwist = arm.getWristTwistPosition();
     arm.finishedMoving = false;
+    
+    if (setPoint == null) {
+      setPointIndex = setPointIntSupplier.getAsInt();
+      setPoint = () -> ArmSetpoints.armSetPoints[setPointIndex];
+    } 
     calculatePath();
+
 
   }
   public void calculatePath() {
-    setPointInt = setPoint.getAsInt();
     int closestPoint = ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, arm.getArmPosition());
-    if (closestPoint != setPointInt) {
-      List<ArmPoint> temp = new ArrayList<>();
-      temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend()));
-      temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPointInt]);
-      temp.add(ArmSetpoints.armSetPoints[setPointInt]);
-      // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
-      path = new ArmPath(GenPath.generateInflectionPoints(temp));
-    } else {
-      path = new ArmPath(List.of(ArmSetpoints.armSetPoints[setPointInt]));
-    }
+      
+    if (closestPoint != setPointIndex && setPointIndex > -1) {
+        List<ArmPoint> temp = new ArrayList<>();
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()));
+        temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPointIndex]);
+        temp.add(setPoint.get());
+        // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
+        path = new ArmPath(GenPath.generateInflectionPoints(temp));
+      } else {
+        List<ArmPoint> temp = new ArrayList<>();
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()));
+        temp.add(setPoint.get());
+        path = new ArmPath(GenPath.generateInflectionPoints(temp));
+      }
+    
     // System.out.println(path.toStringList().toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
+    // System.out.println("ArmCommandPathToPoint/execute");
     if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())) {
       arm.finishedMoving = true;
     }
-    if (setPointInt != setPoint.getAsInt()) {
-      calculatePath();
-      arm.finishedMoving = false;
+    if (setPointIntSupplier != null) {
+      if (setPointIndex != setPointIntSupplier.getAsInt()) {
+        System.out.println("recalculate");
+        setPointIndex = setPointIntSupplier.getAsInt();
+        setPoint = () -> ArmSetpoints.armSetPoints[setPointIndex];
+        calculatePath();
+        arm.finishedMoving = false;
+      }
     }
     // SmartDashboard.putBoolean("Check", false);
     if (arm.finishedMoving){
@@ -84,24 +106,24 @@ public class ArmCommandPathToPoint extends Command {
       arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), path.points.get(path.getTranslations().size() - 1).inBend);
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f)));
     } else {
-      ArmPoint nextPoint = ArmPathplannerUtil.getNextPoint(path.points, arm.getArmPosition());
-      Rotation2d direction = ArmPathplannerUtil.ArmPathChooser(path.getTranslations(), arm.getArmPosition());
+      ArmPoint nextPoint = ArmPathplannerUtil.getNextPoint(path.points, arm.getArmState());
+      Rotation2d direction = nextPoint.position.minus(arm.getArmPosition()).getAngle();
       arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmConstants.velocity), nextPoint.inBend);
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f)));
     }
 
-    int nextPointIndex = ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition());
+    double nextPointIndex = ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition());
     double pathProgress = nextPointIndex/path.points.size();
     double finalWristFlip = path.points.get(path.points.size() - 1).wristFlip;
     double finalWristTwist = path.points.get(path.points.size() - 1).wristTwist;
-      if (((pathProgress > 0.65) || arm.finishedMoving)){
+      if (((pathProgress > 0.95) || arm.finishedMoving)){
         arm.setWristTwistPosition(finalWristTwist);
-        if ((pathProgress > 0.8) || arm.finishedMoving){
+        if ((pathProgress > 0.95) || arm.finishedMoving){
           arm.setWristFlipPosition(finalWristFlip);
         }
       } else {
         arm.setWristFlipPosition((pathProgress * (finalWristFlip-initialWristFlip)) + initialWristFlip);
-        arm.setWristTwistPosition((pathProgress * (finalWristTwist-initialWristTwist)) + initialWristTwist);
+        arm.setWristTwistPosition((MathUtil.clamp((pathProgress - 0.6)*5, 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);
         // arm.stopWrist();
         
       }

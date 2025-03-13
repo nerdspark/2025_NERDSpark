@@ -66,4 +66,10 @@ public class ArmPoint {
     public ArmPoint withWristFlip(double wristFlipPos) {
         return new ArmPoint(position, inBend, wristFlipPos, wristTwist);
     }
+    public ArmPoint withWristTwist(double wristTwistPos) {
+        return new ArmPoint(position, inBend, wristFlip, wristTwistPos);
+    }
+    public ArmPoint add(Translation2d add) {
+        return new ArmPoint(position.plus(add), inBend, wristFlip, wristTwist);
+    }
 }

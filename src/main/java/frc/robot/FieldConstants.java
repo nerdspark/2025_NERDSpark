@@ -169,12 +169,13 @@ public class FieldConstants {
  
 
   public enum ReefLevel {
-    L0(0,Units.inchesToMeters(25.0), 0),
+    // L1Inside(0,Units.inchesToMeters(25.0), 0),
+    L1Top(0,Units.inchesToMeters(25.0), 0),
     L1(1,Units.inchesToMeters(25.0), 0),
-    L2(2,Units.inchesToMeters(25.0), 0),
-    L3(3,Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
-    L4(4,Units.inchesToMeters(47.625 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
-    L5(5,Units.inchesToMeters(72), -90);
+    L2(2,Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
+    L3(3,Units.inchesToMeters(47.625 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
+    L4(4,Units.inchesToMeters(72), -90);
+
 
 
     ReefLevel(int level, double height, double pitch) {
@@ -188,7 +189,7 @@ public class FieldConstants {
       return Arrays.stream(values())
           .filter(reefLevel -> reefLevel.ordinal() == level)
           .findFirst()
-          .orElse(L0);
+          .orElse(L1);
     }
 
     public final double height;

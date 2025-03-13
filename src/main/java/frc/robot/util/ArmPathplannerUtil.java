@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 
@@ -39,17 +39,23 @@ public class ArmPathplannerUtil {
         // SmartDashboard.putNumber("target point angle", closestVector.getAngle().getDegrees());
         return closestVector.getAngle();
     }
-    public static ArmPoint getNextPoint(List<ArmPoint> armPaths, Translation2d position) {
+    public static ArmPoint getNextPoint(List<ArmPoint> armPaths, ArmPoint currentPoint) {
         ArmPoint closestArmPoint = new ArmPoint(new Translation2d(1000000,1000000));
         for (int i = armPaths.size() - 1; i >= 0; i-- ){
             // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).position.getDistance(position));
-            if (armPaths.get(i).position.getDistance(position) < ArmConstants.lookAheadDistance){
-                Rotation2d angle = armPaths.get(i).position.minus(position).getAngle();
+            if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmConstants.lookAheadDistance){
+                if (armPaths.get(i).inBend == currentPoint.inBend) {
+                    return armPaths.get(i);
+                } else {
+                    if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmConstants.lookAheadDistanceBeforeInflecting) {
+                        return armPaths.get(i);
+                    }
+                }
+                // Rotation2d angle = armPaths.get(i).position.minus(position).getAngle();
                 // SmartDashboard.putBoolean("on path", true);
                 // SmartDashboard.putNumber("target point angle", angle.getDegrees());
-                return armPaths.get(i);
             }
-            if (armPaths.get(i).position.getDistance(position) < closestArmPoint.position.getNorm()){
+            if (armPaths.get(i).position.getDistance(currentPoint.position) < closestArmPoint.position.getNorm()){
                 closestArmPoint = armPaths.get(i);
             }
         }
@@ -94,20 +100,20 @@ public class ArmPathplannerUtil {
             step = step.times(-1);
             stepDist *= -1;
         }
-        // if (pointCount > 5) { // continue interpolation polarly
+        if (pointCount > 3 || end.position.getDistance(start.position) < 10) { // continue interpolation polarly
             for (int i = 1; i <= pointCount; i++){
                 boolean inBend = i < pointCount/2 ? start.inBend : end.inBend;
                 path.add(new ArmPoint(new Translation2d(start.position.getNorm() + (stepDist * i), start.position.getAngle().plus(step.times(i))), inBend));
             }
-        // } else { // switch to linear interpolation
-        //     double distance = start.position.getDistance(end.position);
-        //     Translation2d stepLinear = end.position.minus(start.position).div(distance).times(ArmSetpoints.interpolationDistance);
-        //     int pointCountLinear = (int)(distance/ArmSetpoints.interpolationDistance);
-        //     for (int i = 1; i <= pointCountLinear; i++){
-        //         boolean inBend = i < pointCountLinear/2 ? start.inBend : end.inBend;
-        //         path.add(new ArmPoint(start.position.plus(stepLinear.times(i)), inBend));
-        //     }
-        // }
+        } else { // switch to linear interpolation
+            double distance = start.position.getDistance(end.position);
+            Translation2d stepLinear = end.position.minus(start.position).div(distance).times(ArmConstants.interpolationDistance);
+            int pointCountLinear = (int)(distance/ArmConstants.interpolationDistance);
+            for (int i = 1; i <= pointCountLinear; i++){
+                boolean inBend = i < pointCountLinear/2 ? start.inBend : end.inBend;
+                path.add(new ArmPoint(start.position.plus(stepLinear.times(i)), inBend));
+            }
+        }
 
         path.add(end);
         

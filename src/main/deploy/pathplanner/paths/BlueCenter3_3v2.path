@@ -1,0 +1,102 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.19,
+        "y": 3.87
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.3746988636363637,
+        "y": 3.0607414772727277
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.65,
+        "y": 2.398
+      },
+      "prevControl": {
+        "x": 1.4010887230167108,
+        "y": 2.374693859381092
+      },
+      "nextControl": {
+        "x": 1.933659090909091,
+        "y": 2.424559659090909
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.709431818181818,
+        "y": 2.9829687499999995
+      },
+      "prevControl": {
+        "x": 2.917051136363636,
+        "y": 2.2066420454545446
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5257548845470648,
+      "rotationDegrees": 32.35
+    },
+    {
+      "waypointRelativePos": 1.101243339254005,
+      "rotationDegrees": 32.35
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "gripperToGroundIntake",
+      "waypointRelativePos": 0.09898762654667986,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "gripperToGroundIntake"
+        }
+      }
+    },
+    {
+      "name": "armToL4",
+      "waypointRelativePos": 1.3273340832395846,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "armToL4"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 58.134
+  },
+  "reversed": false,
+  "folder": "CenterAuton",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": false
+}

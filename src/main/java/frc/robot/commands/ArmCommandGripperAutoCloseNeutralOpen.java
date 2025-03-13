@@ -9,19 +9,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Gripper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ArmCommandGripperAutoClose extends Command {
+public class ArmCommandGripperAutoCloseNeutralOpen extends Command {
   private Gripper gripper;
   private double startTimeToClose = Timer.getFPGATimestamp();
   private double startTimeToOpen = Timer.getFPGATimestamp();
   private double min = 0.02;
   private double max = 0.15;
   /** Creates a new ArmCommandGripperAutoClose. */
-  public ArmCommandGripperAutoClose(Gripper gripper) {
+  public ArmCommandGripperAutoCloseNeutralOpen(Gripper gripper) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.gripper = gripper;
     addRequirements(gripper);
   }
-
+  // Used for Neutral open
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -40,11 +40,11 @@ public class ArmCommandGripperAutoClose extends Command {
     if(rangeDetected){
       startTimeToOpen = Timer.getFPGATimestamp();
     }
-    if (rangeDetected && Math.abs(startTimeToClose - Timer.getFPGATimestamp()) > 0.05){
+    if (rangeDetected && Math.abs(startTimeToClose - Timer.getFPGATimestamp()) > 0.02){
       gripper.closeGripper();
     }
-    else if (Math.abs(startTimeToOpen - Timer.getFPGATimestamp()) > 0.05) {
-      gripper.closeGripperWeak();
+    else if (!rangeDetected && Math.abs(startTimeToOpen - Timer.getFPGATimestamp()) > 0.02) {
+      gripper.openGripper();
     }
   }
 

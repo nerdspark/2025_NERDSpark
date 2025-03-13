@@ -17,11 +17,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.util.AllianceFlipUtil;
 
 public class ScoringProfileSubsystem extends SubsystemBase {
@@ -29,12 +31,14 @@ public class ScoringProfileSubsystem extends SubsystemBase {
  
   private int branch = 2;
   private int level = 0;
-  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L5;
+  private boolean isBackwards = false;
+  private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L3;
   private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
   private Pose2d selectedBranchPose = new Pose2d();
   private Pose2d selectedCoralStationPose = new Pose2d();
 
-  private static final int [] branches = {5,4,3,2,1,0,11,10,9,8,7,6}; // Needed as the button board is assembled in incorrect orientation
+  private static final int [] branchesSimon = {5,4,3,2,1,0,11,10,9,8,7,6}; // Needed as the button board is assembled in incorrect orientation
+  private static final int [] branchesSayan = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0}; // Needed as the button board is assembled in incorrect orientation
 
 
   /** Creates a new ExampleSubsystem. */
@@ -54,6 +58,23 @@ public class ScoringProfileSubsystem extends SubsystemBase {
           /* one-time action goes here */
         });
   }
+  public int getArmReefTarget() {
+    if (isBackwards) {
+      if (reefLevel.level == 2) {
+        return 15;
+      }
+      if (reefLevel.level == 3) {
+        return 16;
+      }
+    } 
+    return (reefLevel.level + 1);
+    
+  }
+  public int getArmSubstationTarget() {
+    
+    return isBackwards ? 13 : 12;
+    
+  }
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
@@ -68,26 +89,34 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("isbackwards", isBackwards);
+    SmartDashboard.putString("reeflevel", reefLevel.name());
+    SmartDashboard.putString("coralstationside", coralStationSide.name());
+    SmartDashboard.putNumber("branch", branch);
 
   if(Constants.Vision.USE_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
       if(DriverStation.getStickButton(1, i+1)) {
-        branch = branches[i]; //Adjusting for incorrect button board orientation.
+        branch = branchesSayan[i]; //Adjusting for incorrect button board orientation.
       }
     }
 
-    for(int j=12; j<18; j++) {
+    for(int j=12; j<17; j++) {
       if(DriverStation.getStickButton(1, j+1)) {
         reefLevel = FieldConstants.ReefLevel.values()[j-12];
         // System.out.println("J: " + j + "; reeflevel: " + reefLevel.level);
       }
     }
 
-    for(int j=18; j<20; j++) {
-      if(DriverStation.getStickButton(1, j+1)) {
-        coralStationSide = FieldConstants.CoralStations.values()[j-18];
+
+    for(int k=17; k<19; k++) {
+      if(DriverStation.getStickButton(1, k+1)) {
+        coralStationSide = FieldConstants.CoralStations.values()[k-17];
       }
     }
+
+    isBackwards =  DriverStation.getStickButton(1, 20);
+    
 
   }
   else {
@@ -133,7 +162,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return branch;
   }
   public FieldConstants.ReefLevel getLevel() {
-    SmartDashboard.putNumber("reeflevel", reefLevel.level);
+    // SmartDashboard.putNumber("reeflevel", reefLevel.level);
     return reefLevel;
   }
   public void setBranch(char branch) {
@@ -149,6 +178,10 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return selectedCoralStationPose;
   }
 
+  public boolean getIsBackwards() {
+    return isBackwards;
+  }
+
   public FieldConstants.CoralStations getCoralStationSide() {
     return coralStationSide;
   }
@@ -158,7 +191,13 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public Pose2d getRobotPoseForSelectedBranch() {
-    return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
+   
+    if(isBackwards && (reefLevel == ReefLevel.L2 || reefLevel == ReefLevel.L3)) {
+      return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel).plus(new Transform2d(0, 0, Rotation2d.fromDegrees(180))));
+    }
+    else {
+      return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
+    }
 
   }
 
