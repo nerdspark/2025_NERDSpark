@@ -148,9 +148,9 @@ public static class Vision {
         public static final double ROTATION_TOLERANCE = 5.0; // /deg
 
         //Below same as pathplanner constants
-        public static final double MAX_VELOCITY = 4.5; 
+        public static final double MAX_VELOCITY = 0.5; 
         public static final double MAX_ACCELARATION = 6; 
-        public static final double MAX_VELOCITY_ROTATION = 540; 
+        public static final double MAX_VELOCITY_ROTATION = 0; 
         public static final double MAX_ACCELARATION_ROTATION = 720;
         
         public static final double VELOCITY_TOLERANCE_X = 4;

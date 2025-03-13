@@ -102,7 +102,7 @@ public class RobotContainer {
 
     public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
     public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
-    public List<CoralObject> corals = new ArrayList<>();
+    
 
     public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -151,7 +151,7 @@ public class RobotContainer {
         );
     
     if (Constants.Vision.USE_LIMELIGHT) {    
-    joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn(corals).get(0).getPose()));
+    joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose()));
   }
     //joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> new Pose2d(2.0, 2.0, new Rotation2d(0))));
 

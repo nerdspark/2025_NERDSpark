@@ -1,45 +1,35 @@
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Vision.*;
+import static frc.robot.Constants.Vision.USE_VISION;
+import static frc.robot.Constants.Vision.kCameraNameBack;
+import static frc.robot.Constants.Vision.kCameraNameFront;
+import static frc.robot.Constants.Vision.kLimeLightHeight;
+import static frc.robot.Constants.Vision.kRobotToCamBack;
+import static frc.robot.Constants.Vision.kRobotToCamFront;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.spark.config.SmartMotionConfigAccessor;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
-import frc.robot.generated.TunerConstants;
-
-import frc.robot.util.CoralObject;
 import frc.robot.util.CoralArrayManager;
-import frc.robot.subsystems.Gyro;
+import frc.robot.util.CoralObject;
 
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
@@ -138,7 +128,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             
 
-            corals = coralArrayUpdateReturn(corals);
+            corals = coralArrayUpdateReturn();
+            SmartDashboard.putNumber("size", corals.size());
+            SmartDashboard.putNumber("coralX", corals.get(corals.size() - 1).getPose().getX());
+            SmartDashboard.putNumber("coralY", corals.get(corals.size() - 1).getPose().getY());
             
             // if (corals.size() > 0) {
             //     int size = corals.size();
@@ -217,7 +210,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         boolean ignored = false;
         boolean targeted = false;
 
-        Translation2d offset = new Translation2d(-0.5588, new Rotation2d((yaw.getDegrees() + tx) * Math.PI / 180));
+        Translation2d offset = new Translation2d();
+        //Translation2d offset = new Translation2d(-0.5588, new Rotation2d((yaw.getDegrees() + tx) * Math.PI / 180));
 
         //DriverStation.getMatchTime();
 
@@ -266,7 +260,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
     }
 
-    public List<CoralObject> coralArrayUpdateReturn(List<CoralObject> corals) {
+    public List<CoralObject> coralArrayUpdateReturn() {
         if (!Constants.Vision.kCoralTargeted) {
             CoralObject newCoral = newCoral();
             double hb = visionFront.getHB();
