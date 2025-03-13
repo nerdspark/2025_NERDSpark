@@ -32,6 +32,7 @@ import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandPickup;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.OpenGripperCommand;
+import frc.robot.commands.SetStowing;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
@@ -112,7 +113,7 @@ public class RobotContainer {
     // public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;
 
-    public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
+    public final ScoringProfileSubsystem scoringSubsystem;
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
@@ -133,6 +134,7 @@ public class RobotContainer {
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    scoringSubsystem = new ScoringProfileSubsystem();
     arm = new Arm();
     gripper = new Gripper();
     intake = new Intake();
@@ -176,7 +178,7 @@ public class RobotContainer {
 
 
 
-    // arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> 6));
+    arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> (arm.stowing ? 6 : 7)));
 
     gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
 
@@ -229,10 +231,6 @@ public class RobotContainer {
         // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
 
 
-        joystick.leftBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
-        
-        joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
-          
         
 
         //joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
@@ -264,37 +262,52 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.povDown().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    joystick.rightTrigger().onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
+    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
+    joystick.rightTrigger().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
     ()->scoringSubsystem.getIsBackwards(),
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX())); //.alongWith(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level))));
-    
+    ()->-joystick.getLeftX()));
 
-    joystick.povUp().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    joystick.leftBumper().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmSubstationTarget()));
+    joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> (scoringSubsystem.getLevel().level + 1))).onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> (scoringSubsystem.getLevel().level + 1)));
-    joystick.rightStick().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
-    joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 13).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
-    joystick.y().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
-    joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> false));
 
-    joystick.start().onTrue(new ArmCommandPathToPoint(arm, () -> 6));
-    joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
+    // joystick.rightStick().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    // joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 13).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    // joystick.y().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false));
+    joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> true));
+
+
+    joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
+        
+    joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
+      
+
+    joystick.start().whileTrue(new SetStowing(arm, false)); 
+    joystick.back().whileTrue(new SetStowing(arm, true)); 
+
+    // joystick.x().onTrue(new ArmCommandPathToPoint(arm, () -> 12));
+    // joystick.a().onTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getIsBackwards() ? 12 : 13));
+
+    // joystick.y().onTrue(new ArmCommandPathToPoint(arm, () -> 15));
+    // joystick.b().onTrue(new ArmCommandPathToPoint(arm, () -> 16));
     // joystick.y().onTrue(new DriveToPose(drivetrain,
     // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // ).until(() -> joystick.x().getAsBoolean()));
 
-    joystick.povLeft().onTrue(new ArmCommandAngles(arm, () -> Units.degreesToRadians(30), () -> ArmConstants.elbowPositionClimb).alongWith(new ArmCommandWrist(arm, () -> -2.0, () -> 0.0).alongWith(new WaitCommand(0.5).andThen(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)))));
-    joystick.a().onTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb, ArmConstants.elbowPositionClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> 0.0)));
+    // joystick.povLeft().onTrue(new ArmCommandAngles(arm, () -> Units.degreesToRadians(30), () -> ArmConstants.elbowPositionClimb).alongWith(new ArmCommandWrist(arm, () -> -2.0, () -> 0.0).alongWith(new WaitCommand(0.5).andThen(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)))));
+    // joystick.a().onTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb, ArmConstants.elbowPositionClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> 0.0)));
  
   }
 

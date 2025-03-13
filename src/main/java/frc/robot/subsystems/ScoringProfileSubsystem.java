@@ -58,6 +58,23 @@ public class ScoringProfileSubsystem extends SubsystemBase {
           /* one-time action goes here */
         });
   }
+  public int getArmReefTarget() {
+    if (isBackwards) {
+      if (reefLevel.level == 2) {
+        return 15;
+      }
+      if (reefLevel.level == 3) {
+        return 16;
+      }
+    } 
+    return (reefLevel.level + 1);
+    
+  }
+  public int getArmSubstationTarget() {
+    
+    return isBackwards ? 13 : 12;
+    
+  }
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
@@ -72,6 +89,10 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("isbackwards", isBackwards);
+    SmartDashboard.putString("reeflevel", reefLevel.name());
+    SmartDashboard.putString("coralstationside", coralStationSide.name());
+    SmartDashboard.putNumber("branch", branch);
 
   if(Constants.Vision.USE_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
@@ -134,10 +155,6 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    SmartDashboard.putBoolean("isbackwards", isBackwards);
-    SmartDashboard.putString("reeflevel", reefLevel.name());
-    SmartDashboard.putString("coralstationside", coralStationSide.name());
-    SmartDashboard.putNumber("branch", branch);
     // This method will be called once per scheduler run during simulation
   }
 

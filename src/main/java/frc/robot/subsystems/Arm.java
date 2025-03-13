@@ -32,6 +32,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -41,6 +42,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmVelocityGains;
+import frc.robot.util.ArmPoint;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 
@@ -52,6 +54,9 @@ public class Arm extends SubsystemBase {
   public boolean wristFinishedMoving = false;
   private boolean wristStopped = false;
   private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
+  public boolean stowing = false;
+  private SlewRateLimiter shoulderLimiter = new SlewRateLimiter(ArmConstants.shoulderSlewRate);
+  private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
 
 
   private double wristTwistPosition = 0.0;
@@ -94,13 +99,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Brake)));
+        .withNeutralMode(NeutralModeValue.Coast)));
     
     shoulderRight
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Brake)));
+        .withNeutralMode(NeutralModeValue.Coast)));
 
 
     elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -219,31 +224,41 @@ public class Arm extends SubsystemBase {
     //       .withNeutralMode(NeutralModeValue.Brake)));
     resetOffsets();
   }
-  public void setBrakeMode(boolean BrakeModeEnabled) {
-    if (BrakeModeEnabled) {
-      shoulderLeft
-        .getConfigurator()
-        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.CounterClockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Brake)));
-      shoulderRight
-        .getConfigurator()
-        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.Clockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Brake)));
-    } else {
-      shoulderLeft
-        .getConfigurator()
-        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.CounterClockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
-      shoulderRight
-        .getConfigurator()
-        .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.Clockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
-    }
+  public void resetVelocityLimiters() {
+    shoulderLimiter.reset(getShoulderVelocity());
+    elbowLimiter.reset(getElbowVelocity());
   }
+  public double getShoulderVelocity() {
+    return (shoulderLeft.getVelocity().getValueAsDouble() + shoulderRight.getVelocity().getValueAsDouble())/2;
+  }
+  public double getElbowVelocity() {
+    return (elbowLeft.getVelocity().getValueAsDouble() + elbowRight.getVelocity().getValueAsDouble())/2;
+  }
+  // public void setBrakeMode(boolean BrakeModeEnabled) {
+  //   if (BrakeModeEnabled) {
+  //     shoulderLeft
+  //       .getConfigurator()
+  //       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+  //         .withInverted(InvertedValue.CounterClockwise_Positive)
+  //         .withNeutralMode(NeutralModeValue.Brake)));
+  //     shoulderRight
+  //       .getConfigurator()
+  //       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+  //         .withInverted(InvertedValue.Clockwise_Positive)
+  //         .withNeutralMode(NeutralModeValue.Brake)));
+  //   } else {
+  //     shoulderLeft
+  //       .getConfigurator()
+  //       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+  //         .withInverted(InvertedValue.CounterClockwise_Positive)
+  //         .withNeutralMode(NeutralModeValue.Coast)));
+  //     shoulderRight
+  //       .getConfigurator()
+  //       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+  //         .withInverted(InvertedValue.Clockwise_Positive)
+  //         .withNeutralMode(NeutralModeValue.Coast)));
+  //   }
+  // }
   public void resetOffsets() {
     elbowRight.setPosition(Constants.ArmConstants.elbowOffset);
     elbowLeft.setPosition(Constants.ArmConstants.elbowOffset);
@@ -265,6 +280,9 @@ public class Arm extends SubsystemBase {
         return jointPos.plus(jointToEndPos);
         // return ArmSetpoints.armSetPoints[4].position;
   }
+  public ArmPoint getArmState() {
+    return new ArmPoint(getArmPosition(), getCurrentInBend(), getWristFlipPosition(), getWristTwistPosition());
+  }
 
   public void setArmPosition(Translation2d position, boolean inBend) {  // rotates the two base stages 
 
@@ -283,6 +301,7 @@ public class Arm extends SubsystemBase {
         setShoulderPosition(shoulderPosition);
         setElbowPosition(elbowPosition);
 
+        resetVelocityLimiters();
         // smart dashboard
         // SmartDashboard.putNumber("shouldertarget", shoulderPosition);
         // SmartDashboard.putNumber("elbowtarget", elbowPosition);
@@ -322,16 +341,18 @@ public class Arm extends SubsystemBase {
       // SmartDashboard.putBoolean("shoulder soft limit triggered", true);
       
       setShoulderVelocity(0);
+      shoulderLimiter.reset(0);
     } else {
       // SmartDashboard.putBoolean("shoulder soft limit triggered", false);
-      setShoulderVelocity(shoulderVelocity);
+      setShoulderVelocity(shoulderLimiter.calculate(shoulderVelocity));
     }
     if(Math.abs(elbowPosition - shoulderPosition) > Math.abs(ArmConstants.elbowOffset - ArmConstants.shoulderOffset) * (2*Math.PI)){
       // SmartDashboard.putBoolean("elbow soft limit triggered", true);
-      setElbowVelocity(shoulderVelocity);
+      setElbowVelocity((shoulderVelocity));
+      elbowLimiter.reset(shoulderVelocity);
     } else {
       // SmartDashboard.putBoolean("elbow soft limit triggered", false);
-      setElbowVelocity(elbowVelocity);
+      setElbowVelocity(elbowLimiter.calculate(elbowVelocity));
     }  
   }
   public void setElbowPosition(double position) {
@@ -468,12 +489,13 @@ public void setShoulderAmpLimit(double amplimit) {
   public void setShoulderVelocity(double velocity) {
     shoulderLeft.setControl(new VelocityVoltage(velocity).withSlot(1));
     shoulderRight.setControl(new VelocityVoltage(velocity).withSlot(1));
+    SmartDashboard.putNumber("shoulder target velocity limited", velocity);
   }
 
   public void setElbowVelocity(double velocity) {
     elbowLeft.setControl(new VelocityVoltage(velocity).withSlot(1));
     elbowRight.setControl(new VelocityVoltage(velocity).withSlot(1));
-    
+    SmartDashboard.putNumber("elbow target velocity limited", velocity);
   }
 
   public void setWristFlipVelocity(double velocity) {
@@ -495,6 +517,10 @@ public void setShoulderAmpLimit(double amplimit) {
     shoulderRight.stopMotor();
   }
 
+  public void setStowing(boolean Stowing) {
+    stowing = Stowing;
+  }
+  
   @Override
   public void periodic() {
     updateWristSetpoints();
@@ -516,10 +542,14 @@ public void setShoulderAmpLimit(double amplimit) {
     // SmartDashboard.putNumber("wrist flip amp", wristFlip.getStatorCurrent().getValueAsDouble());
     // SmartDashboard.putNumber("wrist Twist output", wristTwist.getClosedLoopOutput().getValueAsDouble());
     // SmartDashboard.putNumber("wrist Twist amp", wristTwist.getStatorCurrent().getValueAsDouble());
-    // SmartDashboard.putNumber("wrist twist pos", getWristTwistPosition());
-    // SmartDashboard.putNumber("wrist flip pos", getWristFlipPosition());
-    // SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
-    // SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
+    SmartDashboard.putNumber("wrist twist pos", getWristTwistPosition());
+    SmartDashboard.putNumber("wrist flip pos", getWristFlipPosition());
+    SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
+    SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
+    SmartDashboard.putNumber("elbow pos", getElbowPosition());
+    SmartDashboard.putNumber("shoulder pos", getShoulderPosition());
+    SmartDashboard.putNumber("shoulder velocity", getShoulderVelocity());
+    SmartDashboard.putNumber("elbow velocity", getElbowVelocity());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());
     // SmartDashboard.putNumber("right shoulder amp", shoulderRight.getStatorCurrent().getValueAsDouble());
     // SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getStatorCurrent().getValueAsDouble());

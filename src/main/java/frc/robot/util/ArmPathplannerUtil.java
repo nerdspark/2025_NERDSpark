@@ -39,17 +39,23 @@ public class ArmPathplannerUtil {
         // SmartDashboard.putNumber("target point angle", closestVector.getAngle().getDegrees());
         return closestVector.getAngle();
     }
-    public static ArmPoint getNextPoint(List<ArmPoint> armPaths, Translation2d position) {
+    public static ArmPoint getNextPoint(List<ArmPoint> armPaths, ArmPoint currentPoint) {
         ArmPoint closestArmPoint = new ArmPoint(new Translation2d(1000000,1000000));
         for (int i = armPaths.size() - 1; i >= 0; i-- ){
             // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).position.getDistance(position));
-            if (armPaths.get(i).position.getDistance(position) < ArmConstants.lookAheadDistance){
-                Rotation2d angle = armPaths.get(i).position.minus(position).getAngle();
+            if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmConstants.lookAheadDistance){
+                if (armPaths.get(i).inBend == currentPoint.inBend) {
+                    return armPaths.get(i);
+                } else {
+                    if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmConstants.lookAheadDistanceBeforeInflecting) {
+                        return armPaths.get(i);
+                    }
+                }
+                // Rotation2d angle = armPaths.get(i).position.minus(position).getAngle();
                 // SmartDashboard.putBoolean("on path", true);
                 // SmartDashboard.putNumber("target point angle", angle.getDegrees());
-                return armPaths.get(i);
             }
-            if (armPaths.get(i).position.getDistance(position) < closestArmPoint.position.getNorm()){
+            if (armPaths.get(i).position.getDistance(currentPoint.position) < closestArmPoint.position.getNorm()){
                 closestArmPoint = armPaths.get(i);
             }
         }
