@@ -97,7 +97,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   if(Constants.Vision.USE_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
       if(DriverStation.getStickButton(1, i+1)) {
-        branch = branchesSayan[i]; //Adjusting for incorrect button board orientation.
+        branch = branchesSimon[i]; //Adjusting for incorrect button board orientation.
       }
     }
 

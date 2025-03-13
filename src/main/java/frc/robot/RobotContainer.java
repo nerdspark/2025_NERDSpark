@@ -282,8 +282,8 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.rightTrigger().onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
-    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
+    // joystick.rightTrigger().onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
+    // joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
     joystick.rightTrigger().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
@@ -301,6 +301,7 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
+    joystick.a().whileTrue(Autos.getAutoDriveCommandXY(drivetrain, () -> drivetrain.getState().Pose, () -> new Pose2d(), () -> ReefLevel.L1, () -> false));
 
     // joystick.rightStick().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
     // joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 13).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
