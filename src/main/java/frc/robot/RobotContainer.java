@@ -116,10 +116,10 @@ public class RobotContainer {
 
 
     public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
-    public final PoseEstimatorSubsystem poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
     
 
-    public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
+    // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
     public final ScoringProfileSubsystem scoringSubsystem;
 
