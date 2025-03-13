@@ -41,12 +41,15 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
-  public Color[] updateStepColor(Supplier<Boolean> hasCoral) {
+  public Color[] updateStepColor(Supplier<Boolean> hasCoral, Supplier<Boolean> armHasCoral) {
     Color step2 = new Color();
 
-      if(hasCoral.get()) { // 
+      if(armHasCoral.get()) { // 
+        step2 = new Color(1.0f, 0.0f, 1.0f); // cyan
+      } else if(hasCoral.get()) {
         step2 = new Color(1.0f, 0.0f, 0.0f); // green
-      } else {
+      }
+      else {
         step2 = new Color(0.0f, 1.0f, 0.0f); // red
       }
 

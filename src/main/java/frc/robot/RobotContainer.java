@@ -115,7 +115,7 @@ public class RobotContainer {
   // .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
   // private Trigger driveTrainFinishedMoving = new Trigger(() -> true);
   private Supplier<Boolean> detectedCoral = () -> vision.hasTarget();
-  // private Supplier<Boolean> armHasCoral
+  private Supplier<Boolean> armHasCoral = () -> gripper.getDetected();
   
   /* Path follower */
   // private final SendableChooser<Command> autoChooser;
@@ -266,7 +266,7 @@ public class RobotContainer {
       () -> LEDPattern.steps(
       Map.of(
         0,
-        m_LedSubsystem.updateStepColor(hasCoral)[0]
+        m_LedSubsystem.updateStepColor(hasCoral, armHasCoral)[0]
       )
     )
     // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
@@ -275,7 +275,7 @@ public class RobotContainer {
       () -> LEDPattern.steps(
       Map.of(
         0,
-        m_LedSubsystem.updateStepColor(hasCoral)[0] 
+        m_LedSubsystem.updateStepColor(hasCoral, armHasCoral)[0] 
       )
     ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
     // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
