@@ -67,7 +67,6 @@ import dev.doglog.DogLog;
      private Matrix<N3, N1> curStdDevs;
      private String cameraName;
 
-     private final NetworkTable llTable;
 
      private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
  
@@ -84,7 +83,6 @@ import dev.doglog.DogLog;
          photonPoseEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
          photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-         llTable = NetworkTableInstance.getDefault().getTable("limelight");
 
          // Simulation
          if (Robot.isSimulation()) {
@@ -233,73 +231,7 @@ import dev.doglog.DogLog;
          return curStdDevs;
      }
 
-     // - LimeLight
 
-     public double getTx() {
-        return llTable.getEntry("tx").getDouble(0.0);
-      }
-    
-      public double getTy() {
-        return llTable.getEntry("ty").getDouble(0.0);
-      }
-    
-      public double getTa() {
-        return llTable.getEntry("ta").getDouble(0.0);
-      }
-    
-      public boolean hasTarget() {
-        return llTable.getEntry("tv").getDouble(0.0) == 1.0;
-      }
-    
-      public long getID() {
-        return llTable.getEntry("tid").getInteger(0);
-      }
-    
-      public double[] getRelBotPose() {
-        NetworkTableEntry relbotpose = llTable.getEntry("targetpose_cameraspace");
-        return relbotpose.getDoubleArray(new double[6]);
-      }
-
-      public double[] getBotPose() {
-        NetworkTableEntry botpose = llTable.getEntry("botpose");
-        return botpose.getDoubleArray(new double[6]);
-      }
-    
-      public void setPipelineNumber(int i) {
-        llTable.getEntry("pipeline").setNumber(i);
-      }
-
-      public String getObjectClass() {
-        return llTable.getEntry("tclass").getString("none");
-      }
-
-      public double getHB() {
-        return llTable.getEntry("hb").getDouble(0.0);
-      }
-      
-      public double[] getCoordinates() {
-        double coords[] = new double[8];
-        if (llTable.getEntry("tcornxy").getDoubleArray(new double[1]).length == 8) {
-          coords = llTable.getEntry("tcornxy").getDoubleArray(new double[1]);
-        }
-        return coords;
-      }
-
-      public double getYaw() {
-        double[] botpose = getBotPose();
-        double yaw = 0.0;
-        if (botpose.length == 6) {
-            yaw = botpose[5];
-        } else {
-            yaw = 0.0;
-        }
-        return yaw;
-      }
-
-      public double getFPS() {
-        double[] hw = llTable.getEntry("hw").getDoubleArray(new double[5]);
-        return hw[0];
-      }
      // ----- Simulation
  
      public void simulationPeriodic(Pose2d robotSimPose) {

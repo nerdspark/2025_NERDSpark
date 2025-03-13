@@ -39,6 +39,7 @@ import frc.robot.commands.LEDCommand;
 import frc.robot.commands.OpenGripperCommand;
 import frc.robot.commands.SetStowing;
 import frc.robot.subsystems.LEDSubsytem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -105,6 +106,7 @@ public class RobotContainer {
     public Arm arm;
     private Gripper gripper;
     private Intake intake;
+    private LimelightSubsystem limelightSubsystem;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     // private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
@@ -157,7 +159,14 @@ public class RobotContainer {
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     configureAutoChooser();
+    if (Constants.Vision.USE_LIMELIGHT) {
+      configureLimelight();
+    }
 
+  }
+  private void configureLimelight() {
+    limelightSubsystem = new LimelightSubsystem(drivetrain);
+    joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> limelightSubsystem.coralArrayUpdateReturn().get(0).getPose()));
   }
   
   private void configureNamedCommands(){
@@ -184,9 +193,7 @@ public class RobotContainer {
         )
         );
     
-    if (Constants.Vision.USE_LIMELIGHT) {    
-    joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose()));
-  }
+    
     //joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> new Pose2d(2.0, 2.0, new Rotation2d(0))));
 
 
