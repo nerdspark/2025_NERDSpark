@@ -18,6 +18,7 @@ public class ArmCommandGripperAutoClose extends Command {
   private boolean prevRangeDetected, rangeDetected = false;
   private boolean needsAction = true;
   private BooleanSupplier neutralOpen, stallGripperOnDefault;
+  private boolean stallGripperBoolean;
   /** Creates a new ArmCommandGripperAutoClose. */
   public ArmCommandGripperAutoClose(Gripper gripper, BooleanSupplier neutralOpen, BooleanSupplier stallGripperOnDefault) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -39,12 +40,16 @@ public class ArmCommandGripperAutoClose extends Command {
   public void execute() {
     // double minRange = Math.min(gripper.getRangeLeftDistance(), Math.min(gripper.getRangeMiddleDistance(), gripper.getRangeRightDistance()));
     // boolean rangeTrue = (minRange < max);
-    prevRangeDetected = rangeDetected;
     rangeDetected = gripper.getLeftDetected() || gripper.getMiddleDetected() || gripper.getRightDetected();
+
+    if (stallGripperBoolean != stallGripperOnDefault.getAsBoolean()) {
+      needsAction = true;
+    }
     if(rangeDetected != prevRangeDetected){
       timeToAct = Timer.getTimestamp();
       needsAction = true;
     }
+
     if (needsAction) {
       if (Math.abs(timeToAct - Timer.getTimestamp()) > 0.02) {
         if (rangeDetected) {
@@ -67,7 +72,9 @@ public class ArmCommandGripperAutoClose extends Command {
         needsAction = false;
       }
     }
-    
+    stallGripperBoolean = stallGripperOnDefault.getAsBoolean();
+    prevRangeDetected = rangeDetected;
+
   }
 
   // Called once the command ends or is interrupted.

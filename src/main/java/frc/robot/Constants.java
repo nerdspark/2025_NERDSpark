@@ -240,32 +240,33 @@ public static class Vision {
   
 
   public final class ArmGains {
-      public static final double shoulderP = 150.0; //TODO CHANGE SOME OF THIS LATER //52.0
+      public static final double shoulderP = 180.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
-      public static final double shoulderD = 30.0;
+      public static final double shoulderD = 40.0;
       public static final double elbowP = 180.0;//20.0
       public static final double elbowI = 0.0;
-      public static final double elbowD = 30.0;
+      public static final double elbowD = 40.0;
+      public static final double wristAccelerationTime = 0.3;
       public static final double wristFlipP = 160.0; //20.0
       public static final double wristFlipG = 0.0; //20.0 
       public static final double wristFlipI = 100.0;
       public static final double wristFlipD = 0;
-      public static final double wristFlipVelocity = 0.5;
-      public static final double wristFlipAcceleration = wristFlipVelocity/0.1;
+      public static final double wristFlipVelocity = 1.5;
+      public static final double wristFlipAcceleration = wristFlipVelocity/wristAccelerationTime;
       public static final double wristTwistP = 160.0; //15.0
       public static final double wristTwistI = 100.0;
       public static final double wristTwistD = 0;
-      public static final double wristTwistVelocity = 1;
-      public static final double wristTwistAcceleration = wristTwistVelocity/0.1;
+      public static final double wristTwistVelocity = wristFlipVelocity*1.5;
+      public static final double wristTwistAcceleration = wristTwistVelocity/wristAccelerationTime;
       public static final double gripperP = 0.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.4; // 0.25
+      public static final double shoulderG = 0.6; // 0.25
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.5;//0.3
+      public static final double elbowG = 0.6;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
@@ -277,11 +278,11 @@ public static class Vision {
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.4; // 0.25
+      public static final double shoulderG = 0.6; // 0.25
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.5;//0.3
+      public static final double elbowG = 0.6;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
@@ -291,7 +292,7 @@ public static class Vision {
 
     public static final double lookAheadDistance = 15.0;
     public static final double lookAheadDistanceBeforeInflecting = 1; 
-    public static final double endDistance = 18.0;
+    public static final double endDistance = 9.0;
     public static final double linearApproximationTime = 0.2; // seconds
     public static final double velocity = 65;// does not seem to have any effect
     public static final double maxMotorVelocity = 3.0;
@@ -412,10 +413,10 @@ public static class Vision {
       armSetPoints[2] = new ArmPoint(new Translation2d(21.0, 16.0), true, -0.5, -1.57);
       armSetPoints[3] = new ArmPoint(new Translation2d(21, 21), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(21, 32.0), true, 0.611, 0.0);
-      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), false, 2.1, -Math.PI);
+      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), false, 2.1, 0);
       
       armSetPoints[6] = new ArmPoint(stow, true, Units.degreesToRadians(-179), -1.57);
-      armSetPoints[7] = new ArmPoint(home, false, 1.8, -Math.PI);
+      armSetPoints[7] = new ArmPoint(home, false, 1.8, 0);
 
 
 
@@ -432,8 +433,8 @@ public static class Vision {
 
       armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -15.0), true, 0.0, -0.2);
 
-      armSetPoints[15] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(27)), false, 2.9, -Math.PI);
-      armSetPoints[16] = new ArmPoint(armSetPoints[4].position.plus(new Translation2d(-20, 0)), false, 2.5, -Math.PI);
+      armSetPoints[15] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(27)), false, 2.9, 0);
+      armSetPoints[16] = new ArmPoint(armSetPoints[4].position.plus(new Translation2d(-20, 0)), false, 2.5, 0);
 
       armSetPoints[17] = armSetPoints[6].add(new Translation2d(-5, 14)).withWristFlip(0).withWristTwist(0);
 
@@ -514,7 +515,7 @@ intermediatePoints[4][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final int intakeGrabberMotorPort = 51;
     public static final int intakeRangePort = 3;
     public static final double intakeDeployCurrentLimit = 40; //40
-    public static final double intakeGrabberCurrentLimit = 10;
+    public static final double intakeGrabberCurrentLimit = 25;
     public static final String intakeCANBus = "canivore1";
 
     public static final double deploykP = 8; //7
@@ -538,7 +539,7 @@ intermediatePoints[4][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double setpoint90 = .25;
 
     public static final double home = 0.45;
-    public static final double deploy = -0.06;
+    public static final double deploy = -0.09;
     public static final double climb = 0.05;
     public static final double climbLatch = 0.25;
     
@@ -548,7 +549,7 @@ intermediatePoints[4][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double intakePassive = -0.06;
 
     public static final double transferPowerRollers = 1.0; //-0.5
-    public static final double intakePowerRollers = -0.2;
+    public static final double intakePowerRollers = -0.5;
 
     public static final double intakeThrowPreparePosition = 0.37;
     public static final double intakeThrowPosition = 0.12;
