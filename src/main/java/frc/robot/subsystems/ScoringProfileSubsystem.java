@@ -204,7 +204,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public Pose2d getRobotPoseForSelectedCoralStation() {
-    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide).plus(new Transform2d(0, 0, new Rotation2d())));
+    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide).plus(new Transform2d(0, 0, isBackwards ? Rotation2d.k180deg : Rotation2d.kZero)));
   }
 
 }

@@ -216,8 +216,8 @@ public static class Vision {
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
-          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(23), 0, new Rotation2d(Math.toRadians(180))));
-          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(23), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(20), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(20), 0, new Rotation2d(Math.toRadians(180))));
          
         }
     }
@@ -242,17 +242,21 @@ public static class Vision {
   public final class ArmGains {
       public static final double shoulderP = 150.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
-      public static final double shoulderD = 50.0;
-      public static final double elbowP = 100.0;//20.0
+      public static final double shoulderD = 30.0;
+      public static final double elbowP = 180.0;//20.0
       public static final double elbowI = 0.0;
-      public static final double elbowD = 35.0;
-      public static final double wristFlipP = 30.0; //20.0
+      public static final double elbowD = 30.0;
+      public static final double wristFlipP = 160.0; //20.0
       public static final double wristFlipG = 0.0; //20.0 
-      public static final double wristFlipI = 10.0;
-      public static final double wristFlipD = 25;
-      public static final double wristTwistP = 100.0; //15.0
-      public static final double wristTwistI = 2.0;
-      public static final double wristTwistD = 7;
+      public static final double wristFlipI = 100.0;
+      public static final double wristFlipD = 0;
+      public static final double wristFlipVelocity = 0.5;
+      public static final double wristFlipAcceleration = wristFlipVelocity/0.1;
+      public static final double wristTwistP = 160.0; //15.0
+      public static final double wristTwistI = 100.0;
+      public static final double wristTwistD = 0;
+      public static final double wristTwistVelocity = 1;
+      public static final double wristTwistAcceleration = wristTwistVelocity/0.1;
       public static final double gripperP = 0.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
@@ -261,15 +265,15 @@ public static class Vision {
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.4;//0.3
+      public static final double elbowG = 0.5;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
   public static class ArmVelocityGains{
-    public static final double shoulderP = 5.0; //TODO CHANGE SOME OF THIS LATER //52.0
+    public static final double shoulderP = 10.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
       public static final double shoulderD = 0.0;
-      public static final double elbowP = 2.0;//20.0
+      public static final double elbowP = shoulderP*0.4;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 0.0;
       public static final double shoulderS = 0.0;
@@ -277,7 +281,7 @@ public static class Vision {
       public static final double shoulderV = 0.0;
       public static final double shoulderA = 0.0;
       public static final double elbowS = 0.0;
-      public static final double elbowG = 0.4;//0.3
+      public static final double elbowG = 0.5;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
   }
@@ -287,7 +291,7 @@ public static class Vision {
 
     public static final double lookAheadDistance = 15.0;
     public static final double lookAheadDistanceBeforeInflecting = 1; 
-    public static final double endDistance = 9.0;
+    public static final double endDistance = 18.0;
     public static final double linearApproximationTime = 0.2; // seconds
     public static final double velocity = 65;// does not seem to have any effect
     public static final double maxMotorVelocity = 3.0;
@@ -318,8 +322,8 @@ public static class Vision {
     public static final double currentLimitElbow = 25.0;
     public static final double currentLimitWristFlip = 45.0; //40.0
     public static final double currentLimitWristTwist = 30.0;
-    public static final double currentLimitGripperOpen = 12.0;
-    public static final double currentLimitGripperClose = 60.0;
+    public static final double currentLimitGripperOpen = 8.0;
+    public static final double currentLimitGripperClose = 20.0;
     public static final double gripperPowerClose = 1.0;
     public static final double gripperPowerOpen = -0.2;
 
@@ -394,8 +398,8 @@ public static class Vision {
      * @climbPrepare 9
      * @climbClose 10
      * @transferPullOut 11
-     * @shelfPickUp 12
-     * @shelfPickUpOppositeSide 13
+     * @shelfPickUpBackwardsSide 12
+     * @shelfPickUp 13
      * @groundPickUp 14
      * @L2Backwards 15
      * @L3Backwards 16
@@ -408,10 +412,12 @@ public static class Vision {
       armSetPoints[2] = new ArmPoint(new Translation2d(21.0, 16.0), true, -0.5, -1.57);
       armSetPoints[3] = new ArmPoint(new Translation2d(21, 21), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(21, 32.0), true, 0.611, 0.0);
-      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.4, -Math.PI);
+      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), false, 2.1, -Math.PI);
       
       armSetPoints[6] = new ArmPoint(stow, true, Units.degreesToRadians(-179), -1.57);
-      armSetPoints[7] = new ArmPoint(home, false, 1.3, -Math.PI);
+      armSetPoints[7] = new ArmPoint(home, false, 1.8, -Math.PI);
+
+
 
       // armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(50)), false);
       // armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(0)), false);
@@ -420,13 +426,13 @@ public static class Vision {
       
       armSetPoints[8] = new ArmPoint(new Translation2d(stow.getNorm(),Rotation2d.fromDegrees(18)), true, -2.4, -1.57); //19, 7
       armSetPoints[11] = new ArmPoint(new Translation2d(stow.getNorm(), Rotation2d.fromDegrees(40)), true, -2.6, -1.57); //19, 7
-      armSetPoints[12] = new ArmPoint((new Translation2d(17.8, 19.5)), false, 0.1, -1.57); //19, 7
+      armSetPoints[12] = new ArmPoint((new Translation2d(20.8, 19.0)), false, -0.15, -1.57); //19, 7
       // armSetPoints[12] = new ArmPoint((home.plus(new Translation2d(15, 0))), false, 0.1, -1.57); //19, 7
       armSetPoints[13] = armSetPoints[7].withWristFlip(2.7).withWristTwist(-1.57); //19, 7
 
-      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -11.0), true, 0.3, -0.2);
+      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -15.0), true, 0.0, -0.2);
 
-      armSetPoints[15] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(27)), false, 2.5, -Math.PI);
+      armSetPoints[15] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(27)), false, 2.9, -Math.PI);
       armSetPoints[16] = new ArmPoint(armSetPoints[4].position.plus(new Translation2d(-20, 0)), false, 2.5, -Math.PI);
 
       armSetPoints[17] = armSetPoints[6].add(new Translation2d(-5, 14)).withWristFlip(0).withWristTwist(0);
@@ -452,6 +458,7 @@ public static class Vision {
       // intermediatePoints[0][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(22.43, 30.52)), new ArmPoint(new Translation2d(47.519, 10.114)));
 intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)))));
 intermediatePoints[6][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
+intermediatePoints[5][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
 intermediatePoints[3][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(00, 35), true)));
 intermediatePoints[4][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(00, 35), true)));
 

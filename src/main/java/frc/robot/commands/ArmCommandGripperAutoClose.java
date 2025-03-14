@@ -16,7 +16,7 @@ public class ArmCommandGripperAutoClose extends Command {
   private Gripper gripper;
   private double timeToAct = Timer.getTimestamp();
   private boolean prevRangeDetected, rangeDetected = false;
-  private boolean needsAction = false;
+  private boolean needsAction = true;
   private BooleanSupplier neutralOpen, stallGripperOnDefault;
   /** Creates a new ArmCommandGripperAutoClose. */
   public ArmCommandGripperAutoClose(Gripper gripper, BooleanSupplier neutralOpen, BooleanSupplier stallGripperOnDefault) {
@@ -30,7 +30,8 @@ public class ArmCommandGripperAutoClose extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  
+    needsAction = true;
+    prevRangeDetected = rangeDetected = gripper.getLeftDetected() || gripper.getMiddleDetected() || gripper.getRightDetected();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

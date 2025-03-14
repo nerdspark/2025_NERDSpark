@@ -13,6 +13,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
@@ -156,11 +157,12 @@ public class Arm extends SubsystemBase {
     wristFlipConfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.wristFlipOffset)
       .withSensorToMechanismRatio(ArmConstants.wristFlipRadPerRot);
-    wristFlipConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+    wristFlipConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.05);
     wristFlipConfig.Slot0 = new Slot0Configs()
       .withKP(ArmGains.wristFlipP)
       .withKI(ArmGains.wristFlipI)
       .withKD(ArmGains.wristFlipD);
+    wristFlipConfig.MotionMagic = new MotionMagicConfigs().withMotionMagicAcceleration(ArmGains.wristFlipAcceleration).withMotionMagicCruiseVelocity(ArmGains.wristFlipVelocity);
     wristFlip
       .getConfigurator()
       .apply(wristFlipConfig.withMotorOutput(new MotorOutputConfigs()
@@ -174,11 +176,12 @@ public class Arm extends SubsystemBase {
     wristTwistConfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.wristTwistOffset)
       .withSensorToMechanismRatio(ArmConstants.wristTwistRadPerRot);
-    wristTwistConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+    wristTwistConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.05);
     wristTwistConfig.Slot0 = new Slot0Configs()
       .withKP(ArmGains.wristTwistP)
       .withKI(ArmGains.wristTwistI)
       .withKD(ArmGains.wristTwistD);
+    wristTwistConfig.MotionMagic = new MotionMagicConfigs().withMotionMagicAcceleration(ArmGains.wristTwistAcceleration).withMotionMagicCruiseVelocity(ArmGains.wristTwistVelocity);
     wristTwist
       .getConfigurator()
       .apply(wristTwistConfig.withMotorOutput(new MotorOutputConfigs()
@@ -424,14 +427,14 @@ public void stopWrist() {
       double flipPosition = wristFlipPosition;
       flipPosition += getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
       flipPosition /= (2d*Math.PI);
-      wristFlip.setControl(new PositionVoltage(flipPosition).withPosition(flipPosition));
+      wristFlip.setControl(new MotionMagicVoltage(flipPosition).withPosition(flipPosition).withSlot(0));
 
       double twistPosition = wristTwistPosition;
       twistPosition = MathUtil.clamp(twistPosition, -Math.PI, Math.PI * 1.0);
       twistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-      twistPosition -= getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
+      twistPosition -= wristFlipPosition * (ArmConstants.wristTwistToFlipRatio);
       twistPosition /= (2d*Math.PI);
-      wristTwist.setControl(new PositionVoltage(twistPosition).withPosition(twistPosition));
+      wristTwist.setControl(new MotionMagicVoltage(twistPosition).withPosition(twistPosition).withSlot(0));
       SmartDashboard.putNumber("wristflip error", flipPosition - wristFlip.getPosition().getValueAsDouble());
       SmartDashboard.putNumber("wristtwist error", twistPosition - wristTwist.getPosition().getValueAsDouble());
     }

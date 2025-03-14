@@ -31,7 +31,6 @@ import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
-import frc.robot.commands.ArmCommandGripperAutoCloseNeutralOpen;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.ArmDefaultCommand;
@@ -290,9 +289,10 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.rightTrigger().onFalse(new ArmCommandGripper(gripper, () -> false).withTimeout(0.2));
+    joystick.rightTrigger().onFalse((new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()))).withTimeout(0.5));
     // joystick.rightTrigger().onFalse(armDefaultCommand);
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
+    // joystick.rightTrigger().whileTrue(new ArmCommandGripper(gripper, () -> true));
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
@@ -327,11 +327,11 @@ public class RobotContainer {
     // joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false));
     // joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> true));
 
+    joystick.a().onTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true)));
 
     joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
     joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
-      
 
     joystick.start().whileTrue(new SetStowing(arm, false)); 
     joystick.back().whileTrue(new SetStowing(arm, true)); 
