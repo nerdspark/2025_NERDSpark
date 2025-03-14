@@ -72,7 +72,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
   public int getArmSubstationTarget() {
     
-    return isBackwards ? 13 : 12;
+    return isBackwards ? 12 : 13;
     
   }
 
@@ -89,15 +89,15 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("isbackwards", isBackwards);
-    SmartDashboard.putString("reeflevel", reefLevel.name());
-    SmartDashboard.putString("coralstationside", coralStationSide.name());
-    SmartDashboard.putNumber("branch", branch);
+    // SmartDashboard.putBoolean("isbackwards", isBackwards);
+    // SmartDashboard.putString("reeflevel", reefLevel.name());
+    // SmartDashboard.putString("coralstationside", coralStationSide.name());
+    // SmartDashboard.putNumber("branch", branch);
 
   if(Constants.Vision.USE_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
       if(DriverStation.getStickButton(1, i+1)) {
-        branch = branchesSimon[i]; //Adjusting for incorrect button board orientation.
+        branch = branchesSayan[i]; //Adjusting for incorrect button board orientation.
       }
     }
 
@@ -135,10 +135,12 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     }
           
   }
+  if (Constants.Vision.DOGLOG_ENABLED){
+
     DogLog.log("ScoringProfileSubSystem/Selected Branch", branch);
     DogLog.log("ScoringProfileSubSystem/Selected ReefLevel", reefLevel);
     DogLog.log("ScoringProfileSubSystem/Selected CoralStation", coralStationSide);
-
+  }
     selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefLevel).toPose2d());
     if(coralStationSide == FieldConstants.CoralStations.LEFT) {
       selectedCoralStationPose = AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace);
@@ -179,7 +181,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public boolean getIsBackwards() {
-    return isBackwards;
+    return isBackwards && (reefLevel.equals(ReefLevel.L2) || reefLevel.equals(ReefLevel.L3));
   }
 
   public FieldConstants.CoralStations getCoralStationSide() {
@@ -192,7 +194,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
   public Pose2d getRobotPoseForSelectedBranch() {
    
-    if(isBackwards && (reefLevel == ReefLevel.L2 || reefLevel == ReefLevel.L3)) {
+    if(getIsBackwards()) {
       return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel).plus(new Transform2d(0, 0, Rotation2d.fromDegrees(180))));
     }
     else {
@@ -202,7 +204,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public Pose2d getRobotPoseForSelectedCoralStation() {
-    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide));
+    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide).plus(new Transform2d(0, 0, new Rotation2d())));
   }
 
 }

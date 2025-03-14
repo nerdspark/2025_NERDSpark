@@ -4,6 +4,9 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Gripper;
@@ -11,14 +14,16 @@ import frc.robot.subsystems.Gripper;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmCommandGripperAutoClose extends Command {
   private Gripper gripper;
-  private double startTimeToClose = Timer.getFPGATimestamp();
-  private double startTimeToOpen = Timer.getFPGATimestamp();
-  private double min = 0.02;
-  private double max = 0.15;
+  private double timeToAct = Timer.getTimestamp();
+  private boolean prevRangeDetected, rangeDetected = false;
+  private boolean needsAction = false;
+  private BooleanSupplier neutralOpen, stallGripperOnDefault;
   /** Creates a new ArmCommandGripperAutoClose. */
-  public ArmCommandGripperAutoClose(Gripper gripper) {
+  public ArmCommandGripperAutoClose(Gripper gripper, BooleanSupplier neutralOpen, BooleanSupplier stallGripperOnDefault) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.gripper = gripper;
+    this.neutralOpen = neutralOpen;
+    this.stallGripperOnDefault = stallGripperOnDefault;
     addRequirements(gripper);
   }
 
@@ -33,19 +38,35 @@ public class ArmCommandGripperAutoClose extends Command {
   public void execute() {
     // double minRange = Math.min(gripper.getRangeLeftDistance(), Math.min(gripper.getRangeMiddleDistance(), gripper.getRangeRightDistance()));
     // boolean rangeTrue = (minRange < max);
-    boolean rangeDetected = (gripper.getLeftDetected() && (gripper.getRangeLeftDistance() < max)) || (gripper.getMiddleDetected() && (gripper.getRangeMiddleDistance() < max)) || (gripper.getRightDetected() && (gripper.getRangeRightDistance() < max));
-    if(!rangeDetected){
-      startTimeToClose = Timer.getFPGATimestamp();
+    prevRangeDetected = rangeDetected;
+    rangeDetected = gripper.getLeftDetected() || gripper.getMiddleDetected() || gripper.getRightDetected();
+    if(rangeDetected != prevRangeDetected){
+      timeToAct = Timer.getTimestamp();
+      needsAction = true;
     }
-    if(rangeDetected){
-      startTimeToOpen = Timer.getFPGATimestamp();
+    if (needsAction) {
+      if (Math.abs(timeToAct - Timer.getTimestamp()) > 0.02) {
+        if (rangeDetected) {
+          gripper.closeGripper();
+        } else {
+          if (!neutralOpen.getAsBoolean()) {
+            gripper.closeGripperWeak();
+          } else {
+            if (stallGripperOnDefault.getAsBoolean()) {
+              gripper.openGripper();
+            } else {
+              if (Math.abs(timeToAct - Timer.getTimestamp()) < 1.0) {
+                gripper.openGripper();
+              } else {
+                gripper.stopGripper();
+              }
+            }
+          }
+        }
+        needsAction = false;
+      }
     }
-    if (rangeDetected && Math.abs(startTimeToClose - Timer.getFPGATimestamp()) > 0.05){
-      gripper.closeGripper();
-    }
-    else if (Math.abs(startTimeToOpen - Timer.getFPGATimestamp()) > 0.05) {
-      gripper.closeGripperWeak();
-    }
+    
   }
 
   // Called once the command ends or is interrupted.

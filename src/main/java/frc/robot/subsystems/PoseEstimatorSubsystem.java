@@ -109,17 +109,17 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             if(Robot.isSimulation() ) {
                  visionFront.simulationPeriodic(getCurrentPose());
-                SmartDashboard.putData("Debug Field Front", visionFront.getSimDebugField());
+                // SmartDashboard.putData("Debug Field Front", visionFront.getSimDebugField());
                  visionBack.simulationPeriodic(getCurrentPose());
-                SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
+                // SmartDashboard.putData("Debug Field Back", visionBack.getSimDebugField());
     
             }
 
-            if(visionEstFront.isPresent()) {
+            if(visionEstFront.isPresent() && Constants.Vision.DOGLOG_ENABLED) {
                DogLog.log("PoseEstimator/VisionEst", visionEstFront.get().estimatedPose.toPose2d());
             }
 
-            if(visionEstBack.isPresent()) {
+            if(visionEstBack.isPresent() && Constants.Vision.DOGLOG_ENABLED) {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
              }
 

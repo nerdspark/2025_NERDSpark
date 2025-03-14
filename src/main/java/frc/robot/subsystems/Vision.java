@@ -37,7 +37,8 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
  import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
- import frc.robot.Robot;
+import frc.robot.Constants;
+import frc.robot.Robot;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -200,8 +201,10 @@ import dev.doglog.DogLog;
                         double xydeviations = kXYStdDev * Math.pow(avgDist, 2) / numTags ;
                         double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;
                         estStdDevs = VecBuilder.fill(xydeviations, xydeviations, thetadeviations);
+                        if (Constants.Vision.DOGLOG_ENABLED){
                         DogLog.log("Vision"+cameraName+"/PoseAmbiguity", targets.get(0).getPoseAmbiguity());
                         DogLog.log("Vision"+cameraName+"/estStdDevs", estStdDevs);
+                        }
                      }
                      else{
                          estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);

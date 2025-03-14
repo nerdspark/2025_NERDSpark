@@ -24,7 +24,7 @@ public class SetStowing extends InstantCommand {
   @Override
   public void initialize() {
     arm.setStowing(stowing);
-    SmartDashboard.putBoolean("stowing", stowing);
+    // SmartDashboard.putBoolean("stowing", stowing);
 
   }
 }

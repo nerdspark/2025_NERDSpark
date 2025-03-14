@@ -72,10 +72,10 @@ public class LimelightSubsystem extends SubsystemBase {
             
 
             corals = coralArrayUpdateReturn();
-            SmartDashboard.putNumber("size", corals.size());
+            // SmartDashboard.putNumber("size", corals.size());
             // SmartDashboard.putNumber("coralX", corals.get(corals.size() - 1).getPose().getX());
             // SmartDashboard.putNumber("coralY", corals.get(corals.size() - 1).getPose().getY());
-            SmartDashboard.putBoolean("tV", hasTarget());              
+            // SmartDashboard.putBoolean("tV", hasTarget());              
 
             // if (corals.size() > 0) {
             //     int size = corals.size();
@@ -124,8 +124,8 @@ public class LimelightSubsystem extends SubsystemBase {
         if (xys.length != 0) { //debug
             boundingHeight = xys[5] - xys[3];
             boundingWidth = xys[2] - xys[0];
-            SmartDashboard.putNumber("boundingHeight", boundingHeight);
-            SmartDashboard.putNumber("boundingWidth", boundingWidth);
+            // SmartDashboard.putNumber("boundingHeight", boundingHeight);
+            // SmartDashboard.putNumber("boundingWidth", boundingWidth);
         }
 
         double distance = 0.0;
@@ -139,14 +139,14 @@ public class LimelightSubsystem extends SubsystemBase {
             ignored = false;
         } else {
             distance = 0.0;
-            SmartDashboard.putString("orientation", "");
+            // SmartDashboard.putString("orientation", "");
             ignored = true;
         }
         if (distance > 0.0) {
             Rotation2d coralOrientation = new   Rotation2d(theta);
             Pose2d coralPose = new Pose2d(-distance * Math.sin((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightXOffset + poseX + offset.getX(), -distance * Math.cos((yaw.getDegrees()+tx) * (Math.PI / 180)) + Constants.Vision.kLimeLightYOffset + poseY + offset.getY(), yaw);
             //Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
-            SmartDashboard.putNumber("distance", distance);
+            // SmartDashboard.putNumber("distance", distance);
             ignored = false;
             CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
             return newCoral;

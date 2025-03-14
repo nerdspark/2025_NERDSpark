@@ -4,9 +4,11 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.Vision;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.FieldConstants.ReefLevel;
@@ -54,7 +56,7 @@ public final class Autos {
      DoubleSupplier omegaFF) {
 
        return new DriveToPose(drive, 
-       () -> getDriveTargetReef(()->drive.getState().Pose, ()->goalPoseSupplier.get(), ()->reefLevelSupplier.get(), isBackwardsSupplier),
+       () -> getDriveTargetReef(()->drive.getState().Pose, goalPoseSupplier, reefLevelSupplier, isBackwardsSupplier),
        () -> getLinearVelocityFromJoysticks(linearFF_X.getAsDouble(),linearFF_Y.getAsDouble()), omegaFF);
           
           
@@ -79,8 +81,8 @@ public final class Autos {
   public static Command getTransferCommand(Arm arm, Intake intake, Gripper gripper) {
     return 
           new SequentialCommandGroup(
-            new OpenGripperCommandStrong(gripper).until(() -> arm.finishedMoving && arm.wristFinishedMoving), 
-            new OpenGripperCommandStrong(gripper).alongWith(new IntakeCommandPower(intake, () -> IntakeConstants.transferPowerDeploy).until(() -> intake.finishedMovingToTransfer).andThen(new WaitCommand(0.12))).withTimeout(0.65), 
+            new OpenGripperCommandStrong(gripper).until(() -> arm.finishedMoving && arm.wristFinishedMoving()), 
+            new OpenGripperCommandStrong(gripper).alongWith(new IntakeCommandPower(intake, () -> IntakeConstants.transferPowerDeploy).until(() -> intake.finishedMovingToTransfer()).andThen(new WaitCommand(0.12))).withTimeout(0.65), 
             new ArmCommandGripperForceClose(gripper)
               .alongWith(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
                 .withTimeout(0.2))
@@ -97,7 +99,7 @@ public final class Autos {
   // }
 
   public static Command getDropReefOffCommand(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
-    return 
+    return //new ArmCommandGripper(gripper, () -> false).withTimeout(0.15);
       new SequentialCommandGroup(
         new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(12, new Rotation2d(arm.getWristFlipPosition() + (arm.getWristFlipPosition() > (Math.PI*0.5) ? (Math.PI*0.5) : (-Math.PI*0.5)) ))))
           .alongWith(new WaitCommand(0.07).andThen(new ArmCommandGripper(gripper, () -> false))).withTimeout(0.15), 
@@ -130,17 +132,7 @@ public final class Autos {
 
     double rotationDiff = offset.getRotation().getDegrees();
 
-      
-    DogLog.log("AutoScoreCommand/offset" , offset);   
-
-    DogLog.log("AutoScoreCommand/goalPose" , goal);
-    DogLog.log("AutoScoreCommand/robotPose" , robot);
-    DogLog.log("AutoScoreCommand/xDistance" , xDistance);
-    DogLog.log("AutoScoreCommand/yDistance" , yDistance);
-    DogLog.log("AutoScoreCommand/offsetX" , offset.getX());
-    DogLog.log("AutoScoreCommand/offsetY" , offset.getY());
-    DogLog.log("AutoScoreCommand/rotationDiff" , rotationDiff);
-
+     
     boolean isBackwards = isBackwardsSupplier.get();
 
     double shiftXT = 0.0, shiftYT = 0.0;
@@ -186,13 +178,24 @@ public final class Autos {
             goal = goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
           }
-
+          if (Vision.DOGLOG_ENABLED) {
+            DogLog.log("AutoScoreCommand/offset" , offset);   
+        
+            DogLog.log("AutoScoreCommand/goalPose" , goal);
+            DogLog.log("AutoScoreCommand/robotPose" , robot);
+            DogLog.log("AutoScoreCommand/xDistance" , xDistance);
+            DogLog.log("AutoScoreCommand/yDistance" , yDistance);
+            DogLog.log("AutoScoreCommand/offsetX" , offset.getX());
+            DogLog.log("AutoScoreCommand/offsetY" , offset.getY());
+            DogLog.log("AutoScoreCommand/rotationDiff" , rotationDiff);
+          
+        
         DogLog.log("AutoScoreCommand/shiftXT" , shiftXT); 
         DogLog.log("AutoScoreCommand/shiftYT" , shiftYT);
 
       
         DogLog.log("AutoScoreCommand/shiftedGoalPose", goal);
-        
+          }
         return goal;
   }
 

@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -52,12 +53,11 @@ public class Gripper extends SubsystemBase {
     sensorMiddle = new CANrange(ArmConstants.rangeMiddlePort, ArmConstants.armCanBus);
     sensorLeft = new CANrange(ArmConstants.rangeLeftPort, ArmConstants.armCanBus);
     sensorRight = new CANrange(ArmConstants.rangeRightPort, ArmConstants.armCanBus);
-    CANrangeConfiguration sensorMiddleConfig = new CANrangeConfiguration();
-    CANrangeConfiguration sensorLeftConfig = new CANrangeConfiguration();
-    CANrangeConfiguration sensorRightConfig = new CANrangeConfiguration();
-    sensorMiddle.getConfigurator().apply(sensorMiddleConfig);
-    sensorLeft.getConfigurator().apply(sensorLeftConfig);
-    sensorRight.getConfigurator().apply(sensorRightConfig);
+    CANrangeConfiguration sensorConfig = new CANrangeConfiguration();
+    sensorConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(0.15);
+    sensorMiddle.getConfigurator().apply(sensorConfig);
+    sensorLeft.getConfigurator().apply(sensorConfig);
+    sensorRight.getConfigurator().apply(sensorConfig);
   }
   public double getGripperPosition(){
     double gripperPosition = gripper.getPosition().getValueAsDouble() * (2d * Math.PI);

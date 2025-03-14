@@ -30,7 +30,7 @@ import frc.robot.util.ArmPoint;
 import frc.robot.util.GenPath;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ArmCommandPathToPoint extends Command {
+public class ArmDefaultCommand extends Command {
   private Arm arm;
     private ArmPath path;
     private IntSupplier setPointIntSupplier;
@@ -38,7 +38,7 @@ public class ArmCommandPathToPoint extends Command {
     private Supplier<ArmPoint> setPoint = null;
     private double initialWristFlip, initialWristTwist;
     /** path to the specified armPoint */ // TODO: add inflection point generation and hardstop avoidance to automatic path generation
-    public ArmCommandPathToPoint(Arm arm, IntSupplier setPointIntSupplier) {
+    public ArmDefaultCommand(Arm arm, IntSupplier setPointIntSupplier) {
       this.setPointIntSupplier = setPointIntSupplier;
         this.arm = arm;
         addRequirements(arm);
@@ -46,7 +46,7 @@ public class ArmCommandPathToPoint extends Command {
         initialWristFlip = ArmSetpoints.armSetPoints[closestPoint].wristFlip;
         initialWristFlip = ArmSetpoints.armSetPoints[closestPoint].wristTwist;
     }
-    public ArmCommandPathToPoint(Arm arm, Supplier<ArmPoint> setPoint) {
+    public ArmDefaultCommand(Arm arm, Supplier<ArmPoint> setPoint) {
       this.setPoint = setPoint;
         this.arm = arm;
         addRequirements(arm);
@@ -119,15 +119,17 @@ public class ArmCommandPathToPoint extends Command {
     double pathProgress = nextPointIndex/path.points.size();
     double finalWristFlip = path.points.get(path.points.size() - 1).wristFlip;
     double finalWristTwist = path.points.get(path.points.size() - 1).wristTwist;
-      // if (((pathProgress > 0.8) || arm.finishedMoving)){
+      if (((pathProgress > 0.95) || arm.finishedMoving)){
         arm.setWristTwistPosition(finalWristTwist);
-        arm.setWristFlipPosition(finalWristFlip);
-      // } else {
-        // arm.setWristFlipPosition((MathUtil.clamp((pathProgress), 0, 1) * (finalWristFlip-initialWristFlip)) + initialWristFlip);
-        // arm.setWristTwistPosition((MathUtil.clamp((pathProgress), 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);
+        if ((pathProgress > 0.95) || arm.finishedMoving){
+          arm.setWristFlipPosition(finalWristFlip);
+        }
+      } else {
+        arm.setWristFlipPosition((MathUtil.clamp((pathProgress - 0.5)*5, 0, 1) * (finalWristFlip-initialWristFlip)) + initialWristFlip);
+        arm.setWristTwistPosition((MathUtil.clamp((pathProgress - 0.5)*5, 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);
         // arm.stopWrist();
         
-      // }
+      }
 
   }
 

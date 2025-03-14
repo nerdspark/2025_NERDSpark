@@ -28,7 +28,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;

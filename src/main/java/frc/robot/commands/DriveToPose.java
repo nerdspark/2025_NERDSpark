@@ -34,6 +34,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.Constants.Vision;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.AllianceFlipUtil;
@@ -54,10 +55,10 @@ public class DriveToPose extends Command {
 
 private final ProfiledPIDController driveController =
       new ProfiledPIDController(
-          8, 0, 0, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
+          60, 0, 0, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          16, 0, 0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
+          10, 0, 1, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
  private double driveErrorAbs;
   private double thetaErrorAbs;
   private Translation2d lastSetpointTranslation;
@@ -90,7 +91,7 @@ private final ProfiledPIDController driveController =
   public void initialize() {
 
     driveController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_X, Constants.Vision.VELOCITY_TOLERANCE_X);
-    thetaController.setTolerance(Math.toRadians(2),Constants.Vision.VELOCITY_TOLERANCE_OMEGA);
+    thetaController.setTolerance(Constants.Vision.ROTATION_TOLERANCE,Constants.Vision.VELOCITY_TOLERANCE_OMEGA);
     // Reset all controllers
     var currentPose = drive.getState().Pose;
     
@@ -171,11 +172,13 @@ private final ProfiledPIDController driveController =
     // Scale feedback velocities by input ff
     final double linearS = linearFF.get().getNorm() * 3.0;
     final double thetaS = Math.abs(omegaFF.getAsDouble()) * 3.0;
+    if (Vision.DOGLOG_ENABLED){
     DogLog.log("DriveToPose/driveVelocity.X", driveVelocity.getX());
     DogLog.log("DriveToPose/driveVelocity.Y", driveVelocity.getY());
     DogLog.log("DriveToPose/thetaVelocity", thetaVelocity);
     DogLog.log("DriveToPose/linearS", linearS);
     DogLog.log("DriveToPose/thetaS", thetaS);
+    }
 
 
     if(linearS >0)
@@ -185,15 +188,18 @@ private final ProfiledPIDController driveController =
     thetaVelocity =
         MathUtil.interpolate(
             thetaVelocity, omegaFF.getAsDouble() * RotationsPerSecond.of(0.75).in(RadiansPerSecond), thetaS);
-  
+            if (Vision.DOGLOG_ENABLED){
+
             DogLog.log("DriveToPose/driveVelocity.X_I", driveVelocity.getX());
             DogLog.log("DriveToPose/driveVelocity.Y_I", driveVelocity.getY());
             DogLog.log("DriveToPose/thetaVelocity_I", thetaVelocity);
-
+            }
     
     drive.setControl(driveToPoseRequest.withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(driveVelocity.getX(),driveVelocity.getY(),
     thetaVelocity, drive.getState().Pose.getRotation())).withDriveRequestType(DriveRequestType.Velocity));
     // Log data
+    if (Vision.DOGLOG_ENABLED){
+
     DogLog.log("DriveToPose/DistanceMeasured", currentDistance);
     DogLog.log("DriveToPose/DistanceSetpoint", driveController.getSetpoint().position);
     DogLog.log("DriveToPose/ThetaMeasured", Math.toDegrees(currentPose.getRotation().getRadians()));
@@ -213,22 +219,27 @@ private final ProfiledPIDController driveController =
 
     DogLog.log("DriveToPose/DriveControllerAtGoal", driveController.atGoal());
     DogLog.log("DriveToPose/ThetaControllerAtGoal", thetaController.atGoal());
-
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
     running = false;
     drive.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
+    if (Vision.DOGLOG_ENABLED){
 
     DogLog.log("DriveToPose/DriveToPoseSetpoint", new double[] {});
     DogLog.log("DriveToPose/DriveToPoseGoal", new double[] {});
+    }
   }
 
   /** Checks if the robot is stopped at the final pose. */
   public boolean atGoal() {
+    if (Vision.DOGLOG_ENABLED){
+
     DogLog.log("DriveToPose/DriveControllerAtGoal1", driveController.atGoal());
     DogLog.log("DriveToPose/ThetaControllerAtGoal1", thetaController.atGoal());
+    }
     return running && driveController.atGoal() && thetaController.atGoal();
   }
 

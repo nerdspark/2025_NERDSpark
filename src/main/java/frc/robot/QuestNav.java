@@ -110,6 +110,6 @@ public class QuestNav {
   
   public void getQuestNavFieldPose() {
     field.setRobotPose(getQuestNavPose());
-    SmartDashboard.putData("Robot Pose in Field From QuestNav", field);
+    // SmartDashboard.putData("Robot Pose in Field From QuestNav", field);
   }
 }

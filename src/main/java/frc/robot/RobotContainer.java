@@ -18,6 +18,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ClimbCommand;
+import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.DriveToCoral;
 import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -33,6 +34,8 @@ import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandGripperAutoCloseNeutralOpen;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
+import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandPickup;
 import frc.robot.commands.LEDCommand;
@@ -127,7 +130,7 @@ public class RobotContainer {
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  // private Climb climb = new Climb();
+  private Climb climb;
   private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
   private Trigger hasCoral = new Trigger(() -> intake.hasCoral());
   // private Trigger driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
@@ -137,6 +140,8 @@ public class RobotContainer {
   
   /* Path follower */
   private SendableChooser<Command> autoChooser;
+  // private Command armDefaultCommand = new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7));
+  // private Command gripperDefaultCommand = new ArmCommandGripperAutoClose(gripper, () -> !arm.stowing, () -> arm.stowing);
   
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -154,8 +159,9 @@ public class RobotContainer {
 
     // SignalLogger.setPath("/media/sda1/armLog");
     // SignalLogger.start();
-    configureBindings();
     configureDefaultCommands();
+
+    configureBindings();
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     configureAutoChooser();
@@ -163,14 +169,15 @@ public class RobotContainer {
       configureLimelight();
     }
 
+    configureClimb();
   }
   private void configureLimelight() {
     limelightSubsystem = new LimelightSubsystem(drivetrain);
-    joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> limelightSubsystem.coralArrayUpdateReturn().get(0).getPose()));
+    joystick.y().whileTrue(new DriveToCoral(drivetrain, () -> limelightSubsystem.coralArrayUpdateReturn().get(0).getPose()));
   }
   
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("gripperToGroundIntake", new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
+    NamedCommands.registerCommand("gripperToGroundIntake", new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoClose(gripper, () -> true, () -> false)));
     NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false));
     NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
     NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5).alongWith(new ArmCommandGripper(gripper, () -> true)));
@@ -198,11 +205,12 @@ public class RobotContainer {
 
 
 
-    arm.setDefaultCommand(new ArmCommandPathToPoint(arm, () -> (arm.stowing ? 6 : 7)));
+    arm.setDefaultCommand(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)));
+    // arm.setDefaultCommand(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[(arm.stowing ? 6 : 7)]));
 
-    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
+    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper, () -> !arm.stowing, () -> arm.stowing));
 
-    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home, () -> 0.0));
+    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home , () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
     // m_LedSubsystem.setDefaultCommand(
@@ -282,9 +290,10 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    // joystick.rightTrigger().onFalse(Autos.getDropReefOffCommand(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
-    // joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
-    joystick.rightTrigger().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    joystick.rightTrigger().onFalse(new ArmCommandGripper(gripper, () -> false).withTimeout(0.2));
+    // joystick.rightTrigger().onFalse(armDefaultCommand);
+    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
+    joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
@@ -293,7 +302,20 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.leftBumper().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmSubstationTarget()));
+    // joystick.rightTrigger().whileTrue(new AutoScoreCommand(drivetrain,
+    // () -> drivetrain.getState().Pose,
+    // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    // ()->scoringSubsystem.getLevel(),
+    // ()->scoringSubsystem.getIsBackwards(),
+    // ()->-joystick.getRightY(),
+    // ()->-joystick.getRightX(),
+    // ()->-joystick.getLeftX(), 
+    // arm, 
+    // () -> scoringSubsystem.getArmReefTarget()));
+
+    // joystick.leftBumper().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmSubstationTarget()));
+    joystick.leftBumper().whileTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[scoringSubsystem.getArmSubstationTarget()]));
+    joystick.leftBumper().whileTrue(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true));
     joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
@@ -301,35 +323,28 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.a().whileTrue(Autos.getAutoDriveCommandXY(drivetrain, () -> drivetrain.getState().Pose, () -> new Pose2d(), () -> ReefLevel.L1, () -> false));
 
-    // joystick.rightStick().whileTrue(new ArmCommandPathToPoint(arm, () -> 12).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
-    // joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 13).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
-    // joystick.y().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoCloseNeutralOpen(gripper)));
-    joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false));
-    joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> true));
+    // joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false));
+    // joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> true));
 
 
     joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
-    joystick.leftTrigger().whileTrue((new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers)));
+    joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
       
 
     joystick.start().whileTrue(new SetStowing(arm, false)); 
     joystick.back().whileTrue(new SetStowing(arm, true)); 
 
-    // joystick.x().onTrue(new ArmCommandPathToPoint(arm, () -> 12));
-    // joystick.a().onTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getIsBackwards() ? 12 : 13));
 
-    // joystick.y().onTrue(new ArmCommandPathToPoint(arm, () -> 15));
-    // joystick.b().onTrue(new ArmCommandPathToPoint(arm, () -> 16));
-    // joystick.y().onTrue(new DriveToPose(drivetrain,
-    // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
-    // ).until(() -> joystick.x().getAsBoolean()));
 
-    // joystick.povLeft().onTrue(new ArmCommandAngles(arm, () -> Units.degreesToRadians(30), () -> ArmConstants.elbowPositionClimb).alongWith(new ArmCommandWrist(arm, () -> -2.0, () -> 0.0).alongWith(new WaitCommand(0.5).andThen(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)))));
-    // joystick.a().onTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb, ArmConstants.elbowPositionClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.deploy, () -> 0.0)));
- 
+  }
+  private void configureClimb() {
+    climb = new Climb();
+    joystick.povUp().onTrue(ClimbSequence.prepareToClimb(arm, intake, climb));
+    joystick.povRight().onTrue(ClimbSequence.closeHooks(arm, intake, climb));
+    joystick.povDown().onTrue(ClimbSequence.climbDown(arm, intake, climb));
+    joystick.povLeft().onTrue(ClimbSequence.latch(arm, intake, climb));
   }
 
   private void configureAutoChooser() {

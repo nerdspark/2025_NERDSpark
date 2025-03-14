@@ -33,7 +33,6 @@ public class Intake extends SubsystemBase {
   private TalonFX intakeGrabberMotor;
   private CANrange sensorIntake;
   private boolean hasCoral = false;
-  public boolean finishedMovingToTransfer = false;
   private double deployTarget = 0;
 
   /** Creates a new Intake. */
@@ -130,11 +129,13 @@ public class Intake extends SubsystemBase {
   public boolean hasCoral() {
     return hasCoral;
   }
+  public boolean finishedMovingToTransfer() {
+    return getIntakeDeployPosition() < IntakeConstants.intakeTransferPosition;
+  }
 
   @Override
   public void periodic() {
     
-    finishedMovingToTransfer =getIntakeDeployPosition() < IntakeConstants.intakeTransferPosition;
     
 
     // SmartDashboard.putNumber("intake range", getRangeIntakeDistance());
