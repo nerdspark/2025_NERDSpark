@@ -21,8 +21,8 @@ public class Climb extends SubsystemBase {
     
   }
 
-private PWM climbServoRight = new PWM(0);
-private PWM climbServoLeft = new PWM(1);
+private PWM climbServoRight = new PWM(1);
+private PWM climbServoLeft = new PWM(0);
 
 // public void setServoPosition(double value){
 //   // climbServoRight.setAngle(value + ArmConstants.rightServoOffset);
@@ -36,6 +36,10 @@ public void setServoOpen() {
 public void setServoClose() {
   climbServoRight.setPosition(1);
   climbServoLeft.setPosition(0);
+}
+public void stopServos(){ 
+climbServoLeft.setDisabled();
+climbServoRight.setDisabled();
 }
 
 

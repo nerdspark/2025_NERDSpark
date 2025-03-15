@@ -106,13 +106,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast)));
+        .withNeutralMode(NeutralModeValue.Brake)));
     
     shoulderRight
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast)));
+        .withNeutralMode(NeutralModeValue.Brake)));
 
 
     elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -139,13 +139,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
+          .withNeutralMode(NeutralModeValue.Brake)));
 
     elbowRight
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.Clockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
+          .withNeutralMode(NeutralModeValue.Brake)));
 
           
     
@@ -563,8 +563,8 @@ public void setShoulderAmpLimit(double amplimit) {
     // SmartDashboard.putNumber("shoulder velocity", getShoulderVelocity());
     // SmartDashboard.putNumber("elbow velocity", getElbowVelocity());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());
-    // SmartDashboard.putNumber("right shoulder amp", shoulderRight.getStatorCurrent().getValueAsDouble());
-    // SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("right shoulder amp", shoulderRight.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getStatorCurrent().getValueAsDouble());
     // This method will be called once per scheduler run
   }
 }

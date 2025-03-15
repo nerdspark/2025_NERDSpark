@@ -105,6 +105,14 @@ public final class Autos {
           .alongWith(new WaitCommand(0.07).andThen(new ArmCommandGripper(gripper, () -> false))).withTimeout(0.15), 
         new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].add(new Translation2d(10, new Rotation2d(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() < 8 ? 0 : Math.PI)))).withTimeout(0.1)).onlyIf(() -> (setPointIndex.getAsInt() == 3 || setPointIndex.getAsInt() == 4)).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.30));
   }
+  public static Command getDunkDropCommand(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
+  return 
+      new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].flipBy(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() > 10 ? -0.7 : 0.7)).withTimeout(0.4)
+        .alongWith(new WaitCommand(0.1).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(1.0))).withTimeout(3);
+  }
+  public static Command removeAlgaeCommand(Arm arm, Gripper gripper, boolean higherLevel) {
+    return new ArmCommandPathToPoint(arm, () -> 6).alongWith(new ArmCommandGripperAutoClose(gripper, () -> false, () -> true));
+  }
 
   
   public static Command getAutoDriveCommandXY(

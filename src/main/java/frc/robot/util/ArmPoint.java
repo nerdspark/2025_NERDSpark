@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
@@ -66,10 +67,16 @@ public class ArmPoint {
     public ArmPoint withWristFlip(double wristFlipPos) {
         return new ArmPoint(position, inBend, wristFlipPos, wristTwist);
     }
+    public ArmPoint flipBy(double wristFlipAdd) {
+        return new ArmPoint(position, inBend, wristFlip + wristFlipAdd, wristTwist);
+    }
     public ArmPoint withWristTwist(double wristTwistPos) {
         return new ArmPoint(position, inBend, wristFlip, wristTwistPos);
     }
     public ArmPoint add(Translation2d add) {
         return new ArmPoint(position.plus(add), inBend, wristFlip, wristTwist);
+    }
+    public ArmPoint rotateBy(Rotation2d rotateBy) {
+        return new ArmPoint(position.rotateBy(rotateBy), inBend, wristFlip, wristTwist);
     }
 }

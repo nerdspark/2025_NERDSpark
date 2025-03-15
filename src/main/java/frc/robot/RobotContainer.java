@@ -178,14 +178,11 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("gripperToGroundIntake", new WaitCommand(0.5).andThen(new ArmCommandGripperGroundPickup(gripper)).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 5)));
-    NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 5)));
-    NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(0.5).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 5))));
-    // NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
-    // NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5));
+    NamedCommands.registerCommand("gripperToGroundIntake", new WaitCommand(0.5).andThen(new ArmCommandGripperGroundPickup(gripper)).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18)));
+    NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
+    NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(0.5).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
     NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
     NamedCommands.registerCommand("armToHome", new ArmCommandPathToPoint(arm, () -> 7));
-    // NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPreparePosition, () -> IntakeConstants.intakePassive));
     NamedCommands.registerCommand("intakeThrow", new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakePassive).until(() -> intake.getIntakeDeployPosition() < IntakeConstants.intakeThrowPosition)
     .andThen(new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakeThrowPower)
       .withTimeout(0.05))
@@ -205,8 +202,8 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
-          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed * (joystick.getRightTriggerAxis() > 0.5 ? 0.2 : 1)))
+          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed * (joystick.getRightTriggerAxis() > 0.5 ? 0.2 : 1)))
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
@@ -301,7 +298,7 @@ public class RobotContainer {
     // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
-    joystick.rightTrigger().onFalse((new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()))).withTimeout(0.5));
+    joystick.rightTrigger().onFalse(Autos.getDunkDropCommand(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
     // joystick.rightTrigger().onFalse(armDefaultCommand);
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
     // joystick.rightTrigger().whileTrue(new ArmCommandGripper(gripper, () -> true));

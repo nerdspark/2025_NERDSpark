@@ -69,10 +69,10 @@ public class Gripper extends SubsystemBase {
     gripper.setControl(new PositionVoltage(position).withFeedForward(position).withPosition(position));
   }
   public void openGripper(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
-    gripper.getConfigurator().apply(gripperConfig);
-    gripper.set(ArmConstants.gripperPowerOpen);
+    // gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
+    //       .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
+    // gripper.getConfigurator().apply(gripperConfig);
+    // gripper.set(ArmConstants.gripperPowerOpen);
   }
   public void openGripperStrong(){
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -81,16 +81,16 @@ public class Gripper extends SubsystemBase {
     gripper.set(-ArmConstants.gripperPowerClose);
   }
   public void closeGripper(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
-    gripper.getConfigurator().apply(gripperConfig);
-    gripper.set(ArmConstants.gripperPowerClose);
+    // gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
+    //       .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
+    // gripper.getConfigurator().apply(gripperConfig);
+    // gripper.set(ArmConstants.gripperPowerClose);
   }
   public void closeGripperWeak(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
-    gripper.getConfigurator().apply(gripperConfig);
-    gripper.set(-ArmConstants.gripperPowerOpen);
+    // gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
+    //       .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
+    // gripper.getConfigurator().apply(gripperConfig);
+    // gripper.set(-ArmConstants.gripperPowerOpen);
   }
   public void stopGripper() {
     gripper.stopMotor();
@@ -114,7 +114,7 @@ public class Gripper extends SubsystemBase {
     return sensorRight.getIsDetected().getValue();
   }
   public boolean getDetected(){
-    return getMiddleDetected() || getLeftDetected() || getRightDetected();
+    return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.2;
   }
   @Override
   public void periodic() {

@@ -55,10 +55,10 @@ public class DriveToPose extends Command {
 
 private final ProfiledPIDController driveController =
       new ProfiledPIDController(
-          60, 0, 0, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
+          10, 0, 0, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
-          10, 0, 1, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
+          10, 0,0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
  private double driveErrorAbs;
   private double thetaErrorAbs;
   private Translation2d lastSetpointTranslation;

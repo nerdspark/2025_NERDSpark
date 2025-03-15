@@ -38,11 +38,11 @@ this.elbowPosition = elbowPosition;
     public void execute() {
         // arm.getArmPosition();
         arm.setElbowPosition(elbowPosition);
-        if (arm.getShoulderPosition() > ArmConstants.shoulderPositionClimb * 2.0 * Math.PI) {
+        // if (arm.getShoulderPosition() > ArmConstants.shoulderPositionClimb * 2.0 * Math.PI) {
             arm.setShoulderPower(shoulderPower);
-        } else {
-            arm.setShoulderPower(0);
-        }
+        // } else {
+        //     arm.setShoulderPower(0);
+        // }
     }
 
     // Called once the command ends or is interrupted.
