@@ -188,6 +188,15 @@ public class RobotContainer {
     .withTimeout(0.35)
       .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> 0.0)));
     NamedCommands.registerCommand("test", new InstantCommand(()-> System.out.println("test")));
+
+
+    // coach elmer didn't want us to break the arm
+    NamedCommands.registerCommand("armToStowPrint", new InstantCommand(()-> System.out.println("armToStowPrint")));
+    NamedCommands.registerCommand("intakePrepareThrowPrint", new InstantCommand(()-> System.out.println("intakePrepareThrowPrint")));
+    NamedCommands.registerCommand("intakeThrowPrint", new InstantCommand(()-> System.out.println("intakeThrowPrint")));
+    NamedCommands.registerCommand("gripperToGroundIntakePrint", new InstantCommand(()-> System.out.println("gripperToGroundIntakePrint")));
+    NamedCommands.registerCommand("armToL4Print", new InstantCommand(()-> System.out.println("armToL4Print")));
+
   }
 
   private void configureDefaultCommands() {

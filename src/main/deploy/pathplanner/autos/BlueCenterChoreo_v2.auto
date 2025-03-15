@@ -23,38 +23,6 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.25
-                }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "gripperOpen"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "BlueCenterChoreo4a"
@@ -67,38 +35,6 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.25
-                }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "gripperOpen"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "BlueCenterChoreo6a"
@@ -108,38 +44,6 @@
           "type": "path",
           "data": {
             "pathName": "BlueCenterChoreo7a"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.25
-                }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.25
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "gripperOpen"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
           }
         }
       ]
