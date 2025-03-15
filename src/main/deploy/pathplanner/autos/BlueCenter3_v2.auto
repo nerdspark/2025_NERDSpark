@@ -11,9 +11,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "race",
           "data": {
-            "waitTime": 0.25
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "gripperOpen"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              }
+            ]
           }
         },
         {
@@ -23,27 +36,28 @@
           }
         },
         {
-          "type": "wait",
+          "type": "race",
           "data": {
-            "waitTime": 0.25
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BlueCenter3_3v2"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "gripperOpen"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "gripperOpen"
+            "name": "gripperToGroundIntake"
           }
         }
       ]

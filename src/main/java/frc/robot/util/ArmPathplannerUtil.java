@@ -82,8 +82,8 @@ public class ArmPathplannerUtil {
    
 
     /** checks if the arm is at the end of the path */
-    public static boolean CheckArmPosition(List<Translation2d> armPaths, Translation2d position){
-        return position.getDistance(armPaths.get(armPaths.size()-1)) < ArmConstants.endDistance;
+    public static boolean CheckArmPosition(List<ArmPoint> armPaths, ArmPoint position){
+        return position.position.getDistance(armPaths.get(armPaths.size()-1).position) < ArmConstants.endDistance && position.inBend == armPaths.get(armPaths.size()-1).inBend;
     }
     /** interpolates linearly between start and end, includes endpoint but not startpoint */
     public static List<ArmPoint> interpolateArmPath(ArmPoint start, ArmPoint end){

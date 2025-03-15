@@ -91,7 +91,7 @@ public class ArmDefaultCommand extends Command {
   @Override
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
     // System.out.println("ArmCommandPathToPoint/execute");
-    if (ArmPathplannerUtil.CheckArmPosition(path.getTranslations(), arm.getArmPosition())) {
+    if (ArmPathplannerUtil.CheckArmPosition(path.points, arm.getArmState())) {
       arm.finishedMoving = true;
     }
     if (setPointIntSupplier != null) {

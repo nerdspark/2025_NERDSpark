@@ -31,12 +31,14 @@ import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
+import frc.robot.commands.ArmCommandGripperGroundPickup;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.IntakeCommandPickup;
+import frc.robot.commands.IntakeCommandPower;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.OpenGripperCommand;
 import frc.robot.commands.SetStowing;
@@ -176,17 +178,18 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("gripperToGroundIntake", new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoClose(gripper, () -> true, () -> false)));
-    NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false));
-    NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
-    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5).alongWith(new ArmCommandGripper(gripper, () -> true)));
+    NamedCommands.registerCommand("gripperToGroundIntake", new WaitCommand(0.5).andThen(new ArmCommandGripperGroundPickup(gripper)).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 5)));
+    NamedCommands.registerCommand("gripperOpen", new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 5)));
+    NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(0.5).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 5))));
+    // NamedCommands.registerCommand("gripperClose", new ArmCommandGripper(gripper, () -> true));
+    // NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 5));
     NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
-    NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPreparePosition, () -> IntakeConstants.intakePassive));
-    NamedCommands.registerCommand("intakeThrow", new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakePassive)
-    .withTimeout(0.45)
-    .andThen(new IntakeCommand(intake, ()-> IntakeConstants.intakeThrowPosition, () -> IntakeConstants.intakeThrowPower))
-    .withTimeout(0.35)
-      .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> 0.0)));
+    NamedCommands.registerCommand("armToHome", new ArmCommandPathToPoint(arm, () -> 7));
+    // NamedCommands.registerCommand("intakePrepareThrow", new IntakeCommand(intake, () -> IntakeConstants.intakeThrowPreparePosition, () -> IntakeConstants.intakePassive));
+    NamedCommands.registerCommand("intakeThrow", new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakePassive).until(() -> intake.getIntakeDeployPosition() < IntakeConstants.intakeThrowPosition)
+    .andThen(new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakeThrowPower)
+      .withTimeout(0.05))
+      .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> IntakeConstants.intakeThrowPower).withTimeout(1.0).andThen(() ->intake.stopIntake())));
     NamedCommands.registerCommand("test", new InstantCommand(()-> System.out.println("test")));
 
 

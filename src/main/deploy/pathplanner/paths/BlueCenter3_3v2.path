@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.19,
-        "y": 3.87
+        "x": 3.14,
+        "y": 3.82
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3746988636363637,
-        "y": 3.0607414772727277
+        "x": 2.324698863636364,
+        "y": 3.0107414772727275
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.65,
-        "y": 2.398
+        "x": 1.55,
+        "y": 2.25
       },
       "prevControl": {
-        "x": 1.4010887230167108,
-        "y": 2.374693859381092
+        "x": 1.301088723016711,
+        "y": 2.2266938593810917
       },
       "nextControl": {
-        "x": 1.933659090909091,
-        "y": 2.424559659090909
+        "x": 1.833659090909091,
+        "y": 2.2765596590909087
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.709431818181818,
-        "y": 2.9829687499999995
+        "x": 3.809,
+        "y": 2.883
       },
       "prevControl": {
-        "x": 2.917051136363636,
-        "y": 2.2066420454545446
+        "x": 3.016619318181818,
+        "y": 2.106673295454545
       },
       "nextControl": null,
       "isLocked": false,
@@ -59,23 +59,12 @@
   "eventMarkers": [
     {
       "name": "gripperToGroundIntake",
-      "waypointRelativePos": 0.09898762654667986,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "gripperToGroundIntake"
-        }
-      }
-    },
-    {
-      "name": "armToL4",
-      "waypointRelativePos": 1.3273340832395846,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "armToL4"
         }
       }
     }
