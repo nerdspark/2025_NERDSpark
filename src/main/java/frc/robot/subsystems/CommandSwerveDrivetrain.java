@@ -334,11 +334,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     }
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
-        // SignalLogger.writeDoubleArray("Odometry", new double[] {
-        //     this.getState().Pose.getX(),
-        //     this.getState().Pose.getY(),
-        //     this.getState().Pose.getRotation().getDegrees()
-        // });
+        SignalLogger.writeDoubleArray("Odometry", new double[] {
+            this.getState().Pose.getX(),
+            this.getState().Pose.getY(),
+            this.getState().Pose.getRotation().getDegrees()
+        });
 
         
 

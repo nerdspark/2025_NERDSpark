@@ -31,6 +31,7 @@ import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
+import frc.robot.commands.ArmCommandGripperFunnelPickup;
 import frc.robot.commands.ArmCommandGripperGroundPickup;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
@@ -299,7 +300,7 @@ public class RobotContainer {
     // // ).until(() -> joystick.rightBumper().getAsBoolean()));
 
     joystick.rightTrigger().onFalse(Autos.getDunkCommand(arm, () -> scoringSubsystem.getArmReefTarget()));
-    joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.5).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))).withTimeout(2));
+    joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
     // joystick.rightTrigger().onFalse(armDefaultCommand);
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
     // joystick.rightTrigger().whileTrue(new ArmCommandGripper(gripper, () -> true));
@@ -341,8 +342,8 @@ public class RobotContainer {
 
     joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperGroundPickup(gripper)));
 
-    joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
-    joystick.start().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(2, 2)).withWristFlip(4).withWristTwist(-3.141)).raceWith(new ArmCommandGripperGroundPickup(gripper)).andThen(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).withTimeout(0.5)));
+    // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
+    joystick.start().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(3, 5)).withWristFlip(4.2).withWristTwist(-3.141)).raceWith(new WaitCommand(0.7).andThen(new ArmCommandGripperFunnelPickup(gripper))).andThen(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).withTimeout(0.2).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(1))));
     // joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
     // joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));

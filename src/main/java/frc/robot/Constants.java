@@ -146,7 +146,7 @@ public static class Vision {
 
         public static final double TRANSLATION_TOLERANCE_X = 0.02; // Changed from 0.05 3/8/25
         public static final double TRANSLATION_TOLERANCE_Y = 0.02; // Changed from 0.05 3/8/25
-        public static final double ROTATION_TOLERANCE = Math.toRadians(3.0); // /deg
+        public static final double ROTATION_TOLERANCE = Math.toRadians(2.0); // /deg
 
         //Below same as pathplanner constants
         public static final double MAX_VELOCITY = 4.5; 
@@ -216,8 +216,8 @@ public static class Vision {
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
-          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(18), 0, new Rotation2d(Math.toRadians(180))));
-          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(18), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(16), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16), 0, new Rotation2d(Math.toRadians(180))));
          
         }
     }
@@ -415,7 +415,7 @@ public static class Vision {
       armSetPoints[3] = new ArmPoint(new Translation2d(21, 21), true, 0.611, 0.0);
       armSetPoints[4] = new ArmPoint(new Translation2d(21, 32.0), true, 0.611, 0.0);
       armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.1, 0);
-      armSetPoints[18] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.4, -Math.PI);
+      armSetPoints[18] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.2, -Math.PI);
       
       armSetPoints[6] = new ArmPoint(stow, true, Units.degreesToRadians(-179), -1.57);
       armSetPoints[7] = new ArmPoint(home, false, 1.8, 0);

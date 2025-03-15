@@ -134,6 +134,10 @@ public class Gripper extends SubsystemBase {
     (getLeftDetected() && getRangeLeftDistance() < distanceToTrip) || 
     (getRightDetected() && getRangeRightDistance() < distanceToTrip);
   }
+  public boolean getFunnelDetected(){
+    // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
+    return (getRangeMiddleDistance() < 0.26);
+  }
   @Override
   public void periodic() {
     SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());

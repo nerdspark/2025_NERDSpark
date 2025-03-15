@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 
 import dev.doglog.DogLog;
@@ -86,11 +87,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
                     var estStdDevs = visionFront.getEstimationStdDevs();
+                    SignalLogger.writeBoolean("front refreshed", true);
 
                     // printMatrixValues(estStdDevs);
                     driveTrain.addVisionMeasurement(
                             est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
-
 
                 });
 
@@ -101,10 +102,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 est -> {
                 // Change our trust in the measurement based on the tags we can see
                 var estStdDevs = visionBack.getEstimationStdDevs();               
-             
+                SignalLogger.writeBoolean("front refreshed", true);
+
                 driveTrain.addVisionMeasurement(
                         est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
-            
+
                 });
 
             if(Robot.isSimulation() ) {
