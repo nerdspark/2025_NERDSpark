@@ -62,6 +62,6 @@ public class ArmCommandGripperGroundPickup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(timeToAct - Timer.getTimestamp()) > 0.06 && rangeDetected;
+    return Math.abs(timeToAct - Timer.getTimestamp()) > 0.12 && rangeDetected;
   }
 }

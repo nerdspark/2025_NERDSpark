@@ -18,6 +18,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -29,6 +30,8 @@ public class Gripper extends SubsystemBase {
   private CANrange sensorMiddle;
   private CANrange sensorLeft;
   private CANrange sensorRight;
+  private double distanceToTrip = 0.15;
+  private double distanceToTripMiddle = 0.2;
 
   /** Creates a new Gripper. */
   public Gripper() {
@@ -54,8 +57,10 @@ public class Gripper extends SubsystemBase {
     sensorLeft = new CANrange(ArmConstants.rangeLeftPort, ArmConstants.armCanBus);
     sensorRight = new CANrange(ArmConstants.rangeRightPort, ArmConstants.armCanBus);
     CANrangeConfiguration sensorConfig = new CANrangeConfiguration();
-    sensorConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(0.14);
-    sensorMiddle.getConfigurator().apply(sensorConfig);
+    CANrangeConfiguration sensorMiddleConfig = new CANrangeConfiguration();
+    sensorConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(distanceToTrip);
+    sensorMiddleConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(distanceToTripMiddle);
+    sensorMiddle.getConfigurator().apply(sensorMiddleConfig);
     sensorLeft.getConfigurator().apply(sensorConfig);
     sensorRight.getConfigurator().apply(sensorConfig);
   }
@@ -116,14 +121,25 @@ public class Gripper extends SubsystemBase {
   public boolean getRightDetected(){
     return sensorRight.getIsDetected().getValue();
   }
+  public boolean getMiddleToTrip(){
+    return sensorMiddle.getIsDetected().getValue() && getRangeMiddleDistance()<distanceToTripMiddle ;
+  }
+  public boolean getRightToTrip(){
+    return sensorRight.getIsDetected().getValue() && getRangeRightDistance()<distanceToTrip;
+  }
   /** auton */
   public boolean getDetected(){
-    return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
+    // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
+    return (getMiddleDetected() && getRangeMiddleDistance() < distanceToTripMiddle) || 
+    (getLeftDetected() && getRangeLeftDistance() < distanceToTrip) || 
+    (getRightDetected() && getRangeRightDistance() < distanceToTrip);
   }
   @Override
   public void periodic() {
-    // SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());
-    // SmartDashboard.putNumber("l + r sensor", (getRangeLeftDistance() + getRangeRightDistance()) / 2);
+    SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());
+    SmartDashboard.putNumber("l sensor", (getRangeLeftDistance()));
+    SmartDashboard.putBoolean("middle det", getMiddleDetected());
+    // SmartDashboard.putNumber(getName(), distanceToTrip)
     // This method will be called once per scheduler run
   }
 }
