@@ -54,7 +54,7 @@ public class Gripper extends SubsystemBase {
     sensorLeft = new CANrange(ArmConstants.rangeLeftPort, ArmConstants.armCanBus);
     sensorRight = new CANrange(ArmConstants.rangeRightPort, ArmConstants.armCanBus);
     CANrangeConfiguration sensorConfig = new CANrangeConfiguration();
-    sensorConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(0.15);
+    sensorConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(0.14);
     sensorMiddle.getConfigurator().apply(sensorConfig);
     sensorLeft.getConfigurator().apply(sensorConfig);
     sensorRight.getConfigurator().apply(sensorConfig);
@@ -104,17 +104,21 @@ public class Gripper extends SubsystemBase {
   public double getRangeMiddleDistance() {
     return sensorMiddle.getDistance().getValueAsDouble();
   }
+  /** teleop */
   public boolean getMiddleDetected(){
     return sensorMiddle.getIsDetected().getValue();
   }
+  /** teleop */
   public boolean getLeftDetected(){
     return sensorLeft.getIsDetected().getValue();
   }
+  /** teleop */
   public boolean getRightDetected(){
     return sensorRight.getIsDetected().getValue();
   }
+  /** auton */
   public boolean getDetected(){
-    return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.2;
+    return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
   }
   @Override
   public void periodic() {

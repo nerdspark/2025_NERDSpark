@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Vision;
@@ -79,6 +80,7 @@ public class Robot extends TimedRobot {
         //                 llMeasurement.pose, Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
         //     }
         // }
+        SmartDashboard.putNumber("Match Time",DriverStation.getMatchTime());
     }
 
     @Override

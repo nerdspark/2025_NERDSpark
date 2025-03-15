@@ -17,7 +17,6 @@ import frc.robot.subsystems.Gripper;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmCommandGripperGroundPickup extends Command {
   private Gripper gripper;
-  private boolean needsAction;
   private boolean rangeDetected;
   private double timeToAct = Timer.getTimestamp();
   /** Creates a new ArmCommandGripperAutoClose. */
@@ -43,12 +42,9 @@ public class ArmCommandGripperGroundPickup extends Command {
   public void execute() {
     // double minRange = Math.min(gripper.getRangeLeftDistance(), Math.min(gripper.getRangeMiddleDistance(), gripper.getRangeRightDistance()));
     // boolean rangeTrue = (minRange < max);
-    rangeDetected = gripper.getLeftDetected() || gripper.getMiddleDetected() || gripper.getRightDetected();
+    rangeDetected = gripper.getDetected();
 
     
-    if(rangeDetected){
-      needsAction = true;
-    }
     if (!rangeDetected){
       timeToAct = Timer.getTimestamp();
     }
@@ -66,6 +62,6 @@ public class ArmCommandGripperGroundPickup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(timeToAct - Timer.getTimestamp()) > 0.03 && needsAction;
+    return Math.abs(timeToAct - Timer.getTimestamp()) > 0.06 && rangeDetected;
   }
 }

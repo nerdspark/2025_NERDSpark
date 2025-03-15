@@ -256,7 +256,7 @@ public static class Vision {
       public static final double wristTwistP = 200.0; //15.0
       public static final double wristTwistI = 100.0;
       public static final double wristTwistD = 0;
-      public static final double wristTwistVelocity = wristFlipVelocity*2.2;
+      public static final double wristTwistVelocity = wristFlipVelocity*1.8;
       public static final double wristTwistAcceleration = wristTwistVelocity/wristAccelerationTime;
       public static final double gripperP = 0.0; // 10.0
       public static final double gripperI = 0.0;
@@ -440,7 +440,7 @@ public static class Vision {
 
       armSetPoints[17] = armSetPoints[6].add(new Translation2d(-5, 14)).withWristFlip(0).withWristTwist(0);
 
-      armSetPoints[19] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 4, -1.57);
+      armSetPoints[19] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(55)), false, 3.5, -1.57);
 
 
       //clamp distance of all setpoints (probably unnecessary)

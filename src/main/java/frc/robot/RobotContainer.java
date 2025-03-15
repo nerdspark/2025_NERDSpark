@@ -334,14 +334,14 @@ public class RobotContainer {
     ()->-joystick.getLeftX()));
 
 
-    // joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false));
-    // joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> true));
+    joystick.a().whileTrue(new ArmCommandGripper(gripper, () -> false));
+    joystick.y().whileTrue(new ArmCommandGripper(gripper, () -> true));
 
-    joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true)));
+    joystick.b().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperGroundPickup(gripper)));
 
     // joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
-    joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
+    // joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
 
     // joystick.start().whileTrue(new SetStowing(arm, false)); 
     // joystick.back().whileTrue(new SetStowing(arm, true)); 

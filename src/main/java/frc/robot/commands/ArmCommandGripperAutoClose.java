@@ -32,7 +32,7 @@ public class ArmCommandGripperAutoClose extends Command {
   @Override
   public void initialize() {
     needsAction = true;
-    prevRangeDetected = rangeDetected = gripper.getDetected();
+    prevRangeDetected = rangeDetected = gripper.getLeftDetected() || gripper.getMiddleDetected() || gripper.getRightDetected();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

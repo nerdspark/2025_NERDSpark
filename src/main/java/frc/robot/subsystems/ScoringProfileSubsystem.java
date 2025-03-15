@@ -77,9 +77,9 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     
   }
   public int getArmSubstationTarget() {
-    
+    SmartDashboard.putBoolean("isbackwards", isBackwards);
+
     return isBackwards ? 12 : 13;
-    
   }
 
   /**
