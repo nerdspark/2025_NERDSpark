@@ -302,7 +302,7 @@ public class RobotContainer {
     // joystick.rightTrigger().onFalse(armDefaultCommand);
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
     // joystick.rightTrigger().whileTrue(new ArmCommandGripper(gripper, () -> true));
-    joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
@@ -323,8 +323,9 @@ public class RobotContainer {
     // () -> scoringSubsystem.getArmReefTarget()));
 
     // joystick.leftBumper().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmSubstationTarget()));
-    joystick.leftBumper().whileTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[scoringSubsystem.getArmSubstationTarget()]));
-    joystick.leftBumper().whileTrue(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true));
+    joystick.leftTrigger().whileTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[scoringSubsystem.getArmSubstationTarget()]));
+    joystick.leftTrigger().whileTrue(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true));
+
     joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
@@ -336,14 +337,14 @@ public class RobotContainer {
     // joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false));
     // joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> true));
 
-    joystick.a().onTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true)));
+    joystick.a().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true)));
 
-    joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
+    // joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
     joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
 
-    joystick.start().whileTrue(new SetStowing(arm, false)); 
-    joystick.back().whileTrue(new SetStowing(arm, true)); 
+    // joystick.start().whileTrue(new SetStowing(arm, false)); 
+    // joystick.back().whileTrue(new SetStowing(arm, true)); 
 
 
 

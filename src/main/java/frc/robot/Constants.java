@@ -404,6 +404,7 @@ public static class Vision {
      * @groundPickUp 14
      * @L2Backwards 15
      * @L3Backwards 16
+     * @L1BackwardsBoth 19
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
@@ -438,6 +439,8 @@ public static class Vision {
       armSetPoints[16] = new ArmPoint(new Translation2d(0, 32), false, 2.3, 0);
 
       armSetPoints[17] = armSetPoints[6].add(new Translation2d(-5, 14)).withWristFlip(0).withWristTwist(0);
+
+      armSetPoints[19] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 1, -1.57);
 
 
       //clamp distance of all setpoints (probably unnecessary)

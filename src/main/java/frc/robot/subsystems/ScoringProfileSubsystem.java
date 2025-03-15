@@ -66,6 +66,12 @@ public class ScoringProfileSubsystem extends SubsystemBase {
       if (reefLevel.level == 3) {
         return 16;
       }
+      if (reefLevel.level == 1) {
+        return 19;
+      }
+      if (reefLevel.level == 0) {
+        return 19;
+      }
     } 
     return (reefLevel.level + 1);
     
@@ -181,7 +187,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public boolean getIsBackwards() {
-    return isBackwards && (reefLevel.equals(ReefLevel.L2) || reefLevel.equals(ReefLevel.L3));
+    return isBackwards && (reefLevel.equals(ReefLevel.L2) || reefLevel.equals(ReefLevel.L3) || reefLevel.equals(ReefLevel.L1) || reefLevel.equals(ReefLevel.L1Top));
   }
 
   public FieldConstants.CoralStations getCoralStationSide() {
