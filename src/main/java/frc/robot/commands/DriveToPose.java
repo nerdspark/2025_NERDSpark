@@ -30,6 +30,7 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 import dev.doglog.DogLog;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants;
@@ -121,10 +122,12 @@ private final ProfiledPIDController driveController =
     var currentPose = drive.getState().Pose;
     var targetPose = poseSupplier.get();
     Transform2d error = currentPose.minus(targetPose);
-        SmartDashboard.putNumber("X", error.getX());
-        SmartDashboard.putNumber("Y", error.getY());
-        SmartDashboard.putNumber("O", error.getRotation().getDegrees());
+        SignalLogger.writeDouble("X", error.getX());
+        SignalLogger.writeDouble("Y", error.getY());
+        SignalLogger.writeDouble("O", error.getRotation().getDegrees());
 
+        System.out.println("x: " + error.getX() + "; Y: " + error.getY() + "; O: " + error.getRotation().getDegrees());
+        
     // Calculate drive speed
     double currentDistance =
         currentPose.getTranslation().getDistance(poseSupplier.get().getTranslation());

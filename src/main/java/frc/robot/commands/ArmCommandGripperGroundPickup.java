@@ -17,8 +17,7 @@ import frc.robot.subsystems.Gripper;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ArmCommandGripperGroundPickup extends Command {
   private Gripper gripper;
-  private boolean rangeDetected;
-  private double timeToAct = Timer.getTimestamp();
+  private double timeToAct = Timer.getFPGATimestamp();
   /** Creates a new ArmCommandGripperAutoClose. */
   public ArmCommandGripperGroundPickup(Gripper gripper) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,6 +34,8 @@ public class ArmCommandGripperGroundPickup extends Command {
   @Override
   public void initialize() {
     gripper.openGripperStrong();
+    timeToAct = Timer.getFPGATimestamp();
+    System.out.println("start");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,12 +43,13 @@ public class ArmCommandGripperGroundPickup extends Command {
   public void execute() {
     // double minRange = Math.min(gripper.getRangeLeftDistance(), Math.min(gripper.getRangeMiddleDistance(), gripper.getRangeRightDistance()));
     // boolean rangeTrue = (minRange < max);
-    rangeDetected = gripper.getDetected();
 
     
-    if (!rangeDetected){
-      timeToAct = Timer.getTimestamp();
+    if (!gripper.getDetected()){
+      timeToAct = Timer.getFPGATimestamp();
     }
+    System.out.println("gripper detect " + gripper.getDetected());
+    System.out.println("timetoact - current " + Math.abs(timeToAct - Timer.getFPGATimestamp()));
 
     
 
@@ -57,11 +59,12 @@ public class ArmCommandGripperGroundPickup extends Command {
   @Override
   public void end(boolean interrupted) {
     gripper.closeGripper();
+    System.out.println("finish");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(timeToAct - Timer.getTimestamp()) > 0.12 && rangeDetected;
+    return Math.abs(timeToAct - Timer.getFPGATimestamp()) > 0.12 && gripper.getDetected();
   }
 }

@@ -256,7 +256,7 @@ public static class Vision {
       public static final double wristTwistP = 200.0; //15.0
       public static final double wristTwistI = 100.0;
       public static final double wristTwistD = 0;
-      public static final double wristTwistVelocity = wristFlipVelocity*1.8;
+      public static final double wristTwistVelocity = wristFlipVelocity*2.0;
       public static final double wristTwistAcceleration = wristTwistVelocity/wristAccelerationTime;
       public static final double gripperP = 0.0; // 10.0
       public static final double gripperI = 0.0;
@@ -322,7 +322,7 @@ public static class Vision {
     public static final double currentLimitShoulder = 35.0;
     public static final double currentLimitElbow = 25.0;
     public static final double currentLimitWristFlip = 45.0; //40.0
-    public static final double currentLimitWristTwist = 80.0;
+    public static final double currentLimitWristTwist = 70.0;
     public static final double currentLimitGripperOpen = 8.0;
     public static final double currentLimitGripperClose = 40.0;
     public static final double gripperPowerClose = 1.0;
