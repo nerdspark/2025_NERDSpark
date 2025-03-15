@@ -107,12 +107,12 @@ public final class Autos {
   }
   public static Command getDunkDropCommand(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
   return 
-      new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].flipBy(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() > 10 ? -1.3 : 1.3)).withTimeout(0.8)
+      new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].flipBy(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() > 10 ? -1.5 : 1.5)).withTimeout(0.8)
         .alongWith(new WaitCommand(0.3).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.5))).withTimeout(1);
   }
   public static Command getDunkCommand(Arm arm, IntSupplier setPointIndex) {
     return 
-        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].flipBy(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() > 10 ? -1.3 : 1.3));
+        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].flipBy(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() > 10 ? -1.5 : 1.5));
     }
 
   public static Command removeAlgaeCommand(Arm arm, Gripper gripper, boolean higherLevel) {

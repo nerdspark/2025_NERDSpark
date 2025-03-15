@@ -134,7 +134,7 @@
     },
     {
       "name": "intakeThrow",
-      "waypointRelativePos": 0.6951631046119233,
+      "waypointRelativePos": 0.7843665768194068,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
