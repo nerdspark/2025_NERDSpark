@@ -382,7 +382,7 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 19;
+    public static final int setPointCount = 20;
     public static final Translation2d home = new Translation2d(6.8,14.1); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final Translation2d stow = new Translation2d(26, Rotation2d.fromDegrees(35)); //closest possible distance when inbend true
     /**
