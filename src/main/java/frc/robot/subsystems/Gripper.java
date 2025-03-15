@@ -31,7 +31,7 @@ public class Gripper extends SubsystemBase {
   private CANrange sensorLeft;
   private CANrange sensorRight;
   private double distanceToTrip = 0.15;
-  private double distanceToTripMiddle = 0.2;
+  private double distanceToTripMiddle = 0.15;
 
   /** Creates a new Gripper. */
   public Gripper() {

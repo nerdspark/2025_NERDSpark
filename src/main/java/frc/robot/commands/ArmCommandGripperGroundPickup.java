@@ -25,11 +25,11 @@ public class ArmCommandGripperGroundPickup extends Command {
     this.gripper = gripper;
     addRequirements(gripper);
   }
-  public static Command armCommandGroundPickup(Arm arm, Gripper gripper) {
-    return new SequentialCommandGroup(
-      new ArmCommandGripperGroundPickup(gripper).deadlineFor(new ArmCommandPathToPoint(arm, () -> 14))
-      );
-  }
+  // public static Command armCommandGroundPickup(Arm arm, Gripper gripper) {
+  //   return new SequentialCommandGroup(
+  //     new ArmCommandGripperGroundPickup(gripper).deadlineFor(new ArmCommandPathToPoint(arm, () -> 14))
+  //     );
+  // }
 
   // Called when the command is initially scheduled.
   @Override
