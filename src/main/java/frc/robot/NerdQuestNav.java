@@ -2,13 +2,13 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-import java.util.ArrayList;
-import java.util.List;
+// import java.util.ArrayList;
+// import java.util.List;
 import java.util.Optional;
+
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.FloatArraySubscriber;
 import edu.wpi.first.networktables.IntegerEntry;
@@ -28,11 +30,15 @@ import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.estimator.KalmanFilter;
 
 /** Add your docs here. */
 public class NerdQuestNav {
@@ -69,6 +75,7 @@ public class NerdQuestNav {
     private int _calculatedOffsetToRobotCenterCount = 0;
 
     private final SwerveRequest.ApplyRobotSpeeds m_ApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
+    private Field2d field = new Field2d();
 
     public enum QuestCommand {
         RESET(1);
@@ -267,32 +274,32 @@ public class NerdQuestNav {
         return 0;
     }
 
-    private void updateVelocity() {
-        if (previousPose == null) {
-            previousPose = getRobotPose().get();
-            previousTime = timestamp.get();
-            return;
-        }
-        double currentTime = timestamp.get();
-        double deltaTime = currentTime - previousTime;
-        if (deltaTime == 0) {
-            return;
-        }
-        velocity = new ChassisSpeeds(
-                (getPosition().getX() - previousPose.getTranslation().getX()) / deltaTime,
-                (getPosition().getY() - previousPose.getTranslation().getY()) / deltaTime,
-                (getRotation().getZ() - previousPose.getRotation().getZ()) / deltaTime);
-        previousTime = currentTime;
-        previousPose = getRobotPose().get();
+    // private void updateVelocity() {
+    //     if (previousPose == null) {
+    //         previousPose = getRobotPose().get();
+    //         previousTime = timestamp.get();
+    //         return;
+    //     }
+    //     double currentTime = timestamp.get();
+    //     double deltaTime = currentTime - previousTime;
+    //     if (deltaTime == 0) {
+    //         return;
+    //     }
+    //     velocity = new ChassisSpeeds(
+    //             (getPosition().getX() - previousPose.getTranslation().getX()) / deltaTime,
+    //             (getPosition().getY() - previousPose.getTranslation().getY()) / deltaTime,
+    //             (getRotation().getZ() - previousPose.getRotation().getZ()) / deltaTime);
+    //     previousTime = currentTime;
+    //     previousPose = getRobotPose().get();
 
-    }
+    // }
 
-    public ChassisSpeeds getVelocity() {
-        if (null != velocity) {
-            return velocity;
-        }
-        return new ChassisSpeeds();
-    }
+    // public ChassisSpeeds getVelocity() {
+    //     if (null != velocity) {
+    //         return velocity;
+    //     }
+    //     return new ChassisSpeeds();
+    // }
 
     // @Override
     // public void update() {
