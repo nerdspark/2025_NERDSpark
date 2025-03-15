@@ -440,7 +440,7 @@ public static class Vision {
 
       armSetPoints[17] = armSetPoints[6].add(new Translation2d(-5, 14)).withWristFlip(0).withWristTwist(0);
 
-      armSetPoints[19] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 1, -1.57);
+      armSetPoints[19] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 4, -1.57);
 
 
       //clamp distance of all setpoints (probably unnecessary)
