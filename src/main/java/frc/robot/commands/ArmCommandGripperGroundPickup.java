@@ -45,7 +45,7 @@ public class ArmCommandGripperGroundPickup extends Command {
     // boolean rangeTrue = (minRange < max);
 
     
-    if (!gripper.getDetected() || gripper.getRangeMiddleDistance() < 0.01 || gripper.getRangeLeftDistance() < 0.01 || gripper.getRangeRightDistance() < 0.01){
+    if (!gripper.getDetected()){
       timeToAct = Timer.getFPGATimestamp();
     }
     System.out.println("gripper detect " + gripper.getDetected());
@@ -65,6 +65,6 @@ public class ArmCommandGripperGroundPickup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(timeToAct - Timer.getFPGATimestamp()) > 0.11 && gripper.getDetected();
+    return Math.abs(timeToAct - Timer.getFPGATimestamp()) > 0.09 && gripper.getDetected();
   }
 }

@@ -120,7 +120,7 @@ public final class Autos {
   }
   public static Command funnelIntake(Arm arm, Gripper gripper) {
     return 
-    new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(5, 7.5)).withWristFlip(3.9).withWristTwist(-3.141))
+    new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(8, 12)).withWristFlip(3.9).withWristTwist(-3.141))
     .raceWith(new WaitCommand(0.7).andThen(new ArmCommandGripperFunnelPickup(gripper)))
     .andThen(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).withTimeout(0.2)
     .andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(1)));

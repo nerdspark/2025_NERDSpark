@@ -122,17 +122,22 @@ public class Gripper extends SubsystemBase {
     return sensorRight.getIsDetected().getValue();
   }
   public boolean getMiddleToTrip(){
-    return sensorMiddle.getIsDetected().getValue() && getRangeMiddleDistance()<distanceToTripMiddle ;
+    return sensorMiddle.getIsDetected().getValue() && getRangeMiddleDistance()<distanceToTripMiddle  && getRangeMiddleDistance() > 0.01;
   }
   public boolean getRightToTrip(){
-    return sensorRight.getIsDetected().getValue() && getRangeRightDistance()<distanceToTrip;
+    return sensorRight.getIsDetected().getValue() && getRangeRightDistance()<distanceToTrip  && getRangeRightDistance() > 0.01;
+  }
+  public boolean getLeftToTrip(){
+    return sensorLeft.getIsDetected().getValue() && getRangeLeftDistance()<distanceToTrip  && getRangeLeftDistance() > 0.01;
   }
   /** auton */
   public boolean getDetected(){
     // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
-    return (getMiddleDetected() && getRangeMiddleDistance() < distanceToTripMiddle) || 
-    (getLeftDetected() && getRangeLeftDistance() < distanceToTrip) || 
-    (getRightDetected() && getRangeRightDistance() < distanceToTrip);
+    return (getLeftToTrip() || getRightToTrip() || getMiddleToTrip());
+  }
+  public boolean getShelfDetected(){
+    // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
+    return (getDetected());
   }
   public boolean getFunnelDetected(){
     // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;

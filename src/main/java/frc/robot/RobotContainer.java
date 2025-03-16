@@ -342,7 +342,7 @@ public class RobotContainer {
 
     joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperGroundPickup(gripper)));
 
-    // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
+    joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141).add(new Translation2d(3, 10))).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
     joystick.start().onTrue(Autos.funnelIntake(arm, gripper));
     // joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         

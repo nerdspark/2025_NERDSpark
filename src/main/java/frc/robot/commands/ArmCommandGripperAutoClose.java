@@ -32,7 +32,7 @@ public class ArmCommandGripperAutoClose extends Command {
   @Override
   public void initialize() {
     needsAction = true;
-    prevRangeDetected = gripper.getDetected();
+    prevRangeDetected = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,7 +40,7 @@ public class ArmCommandGripperAutoClose extends Command {
   public void execute() {
     // double minRange = Math.min(gripper.getRangeLeftDistance(), Math.min(gripper.getRangeMiddleDistance(), gripper.getRangeRightDistance()));
     // boolean rangeTrue = (minRange < max);
-    rangeDetected = gripper.getDetected();
+    rangeDetected = gripper.getShelfDetected();
 
     if (stallGripperBoolean != stallGripperOnDefault.getAsBoolean()) {
       needsAction = true;

@@ -251,7 +251,7 @@ public static class Vision {
       public static final double wristFlipG = 0.0; //20.0 
       public static final double wristFlipI = 100.0;
       public static final double wristFlipD = 0;
-      public static final double wristFlipVelocity = 2.5;
+      public static final double wristFlipVelocity = 1;
       public static final double wristFlipAcceleration = wristFlipVelocity/wristAccelerationTime;
       public static final double wristTwistP = 200.0; //15.0
       public static final double wristTwistI = 100.0;
