@@ -204,8 +204,8 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed * (arm.getArmPosition().getY() > 5 ? 0.2 : 1)))
-          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed * (arm.getArmPosition().getY() > 5 ? 0.2 : 1)))
+        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed * (joystick.getRightTriggerAxis() > 0.5 ? 0.2 : 1)))
+          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed * (joystick.getRightTriggerAxis() > 0.5 ? 0.2 : 1)))
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
@@ -236,7 +236,7 @@ public class RobotContainer {
 
 
 
-    // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    joystick.back().whileTrue(drivetrain.applyRequest(() -> brake));
     // joystick.b().whileTrue(drivetrain.applyRequest(() ->
     //   point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
     // ));
@@ -351,8 +351,8 @@ public class RobotContainer {
     joystick.x().onTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(6.5, 4)).withWristFlip(0)));
     // joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
 
-    joystick.back().whileTrue(new ArmCommandAngles(arm, () -> ArmConstants.elbowPositionClimb, () -> Units.degreesToRadians(25)).alongWith(new WaitCommand(0.5).andThen(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers))));
-    joystick.back().onFalse(Autos.getTransferCommand(arm, intake, gripper));
+    // joystick.back().whileTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].rotateBy(Rotation2d.fromDegrees(30))).alongWith(new WaitCommand(0.5).andThen(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers))));
+    // joystick.back().onFalse(Autos.getTransferCommand(arm, intake, gripper));
     // joystick.start().whileTrue(new SetStowing(arm, false)); 
     // joystick.back().whileTrue(new SetStowing(arm, true)); 
 
