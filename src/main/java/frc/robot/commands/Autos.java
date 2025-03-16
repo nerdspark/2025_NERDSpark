@@ -91,7 +91,7 @@ public final class Autos {
   }
 
   public static Command getTransferCommand(Arm arm, Intake intake, Gripper gripper) {
-    return 
+    return intake.getRangeIntakeDetected() ? 
           new SequentialCommandGroup(
             new OpenGripperCommandStrong(gripper).until(() -> arm.finishedMoving && arm.wristFinishedMoving()), 
             new OpenGripperCommandStrong(gripper).alongWith(new IntakeCommandPower(intake, () -> IntakeConstants.transferPowerDeploy, () -> 0.0).until(() -> intake.finishedMovingToTransfer()).andThen(new WaitCommand(0.12))).withTimeout(0.65), 
@@ -99,7 +99,7 @@ public final class Autos {
               .alongWith(new IntakeCommand(intake, () -> IntakeConstants.intakeTransferPosition, () -> IntakeConstants.transferPowerRollers))
                 .withTimeout(0.2))
           .deadlineFor(new ArmCommandPathToPoint(arm, () -> 8))
-          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.15));
+          .andThen(new ArmCommandPathToPoint(arm, () -> 11).withTimeout(0.15)) : new ArmDefaultCommand(arm, () -> 7);
   }
 
   // public static Command getDropOffCommand(Arm arm, Gripper gripper) {

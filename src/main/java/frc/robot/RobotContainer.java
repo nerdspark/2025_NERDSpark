@@ -204,8 +204,8 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     drivetrain.setDefaultCommand(
       drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed * (joystick.getRightTriggerAxis() > 0.5 ? 0.2 : 1)))
-          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed * (joystick.getRightTriggerAxis() > 0.5 ? 0.2 : 1)))
+        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed * (arm.getArmPosition().getY() > 5 ? 0.2 : 1)))
+          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed * (arm.getArmPosition().getY() > 5 ? 0.2 : 1)))
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
@@ -343,14 +343,16 @@ public class RobotContainer {
 
     // joystick.x().whileTrue(new ArmCommandGripperPosition(gripper, () -> -0.12));
     // joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperGroundPickup(gripper)));
-  joystick.back().onTrue(Autos.grabFromFunnel(arm, gripper));
+  joystick.start().onTrue(Autos.grabFromFunnel(arm, gripper));
     // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141).add(new Translation2d(3, 10))).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
-    joystick.start().onTrue(Autos.funnelIntake(arm, gripper));
+    // joystick.start().onTrue(Autos.funnelIntake(arm, gripper));
     // joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
     joystick.x().onTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(6.5, 4)).withWristFlip(0)));
     // joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
 
+    joystick.back().whileTrue(new ArmCommandAngles(arm, () -> ArmConstants.elbowPositionClimb, () -> Units.degreesToRadians(25)).alongWith(new WaitCommand(0.5).andThen(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers))));
+    joystick.back().onFalse(Autos.getTransferCommand(arm, intake, gripper));
     // joystick.start().whileTrue(new SetStowing(arm, false)); 
     // joystick.back().whileTrue(new SetStowing(arm, true)); 
 
