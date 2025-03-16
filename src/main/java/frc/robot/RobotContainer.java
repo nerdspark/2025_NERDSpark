@@ -33,6 +33,7 @@ import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
 import frc.robot.commands.ArmCommandGripperFunnelPickup;
 import frc.robot.commands.ArmCommandGripperGroundPickup;
+import frc.robot.commands.ArmCommandGripperPosition;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.ArmDefaultCommand;
@@ -308,7 +309,7 @@ public class RobotContainer {
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
-    ()->scoringSubsystem.getIsBackwards(),
+    ()->true,
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
@@ -340,12 +341,14 @@ public class RobotContainer {
     joystick.y().onTrue(new ArmCommandGripper(gripper, () -> true));
 
 
-    joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperGroundPickup(gripper)));
-
-    joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141).add(new Translation2d(3, 10))).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
+    // joystick.x().whileTrue(new ArmCommandGripperPosition(gripper, () -> -0.12));
+    // joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperGroundPickup(gripper)));
+  joystick.back().onTrue(Autos.grabFromFunnel(arm, gripper));
+    // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141).add(new Translation2d(3, 10))).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
     joystick.start().onTrue(Autos.funnelIntake(arm, gripper));
     // joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
         
+    joystick.x().onTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(6.5, 4)).withWristFlip(0)));
     // joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
 
     // joystick.start().whileTrue(new SetStowing(arm, false)); 

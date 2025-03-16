@@ -44,6 +44,18 @@ public final class Autos {
     throw new UnsupportedOperationException("This is a utility class!");
   }
 
+  public static Command grabFromFunnel(Arm arm, Gripper gripper) {
+    return new SequentialCommandGroup(
+      new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.2).withWristTwist(-3.141).add(new Translation2d(3, 10)))
+      .alongWith(new ArmCommandGripperPosition(gripper, () -> -0.09)).withTimeout(0.8),
+      new ArmCommand(arm,  () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.2).withWristTwist(-3.141))
+        .alongWith(new ArmCommandGripperPosition(gripper, () -> -0.09)).withTimeout(0.4),
+      new ArmCommandGripperForceClose(gripper).withTimeout(0.2), 
+      new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.2).withWristTwist(-3.141).add(new Translation2d(3, 15))).withTimeout(0.8),
+      new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(1.5).withWristTwist(-3.141).add(new Translation2d(3, 15))).withTimeout(1.0)
+    ).withTimeout(4);
+  }
+  
 
   public static Command getAutoDriveCommandReef(
      CommandSwerveDrivetrain drive,
@@ -120,7 +132,7 @@ public final class Autos {
   }
   public static Command funnelIntake(Arm arm, Gripper gripper) {
     return 
-    new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(8, 12)).withWristFlip(3.9).withWristTwist(-3.141))
+    new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(6, 7)).withWristFlip(3.9).withWristTwist(-3.141))
     .raceWith(new WaitCommand(0.7).andThen(new ArmCommandGripperFunnelPickup(gripper)))
     .andThen(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).withTimeout(0.2)
     .andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(1)));

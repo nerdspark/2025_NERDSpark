@@ -59,7 +59,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
         });
   }
   public int getArmReefTarget() {
-    if (isBackwards) {
+    if (true) {
       if (reefLevel.level == 2) {
         return 15;
       }
@@ -78,8 +78,8 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
   public int getArmSubstationTarget() {
     SmartDashboard.putBoolean("isbackwards", isBackwards);
-
-    return isBackwards ? 12 : 13;
+// return 13;
+    return false ? 12 : 13;
   }
 
   /**
@@ -200,17 +200,17 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
   public Pose2d getRobotPoseForSelectedBranch() {
    
-    if(getIsBackwards()) {
+    // if(getIsBackwards()) {
       return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel).plus(new Transform2d(0, 0, Rotation2d.fromDegrees(180))));
-    }
-    else {
-      return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
-    }
+    // }
+    // else {
+    //   return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
+    // }
 
   }
 
   public Pose2d getRobotPoseForSelectedCoralStation() {
-    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide).plus(new Transform2d(0, 0, isBackwards ? Rotation2d.k180deg : Rotation2d.kZero)));
+    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide));//.plus(new Transform2d(0, 0, isBackwards ? Rotation2d.k180deg : Rotation2d.kZero)));
   }
 
 }
