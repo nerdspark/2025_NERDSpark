@@ -84,11 +84,11 @@ public final class Constants {
     // Key: cardinal joystick distance
     // Value: % max speed
     joystickMap.put(0.00, 0.00);
-    joystickMap.put(0.07, 0.10);
-    joystickMap.put(0.18, 0.15);
-    joystickMap.put(0.29, 0.20);
-    joystickMap.put(0.40, 0.25);
-    joystickMap.put(0.50, 0.35);
+    joystickMap.put(0.07, 0.05);
+    joystickMap.put(0.18, 0.1);
+    joystickMap.put(0.29, 0.15);
+    joystickMap.put(0.40, 0.2);
+    joystickMap.put(0.50, 0.3);
     joystickMap.put(0.60, 0.50);
     joystickMap.put(0.70, 0.65);
     joystickMap.put(0.80, 0.80);
@@ -204,7 +204,7 @@ public static class Vision {
           reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(25), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(27), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           
           
         }
@@ -216,8 +216,8 @@ public static class Vision {
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
-          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(14), 0, new Rotation2d(Math.toRadians(180))));
-          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(14), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(18), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(18), 0, new Rotation2d(Math.toRadians(180))));
          
         }
     }
@@ -324,7 +324,7 @@ public static class Vision {
     public static final double currentLimitWristFlip = 45.0; //40.0
     public static final double currentLimitWristTwist = 70.0;
     public static final double currentLimitGripperOpen = 8.0;
-    public static final double currentLimitGripperClose = 40.0;
+    public static final double currentLimitGripperClose = 55.0;
     public static final double gripperPowerClose = 1.0;
     public static final double gripperPowerOpen = -0.2;
 
@@ -431,7 +431,7 @@ public static class Vision {
       armSetPoints[11] = new ArmPoint(new Translation2d(stow.getNorm(), Rotation2d.fromDegrees(40)), true, -2.6, -1.57); //19, 7
       armSetPoints[12] = new ArmPoint((new Translation2d(23, 18.3)), false, 0.8, -1.57); //19, 7
       // armSetPoints[12] = new ArmPoint((home.plus(new Translation2d(15, 0))), false, 0.1, -1.57); //19, 7
-      armSetPoints[13] = armSetPoints[7].withWristFlip(2.6).withWristTwist(-1.57).rotateBy(Rotation2d.fromDegrees(5)); //19, 7
+      armSetPoints[13] = armSetPoints[7].withWristFlip(2.2).withWristTwist(-1.57).rotateBy(Rotation2d.fromDegrees(5)); //19, 7
 
       armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0, -0.2);
 
@@ -558,7 +558,7 @@ intermediatePoints[4][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double intakeThrowPreparePosition = 0.37;
     public static final double intakeThrowPosition = 0.32;
     public static final double intakeThrowDeployPower = -0.15;
-    public static final double intakeThrowPower = 0.6;
+    public static final double intakeThrowPower = 0.5;
   }
 
   public static class LEDConstants {

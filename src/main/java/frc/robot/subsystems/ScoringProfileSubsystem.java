@@ -187,7 +187,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
 
   public boolean getIsBackwards() {
-    return isBackwards && (reefLevel.equals(ReefLevel.L2) || reefLevel.equals(ReefLevel.L3) || reefLevel.equals(ReefLevel.L1) || reefLevel.equals(ReefLevel.L1Top));
+    return true && (reefLevel.equals(ReefLevel.L2) || reefLevel.equals(ReefLevel.L3) || reefLevel.equals(ReefLevel.L1) || reefLevel.equals(ReefLevel.L1Top));
   }
 
   public FieldConstants.CoralStations getCoralStationSide() {

@@ -123,8 +123,9 @@ public final class Autos {
         .alongWith(new WaitCommand(0.3).andThen(new ArmCommandGripper(gripper, () -> false).withTimeout(0.5))).withTimeout(1);
   }
   public static Command getDunkCommand(Arm arm, IntSupplier setPointIndex) {
-    return 
-        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].flipBy(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() > 10 ? -1.5 : 1.5));
+    return setPointIndex.getAsInt() > 2 ?
+        new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].flipBy(ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].position.getX() > 10 ? -1.5 : 1.5))
+        : new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()]);
     }
 
   public static Command removeAlgaeCommand(Arm arm, Gripper gripper, boolean higherLevel) {

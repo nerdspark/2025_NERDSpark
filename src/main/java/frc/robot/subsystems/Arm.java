@@ -106,13 +106,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast)));
+        .withNeutralMode(NeutralModeValue.Brake)));
     
     shoulderRight
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Coast)));
+        .withNeutralMode(NeutralModeValue.Brake)));
 
 
     elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -139,13 +139,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
+          .withNeutralMode(NeutralModeValue.Brake)));
 
     elbowRight
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.Clockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
+          .withNeutralMode(NeutralModeValue.Brake)));
 
           
     
