@@ -118,6 +118,18 @@ public final class Autos {
   public static Command removeAlgaeCommand(Arm arm, Gripper gripper, boolean higherLevel) {
     return new ArmCommandPathToPoint(arm, () -> 6).alongWith(new ArmCommandGripperAutoClose(gripper, () -> false, () -> true));
   }
+  public static Command funnelIntake(Arm arm, Gripper gripper) {
+    return 
+    new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(5, 7.5)).withWristFlip(3.9).withWristTwist(-3.141))
+    .raceWith(new WaitCommand(0.7).andThen(new ArmCommandGripperFunnelPickup(gripper)))
+    .andThen(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).withTimeout(0.2)
+    .andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(1)));
+
+    // new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(3, 5)).withWristFlip(4.2).withWristTwist(-3.141))
+    // .raceWith(new WaitCommand(0.7).andThen(new ArmCommandGripperFunnelPickup(gripper)))
+    // .andThen(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141)).withTimeout(0.2)
+    // .andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(1)));
+  }
 
   
   public static Command getAutoDriveCommandXY(

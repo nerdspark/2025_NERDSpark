@@ -216,8 +216,8 @@ public static class Vision {
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
-          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(16), 0, new Rotation2d(Math.toRadians(180))));
-          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(14), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(14), 0, new Rotation2d(Math.toRadians(180))));
          
         }
     }
@@ -433,7 +433,7 @@ public static class Vision {
       // armSetPoints[12] = new ArmPoint((home.plus(new Translation2d(15, 0))), false, 0.1, -1.57); //19, 7
       armSetPoints[13] = armSetPoints[7].withWristFlip(2.6).withWristTwist(-1.57).rotateBy(Rotation2d.fromDegrees(5)); //19, 7
 
-      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -15.6), true, 0.0, -0.2);
+      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0, -0.2);
 
       armSetPoints[15] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 2.1, 0);
       armSetPoints[16] = new ArmPoint(new Translation2d(0, 32), false, 2.3, 0);
