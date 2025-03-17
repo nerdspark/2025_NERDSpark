@@ -10,10 +10,11 @@ import java.util.function.IntSupplier;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Gripper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GripperCommand extends Command {
+public class GripperCommand extends InstantCommand {
   /** Creates a new GripperComand. */
   private Gripper gripper;
   private DoubleSupplier power;
@@ -30,23 +31,13 @@ public class GripperCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
+  public void initialize() {
+    
     gripper.setGripperPower(power.getAsDouble());
 
-    gripper.setCurrentLimit(currentLimit.getAsInt());
+    if (currentLimit.getAsInt() != gripper.getCurrentLimit()) {
+      gripper.setCurrentLimit(currentLimit.getAsInt());
+    }
   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
 }

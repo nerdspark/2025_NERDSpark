@@ -70,11 +70,14 @@ public class Gripper extends SubsystemBase {
     gripper.setVoltage(power); // TODO make sure this is right way to set voltage
   }
 
-  public void setCurrentLimit(int currentLimit) {
+  public void setCurrentLimit(double currentLimit) {
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(currentLimit)
           .withStatorCurrentLimitEnable(true);
     gripper.getConfigurator().apply(gripperConfig);
+  }
+  public double getCurrentLimit() {
+    return gripperConfig.CurrentLimits.StatorCurrentLimit;
   }
 
   @Override
