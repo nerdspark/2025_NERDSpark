@@ -65,104 +65,22 @@ public class Gripper extends SubsystemBase {
     sensorRight.getConfigurator().apply(sensorConfig);
     gripper.setPosition(0);
   }
-  public double getGripperPosition(){
-    double gripperPosition = gripper.getPosition().getValueAsDouble() * (2d * Math.PI);
-    // SmartDashboard.putNumber("Gripper pose", gripperPosition);
-    return gripperPosition;
-  } 
-  public void setGripperPosition(double position) {
-    // position /= (2d*Math.PI);
-    gripper.setControl(new PositionVoltage(position).withPosition(position));
+  
+  public void setGripperPower(double power) {
+    gripper.setVoltage(power); // TODO make sure this is right way to set voltage
   }
-  public void openGripper(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
-    gripper.getConfigurator().apply(gripperConfig);
-    gripper.set(ArmConstants.gripperPowerOpen);
-  }
-  public void openGripperStrong(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
-    gripper.getConfigurator().apply(gripperConfig);
-    gripper.set(-ArmConstants.gripperPowerClose);
-  }
-  public void setCurrentLimitStrong(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
-          gripper.getConfigurator().apply(gripperConfig);
 
-  }
-  public void setCurrentLimitWeak(){
+  public void setCurrentLimit(int currentLimit) {
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
-          gripper.getConfigurator().apply(gripperConfig);
+          .withStatorCurrentLimit(currentLimit)
+          .withStatorCurrentLimitEnable(true);
+    gripper.getConfigurator().apply(gripperConfig);
+  }
 
-  }
-  public void closeGripper(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperClose);
-    gripper.getConfigurator().apply(gripperConfig);
-    gripper.set(ArmConstants.gripperPowerClose);
-  }
-  public void closeGripperWeak(){
-    gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen);
-    gripper.getConfigurator().apply(gripperConfig);
-    gripper.set(-ArmConstants.gripperPowerOpen);
-  }
-  public void stopGripper() {
-    gripper.stopMotor();
-  }
-  public double getRangeRightDistance() {
-    return sensorRight.getDistance().getValueAsDouble();
-  }
-  public double getRangeLeftDistance() {
-    return sensorLeft.getDistance().getValueAsDouble();
-  }
-  public double getRangeMiddleDistance() {
-    return sensorMiddle.getDistance().getValueAsDouble();
-  }
-  /** teleop */
-  public boolean getMiddleDetected(){
-    return sensorMiddle.getIsDetected().getValue();
-  }
-  /** teleop */
-  public boolean getLeftDetected(){
-    return sensorLeft.getIsDetected().getValue();
-  }
-  /** teleop */
-  public boolean getRightDetected(){
-    return sensorRight.getIsDetected().getValue();
-  }
-  public boolean getMiddleToTrip(){
-    return sensorMiddle.getIsDetected().getValue() && getRangeMiddleDistance()<distanceToTripMiddle  && getRangeMiddleDistance() > 0.01;
-  }
-  public boolean getRightToTrip(){
-    return sensorRight.getIsDetected().getValue() && getRangeRightDistance()<distanceToTrip  && getRangeRightDistance() > 0.01;
-  }
-  public boolean getLeftToTrip(){
-    return sensorLeft.getIsDetected().getValue() && getRangeLeftDistance()<distanceToTrip  && getRangeLeftDistance() > 0.01;
-  }
-  /** auton */
-  public boolean getDetected(){
-    // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
-    return (getLeftToTrip() || getRightToTrip() || getMiddleToTrip());
-  }
-  public boolean getShelfDetected(){
-    // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
-    return (getDetected());
-  }
-  public boolean getFunnelDetected(){
-    // return Math.min(Math.min(getRangeMiddleDistance(), getRangeLeftDistance()), getRangeRightDistance()) < 0.1;
-    return (getRangeMiddleDistance() < 0.26);
-  }
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("middle sensor", getRangeMiddleDistance());
-    SmartDashboard.putNumber("l sensor", (getRangeLeftDistance()));
-    SmartDashboard.putBoolean("middle det", getMiddleDetected());
-    SmartDashboard.putNumber("gripper pos", gripper.getPosition().getValueAsDouble());
-    // SmartDashboard.putNumber(getName(), distanceToTrip)
-    // This method will be called once per scheduler run
+    
+    SmartDashboard.putNumber("Gripper velocity", gripper.getVelocity().getValueAsDouble()); // angular velocity (rotations per second)
+;
   }
 }
