@@ -31,6 +31,7 @@ import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandGripper;
 import frc.robot.commands.ArmCommandGripperAutoClose;
+import frc.robot.commands.ArmCommandGripperAutoClosePIDOpen;
 import frc.robot.commands.ArmCommandGripperFunnelPickup;
 import frc.robot.commands.ArmCommandGripperGroundPickup;
 import frc.robot.commands.ArmCommandGripperPosition;
@@ -172,7 +173,7 @@ public class RobotContainer {
       configureLimelight();
     }
 
-    configureClimb();
+    // configureClimb();
   }
   private void configureLimelight() {
     limelightSubsystem = new LimelightSubsystem(drivetrain);
@@ -303,6 +304,10 @@ public class RobotContainer {
 
     joystick.rightTrigger().onFalse(Autos.getDunkCommand(arm, () -> scoringSubsystem.getArmReefTarget()));
     joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
+    joystick.povLeft().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
+    joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
+    joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
+    joystick.povRight().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
     // joystick.rightTrigger().onFalse(armDefaultCommand);
     joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
     // joystick.rightTrigger().whileTrue(new ArmCommandGripper(gripper, () -> true));
@@ -328,7 +333,7 @@ public class RobotContainer {
 
     // joystick.leftBumper().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmSubstationTarget()));
     joystick.leftTrigger().whileTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[scoringSubsystem.getArmSubstationTarget()]));
-    joystick.leftTrigger().whileTrue(new ArmCommandGripperPosition(gripper, () -> -0.11).withTimeout(0.2).andThen(new ArmCommandGripperAutoClose(gripper, () -> true, () -> true)));
+    joystick.leftTrigger().whileTrue(new ArmCommandGripperPosition(gripper, () -> -0.11).withTimeout(0.2).andThen(new ArmCommandGripperAutoClosePIDOpen(gripper, () -> -0.11)));
 
     joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,
