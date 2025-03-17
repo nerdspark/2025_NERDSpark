@@ -66,8 +66,8 @@ public class Arm extends SubsystemBase {
   private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
 
 
-  private double wristTwistPosition = 0.0;
-  private double wristFlipPosition = 0.0;
+  public double wristTwistTarget = 0.0;
+  public double wristFlipTarget = 0.0;
   /** Creates a new Arm. */
   public Arm() {
     
@@ -290,7 +290,7 @@ public class Arm extends SubsystemBase {
         // return ArmSetpoints.armSetPoints[4].position;
   }
   public ArmPoint getArmState() {
-    return new ArmPoint(getArmPosition(), getCurrentInBend(), getWristFlipPosition(), getWristTwistPosition());
+    return new ArmPoint(getArmPosition(), getCurrentInBend(), getWristFlipTarget(), getWristTwistTarget());
   }
 
   public void setArmPosition(Translation2d position, boolean inBend) {  // rotates the two base stages 
@@ -387,30 +387,30 @@ public class Arm extends SubsystemBase {
 public void stopWrist() {
   wristStopped = true;
 }
-  public double getWristTwistPosition(){
+  public double getWristTwistTarget(){
     double wristTwistPosition = (wristTwist.getPosition().getValueAsDouble() * (2d * Math.PI));
     wristTwistPosition -= getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-    wristTwistPosition += getWristFlipPosition() * (ArmConstants.wristTwistToFlipRatio);
+    wristTwistPosition += getWristFlipTarget() * (ArmConstants.wristTwistToFlipRatio);
     // SmartDashboard.putNumber("wrist twist position", wristTwistPosition);
     return wristTwistPosition;
   }
-  public void setWristTwistPosition(double position) {
-    wristTwistPosition = position;
+  public void setWristTwistTarget(double position) {
+    wristTwistTarget = position;
     wristStopped = false;
     // wristFinishedMoving = false;
         // SmartDashboard.putNumber("wrist twist position set raw", position);
 
 
   }
-  public double getWristFlipPosition(){
+  public double getWristFlipTarget(){
     double wristFlipPosition = (wristFlip.getPosition().getValueAsDouble() * (2d * Math.PI));
     wristFlipPosition -= getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
     // SmartDashboard.putNumber("wrist flip position", wristFlipPosition);
     return wristFlipPosition;
   }
 
-  public void setWristFlipPosition(double position) {
-    wristFlipPosition = position;
+  public void setWristFlipTarget(double position) {
+    wristFlipTarget = position;
     wristStopped = false;
     // wristFinishedMoving = false;
 // ratio = oo: wrist change amount -oo
@@ -424,15 +424,15 @@ public void stopWrist() {
       wristFlip.stopMotor();
       wristTwist.stopMotor();
     } else {
-      double flipPosition = wristFlipPosition;
+      double flipPosition = wristFlipTarget;
       flipPosition += getElbowPosition() * (ArmConstants.wristFlipToElbowRatio - 1.0);
       flipPosition /= (2d*Math.PI);
       wristFlip.setControl(new MotionMagicVoltage(flipPosition).withPosition(flipPosition).withSlot(0));
 
-      double twistPosition = wristTwistPosition;
+      double twistPosition = wristTwistTarget;
       twistPosition = MathUtil.clamp(twistPosition, -Math.PI, Math.PI * 1.0);
       twistPosition += getElbowPosition() * (ArmConstants.wristTwistToElbowRatio - 1.0);
-      twistPosition -= wristFlipPosition * (ArmConstants.wristTwistToFlipRatio);
+      twistPosition -= wristFlipTarget * (ArmConstants.wristTwistToFlipRatio);
       twistPosition /= (2d*Math.PI);
       wristTwist.setControl(new MotionMagicVoltage(twistPosition).withPosition(twistPosition).withSlot(0));
       SmartDashboard.putNumber("wristflip error", flipPosition - wristFlip.getPosition().getValueAsDouble());
@@ -532,7 +532,7 @@ public void setShoulderAmpLimit(double amplimit) {
     stowing = Stowing;
   }
   public boolean wristFinishedMoving() {
-    return Math.abs(getWristFlipPosition() - wristFlipPosition) < 0.2 && Math.abs(getWristTwistPosition() - wristTwistPosition) < 0.2;
+    return Math.abs(getWristFlipTarget() - wristFlipTarget) < 0.2 && Math.abs(getWristTwistTarget() - wristTwistTarget) < 0.2;
   }
   
   @Override
@@ -558,8 +558,8 @@ public void setShoulderAmpLimit(double amplimit) {
     SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
     SmartDashboard.putNumber("elbow pos", getElbowPosition());
     SmartDashboard.putNumber("shoulder pos", getShoulderPosition());
-    SmartDashboard.putNumber("wrist flip pos", getWristFlipPosition());
-    SmartDashboard.putNumber("wrist twist pos", getWristTwistPosition());
+    SmartDashboard.putNumber("wrist flip pos", getWristFlipTarget());
+    SmartDashboard.putNumber("wrist twist pos", getWristTwistTarget());
     // SmartDashboard.putNumber("shoulder velocity", getShoulderVelocity());
     // SmartDashboard.putNumber("elbow velocity", getElbowVelocity());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());

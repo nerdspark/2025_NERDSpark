@@ -42,8 +42,8 @@ public class ArmCommand extends Command {
         // arm.resetEncoders();
         
         arm.setArmPosition(point.get().position, inBend.get());
-        arm.setWristFlipPosition(point.get().wristFlip);
-        arm.setWristTwistPosition(point.get().wristTwist);
+        arm.setWristFlipTarget(point.get().wristFlip);
+        arm.setWristTwistTarget(point.get().wristTwist);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
