@@ -29,26 +29,15 @@ import frc.robot.util.ArmPoint;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
-import frc.robot.commands.ArmCommandGripper;
-import frc.robot.commands.ArmCommandGripperAutoClose;
-import frc.robot.commands.ArmCommandGripperAutoClosePIDOpen;
-import frc.robot.commands.ArmCommandGripperFunnelPickup;
-import frc.robot.commands.ArmCommandGripperGroundPickup;
-import frc.robot.commands.ArmCommandGripperPosition;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.ArmCommandWrist;
 import frc.robot.commands.ArmDefaultCommand;
 import frc.robot.commands.AutoScoreCommand;
-import frc.robot.commands.IntakeCommand;
-import frc.robot.commands.IntakeCommandPickup;
-import frc.robot.commands.IntakeCommandPower;
 import frc.robot.commands.LEDCommand;
-import frc.robot.commands.OpenGripperCommand;
 import frc.robot.commands.SetStowing;
 import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Gripper;
-import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystems.Vision;
@@ -112,7 +101,7 @@ public class RobotContainer {
 
     public Arm arm;
     private Gripper gripper;
-    private Intake intake;
+    private Climb climb;
     private LimelightSubsystem limelightSubsystem;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -134,13 +123,9 @@ public class RobotContainer {
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private Climb climb;
-  private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
-  private Trigger hasCoral = new Trigger(() -> intake.hasCoral());
   // private Trigger driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
   // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
   // .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
-  private Trigger driveTrainFinishedMoving = new Trigger(() -> true);
   
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -156,7 +141,6 @@ public class RobotContainer {
     scoringSubsystem = new ScoringProfileSubsystem();
     arm = new Arm();
     gripper = new Gripper();
-    intake = new Intake();
 
     configureNamedCommands();
 
@@ -181,25 +165,25 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("gripperToGroundIntake", new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper)).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18)));
-    NamedCommands.registerCommand("gripperOpen", Autos.getDunkDropCommand(arm, gripper, () -> 18));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
-    NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
-    NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
-    NamedCommands.registerCommand("armToHome", new ArmCommandPathToPoint(arm, () -> 7));
-    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 18));
-    NamedCommands.registerCommand("intakeThrow", new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakePassive).until(() -> intake.getIntakeDeployPosition() < IntakeConstants.intakeThrowPosition)
-    .andThen(new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakeThrowPower)
-      .withTimeout(0.05))
-      .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> IntakeConstants.intakeThrowPower).withTimeout(1.0).andThen(() ->intake.stopIntake())));
-    NamedCommands.registerCommand("test", new InstantCommand(()-> System.out.println("test")));
+    // NamedCommands.registerCommand("gripperToGroundIntake", new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper)).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18)));
+    // NamedCommands.registerCommand("gripperOpen", Autos.getDunkDropCommand(arm, gripper, () -> 18));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
+    // NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
+    // NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
+    // NamedCommands.registerCommand("armToHome", new ArmCommandPathToPoint(arm, () -> 7));
+    // NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 18));
+    // NamedCommands.registerCommand("intakeThrow", new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakePassive).until(() -> intake.getIntakeDeployPosition() < IntakeConstants.intakeThrowPosition)
+    // .andThen(new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakeThrowPower)
+    //   .withTimeout(0.05))
+    //   .andThen(new IntakeCommand(intake, ()-> IntakeConstants.home, () -> IntakeConstants.intakeThrowPower).withTimeout(1.0).andThen(() ->intake.stopIntake())));
+    // NamedCommands.registerCommand("test", new InstantCommand(()-> System.out.println("test")));
 
 
-    // coach elmer didn't want us to break the arm
-    NamedCommands.registerCommand("armToStowPrint", new InstantCommand(()-> System.out.println("armToStowPrint")));
-    NamedCommands.registerCommand("intakePrepareThrowPrint", new InstantCommand(()-> System.out.println("intakePrepareThrowPrint")));
-    NamedCommands.registerCommand("intakeThrowPrint", new InstantCommand(()-> System.out.println("intakeThrowPrint")));
-    NamedCommands.registerCommand("gripperToGroundIntakePrint", new InstantCommand(()-> System.out.println("gripperToGroundIntakePrint")));
-    NamedCommands.registerCommand("armToL4Print", new InstantCommand(()-> System.out.println("armToL4Print")));
+    // // coach elmer didn't want us to break the arm
+    // NamedCommands.registerCommand("armToStowPrint", new InstantCommand(()-> System.out.println("armToStowPrint")));
+    // NamedCommands.registerCommand("intakePrepareThrowPrint", new InstantCommand(()-> System.out.println("intakePrepareThrowPrint")));
+    // NamedCommands.registerCommand("intakeThrowPrint", new InstantCommand(()-> System.out.println("intakeThrowPrint")));
+    // NamedCommands.registerCommand("gripperToGroundIntakePrint", new InstantCommand(()-> System.out.println("gripperToGroundIntakePrint")));
+    // NamedCommands.registerCommand("armToL4Print", new InstantCommand(()-> System.out.println("armToL4Print")));
 
   }
 
@@ -220,9 +204,7 @@ public class RobotContainer {
     arm.setDefaultCommand(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)));
     // arm.setDefaultCommand(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[(arm.stowing ? 6 : 7)]));
 
-    gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper, () -> !arm.stowing, () -> arm.stowing));
 
-    intake.setDefaultCommand(new IntakeCommandPickup(intake, () -> IntakeConstants.home , () -> 0.0));
 
     // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
     // m_LedSubsystem.setDefaultCommand(
@@ -238,140 +220,19 @@ public class RobotContainer {
 
 
 
-    // joystick.back().whileTrue(drivetrain.applyRequest(() -> brake));
-    // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-    //   point.withModuleDirection(new Rotation2d(-joystick.getRightY(), -joystick.getRightX()))
-    // ));
 
 
 
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    // drivetrain.registerTelemetry(logger::telemeterize);
-    // drivetrain.applyRequest(new SwerveControllerCommand(null, null, null, null, null, null));
-    // joystick.a().onTrue(new ArmCommandPathToPoint(arm, 5));
-    //     // joystick.b().onTrue(new ArmCommandPathToPoint(arm, 1));
-    //     joystick.x().onTrue(new ArmCommandPathToPoint(arm, 2));
-    //     joystick.y().onTrue(new ArmCommandPathToPoint(arm, 4));
-    //     joystick.rightBumper().onTrue(new ArmCommandPathToPoint(arm, 0));
-    //     gripper.setDefaultCommand(new ArmCommandGripperAutoClose(gripper));
-    //     joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
-    //     armFinishedMoving.onTrue(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f))));
-    //     armFinishedMoving.onFalse(m_LedSubsystem.runPattern(LEDPattern.solid(new Color(1.0f, 0.0f, 0.0f))));
-    //     //joystick.leftBumper().whileTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
-    //     // joystick.a().onTrue(new ArmCommandWrist(arm, () -> WristTestAngles.testWristFlipAngle, () -> WristTestAngles.testWristTwistAngle));
-    //     //drivetrain.registerTelemetry(logger::telemeterize);
-    //     joystick.rightTrigger().onTrue(new ArmCommandGripper(gripper, () -> true));
-    //     joystick.leftTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
-    // drivetrain.registerTelemetry(logger::telemeterize);
-    //     joystick.start().onTrue(Commands.runOnce(SignalLogger::stop));
-        //drivetrain.registerTelemetry(logger::telemeterize);
-        // joystick.rightBumper().onTrue(new ArmCommandGripper(gripper, () -> true));
-        // joystick.rightTrigger().onFalse(new ArmCommandGripper(gripper, () -> false));
-        // joystick.a().onTrue(new IntakeCommand(intake, () -> 0.34));
-
-
-        
-
-        //joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
-        //joystick.y().onTrue(new ClimbCommand(m_ClimbSubsystem, () -> true));
-        //joystick.y().onFalse(new ClimbCommand(m_ClimbSubsystem, () -> false));
-        // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> 7));
-        // joystick.y().onTrue(new ClimbCommand(climb, () -> true));
-        // joystick.back().whileTrue(new ClimbCommand(climb, () -> false));
-
-        // joystick.x().onTrue(new ArmCommandPathToPoint(arm, () -> 9).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
-        // joystick.b().whileTrue(new ArmCommandClimb(arm, ArmConstants.shoulderPowerClimb).alongWith(new IntakeCommand(intake, () -> IntakeConstants.climb, () -> 0.0)));
-        
-
-    /* Manually start logging with left bumper before running any tests,
-     * and stop logging with right bumper after we're done with ALL tests.
-     * This isn't necessary but is convenient to reduce the size of the hoot file */
-    SignalLogger.setPath("/media/sda1/ctre-logs/");
-    // joystick.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    // joystick.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-    
-
-    // joystick.y().whileTrue(Autos.getAutoDriveCommandXY( drivetrain,
-    // () -> drivetrain.getState().Pose, 
-    // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    // () -> scoringSubsystem.getLevel()));
-  
-
-    // // joystick.leftBumper().onTrue(new DriveToPose(drivetrain,
-    // // () -> scoringSubsystem.getRobotPoseForSelectedBranch()
-    // // ).until(() -> joystick.rightBumper().getAsBoolean()));
-
-    joystick.rightTrigger().onFalse(Autos.getDunkCommand(arm, () -> scoringSubsystem.getArmReefTarget()));
-    joystick.b().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
-    joystick.povLeft().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
-    joystick.povUp().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
-    joystick.povDown().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
-    joystick.povRight().onTrue(new ArmCommandGripper(gripper, () -> false).alongWith(new WaitCommand(0.2).andThen(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)))));
-    // joystick.rightTrigger().onFalse(armDefaultCommand);
-    joystick.rightTrigger().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmReefTarget()));
-    // joystick.rightTrigger().whileTrue(new ArmCommandGripper(gripper, () -> true));
-    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    ()->scoringSubsystem.getLevel(),
-    ()-> true,
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
-
-    // joystick.rightTrigger().whileTrue(new AutoScoreCommand(drivetrain,
-    // () -> drivetrain.getState().Pose,
-    // () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    // ()->scoringSubsystem.getLevel(),
-    // ()->scoringSubsystem.getIsBackwards(),
-    // ()->-joystick.getRightY(),
-    // ()->-joystick.getRightX(),
-    // ()->-joystick.getLeftX(), 
-    // arm, 
-    // () -> scoringSubsystem.getArmReefTarget()));
-
-    // joystick.leftBumper().whileTrue(new ArmCommandPathToPoint(arm, () -> scoringSubsystem.getArmSubstationTarget()));
-    joystick.leftTrigger().whileTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[scoringSubsystem.getArmSubstationTarget()]));
-    joystick.leftTrigger().whileTrue(new ArmCommandGripperPosition(gripper, () -> -0.11).withTimeout(0.2).andThen(new ArmCommandGripperAutoClosePIDOpen(gripper, () -> -0.11)));
-
-    joystick.leftBumper().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
-
-
-    joystick.a().onTrue(new ArmCommandGripper(gripper, () -> false));
-    joystick.y().onTrue(new ArmCommandGripper(gripper, () -> true));
-
-
-    // joystick.x().whileTrue(new ArmCommandGripperPosition(gripper, () -> -0.12));
-    // joystick.x().whileTrue(new ArmCommandPathToPoint(arm, () -> 14).alongWith(new ArmCommandGripperGroundPickup(gripper)));
-    joystick.start().onTrue(Autos.grabFromFunnel(arm, gripper));
-    joystick.back().onTrue(Autos.grabFromFunnel(arm, gripper));
-    // joystick.back().onTrue(new ArmCommandPathToPoint(arm, () -> ArmSetpoints.armSetPoints[7].withWristFlip(4.5).withWristTwist(-3.141).add(new Translation2d(3, 10))).alongWith(new ArmCommandGripper(gripper, () -> false)).withTimeout(0.5).andThen(new ArmCommandGripper(gripper, () -> true).withTimeout(0.5)).withTimeout(2));
-    // joystick.start().onTrue(Autos.funnelIntake(arm, gripper));
-    // joystick.rightBumper().whileTrue(Autos.getTransferCommand(arm, intake, gripper));
-        
-    joystick.x().onTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].add(new Translation2d(6.5, 4)).withWristFlip(0)));
-    // joystick.leftTrigger().whileTrue(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers).onlyIf(() -> arm.stowing));
-
-    // joystick.back().whileTrue(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].rotateBy(Rotation2d.fromDegrees(30))).alongWith(new WaitCommand(0.5).andThen(new IntakeCommandPickup(intake, () -> IntakeConstants.deploy, () -> IntakeConstants.intakePowerRollers))));
-    // joystick.back().onFalse(Autos.getTransferCommand(arm, intake, gripper));
-    // joystick.start().whileTrue(new SetStowing(arm, false)); 
-    // joystick.back().whileTrue(new SetStowing(arm, true)); 
-
-
 
   }
   private void configureClimb() {
     climb = new Climb();
-    joystick.povUp().onTrue(ClimbSequence.prepareToClimb(arm, intake, climb));
-    joystick.povRight().onTrue(ClimbSequence.closeHooks(arm, intake, climb));
-    joystick.povDown().onTrue(ClimbSequence.climbDown(arm, intake, climb));
-    joystick.povLeft().onTrue(ClimbSequence.latch(arm, intake, climb));
+    // joystick.povUp().onTrue(ClimbSequence.prepareToClimb(arm, intake, climb));
+    // joystick.povRight().onTrue(ClimbSequence.closeHooks(arm, intake, climb));
+    // joystick.povDown().onTrue(ClimbSequence.climbDown(arm, intake, climb));
+    // joystick.povLeft().onTrue(ClimbSequence.latch(arm, intake, climb));
   }
 
   private void configureAutoChooser() {
