@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commandSequences;
 
 import java.util.function.IntSupplier;
 
@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmSetpoints;
+import frc.robot.commands.ArmCommand;
+import frc.robot.commands.GripperCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Gripper;
 
@@ -23,7 +26,7 @@ public class ArmActions {
   /** grab coral from funnel */
   public static Command grabFromFunnel(Arm arm, Gripper gripper) {
     return new ParallelRaceGroup(
-      new RollerCommand(gripper, () -> 1.0, () -> 20),
+      new GripperCommand(gripper, () -> 1.0, () -> 20),
         new SequentialCommandGroup(
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10]).withTimeout(0.3), 
@@ -45,14 +48,14 @@ public class ArmActions {
   public static Command dunkDropCoral(Arm arm, Gripper gripper) {
     return new ParallelCommandGroup(
       new WristCommand(arm, () -> arm.wristTarget + -1), 
-      new WaitCommand(0.2).andThen(new RollerCommand(gripper, () -> -1, () -> 20))).withTimeout(0.5);
+      new WaitCommand(0.2).andThen(new GripperCommand(gripper, () -> -1, () -> 20))).withTimeout(0.5);
   }
 
     /** position arm to remove algae while rolling rollers inwards
         * @param higherLevel true if the algae is at a higher level (L3.5); false if the algae is at a lower level (L2.5)
     */
     public static Command removeAlgae(Arm arm, Gripper gripper, boolean higherLevel) {
-      return new ArmCommand(arm, () -> higherLevel ? 6 : 5).alongWith(new RollerCommand(gripper, () -> 1.0, () -> 20));
+      return new ArmCommand(arm, () -> higherLevel ? 6 : 5).alongWith(new GripperCommand(gripper, () -> 1.0, () -> 20));
     }
 
     /** position arm to drop off algae in barge */
@@ -62,6 +65,6 @@ public class ArmActions {
 
     /** spin rollers to drop off algae in barge */
     public static Command shootAlgaeBarge(Gripper gripper) {
-      return new RollerCommand(gripper, () -> -1.0, () -> 20);
+      return new GripperCommand(gripper, () -> -1.0, () -> 20);
     }
 }
