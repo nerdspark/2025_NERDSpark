@@ -36,22 +36,20 @@ public class ArmCommandPathToPoint extends Command {
     private IntSupplier setPointIntSupplier;
     private int setPointIndex = -1;
     private Supplier<ArmPoint> setPoint = null;
-    private double initialWristFlip, initialWristTwist;
+    private double initialWrist, initialWristTwist;
     /** path to the specified armPoint */ // TODO: add inflection point generation and hardstop avoidance to automatic path generation
     public ArmCommandPathToPoint(Arm arm, IntSupplier setPointIntSupplier) {
       this.setPointIntSupplier = setPointIntSupplier;
         this.arm = arm;
         addRequirements(arm);
         int closestPoint = ArmPathplannerUtil.closestArmPoint(ArmSetpoints.armSetPoints, arm.getArmPosition());
-        initialWristFlip = ArmSetpoints.armSetPoints[closestPoint].wristFlip;
-        initialWristFlip = ArmSetpoints.armSetPoints[closestPoint].wristTwist;
+        initialWrist = ArmSetpoints.armSetPoints[closestPoint].wrist;
     }
     public ArmCommandPathToPoint(Arm arm, Supplier<ArmPoint> setPoint) {
       this.setPoint = setPoint;
         this.arm = arm;
         addRequirements(arm);
-        initialWristFlip = arm.getWristFlipTarget();
-        initialWristTwist = arm.getWristTwistTarget();
+        initialWrist = arm.getWristTarget();
     }
 
   // Called when the command is initially scheduled.
@@ -72,14 +70,14 @@ public class ArmCommandPathToPoint extends Command {
       
     if (closestPoint != setPointIndex && setPointIndex > -1) {
         List<ArmPoint> temp = new ArrayList<>();
-        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipTarget(), arm.getWristTwistTarget()));
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristTarget()));
         temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPointIndex]);
         temp.add(setPoint.get());
         // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       } else {
         List<ArmPoint> temp = new ArrayList<>();
-        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipTarget(), arm.getWristTwistTarget()));
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristTarget()));
         temp.add(setPoint.get());
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       }
@@ -117,13 +115,11 @@ public class ArmCommandPathToPoint extends Command {
 
     double nextPointIndex = ArmPathplannerUtil.getNextPointIndex(path.points, arm.getArmPosition());
     double pathProgress = nextPointIndex/path.points.size();
-    double finalWristFlip = path.points.get(path.points.size() - 1).wristFlip;
-    double finalWristTwist = path.points.get(path.points.size() - 1).wristTwist;
+    double finalWrist = path.points.get(path.points.size() - 1).wrist;
       // if (((pathProgress > 0.8) || arm.finishedMoving)){
-        arm.setWristTwistTarget(finalWristTwist);
-        arm.setWristFlipTarget(finalWristFlip);
+        arm.setWristTarget(finalWrist);
       // } else {
-        // arm.setWristFlipPosition((MathUtil.clamp((pathProgress), 0, 1) * (finalWristFlip-initialWristFlip)) + initialWristFlip);
+        // arm.setWristPosition((MathUtil.clamp((pathProgress), 0, 1) * (finalWrist-initialWrist)) + initialWrist);
         // arm.setWristTwistPosition((MathUtil.clamp((pathProgress), 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);
         // arm.stopWrist();
         

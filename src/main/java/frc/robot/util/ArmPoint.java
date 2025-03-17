@@ -18,8 +18,8 @@ import frc.robot.subsystems.Arm;
 public class ArmPoint {
     public Translation2d position;
     public boolean inBend = false;
-    public double wristFlip, wristTwist = 0;
-    public ArmPoint(Translation2d point, boolean inBend, double wristFlip, double wristTwist) {
+    public double wrist = 0;
+    public ArmPoint(Translation2d point, boolean inBend, double wrist) {
         this.position = point;
         if (position.getNorm() > ArmConstants.totalStageLength) {
             position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
@@ -27,8 +27,7 @@ public class ArmPoint {
             position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
         }
         this.inBend = inBend;
-        this.wristFlip = wristFlip;
-        this.wristTwist = wristTwist;
+        this.wrist = wrist;
     }
     public ArmPoint(Translation2d point, boolean inBend) {
         this.position = point;
@@ -39,15 +38,14 @@ public class ArmPoint {
         }
         this.inBend = inBend;
     }
-    public ArmPoint(Translation2d point, double wristFlip, double wristTwist) {
+    public ArmPoint(Translation2d point, double wrist) {
         this.position = point;
         if (position.getNorm() > ArmConstants.totalStageLength) {
             position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
         } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
             position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
         }
-        this.wristFlip = wristFlip;
-        this.wristTwist = wristTwist;
+        this.wrist = wrist;
     }
     public ArmPoint(Translation2d point) {
         this.position = point;
@@ -64,19 +62,16 @@ public class ArmPoint {
         }
         return ret;
     }
-    public ArmPoint withWristFlip(double wristFlipPos) {
-        return new ArmPoint(position, inBend, wristFlipPos, wristTwist);
+    public ArmPoint withWrist(double wristPos) {
+        return new ArmPoint(position, inBend, wristPos);
     }
-    public ArmPoint flipBy(double wristFlipAdd) {
-        return new ArmPoint(position, inBend, wristFlip + wristFlipAdd, wristTwist);
-    }
-    public ArmPoint withWristTwist(double wristTwistPos) {
-        return new ArmPoint(position, inBend, wristFlip, wristTwistPos);
+    public ArmPoint flipBy(double wristAdd) {
+        return new ArmPoint(position, inBend, wrist + wristAdd);
     }
     public ArmPoint add(Translation2d add) {
-        return new ArmPoint(position.plus(add), inBend, wristFlip, wristTwist);
+        return new ArmPoint(position.plus(add), inBend, wrist);
     }
     public ArmPoint rotateBy(Rotation2d rotateBy) {
-        return new ArmPoint(position.rotateBy(rotateBy), inBend, wristFlip, wristTwist);
+        return new ArmPoint(position.rotateBy(rotateBy), inBend, wrist);
     }
 }
