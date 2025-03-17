@@ -382,73 +382,35 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 20;
+    public static final int setPointCount = 10;
     public static final Translation2d home = new Translation2d(6.8,14.1); //safest home and also closest possible distance arm is allowed to get to central joint
-    public static final Translation2d stow = new Translation2d(26, Rotation2d.fromDegrees(35)); //closest possible distance when inbend true
     /**
      * contains a list of endpoints
-     * @L1Standard 0
-     * @L1Inner 1
-     * @L1Top 2
-     * @L2Reef 3
-     * @L3Reef 4
-     * @L4Reef 5
-     * @stow (home except closer to other setpoints for faster movement) 6
-     * @home 7
-     * @transfer 8
-     * @climbPrepare 9
-     * @climbClose 10
-     * @transferPullOut 11
-     * @shelfPickUpBackwardsSide 12
-     * @shelfPickUp 13
-     * @groundPickUp 14
-     * @L2Backwards 15
-     * @L3Backwards 16
-     * @L1BackwardsBoth 19
+     * @home 0
+     * @L1 1
+     * @L2 2
+     * @L3 3
+     * @L4 4
+     * @L2.5Algae 5
+     * @L3.5Algae 6
+     * @groundintake 8
+     * @climb 9
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
 
-      armSetPoints[0] = new ArmPoint(new Translation2d(21.0, 16.0), true, -0.5, -1.57);
-      armSetPoints[1] = new ArmPoint(new Translation2d(21.0, 16.0), true, -0.5, -1.57);
-      armSetPoints[2] = new ArmPoint(new Translation2d(21.0, 16.0), true, -0.5, -1.57);
-      armSetPoints[3] = new ArmPoint(new Translation2d(21, 21), true, 0.611, 0.0);
-      armSetPoints[4] = new ArmPoint(new Translation2d(21, 32.0), true, 0.611, 0.0);
-      armSetPoints[5] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.1, 0);
-      armSetPoints[18] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 1.9, -2.84);
+      armSetPoints[0] = new ArmPoint(home, false, 1.8, 0);
+      armSetPoints[1] = new ArmPoint(new Translation2d(0, 0));
+      armSetPoints[2] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 2.1, 0);
+      armSetPoints[3] = new ArmPoint(new Translation2d(0, 27), false, 2.3, 0);
+      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.1, 0);
       
-      armSetPoints[6] = new ArmPoint(stow, true, Units.degreesToRadians(-179), -1.57);
-      armSetPoints[7] = new ArmPoint(home, false, 1.8, 0);
 
 
 
-      // armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(50)), false);
-      // armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength-10, Rotation2d.fromDegrees(0)), false);
-      armSetPoints[9] = new ArmPoint(new Translation2d(30.0, 36.0), false, Units.degreesToRadians(-90), 0.0);
-      armSetPoints[10] = new ArmPoint(new Translation2d(30.0, 18.0), false, Units.degreesToRadians(-90), 0.0);
-      
-      armSetPoints[8] = new ArmPoint(new Translation2d(stow.getNorm(),Rotation2d.fromDegrees(18)), true, -2.4, -1.57); //19, 7
-      armSetPoints[11] = new ArmPoint(new Translation2d(stow.getNorm(), Rotation2d.fromDegrees(40)), true, -2.6, -1.57); //19, 7
-      armSetPoints[12] = new ArmPoint((new Translation2d(23, 18.3)), false, 0.8, -1.57); //19, 7
-      // armSetPoints[12] = new ArmPoint((home.plus(new Translation2d(15, 0))), false, 0.1, -1.57); //19, 7
-      armSetPoints[13] = armSetPoints[7].withWristFlip(2.95).withWristTwist(1.57).rotateBy(Rotation2d.fromDegrees(5)); //19, 7
-
-      armSetPoints[14] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0, 0);
-
-      armSetPoints[15] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 2.1, 0);
-      armSetPoints[16] = new ArmPoint(new Translation2d(0, 27), false, 2.3, 0);
-
-      armSetPoints[17] = armSetPoints[6].add(new Translation2d(-5, 14)).withWristFlip(0).withWristTwist(0);
-
-      armSetPoints[19] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(55)), false, 3.5, -1.57);
+      armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0, 0);
 
 
-      //clamp distance of all setpoints (probably unnecessary)
-      // for (int i = 0; i < armSetPoints.length; i++) {
-      //   if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {
-      //     armSetPoints[i] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, armSetPoints[i].position.getAngle()),armSetPoints[i].inBend, armSetPoints[i].wristFlip, armSetPoints[i].wristTwist);
-      //   }
-      // }
     }
 
 
