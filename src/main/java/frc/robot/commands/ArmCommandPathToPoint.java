@@ -50,8 +50,8 @@ public class ArmCommandPathToPoint extends Command {
       this.setPoint = setPoint;
         this.arm = arm;
         addRequirements(arm);
-        initialWristFlip = arm.getWristFlipPosition();
-        initialWristTwist = arm.getWristTwistPosition();
+        initialWristFlip = arm.getWristFlipTarget();
+        initialWristTwist = arm.getWristTwistTarget();
     }
 
   // Called when the command is initially scheduled.
@@ -72,14 +72,14 @@ public class ArmCommandPathToPoint extends Command {
       
     if (closestPoint != setPointIndex && setPointIndex > -1) {
         List<ArmPoint> temp = new ArrayList<>();
-        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()));
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipTarget(), arm.getWristTwistTarget()));
         temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPointIndex]);
         temp.add(setPoint.get());
         // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       } else {
         List<ArmPoint> temp = new ArrayList<>();
-        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipPosition(), arm.getWristTwistPosition()));
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristFlipTarget(), arm.getWristTwistTarget()));
         temp.add(setPoint.get());
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       }
@@ -120,8 +120,8 @@ public class ArmCommandPathToPoint extends Command {
     double finalWristFlip = path.points.get(path.points.size() - 1).wristFlip;
     double finalWristTwist = path.points.get(path.points.size() - 1).wristTwist;
       // if (((pathProgress > 0.8) || arm.finishedMoving)){
-        arm.setWristTwistPosition(finalWristTwist);
-        arm.setWristFlipPosition(finalWristFlip);
+        arm.setWristTwistTarget(finalWristTwist);
+        arm.setWristFlipTarget(finalWristFlip);
       // } else {
         // arm.setWristFlipPosition((MathUtil.clamp((pathProgress), 0, 1) * (finalWristFlip-initialWristFlip)) + initialWristFlip);
         // arm.setWristTwistPosition((MathUtil.clamp((pathProgress), 0, 1) * (finalWristTwist-initialWristTwist)) + initialWristTwist);

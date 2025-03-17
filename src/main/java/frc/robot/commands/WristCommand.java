@@ -10,15 +10,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ArmCommandWrist extends Command {
+public class WristCommand extends Command {
   private Arm arm;
-  private Supplier<Double> wristFlip, wristTwist, gripper;
+  private Supplier<Double> position;
   /** Creates a new ArmCommandWrist. */
-  public ArmCommandWrist(Arm arm, Supplier<Double> wristFlip, Supplier<Double> wristTwist) {
+  public WristCommand(Arm arm, Supplier<Double> position) {
     this.arm = arm;
-    this.wristFlip = wristFlip;
-    this.wristTwist = wristTwist;
-    this.gripper = gripper;
+    this.position = position;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,8 +27,7 @@ public class ArmCommandWrist extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.setWristFlipPosition(wristFlip.get());
-    arm.setWristTwistPosition(wristTwist.get());
+    arm.setWristFlipTarget(position.get());
   }
 
   // Called once the command ends or is interrupted.

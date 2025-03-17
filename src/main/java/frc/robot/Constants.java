@@ -387,29 +387,42 @@ public static class Vision {
     /**
      * contains a list of endpoints
      * @home 0
+     * 
+     * **Reef**
      * @L1 1
      * @L2 2
      * @L3 3
      * @L4 4
      * @L2.5Algae 5
      * @L3.5Algae 6
+     * 
+     * **Coral Intake**
+     * @grabFromFunnelPreparePosition 7
      * @groundintake 8
-     * @climb 9
+     * 
+     * **Algae dropoff**
+     * @AlgaeBarge 9
+     * 
+     * **Climb**
+     * @climb 10
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
 
       armSetPoints[0] = new ArmPoint(home, false, 1.8, 0);
+
       armSetPoints[1] = new ArmPoint(new Translation2d(0, 0));
       armSetPoints[2] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 2.1, 0);
       armSetPoints[3] = new ArmPoint(new Translation2d(0, 27), false, 2.3, 0);
       armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.1, 0);
-      
 
+      armSetPoints[5] = new ArmPoint(new Translation2d());
+      armSetPoints[6] = new ArmPoint(new Translation2d());
 
-
+      armSetPoints[7] = new ArmPoint(home, false, Units.degreesToRadians(325), 0);
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0, 0);
 
+      armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Math.PI * 0.5), false, Units.degreesToRadians(45), 0);
 
     }
 

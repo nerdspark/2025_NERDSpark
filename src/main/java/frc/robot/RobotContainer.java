@@ -27,11 +27,9 @@ import frc.robot.subsystems.Vision;
 import frc.robot.util.CoralObject;
 import frc.robot.util.ArmPoint;
 import frc.robot.commands.ArmCommand;
-import frc.robot.commands.ArmCommandAngles;
 import frc.robot.commands.ArmCommandClimb;
 import frc.robot.commands.ArmCommandPathToPoint;
-import frc.robot.commands.ArmCommandWrist;
-import frc.robot.commands.ArmDefaultCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.commands.AutoScoreCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.commands.SetStowing;
@@ -201,7 +199,7 @@ public class RobotContainer {
 
 
 
-    arm.setDefaultCommand(new ArmDefaultCommand(arm, () -> (arm.stowing ? 6 : 7)));
+    arm.setDefaultCommand(new ArmCommand(arm, () -> (arm.stowing ? 6 : 7)));
     // arm.setDefaultCommand(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[(arm.stowing ? 6 : 7)]));
 
 
