@@ -25,11 +25,11 @@ public class ArmActions {
     return new ParallelRaceGroup(
       new RollerCommand(gripper, () -> 1.0, () -> 20),
         new SequentialCommandGroup(
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWristFlip(Math.PI)).withTimeout(0.3), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10]).withTimeout(0.3), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].add(new Translation2d(0, -8))).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10]).withTimeout(0.3), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWristFlip(Math.PI)).withTimeout(0.3)));
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3)));
   }
 
     /** move arm to desired setpoint to drop coral on reef
@@ -44,7 +44,7 @@ public class ArmActions {
   */
   public static Command dunkDropCoral(Arm arm, Gripper gripper) {
     return new ParallelCommandGroup(
-      new WristCommand(arm, () -> arm.wristFlipTarget + -1), 
+      new WristCommand(arm, () -> arm.wristTarget + -1), 
       new WaitCommand(0.2).andThen(new RollerCommand(gripper, () -> -1, () -> 20))).withTimeout(0.5);
   }
 
