@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.commands.GripperCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.Arm;
@@ -35,6 +36,11 @@ public class ArmActions {
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3)));
   }
 
+  /** move arm to ground intake position and begin intaking */
+  public static Command groundIntake(Arm arm, Gripper gripper) {
+    return new ArmCommandPathToPoint(arm, () -> 8).alongWith(new GripperCommand(gripper, 1.0));
+  }
+
     /** move arm to desired setpoint to drop coral on reef
      * @param setPointIndex level on the reef
      */
@@ -45,9 +51,9 @@ public class ArmActions {
   /** tilt wrist downwards and release coral 
     * @param setPointIndex level on the reef
   */
-  public static Command dunkDropCoral(Arm arm, Gripper gripper) {
+  public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return new ParallelCommandGroup(
-      new WristCommand(arm, () -> arm.wristTarget + -1), 
+      new ArmCommand(arm, () -> ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()]), 
       new WaitCommand(0.2).andThen(new GripperCommand(gripper, -1))).withTimeout(0.5);
   }
 
@@ -60,7 +66,7 @@ public class ArmActions {
 
     /** position arm to drop off algae in barge */
     public static Command moveToAlgaeBarge(Arm arm) {
-      return new ArmCommand(arm, () -> 12);
+      return new ArmCommand(arm, () -> 9);
     }
 
     /** spin rollers to drop off algae in barge */

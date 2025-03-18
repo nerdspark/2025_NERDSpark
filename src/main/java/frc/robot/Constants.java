@@ -392,20 +392,28 @@ public static class Vision {
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
 
-      armSetPoints[0] = new ArmPoint(home, false, 1.8);
+      armSetPoints[0] = new ArmPoint(home, Units.degreesToRadians(80));
 
-      armSetPoints[1] = new ArmPoint(new Translation2d(0, 0));
-      armSetPoints[2] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), false, 2.1);
-      armSetPoints[3] = new ArmPoint(new Translation2d(0, 27), false, 2.3);
-      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), false, 2.1);
+      armSetPoints[1] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(65)), Units.degreesToRadians(180));
+      armSetPoints[2] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), Units.degreesToRadians(150));
+      armSetPoints[3] = new ArmPoint(new Translation2d(-8, 27), Units.degreesToRadians(125));
+      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(120));
 
-      armSetPoints[5] = new ArmPoint(new Translation2d());
-      armSetPoints[6] = new ArmPoint(new Translation2d());
+      armSetPoints[5] = new ArmPoint(new Translation2d(-8, 20), 3.14);
+      armSetPoints[6] = new ArmPoint(new Translation2d(-8, 20), 3.14);
 
-      armSetPoints[7] = new ArmPoint(home, false, Units.degreesToRadians(325));
+      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(325)).rotateElbowBy(Rotation2d.fromDegrees(-15));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
-      armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Math.PI * 0.5), false, Units.degreesToRadians(45));
+      armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(45));
+
+    }
+    public static ArmPoint[] armSetPointsDunk = new ArmPoint[5];
+    static {
+      armSetPoints[1] = armSetPoints[1];
+      armSetPoints[2] = armSetPoints[2].flipBy(Units.degreesToRadians(30));
+      armSetPoints[3] = armSetPoints[3].flipBy(Units.degreesToRadians(60));
+      armSetPoints[4] = armSetPoints[4].flipBy(Units.degreesToRadians(60));
 
     }
 
@@ -419,11 +427,8 @@ public static class Vision {
     public static List<ArmPoint>[][] intermediatePoints = new List[ArmSetpoints.setPointCount][ArmSetpoints.setPointCount]; 
     static{
       // intermediatePoints[0][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(22.43, 30.52)), new ArmPoint(new Translation2d(47.519, 10.114)));
-intermediatePoints[7][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)))));
-intermediatePoints[6][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
-intermediatePoints[5][14] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
-intermediatePoints[3][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(00, 35), true)));
-intermediatePoints[4][6] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(00, 35), true)));
+intermediatePoints[0][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
+intermediatePoints[4][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
 
 // intermediatePoints[6][5] = List.of(armSetPoints[6].withWrist(Units.degreesToRadians(45)));
       // intermediatePoints[1][4] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(30.0, 24.0)));

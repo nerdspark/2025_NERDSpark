@@ -74,4 +74,20 @@ public class ArmPoint {
     public ArmPoint rotateBy(Rotation2d rotateBy) {
         return new ArmPoint(position.rotateBy(rotateBy), inBend, wrist);
     }
+    public ArmPoint rotateElbowBy(Rotation2d rotateBy) {
+        double distance = position.getNorm();
+        double BaseAngleArmDiff = Math.acos(((distance * distance)
+                        + (ArmConstants.baseStageLength * ArmConstants.baseStageLength)
+                        - (ArmConstants.secondStageLength * ArmConstants.secondStageLength))
+                / (2 * distance * ArmConstants.baseStageLength));
+        double SecondAngleArmDiff = Math.acos(((distance * distance)
+                        - (ArmConstants.baseStageLength * ArmConstants.baseStageLength)
+                        + (ArmConstants.secondStageLength * ArmConstants.secondStageLength))
+                / (2 * distance * ArmConstants.secondStageLength));
+        double shoulderPosition = position.getAngle().getRadians() + (BaseAngleArmDiff * (inBend ? 1 : -1));
+        double elbowPosition = position.getAngle().getRadians() + (SecondAngleArmDiff * (inBend ? -1 : 1));
+        elbowPosition += rotateBy.getRadians();
+        Translation2d newPos = new Translation2d(ArmConstants.baseStageLength, new Rotation2d(shoulderPosition)).plus(new Translation2d(ArmConstants.secondStageLength, new Rotation2d(elbowPosition)));
+        return new ArmPoint(newPos, inBend, wrist);
+    }
 }
