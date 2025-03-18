@@ -11,6 +11,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Gripper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -18,13 +19,21 @@ public class GripperCommand extends InstantCommand {
   /** Creates a new GripperComand. */
   private Gripper gripper;
   private DoubleSupplier power;
-  private IntSupplier currentLimit;
+  private DoubleSupplier currentLimit;
 
-  public GripperCommand(Gripper gripper, DoubleSupplier power, IntSupplier currentLimit) {
+  public GripperCommand(Gripper gripper, DoubleSupplier power, DoubleSupplier currentLimit) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.gripper = gripper;
     this.power = power;
     this.currentLimit = currentLimit;
+
+    addRequirements(gripper);
+  }
+  public GripperCommand(Gripper gripper, DoubleSupplier power) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.gripper = gripper;
+    this.power = power;
+    this.currentLimit = () -> ArmConstants.currentLimitGripper;
 
     addRequirements(gripper);
   }
@@ -35,8 +44,8 @@ public class GripperCommand extends InstantCommand {
     
     gripper.setGripperPower(power.getAsDouble());
 
-    if (currentLimit.getAsInt() != gripper.getCurrentLimit()) {
-      gripper.setCurrentLimit(currentLimit.getAsInt());
+    if (currentLimit.getAsDouble() != gripper.getCurrentLimit()) {
+      gripper.setCurrentLimit(currentLimit.getAsDouble());
     }
   }
 
