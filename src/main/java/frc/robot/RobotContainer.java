@@ -31,7 +31,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Climb;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,7 +58,6 @@ public class RobotContainer {
 
     public Arm arm;
     private Gripper gripper;
-    private Climb climb;
     private LimelightSubsystem limelightSubsystem;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -115,7 +113,6 @@ public class RobotContainer {
       configureLimelight();
     }
 
-    // configureClimb();
   }
   private void configureLimelight() {
     limelightSubsystem = new LimelightSubsystem(drivetrain);
@@ -165,7 +162,6 @@ public class RobotContainer {
 
 
 
-    // climb.setDefaultCommand(new ClimbCommand(climb, () -> false));
     // m_LedSubsystem.setDefaultCommand(
     //  new LEDCommand(m_LedSubsystem, armFinishedMoving, driveTrainFinishedMoving, hasCoral)
     // );
@@ -178,13 +174,6 @@ public class RobotContainer {
 
     joystick.leftBumper().onTrue(ArmActions.moveToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
 
-  }
-  private void configureClimb() {
-    climb = new Climb();
-    // joystick.povUp().onTrue(ClimbSequence.prepareToClimb(arm, intake, climb));
-    // joystick.povRight().onTrue(ClimbSequence.closeHooks(arm, intake, climb));
-    // joystick.povDown().onTrue(ClimbSequence.climbDown(arm, intake, climb));
-    // joystick.povLeft().onTrue(ClimbSequence.latch(arm, intake, climb));
   }
 
   private void configureAutoChooser() {
