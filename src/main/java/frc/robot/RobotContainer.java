@@ -5,71 +5,27 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.Attributes.Name;
-import java.util.Map;
-
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmSetpoints;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.FieldConstants.ReefLevel;
-import frc.robot.commandSequences.Autos;
-import frc.robot.commandSequences.ClimbSequence;
-import frc.robot.commands.ClimbCommand;
+import frc.robot.commandSequences.ArmActions;
 import frc.robot.commands.DriveToCoral;
-import frc.robot.commands.DriveToPose;
+import frc.robot.commands.GripperCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
-import frc.robot.util.CoralObject;
-import frc.robot.util.ArmPoint;
 import frc.robot.commands.ArmCommand;
-import frc.robot.commands.ArmCommandClimb;
-import frc.robot.commands.ArmCommandPathToPoint;
-import frc.robot.commands.WristCommand;
-import frc.robot.commands.AutoScoreCommand;
-import frc.robot.commands.LEDCommand;
-import frc.robot.commands.SetStowing;
-import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Gripper;
-import edu.wpi.first.wpilibj.LEDPattern;
-import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.subsystems.Vision;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.math.MathUsageId;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.commands.PathfindingCommand;
-
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
 
@@ -195,12 +151,12 @@ public class RobotContainer {
         );
     
     
-    //joystick.y().toggleOnTrue(new DriveToCoral(drivetrain, () -> new Pose2d(2.0, 2.0, new Rotation2d(0))));
 
 
 
-    arm.setDefaultCommand(new ArmCommand(arm, () -> (arm.stowing ? 6 : 7)));
-    // arm.setDefaultCommand(new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[(arm.stowing ? 6 : 7)]));
+    arm.setDefaultCommand(new ArmCommand(arm, () -> 0));
+
+    gripper.setDefaultCommand(new GripperCommand(gripper, 1.0));
 
 
 
@@ -213,16 +169,9 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-
-
-
-
-
-
-
-
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+    joystick.leftBumper().onTrue(ArmActions.moveToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
 
   }
   private void configureClimb() {
