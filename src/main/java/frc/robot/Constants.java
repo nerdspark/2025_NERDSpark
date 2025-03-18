@@ -317,9 +317,7 @@ public static class Vision {
     public static final double currentLimitShoulder = 35.0;
     public static final double currentLimitElbow = 25.0;
     public static final double currentLimitWrist = 45.0; //40.0
-    public static final double currentLimitWristTwist = 90.0;
-    public static final double currentLimitGripperOpen = 8.0;
-    public static final double currentLimitGripperClose = 55.0;
+    public static final double currentLimitGripper = 20.0;
     public static final double gripperPowerClose = 1.0;
     public static final double gripperPowerOpen = -0.2;
 
@@ -339,12 +337,6 @@ public static class Vision {
     //wrist up/down stage 1: 50:50
     //wrist up/down stage 2: 35:50
     public static final double wristGearRatio = 25.0*50.0/50.0*35.0/50.0;
-    //wrist twist gearbox: 25:1
-    //wrist twist stage 0: 50:50
-    //wrist twist stage 1: 50:50
-    //wrist twist stage 2: 35:50
-    //wrist twist bevel: 1:1
-    public static final double wristTwistGearRatio = 25.0*50.0/50.0*35.0/50.0;
     public static final double gripperGearRatio = 5.0*5.0 / 3.0;
     public static final double baseStageLength = 23.158;
     public static final double secondStageLength = 25.475;
@@ -354,7 +346,6 @@ public static class Vision {
     public static final double shoulderRadPerRot = shoulderGearRatio; 
     public static final double elbowRadPerRot = elbowGearRatio; 
     public static final double wristRadPerRot = wristGearRatio;
-    public static final double wristTwistRadPerRot = wristTwistGearRatio;
     public static final double gripperRadPerRot = gripperGearRatio;
     public static final double gripperOffset = 0;
     public static final double shoulderOffset = -0.33 / 2.0 / Math.PI; // TODO fidn these, radians, fwd = 0
