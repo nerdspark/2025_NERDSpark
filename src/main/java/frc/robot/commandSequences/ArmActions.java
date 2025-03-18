@@ -26,7 +26,7 @@ public class ArmActions {
   /** grab coral from funnel */
   public static Command grabFromFunnel(Arm arm, Gripper gripper) {
     return new ParallelCommandGroup(
-      new GripperCommand(gripper, () -> 1.0),
+      new GripperCommand(gripper, 1.0),
         new SequentialCommandGroup(
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10]).withTimeout(0.3), 
@@ -48,14 +48,14 @@ public class ArmActions {
   public static Command dunkDropCoral(Arm arm, Gripper gripper) {
     return new ParallelCommandGroup(
       new WristCommand(arm, () -> arm.wristTarget + -1), 
-      new WaitCommand(0.2).andThen(new GripperCommand(gripper, () -> -1))).withTimeout(0.5);
+      new WaitCommand(0.2).andThen(new GripperCommand(gripper, -1))).withTimeout(0.5);
   }
 
     /** position arm to remove algae while rolling rollers inwards
         * @param higherLevel true if the algae is at a higher level (L3.5); false if the algae is at a lower level (L2.5)
     */
     public static Command removeAlgae(Arm arm, Gripper gripper, boolean higherLevel) {
-      return new ArmCommand(arm, () -> higherLevel ? 6 : 5).alongWith(new GripperCommand(gripper, () -> 1.0));
+      return new ArmCommand(arm, () -> higherLevel ? 6 : 5).alongWith(new GripperCommand(gripper, 1.0));
     }
 
     /** position arm to drop off algae in barge */
@@ -65,6 +65,6 @@ public class ArmActions {
 
     /** spin rollers to drop off algae in barge */
     public static Command shootAlgaeBarge(Gripper gripper) {
-      return new GripperCommand(gripper, () -> -1.0);
+      return new GripperCommand(gripper, -1.0);
     }
 }

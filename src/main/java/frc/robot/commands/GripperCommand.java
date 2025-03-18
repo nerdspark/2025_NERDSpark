@@ -18,10 +18,10 @@ import frc.robot.subsystems.Gripper;
 public class GripperCommand extends InstantCommand {
   /** Creates a new GripperComand. */
   private Gripper gripper;
-  private DoubleSupplier power;
-  private DoubleSupplier currentLimit;
+  private double power;
+  private double currentLimit;
 
-  public GripperCommand(Gripper gripper, DoubleSupplier power, DoubleSupplier currentLimit) {
+  public GripperCommand(Gripper gripper, double power, double currentLimit) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.gripper = gripper;
     this.power = power;
@@ -29,11 +29,11 @@ public class GripperCommand extends InstantCommand {
 
     addRequirements(gripper);
   }
-  public GripperCommand(Gripper gripper, DoubleSupplier power) {
+  public GripperCommand(Gripper gripper, double power) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.gripper = gripper;
     this.power = power;
-    this.currentLimit = () -> ArmConstants.currentLimitGripper;
+    this.currentLimit = ArmConstants.currentLimitGripper;
 
     addRequirements(gripper);
   }
@@ -42,10 +42,10 @@ public class GripperCommand extends InstantCommand {
   @Override
   public void initialize() {
     
-    gripper.setGripperPower(power.getAsDouble());
+    gripper.setGripperPower(power);
 
-    if (currentLimit.getAsDouble() != gripper.getCurrentLimit()) {
-      gripper.setCurrentLimit(currentLimit.getAsDouble());
+    if (currentLimit != gripper.getCurrentLimit()) {
+      gripper.setCurrentLimit(currentLimit);
     }
   }
 

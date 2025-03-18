@@ -31,7 +31,6 @@ public class ScoringProfileSubsystem extends SubsystemBase {
  
   private int branch = 2;
   private int level = 0;
-  private boolean isBackwards = false;
   private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L3;
   private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
   private Pose2d selectedBranchPose = new Pose2d();
@@ -59,27 +58,12 @@ public class ScoringProfileSubsystem extends SubsystemBase {
         });
   }
   public int getArmReefTarget() {
-    if (true) {
-      if (reefLevel.level == 2) {
-        return 15;
-      }
-      if (reefLevel.level == 3) {
-        return 16;
-      }
-      if (reefLevel.level == 1) {
-        return 19;
-      }
-      if (reefLevel.level == 0) {
-        return 19;
-      }
-    } 
-    return (reefLevel.level + 1);
+    
+    return reefLevel.level;
     
   }
   public int getArmSubstationTarget() {
-    SmartDashboard.putBoolean("isbackwards", isBackwards);
-// return 13;
-    return false ? 12 : 13;
+    return 13;
   }
 
   /**
@@ -121,7 +105,6 @@ public class ScoringProfileSubsystem extends SubsystemBase {
       }
     }
 
-    isBackwards =  DriverStation.getStickButton(1, 20);
     
 
   }
@@ -170,7 +153,6 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return branch;
   }
   public FieldConstants.ReefLevel getLevel() {
-    // SmartDashboard.putNumber("reeflevel", reefLevel.level);
     return reefLevel;
   }
   public void setBranch(char branch) {
@@ -186,9 +168,6 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return selectedCoralStationPose;
   }
 
-  public boolean getIsBackwards() {
-    return true && (reefLevel.equals(ReefLevel.L2) || reefLevel.equals(ReefLevel.L3) || reefLevel.equals(ReefLevel.L1) || reefLevel.equals(ReefLevel.L1Top));
-  }
 
   public FieldConstants.CoralStations getCoralStationSide() {
     return coralStationSide;
@@ -200,17 +179,12 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
   public Pose2d getRobotPoseForSelectedBranch() {
    
-    // if(getIsBackwards()) {
-      return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel).plus(new Transform2d(0, 0, Rotation2d.fromDegrees(180))));
-    // }
-    // else {
-    //   return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
-    // }
+      return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
 
   }
 
   public Pose2d getRobotPoseForSelectedCoralStation() {
-    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide));//.plus(new Transform2d(0, 0, isBackwards ? Rotation2d.k180deg : Rotation2d.kZero)));
+    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide));
   }
 
 }
