@@ -13,9 +13,11 @@ import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Gripper;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,6 +28,8 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
 
@@ -119,12 +123,13 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
-    // NamedCommands.registerCommand("gripperToGroundIntake", new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper)).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18)));
-    // NamedCommands.registerCommand("gripperOpen", Autos.getDunkDropCommand(arm, gripper, () -> 18));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
+    NamedCommands.registerCommand("armToHome", new ArmCommandPathToPoint(arm, () -> 0));
+    NamedCommands.registerCommand("grabFromFunnel", ArmActions.grabFromFunnel(arm, gripper));
+    NamedCommands.registerCommand("gripperToGroundIntake", ArmActions.groundIntake(arm, gripper));
+    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 4));
+    NamedCommands.registerCommand("dropOffCoral", ArmActions.dunkDropCoral(arm, gripper, () -> 4));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
     // NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
     // NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
-    // NamedCommands.registerCommand("armToHome", new ArmCommandPathToPoint(arm, () -> 7));
-    // NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 18));
     // NamedCommands.registerCommand("intakeThrow", new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakePassive).until(() -> intake.getIntakeDeployPosition() < IntakeConstants.intakeThrowPosition)
     // .andThen(new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakeThrowPower)
     //   .withTimeout(0.05))
@@ -156,7 +161,7 @@ public class RobotContainer {
 
     arm.setDefaultCommand(new ArmCommand(arm, () -> 0));
 
-    gripper.setDefaultCommand(new GripperCommand(gripper, 1.0));
+    gripper.setDefaultCommand(new GripperCommand(gripper, 1.0, 10));
 
 
 
