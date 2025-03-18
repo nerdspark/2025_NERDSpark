@@ -27,17 +27,12 @@ import frc.robot.Constants.ArmGains;
 public class Gripper extends SubsystemBase {
   private TalonFX gripper;
   private TalonFXConfiguration gripperConfig = new TalonFXConfiguration();
-  private CANrange sensorMiddle;
-  private CANrange sensorLeft;
-  private CANrange sensorRight;
-  private double distanceToTrip = 0.15;
-  private double distanceToTripMiddle = 0.2;
 
   /** Creates a new Gripper. */
   public Gripper() {
     gripper = new TalonFX(ArmConstants.gripperMotorPort, ArmConstants.armCanBus);
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ArmConstants.currentLimitGripperOpen)
+          .withStatorCurrentLimit(ArmConstants.currentLimitGripper)
           .withStatorCurrentLimitEnable(true);
         gripperConfig.Feedback = new FeedbackConfigs()
           .withFeedbackRotorOffset(ArmConstants.gripperOffset)
@@ -53,17 +48,6 @@ public class Gripper extends SubsystemBase {
         gripper
           .getConfigurator()
           .apply(gripperConfig);
-    sensorMiddle = new CANrange(ArmConstants.rangeMiddlePort, ArmConstants.armCanBus);
-    sensorLeft = new CANrange(ArmConstants.rangeLeftPort, ArmConstants.armCanBus);
-    sensorRight = new CANrange(ArmConstants.rangeRightPort, ArmConstants.armCanBus);
-    CANrangeConfiguration sensorConfig = new CANrangeConfiguration();
-    CANrangeConfiguration sensorMiddleConfig = new CANrangeConfiguration();
-    sensorConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(distanceToTrip);
-    sensorMiddleConfig.ProximityParams = new ProximityParamsConfigs().withProximityThreshold(distanceToTripMiddle);
-    sensorMiddle.getConfigurator().apply(sensorMiddleConfig);
-    sensorLeft.getConfigurator().apply(sensorConfig);
-    sensorRight.getConfigurator().apply(sensorConfig);
-    gripper.setPosition(0);
   }
   
   public void setGripperPower(double power) {
