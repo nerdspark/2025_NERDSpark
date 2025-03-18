@@ -7,7 +7,6 @@ package frc.robot.commandSequences;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.Vision;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
