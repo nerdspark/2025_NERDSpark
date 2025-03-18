@@ -65,7 +65,7 @@ public class ArmPoint {
     public ArmPoint withWrist(double wristPos) {
         return new ArmPoint(position, inBend, wristPos);
     }
-    public ArmPoint flipBy(double wristAdd) {
+    public ArmPoint addToWristFlip(double wristAdd) {
         return new ArmPoint(position, inBend, wrist + wristAdd);
     }
     public ArmPoint add(Translation2d add) {
@@ -89,5 +89,9 @@ public class ArmPoint {
         elbowPosition += rotateBy.getRadians();
         Translation2d newPos = new Translation2d(ArmConstants.baseStageLength, new Rotation2d(shoulderPosition)).plus(new Translation2d(ArmConstants.secondStageLength, new Rotation2d(elbowPosition)));
         return new ArmPoint(newPos, inBend, wrist);
+    }
+
+    public ArmPoint withGripperCoralOffset(Translation2d offset) {
+        return new ArmPoint(position.minus(offset.rotateBy(new Rotation2d(wrist))), inBend, wrist);
     }
 }
