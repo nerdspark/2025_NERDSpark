@@ -388,11 +388,19 @@ public static class Vision {
       armSetPoints[5] = new ArmPoint(new Translation2d(-6.4, 13.8), Units.degreesToRadians(180)).withGripperCoralOffset(gripperOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-6.4, 29.7), Units.degreesToRadians(180)).withGripperCoralOffset(gripperOffset);
 
+
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(325)).rotateElbowBy(Rotation2d.fromDegrees(-15));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
       armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(45));
+
     }
+    public static ArmPoint[] armSetPointsDunk = new ArmPoint[5];
+    static {
+      armSetPoints[1] = armSetPoints[1];
+      armSetPoints[2] = armSetPoints[2].flipBy(Units.degreesToRadians(30));
+      armSetPoints[3] = armSetPoints[3].flipBy(Units.degreesToRadians(60));
+      armSetPoints[4] = armSetPoints[4].flipBy(Units.degreesToRadians(60));
 
     /** list of dunk setpoints for reef dropoff
      * @L1 1

@@ -56,6 +56,7 @@ public class RobotContainer {
 
     public Arm arm;
     private Gripper gripper;
+
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     // private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
@@ -107,6 +108,7 @@ public class RobotContainer {
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     configureAutoChooser();
     
+
 
   }
   
