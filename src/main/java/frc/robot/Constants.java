@@ -179,20 +179,6 @@ public static class Vision {
         public static final double kCoralCenterUprightHeight = 0.225425; //in meters
         public static final double kCoralCenterFallenHeight = 0.0508; //in meters
         //Testboard Dims.
-        // public static final double kLimeLightHeight = 0.120;
-        // public static final double kLimeLightXOffset = 0;
-        // public static final double kLimeLightYOffset = 0;
-        // public static final double kLimeLightAOD = -15.0;
-        //Comp. Dims.
-        public static final double kLimeLightHeight = 0.56552592;
-        public static final double kLimeLightXOffset = -0.17145;
-        public static final double kLimeLightYOffset = -0.18415;
-        public static final double kLimeLightAOD = -15.0;
-
-        public static boolean kCoralTargeted = false;
-
-        public static final boolean USE_LIMELIGHT = false;
-
         
 
 
@@ -310,10 +296,6 @@ public static class Vision {
     public static final int rangeRightPort = 31;
     public static final String armCanBus = "canivore1";
 
-    public static final double shoulderPowerClimb = -0.2;
-    // public static final double shoulderPositionClimb = -0.10;
-    public static final double elbowPositionClimb = Units.degreesToRadians(80);
-    public static final double currentLimitShoulderClimb = 60.0;
     public static final double currentLimitShoulder = 35.0;
     public static final double currentLimitElbow = 25.0;
     public static final double currentLimitWrist = 45.0; //40.0
@@ -411,7 +393,7 @@ public static class Vision {
 
       armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(45));
     }
-    
+
     /** list of dunk setpoints for reef dropoff
      * @L1 1
      * @L2 2 
@@ -486,53 +468,6 @@ intermediatePoints[4][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     
   }
   
-
-  // public static class IntakeConstants {
-  //   public static final int intakeDeployMotorPort = 33;
-  //   public static final int intakeGrabberMotorPort = 51;
-  //   public static final int intakeRangePort = 3;
-  //   public static final double intakeDeployCurrentLimit = 70; //40
-  //   public static final double intakeGrabberCurrentLimit = 60;
-  //   public static final String intakeCANBus = "canivore1";
-
-  //   public static final double deploykP = 8; //7
-  //   public static final double deploykI = 0;
-  //   public static final double deploykD = 0.1;
-  //   public static final double deploykG = 0.4;
-  //   public static final double grabberkP = 0;
-  //   public static final double grabberkI = 0;
-  //   public static final double grabberkD = 0;
-  //   public static final double grabberkG = 0;
-
-  //   public static final double deployOffset = 0.46;
-  //   public static final double deployGearRatio = 20.0;
-  //   public static final double grabberOffset = 0;
-  //   public static final double grabberGearRatio = 5.0;
-
-  //   public static final double setpoint0 = 0d;
-  //   public static final double setpoint30 = 1d/12d;
-  //   public static final double setpoint45 = 0.125;
-  //   public static final double setpoint60 = 1d/6d;
-  //   public static final double setpoint90 = .25;
-
-  //   public static final double home = 0.45;
-  //   public static final double deploy = -0.09;
-  //   public static final double climb = 0.05;
-  //   public static final double climbLatch = 0.3;
-    
-
-  //   public static final double transferPowerDeploy = -0.2;
-  //   public static final double intakeTransferPosition = 0.35;
-  //   public static final double intakePassive = -0.06;
-
-  //   public static final double transferPowerRollers = 1.0; //-0.5
-  //   public static final double intakePowerRollers = -0.5;
-
-  //   public static final double intakeThrowPreparePosition = 0.37;
-  //   public static final double intakeThrowPosition = 0.32;
-  //   public static final double intakeThrowDeployPower = -0.15;
-  //   public static final double intakeThrowPower = 0.5;
-  // }
 
   public static class LEDConstants {
     public static final double scrollSpeed = 40; 

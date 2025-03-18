@@ -7,14 +7,12 @@ import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandSequences.ArmActions;
-import frc.robot.commands.DriveToCoral;
 import frc.robot.commands.GripperCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandPathToPoint;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.Gripper;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -58,7 +56,6 @@ public class RobotContainer {
 
     public Arm arm;
     private Gripper gripper;
-    private LimelightSubsystem limelightSubsystem;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     // private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
@@ -109,14 +106,8 @@ public class RobotContainer {
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     configureAutoChooser();
-    if (Constants.Vision.USE_LIMELIGHT) {
-      configureLimelight();
-    }
+    
 
-  }
-  private void configureLimelight() {
-    limelightSubsystem = new LimelightSubsystem(drivetrain);
-    joystick.y().whileTrue(new DriveToCoral(drivetrain, () -> limelightSubsystem.coralArrayUpdateReturn().get(0).getPose()));
   }
   
   private void configureNamedCommands(){
