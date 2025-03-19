@@ -21,39 +21,39 @@ public class ArmPoint {
     public double wrist = 0;
     public ArmPoint(Translation2d point, boolean inBend, double wrist) {
         this.position = point;
-        if (position.getNorm() > ArmConstants.totalStageLength) {
-            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
-        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
-            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
-        }
+        // if (position.getNorm() > ArmConstants.totalStageLength) {
+        //     position = new Translation2d(ArmConstants.totalStageLength, position.getAngle());
+        // } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+        //     position = new Translation2d(ArmSetpoints.home.getNorm(), position.getAngle());
+        // }
         this.inBend = inBend;
         this.wrist = wrist;
     }
     public ArmPoint(Translation2d point, boolean inBend) {
         this.position = point;
-        if (position.getNorm() > ArmConstants.totalStageLength) {
-            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
-        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
-            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
-        }
+        // if (position.getNorm() > ArmConstants.totalStageLength) {
+        //     position = new Translation2d(ArmConstants.totalStageLength, position.getAngle());
+        // } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+        //     position = new Translation2d(ArmSetpoints.home.getNorm(), position.getAngle());
+        // }
         this.inBend = inBend;
     }
     public ArmPoint(Translation2d point, double wrist) {
         this.position = point;
-        if (position.getNorm() > ArmConstants.totalStageLength) {
-            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
-        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
-            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
-        }
+        // if (position.getNorm() > ArmConstants.totalStageLength) {
+        //     position = new Translation2d(ArmConstants.totalStageLength, position.getAngle());
+        // } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+        //     position = new Translation2d(ArmSetpoints.home.getNorm(), position.getAngle());
+        // }
         this.wrist = wrist;
     }
     public ArmPoint(Translation2d point) {
         this.position = point;
-        if (position.getNorm() > ArmConstants.totalStageLength) {
-            position = new Translation2d(ArmConstants.totalStageLength, point.getAngle());
-        } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
-            position = new Translation2d(ArmSetpoints.home.getNorm(), point.getAngle());
-        }
+        // if (position.getNorm() > ArmConstants.totalStageLength) {
+        //     position = new Translation2d(ArmConstants.totalStageLength, position.getAngle());
+        // } else if (position.getNorm() < ArmSetpoints.home.getNorm()) {
+        //     position = new Translation2d(ArmSetpoints.home.getNorm(), position.getAngle());
+        // }
     }
     public static List<ArmPoint> fromTranslations(List<Translation2d> points, boolean inBend) {
         List<ArmPoint> ret = new ArrayList<>();
@@ -91,7 +91,7 @@ public class ArmPoint {
         return new ArmPoint(newPos, inBend, wrist);
     }
 
-    public ArmPoint withGripperCoralOffset(Translation2d offset) {
+    public ArmPoint withGripperOffset(Translation2d offset) {
         return new ArmPoint(position.minus(offset.rotateBy(new Rotation2d(wrist))), inBend, wrist);
     }
 }

@@ -25,6 +25,7 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants.CoralStations;
 import frc.robot.FieldConstants.ReefLevel;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -361,8 +362,8 @@ public static class Vision {
      * @L2 2 (-2.2, 31.1) from bumper @ 55 degrees to horizontal
      * @L3 3 (-2.2, 47.0) from bumper @ 55 degrees to horizontal
      * @L4 4 (-2.0, 71.9) from bumper @ 90 degrees to horizontal
-     * @L2.5Algae 5 (0, 35.8) from bumper @ 0 degrees to horizontal
-     * @L3.5Algae 6 (0, 51.7) from bumper @ 0 degrees to horizontal
+     * @L2.5Algae 5 (-8, 35.8) from bumper @ 0 degrees to horizontal
+     * @L3.5Algae 6 (-8, 51.7) from bumper @ 0 degrees to horizontal
      * 
      * **Coral Intake**
      * @grabFromFunnelPreparePosition 7
@@ -380,21 +381,37 @@ public static class Vision {
       // armSetPoints[3] = new ArmPoint(new Translation2d(-8, 27), Units.degreesToRadians(145));
       // armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(120));
 
-      double dropoffDistanceFromBumper = -6.0;
-      Translation2d gripperCoralOffset = new Translation2d(6, 5);
-      Translation2d gripperOffset = new Translation2d(6, -3);
-      armSetPoints[1] = new ArmPoint(home);
-      armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 9.1), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperCoralOffset(gripperCoralOffset);
-      armSetPoints[3] = new ArmPoint(new Translation2d(-8.6, 25.0), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperCoralOffset(gripperCoralOffset);
-      armSetPoints[4] = new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperCoralOffset(gripperCoralOffset);
+      double dropoffDistanceFromBumper = -5.0;
+      Translation2d gripperOffset = new Translation2d(9.9, -2.0);
+      Translation2d gripperCoralOffset = gripperOffset.plus(new Translation2d(-2.7, 8.0));
+      Translation2d gripperCoralOffsetInverted = gripperCoralOffset.plus(new Translation2d(0.0, -11.9));
+      Translation2d gripperAlgaeOffset = gripperOffset.plus(new Translation2d(8.0, 0.0));
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-6.4, 13.8), Units.degreesToRadians(180)).withGripperCoralOffset(gripperOffset);
-      armSetPoints[6] = new ArmPoint(new Translation2d(-6.4, 29.7), Units.degreesToRadians(180)).withGripperCoralOffset(gripperOffset);
+      armSetPoints[1] = new ArmPoint(home);
+      armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 9.1), Units.degreesToRadians(180+145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
+      armSetPoints[3] = new ArmPoint(new Translation2d(-8.6, 25.0), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[4] = new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(120)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+
+      armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 13.8), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 29.7), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(325)).rotateElbowBy(Rotation2d.fromDegrees(-15));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
       armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(45));
+      
+      for (int i = 0; i < armSetPoints.length; i++) {
+        if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {
+          armSetPoints[i] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, armSetPoints[i].position.getAngle()), armSetPoints[i].inBend, armSetPoints[i].wrist);
+          SmartDashboard.putBoolean("armpoint limit trip", true);
+          System.out.println("armsetpoint trip " + i);
+        } else if (armSetPoints[i].position.getNorm() < ArmSetpoints.home.getNorm()) {
+          armSetPoints[i] = new ArmPoint(new Translation2d(ArmSetpoints.home.getNorm(), armSetPoints[i].position.getAngle()), armSetPoints[i].inBend, armSetPoints[i].wrist);
+          SmartDashboard.putBoolean("armpoint limit trip", true);
+          System.out.println("armsetpoint trip " + i);
+        }
+        System.out.println("Arm Setpoint " + i + " " + armSetPoints[i].position.toString());
+      }
     }
 
     /** list of dunk setpoints for reef dropoff
@@ -407,8 +424,8 @@ public static class Vision {
     static {
       armSetPointsDunk[0] = armSetPoints[0];
       armSetPointsDunk[1] = armSetPoints[1];
-      armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(30));
-      armSetPointsDunk[3] = armSetPoints[3].addToWristFlip(Units.degreesToRadians(60));
+      armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-30));
+      armSetPointsDunk[3] = armSetPoints[3].addToWristFlip(Units.degreesToRadians(45));
       armSetPointsDunk[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60));
     }
 

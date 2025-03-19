@@ -87,7 +87,7 @@ public class Gripper extends SubsystemBase {
 
   @Override
   public void periodic() {
-    for (int i = prevDistances.length-1; i >=0; i--) {
+    for (int i = prevDistances.length-1; i > 0; i--) {
       prevDistances[i]  = prevDistances[i-1];
     }
     prevDistances[0] = sensor.getDistance().getValueAsDouble();
