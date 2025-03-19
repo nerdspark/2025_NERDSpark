@@ -50,7 +50,7 @@ public class ArmCommandPathToPoint extends Command {
       this.setPoint = setPoint;
         this.arm = arm;
         addRequirements(arm);
-        initialWrist = arm.getWristTarget();
+        initialWrist = arm.getWristPosition();
     }
 
   // Called when the command is initially scheduled.
@@ -71,14 +71,14 @@ public class ArmCommandPathToPoint extends Command {
       
     if (closestPoint != setPointIndex && setPointIndex > -1) {
         List<ArmPoint> temp = new ArrayList<>();
-        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristTarget()));
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristPosition()));
         temp.addAll(ArmSetpoints.intermediatePoints[closestPoint][setPointIndex]);
         temp.add(setPoint.get());
         // path = new ArmPath(GenPath.generateSmoothPath(GenPath.generateInflectionPoints(temp), ArmConstants.arcRadius, ArmConstants.arcPoints));
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       } else {
         List<ArmPoint> temp = new ArrayList<>();
-        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristTarget()));
+        temp.add(new ArmPoint(arm.getArmPosition(), arm.getCurrentInBend(), arm.getWristPosition()));
         temp.add(setPoint.get());
         path = new ArmPath(GenPath.generateInflectionPoints(temp));
       }

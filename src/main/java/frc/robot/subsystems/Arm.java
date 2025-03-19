@@ -268,7 +268,7 @@ public class Arm extends SubsystemBase {
    * @return the current state of the arm.
    */
   public ArmPoint getArmState() {
-    return new ArmPoint(getArmPosition(), getCurrentInBend(), getWristTarget());
+    return new ArmPoint(getArmPosition(), getCurrentInBend(), getWristPosition());
   }
 
   /**
@@ -276,8 +276,9 @@ public class Arm extends SubsystemBase {
    *
    * @param position position to move the wrist to.
    * @param inBend a flag to choose which orientation of the arm to use.
+   * * false = bend convex side facing negative rotation direction
+   * * true = bend convex side facing positive rotation direction
    */
-  // TODO: Which direction is the elbow when inBend is true?
   public void setArmPosition(Translation2d position, boolean inBend) {  // rotates the two base stages 
 
     double distance = MathUtil.clamp(position.getNorm(), ArmSetpoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
@@ -309,7 +310,6 @@ public class Arm extends SubsystemBase {
    * @param velocity vector defining desired velocity of the wrist.
    * @param inBend a flag to choose which orientation of the arm to use.
    */
-  // TODO: Which direction is the elbow when inBend is true?
   public void setVelocity(Translation2d velocity, boolean inBend){
     Translation2d position = getArmPosition().plus(velocity.times(ArmVelocityGains.linearApproximationTime));
     // SmartDashboard.putNumber("velocity x", velocity.getX());
@@ -396,7 +396,7 @@ public class Arm extends SubsystemBase {
    *
    * @return the wrist position in <em>radians</em>.
    */
-  public double getWristTarget(){
+  public double getWristPosition(){
     double wristPosition = (wrist.getPosition().getValueAsDouble() * (2d * Math.PI));
     // TODO: Is this subtraction 'safe'? Multiplication can be wrong for
     //       unrestricted angular domains.
@@ -552,8 +552,9 @@ public class Arm extends SubsystemBase {
    * Get whether the arm is currently bent inwards.
    *
    * @return <code>true</code> if bent inwards.
+   * false = bend convex side facing negative rotation direction
+   * true = bend convex side facing positive rotation direction
    */
-  // TODO: Not sure if this description is right.
   public boolean getCurrentInBend() {
     return getElbowPosition() - getShoulderPosition() < 0;
   }
@@ -569,11 +570,10 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * Set whether the arm is stowing.
+   * Set whether the arm's default state is the stow position.
    *
    * @param Stowing set <code>true</code> if the arm is stowing.
    */
-  // TODO: Not sure if this description is right.
   public void setStowing(boolean Stowing) {
     stowing = Stowing;
   }
@@ -585,7 +585,7 @@ public class Arm extends SubsystemBase {
    */
   public boolean wristFinishedMoving() {
       // TODO: This doesn't work for unrestricted angular domains.
-    return Math.abs(getWristTarget() - wristTarget) < 0.2;
+    return Math.abs(getWristPosition() - wristTarget) < 0.2;
   }
 
   @Override
@@ -611,7 +611,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
     SmartDashboard.putNumber("elbow pos", getElbowPosition());
     SmartDashboard.putNumber("shoulder pos", getShoulderPosition());
-    SmartDashboard.putNumber("wrist flip pos", getWristTarget());
+    SmartDashboard.putNumber("wrist flip pos", getWristPosition());
     // SmartDashboard.putNumber("shoulder velocity", getShoulderVelocity());
     // SmartDashboard.putNumber("elbow velocity", getElbowVelocity());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());
