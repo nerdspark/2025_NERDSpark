@@ -22,6 +22,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
+import frc.robot.Constants.ArmVelocityGains;
 import frc.robot.subsystems.Arm;
 // import frc.robot.subsystems.LEDSubsytem.LEDSubsystem;
 import frc.robot.util.ArmPath;
@@ -109,7 +110,7 @@ public class ArmCommandPathToPoint extends Command {
     } else {
       ArmPoint nextPoint = ArmPathplannerUtil.getNextPoint(path.points, arm.getArmState());
       Rotation2d direction = nextPoint.position.minus(arm.getArmPosition()).getAngle();
-      arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmConstants.velocity), nextPoint.inBend);
+      arm.setVelocity(new Translation2d(direction.getCos(), direction.getSin()).times(ArmVelocityGains.velocity), nextPoint.inBend);
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 1.0f, 0.0f)));
     }
 

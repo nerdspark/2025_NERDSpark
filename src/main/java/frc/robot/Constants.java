@@ -266,23 +266,25 @@ public static class Vision {
       public static final double elbowG = 0.6;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
-  }
-
-    
-  public static class ArmConstants {
-
+      
     public static final double lookAheadDistance = 15.0;
     public static final double lookAheadDistanceBeforeInflecting = 1; 
     public static final double endDistance = 13.0;
     public static final double linearApproximationTime = 0.2; // seconds
     public static final double velocity = 65;// does not seem to have any effect
     public static final double maxMotorVelocity = 3.0;
-    public static final double elbowSlewRate = 4; // accel in rot/s/s
-    public static final double shoulderSlewRate = 4;
     public static final double arcRadius = 1;
     public static final int arcPoints = 10;
     public static final double interpolationDistance = 0.5; // inches
     public static final double interpolationAngle = 0.2; // deg
+  }
+
+    
+  public static class ArmConstants {
+    
+    public static final double elbowSlewRate = 4; // accel in rot/s/s
+    public static final double shoulderSlewRate = 4;
+
 
     public static final int shoulderMotorLeftPort = 41;
     public static final int shoulderMotorRightPort = 42;
@@ -291,17 +293,18 @@ public static class Vision {
     public static final int wristMotorPort = 45;
     public static final int wristTwistMotorPort = 46;
     public static final int gripperMotorPort = 47;
-    public static final int rangeMiddlePort = 34;
-    public static final int rangeLeftPort = 32;
-    public static final int rangeRightPort = 31;
+    public static final int gripperSensorPort = 34;
     public static final String armCanBus = "canivore1";
 
     public static final double currentLimitShoulder = 35.0;
     public static final double currentLimitElbow = 25.0;
     public static final double currentLimitWrist = 45.0; //40.0
-    public static final double currentLimitGripper = 20.0;
-    public static final double gripperPowerClose = 1.0;
-    public static final double gripperPowerOpen = -0.2;
+    public static final double gripperCurrentLimitDefault = 10.0;
+    public static final double gripperPowerDefault = 1.0;
+    public static final int timesToTestPositive = 3; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
+    public static final double coralDistance = 0.1; // maximum distance of distance sensor readings in order to consider coral to be detected
+    public static final double algaeDistance = 0.1; // maximum distance of distance sensor readings in order to consider algae to be detected
+
 
     //shoulder true offset: 34.513 deg below forward horizontal
     //shoulder gearbox: 75:1
@@ -378,8 +381,8 @@ public static class Vision {
       // armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(120));
 
       double dropoffDistanceFromBumper = -6.0;
-      Translation2d gripperCoralOffset = new Translation2d(6, 8);
-      Translation2d gripperOffset = new Translation2d(6, 0);
+      Translation2d gripperCoralOffset = new Translation2d(6, 5);
+      Translation2d gripperOffset = new Translation2d(6, -3);
       armSetPoints[1] = new ArmPoint(home);
       armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 9.1), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperCoralOffset(gripperCoralOffset);
       armSetPoints[3] = new ArmPoint(new Translation2d(-8.6, 25.0), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperCoralOffset(gripperCoralOffset);

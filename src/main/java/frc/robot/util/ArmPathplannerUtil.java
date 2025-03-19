@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
+import frc.robot.Constants.ArmVelocityGains;
 
 /** Add your docs here. */
 public class ArmPathplannerUtil {
@@ -25,7 +26,7 @@ public class ArmPathplannerUtil {
         Translation2d closestVector = new Translation2d(10000, 100000);
         for (int i = armPaths.size() - 1; i >= 0; i-- ){
             // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).getDistance(position));
-            if (armPaths.get(i).getDistance(position) < ArmConstants.lookAheadDistance){
+            if (armPaths.get(i).getDistance(position) < ArmVelocityGains.lookAheadDistance){
                 Rotation2d angle = armPaths.get(i).minus(position).getAngle();
                 // SmartDashboard.putBoolean("on path", true);
                 // SmartDashboard.putNumber("target point angle", angle.getDegrees());
@@ -43,11 +44,11 @@ public class ArmPathplannerUtil {
         ArmPoint closestArmPoint = new ArmPoint(new Translation2d(1000000,1000000));
         for (int i = armPaths.size() - 1; i >= 0; i-- ){
             // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).position.getDistance(position));
-            if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmConstants.lookAheadDistance){
+            if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmVelocityGains.lookAheadDistance){
                 if (armPaths.get(i).inBend == currentPoint.inBend) {
                     return armPaths.get(i);
                 } else {
-                    if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmConstants.lookAheadDistanceBeforeInflecting) {
+                    if (armPaths.get(i).position.getDistance(currentPoint.position) < ArmVelocityGains.lookAheadDistanceBeforeInflecting) {
                         return armPaths.get(i);
                     }
                 }
@@ -66,7 +67,7 @@ public class ArmPathplannerUtil {
         int index = 0;
         for (int i = armPaths.size() - 1; i >= 0; i-- ){
             // SmartDashboard.putNumber("distance pos - target", armPaths.get(i).position.getDistance(position));
-            if (armPaths.get(i).position.getDistance(position) < ArmConstants.lookAheadDistance){
+            if (armPaths.get(i).position.getDistance(position) < ArmVelocityGains.lookAheadDistance){
                 Rotation2d angle = armPaths.get(i).position.minus(position).getAngle();
                 // SmartDashboard.putBoolean("on path", true);
                 // SmartDashboard.putNumber("target point angle", angle.getDegrees());
@@ -83,7 +84,7 @@ public class ArmPathplannerUtil {
 
     /** checks if the arm is at the end of the path */
     public static boolean CheckArmPosition(List<ArmPoint> armPaths, ArmPoint position){
-        return position.position.getDistance(armPaths.get(armPaths.size()-1).position) < ArmConstants.endDistance && position.inBend == armPaths.get(armPaths.size()-1).inBend;
+        return position.position.getDistance(armPaths.get(armPaths.size()-1).position) < ArmVelocityGains.endDistance && position.inBend == armPaths.get(armPaths.size()-1).inBend;
     }
     /** interpolates linearly between start and end, includes endpoint but not startpoint */
     public static List<ArmPoint> interpolateArmPath(ArmPoint start, ArmPoint end){
@@ -91,8 +92,8 @@ public class ArmPathplannerUtil {
         // path.add(start);
 
         //interpolate polarly every 1 degree
-        Rotation2d step = Rotation2d.fromDegrees(ArmConstants.interpolationAngle);
-        int pointCount = (int) ((end.position.getAngle().minus(start.position.getAngle())).getDegrees() / ArmConstants.interpolationAngle);
+        Rotation2d step = Rotation2d.fromDegrees(ArmVelocityGains.interpolationAngle);
+        int pointCount = (int) ((end.position.getAngle().minus(start.position.getAngle())).getDegrees() / ArmVelocityGains.interpolationAngle);
         double stepDist = (end.position.getNorm() - start.position.getNorm()) / (pointCount);
 
         if (pointCount < 0) {
@@ -107,8 +108,8 @@ public class ArmPathplannerUtil {
             }
         } else { // switch to linear interpolation
             double distance = start.position.getDistance(end.position);
-            Translation2d stepLinear = end.position.minus(start.position).div(distance).times(ArmConstants.interpolationDistance);
-            int pointCountLinear = (int)(distance/ArmConstants.interpolationDistance);
+            Translation2d stepLinear = end.position.minus(start.position).div(distance).times(ArmVelocityGains.interpolationDistance);
+            int pointCountLinear = (int)(distance/ArmVelocityGains.interpolationDistance);
             for (int i = 1; i <= pointCountLinear; i++){
                 boolean inBend = i < pointCountLinear/2 ? start.inBend : end.inBend;
                 path.add(new ArmPoint(start.position.plus(stepLinear.times(i)), inBend));

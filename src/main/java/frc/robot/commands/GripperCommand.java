@@ -33,7 +33,15 @@ public class GripperCommand extends InstantCommand {
     // Use addRequirements() here to declare subsystem dependencies.
     this.gripper = gripper;
     this.power = power;
-    this.currentLimit = ArmConstants.currentLimitGripper;
+    this.currentLimit = ArmConstants.gripperCurrentLimitDefault;
+
+    addRequirements(gripper);
+  }
+  public GripperCommand(Gripper gripper) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.gripper = gripper;
+    this.power = ArmConstants.gripperPowerDefault;
+    this.currentLimit = ArmConstants.gripperCurrentLimitDefault;
 
     addRequirements(gripper);
   }

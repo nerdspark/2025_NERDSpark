@@ -149,7 +149,7 @@ public class RobotContainer {
 
     arm.setDefaultCommand(new ArmCommand(arm, () -> 0));
 
-    gripper.setDefaultCommand(new GripperCommand(gripper, 1.0, 10));
+    gripper.setDefaultCommand(new GripperCommand(gripper));
 
 
 

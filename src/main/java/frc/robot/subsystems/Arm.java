@@ -254,7 +254,7 @@ public class Arm extends SubsystemBase {
         // SmartDashboard.putNumber("elbow Left Position error", elbowPosition - getElbowPosition());
   }
   public void setVelocity(Translation2d velocity, boolean inBend){
-    Translation2d position = getArmPosition().plus(velocity.times(ArmConstants.linearApproximationTime));
+    Translation2d position = getArmPosition().plus(velocity.times(ArmVelocityGains.linearApproximationTime));
     // SmartDashboard.putNumber("velocity x", velocity.getX());
     // SmartDashboard.putNumber("velocity y", velocity.getY());
     double distance = MathUtil.clamp(position.getNorm(), ArmSetpoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
@@ -270,8 +270,8 @@ public class Arm extends SubsystemBase {
                 / (2 * distance * ArmConstants.secondStageLength));
         double shoulderPosition = position.getAngle().getRadians() + (BaseAngleArmDiff * (inBend ? 1 : -1));
         double elbowPosition = position.getAngle().getRadians() + (SecondAngleArmDiff * (inBend ? -1 : 1));
-    double shoulderVelocity = (shoulderPosition - getShoulderPosition())/ArmConstants.linearApproximationTime;
-    double elbowVelocity =(elbowPosition - getElbowPosition())/ArmConstants.linearApproximationTime;
+    double shoulderVelocity = (shoulderPosition - getShoulderPosition())/ArmVelocityGains.linearApproximationTime;
+    double elbowVelocity =(elbowPosition - getElbowPosition())/ArmVelocityGains.linearApproximationTime;
     // SmartDashboard.putNumber("shoulder target velocity", shoulderVelocity);
     // SmartDashboard.putNumber("elbow target velocity", elbowVelocity);
     // SmartDashboard.putNumber("target pos x", position.getX());

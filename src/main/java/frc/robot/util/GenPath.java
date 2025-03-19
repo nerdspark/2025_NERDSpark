@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
+import frc.robot.Constants.ArmVelocityGains;
 import frc.robot.util.ArmPoint;
 
 public class GenPath {
@@ -116,7 +117,7 @@ public class GenPath {
         }
         ret.add(points.get(0));
         for (int i = 0; i < points.size() - 2; i++) {
-            if ((points.get(i).position.getDistance(points.get(i+1).position) > ArmConstants.arcRadius*2) && (points.get(i+1).position.getDistance(points.get(i+2).position) > ArmConstants.arcRadius*2)) {
+            if ((points.get(i).position.getDistance(points.get(i+1).position) > ArmVelocityGains.arcRadius*2) && (points.get(i+1).position.getDistance(points.get(i+2).position) > ArmVelocityGains.arcRadius*2)) {
                 List<ArmPoint> arcPoints = ArmPoint.fromTranslations(getArcPoints(points.get(i).position, points.get(i + 1).position, points.get(i + 2).position, radius, numPoints), points.get(i+1).inBend);
             ret.addAll(arcPoints);
             } else {
