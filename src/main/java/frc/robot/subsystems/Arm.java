@@ -54,10 +54,16 @@ import frc.robot.util.ArmPoint;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 
+/**
+ * Subsystem for the 3-jointed arm with a shoulder, elbow, and wrist.
+ *
+ * The shoulder and elbow consists of 2 motors each while the wrist consists
+ * of a single motor.
+ */
 public class Arm extends SubsystemBase {
 
   private TalonFX shoulderLeft, shoulderRight, elbowLeft, elbowRight, wrist;
-  
+
   public boolean finishedMoving = false;
   private boolean wristStopped = false;
   private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
@@ -65,20 +71,22 @@ public class Arm extends SubsystemBase {
   private SlewRateLimiter shoulderLimiter = new SlewRateLimiter(ArmConstants.shoulderSlewRate);
   private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
 
-
   public double wristTarget = 0.0;
-  /** Creates a new Arm. */
+
+  /**
+   * Create a new Arm.
+   */
   public Arm() {
-    
     shoulderLeft = new TalonFX(ArmConstants.shoulderMotorLeftPort, ArmConstants.armCanBus); 
     shoulderRight = new TalonFX(ArmConstants.shoulderMotorRightPort, ArmConstants.armCanBus); 
     elbowLeft = new TalonFX(ArmConstants.elbowMotorLeftPort, ArmConstants.armCanBus);
     elbowRight = new TalonFX(ArmConstants.elbowMotorRightPort, ArmConstants.armCanBus);
     wrist = new TalonFX(ArmConstants.wristMotorPort, ArmConstants.armCanBus);
-    
+
     TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
     TalonFXConfiguration wristTwistConfig = new TalonFXConfiguration();
     TalonFXConfiguration wristConfig = new TalonFXConfiguration();
+
     shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
         .withStatorCurrentLimitEnable(true);
@@ -98,14 +106,14 @@ public class Arm extends SubsystemBase {
         .withKD(ArmVelocityGains.shoulderD)
         .withKG(ArmVelocityGains.shoulderG)
         .withGravityType(GravityTypeValue.Arm_Cosine);
-    
+
 
     shoulderLeft
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
         .withNeutralMode(NeutralModeValue.Brake)));
-    
+
     shoulderRight
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
@@ -132,7 +140,7 @@ public class Arm extends SubsystemBase {
       .withKD(ArmVelocityGains.elbowD)
       .withKG(ArmVelocityGains.elbowG)
       .withGravityType(GravityTypeValue.Arm_Cosine);
-        
+
     elbowLeft
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
@@ -145,10 +153,6 @@ public class Arm extends SubsystemBase {
           .withInverted(InvertedValue.Clockwise_Positive)
           .withNeutralMode(NeutralModeValue.Brake)));
 
-          
-    
-    
-    
     wristConfig.CurrentLimits = new CurrentLimitsConfigs()
       .withStatorCurrentLimit(ArmConstants.currentLimitWrist)
       .withStatorCurrentLimitEnable(true);
@@ -166,20 +170,36 @@ public class Arm extends SubsystemBase {
       .apply(wristConfig.withMotorOutput(new MotorOutputConfigs()
       .withInverted(InvertedValue.CounterClockwise_Positive)
           .withNeutralMode(NeutralModeValue.Coast)));
-    
-    
+
     resetOffsets();
   }
+
+  /**
+   * Reset velocity limiters for shoulder and elbow.
+   */
   public void resetVelocityLimiters() {
     shoulderLimiter.reset(getShoulderVelocity());
     elbowLimiter.reset(getElbowVelocity());
   }
+
+  /**
+   * Get shoulder velocity.
+   *
+   * @return Averaged shoulder velocity in <em>rotations per second</em>.
+   */
   public double getShoulderVelocity() {
     return (shoulderLeft.getVelocity().getValueAsDouble() + shoulderRight.getVelocity().getValueAsDouble())/2;
   }
+
+  /**
+   * Get elbow velocity.
+   *
+   * @return Averaged elbow velocity in <em>rotations per second</em>.
+   */
   public double getElbowVelocity() {
     return (elbowLeft.getVelocity().getValueAsDouble() + elbowRight.getVelocity().getValueAsDouble())/2;
   }
+
   // public void setBrakeMode(boolean BrakeModeEnabled) {
   //   if (BrakeModeEnabled) {
   //     shoulderLeft
@@ -205,6 +225,16 @@ public class Arm extends SubsystemBase {
   //         .withNeutralMode(NeutralModeValue.Coast)));
   //   }
   // }
+
+  /**
+   * Set arm to offset positions.
+   * The offset positions are
+   * <ul>
+   * <li> {@link Constants.ArmConstants.elbowOffset}
+   * <li> {@link Constants.ArmConstants.shoulderOffset}
+   * <li> {@link Constants.ArmConstants.wristOffset}
+   * </ul>
+   */
   public void resetOffsets() {
     elbowRight.setPosition(Constants.ArmConstants.elbowOffset);
     elbowLeft.setPosition(Constants.ArmConstants.elbowOffset);
@@ -213,6 +243,12 @@ public class Arm extends SubsystemBase {
     wrist.setPosition(Constants.ArmConstants.wristOffset);
   }
 
+  /**
+   * Obtain the 2d position of the wrist.
+   * The 2d plane is the plane in which the arm's movement is constrained.
+   *
+   * @return The wrist position.
+   */
   public Translation2d getArmPosition() {
     Translation2d jointPos = new Translation2d(
                 Math.cos(getShoulderPosition()) * ArmConstants.baseStageLength,
@@ -225,10 +261,23 @@ public class Arm extends SubsystemBase {
         return jointPos.plus(jointToEndPos);
         // return ArmSetpoints.armSetPoints[4].position;
   }
+
+  /**
+   * Get the current state of the arm.
+   *
+   * @return the current state of the arm.
+   */
   public ArmPoint getArmState() {
     return new ArmPoint(getArmPosition(), getCurrentInBend(), getWristTarget());
   }
 
+  /**
+   * Move the arm to a specified position by rotating the shoulder and elbow.
+   *
+   * @param position position to move the wrist to.
+   * @param inBend a flag to choose which orientation of the arm to use.
+   */
+  // TODO: Which direction is the elbow when inBend is true?
   public void setArmPosition(Translation2d position, boolean inBend) {  // rotates the two base stages 
 
     double distance = MathUtil.clamp(position.getNorm(), ArmSetpoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
@@ -253,6 +302,14 @@ public class Arm extends SubsystemBase {
         // SmartDashboard.putNumber("shoulderLeftPosition error", shoulderPosition - getShoulderPosition());
         // SmartDashboard.putNumber("elbow Left Position error", elbowPosition - getElbowPosition());
   }
+
+  /**
+   * Set the velocity of the arm by setting the shoulder and elbow velocities.
+   *
+   * @param velocity vector defining desired velocity of the wrist.
+   * @param inBend a flag to choose which orientation of the arm to use.
+   */
+  // TODO: Which direction is the elbow when inBend is true?
   public void setVelocity(Translation2d velocity, boolean inBend){
     Translation2d position = getArmPosition().plus(velocity.times(ArmConstants.linearApproximationTime));
     // SmartDashboard.putNumber("velocity x", velocity.getX());
@@ -284,7 +341,7 @@ public class Arm extends SubsystemBase {
     // }
     // if(shoulderPosition < ArmConstants.shoulderOffset *(2*Math.PI)){
     //   // SmartDashboard.putBoolean("shoulder soft limit triggered", true);
-      
+
     //   setShoulderVelocity(0);
     //   shoulderLimiter.reset(0);
     // } else {
@@ -298,8 +355,14 @@ public class Arm extends SubsystemBase {
     // } else {
       // SmartDashboard.putBoolean("elbow soft limit triggered", false);
       setElbowVelocity(elbowLimiter.calculate(elbowVelocity));
-    // }  
+    // }
   }
+
+  /**
+   * Request the elbow PIDs to target a position.
+   *
+   * @param position position to target in <em>radians</em>.
+   */
   public void setElbowPosition(double position) {
     // position -= getShoulderLeftPosition() * (1.0 - ArmConstants.virtual4BarGearRatio);
     position /= (2d * Math.PI);
@@ -318,40 +381,69 @@ public class Arm extends SubsystemBase {
     // }
     // SmartDashboard.putNumber("elbow Left Position error", position - elbowLeft.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("elbow Right Position error", position - elbowRight.getPosition().getValueAsDouble());
+  }
 
-}
+  /**
+   * Request the wrist to stop moving.
+   */
   public void stopWrist() {
     wristStopped = true;
   }
+
+  /**
+   * Get the wrist position relative to the wrist joint.
+   * This takes into account the belting ratio between the wrist and elbow.
+   *
+   * @return the wrist position in <em>radians</em>.
+   */
   public double getWristTarget(){
     double wristPosition = (wrist.getPosition().getValueAsDouble() * (2d * Math.PI));
+    // TODO: Is this subtraction 'safe'? Multiplication can be wrong for
+    //       unrestricted angular domains.
     wristPosition -= getElbowPosition() * (ArmConstants.wristToElbowRatio - 1.0);
     // SmartDashboard.putNumber("wrist flip position", wristPosition);
     return wristPosition;
   }
 
+  /**
+   * Request the wrist to move to a certain position.
+   * This method enables wrist movement if it was requested
+   * to stop previously.
+   *
+   * @param position the wrist position in <em>radians</em>.
+   */
   public void setWristTarget(double position) {
     wristTarget = position;
     wristStopped = false;
     // wristFinishedMoving = false;
-// ratio = oo: wrist change amount -oo
-// ratio = 1: wrist change amount 0
-// ratio = 0: wrist change amount 1
+    // ratio = oo: wrist change amount -oo
+    // ratio = 1: wrist change amount 0
+    // ratio = 0: wrist change amount 1
     // SmartDashboard.putNumber("wrist flip position set raw", position);
-
   }
+
+  /**
+   * Update wrist to requested movement.
+   * If the wrist was requested to stop, its motor will be stopped.
+   * Otherwise, the wrist will be set to the last requested target position.
+   */
   public void updateWristSetpoints() {
     if (wristStopped) {
       wrist.stopMotor();
     } else {
       double flipPosition = wristTarget;
+      // TODO: Same question in getWristTarget()
       flipPosition += getElbowPosition() * (ArmConstants.wristToElbowRatio - 1.0);
       flipPosition /= (2d*Math.PI);
       wrist.setControl(new MotionMagicVoltage(flipPosition).withPosition(flipPosition).withSlot(0));
     }
-
   }
-  
+
+  /**
+   * Get elbow position.
+   *
+   * @return Averaged elbow position in <em>radians</em>.
+   */
   public double getElbowPosition() {
     double elbowPose = (elbowLeft.getPosition().getValueAsDouble() + elbowRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
     // SmartDashboard.putNumber("elbow position", elbowPose);
@@ -359,76 +451,116 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("elbow to shoulder", elbowPose - shoulderLeft.getPosition());
     return elbowPose;
     //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
-}
-public void setShoulderPower(double power) {
-  shoulderLeft.set(-power);
-  shoulderRight.set(power);
-}
-public void setShoulderAmpLimit(double amplimit) {
-  
-  shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
-  .withStatorCurrentLimit(amplimit);
-  shoulderLeft.getConfigurator().apply(shoulderConfig);
-  shoulderRight.getConfigurator().apply(shoulderConfig);
-}
+  }
+
+  /**
+   * Set the speed of the shoulder.
+   *
+   * @param power the speed of the motors from -1 to +1.
+   */
+  public void setShoulderPower(double power) {
+    shoulderLeft.set(-power);
+    shoulderRight.set(power);
+  }
+
+  /**
+   * Set the amp limit of the shoulder motors.
+   *
+   * @param amplimit the amp limit in <em>Amps</em>.
+   */
+  public void setShoulderAmpLimit(double amplimit) {
+    shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
+    .withStatorCurrentLimit(amplimit);
+    shoulderLeft.getConfigurator().apply(shoulderConfig);
+    shoulderRight.getConfigurator().apply(shoulderConfig);
+  }
 
 
-   public void setShoulderPosition(double position) {
-        position /= (2d * Math.PI);
+  /**
+   * Request the shoulder PIDs to target a position.
+   *
+   * @param position position to target in <em>radians</em>.
+   */
+  public void setShoulderPosition(double position) {
+    position /= (2d * Math.PI);
 
-        //position = MathUtil.clamp(position, -0.1, 2.5);
+    //position = MathUtil.clamp(position, -0.1, 2.5);
 
-        // SmartDashboard.putNumber("shoulder position set raw", position);
-        // if ((Math.abs(position - shoulderLeft.getPosition().getValueAsDouble())
-        //                         + Math.abs(
-        //                                 position - shoulderRight.getPosition().getValueAsDouble()))
-        //                 < 0.1
-        //         && Math.abs(position - (ArmConstants.shoulderOffset / Math.PI / 2.0)) < 0.01) {
-        //     shoulderLeft.setControl(new DutyCycleOut(0));
-        //     shoulderRight.setControl(new DutyCycleOut(0));
-        // } else {
-            shoulderLeft.setControl(
-                    new PositionVoltage(position).withPosition(position).withSlot(0));
-            shoulderRight.setControl(
-                    new PositionVoltage(position).withPosition(position).withSlot(0));
-            // SmartDashboard.putNumber("shoulder target pos", position);
-            // SmartDashboard.putNumber("shoulder Left Position error", position - shoulderLeft.getPosition().getValueAsDouble());
-            // SmartDashboard.putNumber("shoulder Right Position error", position - shoulderRight.getPosition().getValueAsDouble());
-        //}
-    }
+    // SmartDashboard.putNumber("shoulder position set raw", position);
+    // if ((Math.abs(position - shoulderLeft.getPosition().getValueAsDouble())
+    //                         + Math.abs(
+    //                                 position - shoulderRight.getPosition().getValueAsDouble()))
+    //                 < 0.1
+    //         && Math.abs(position - (ArmConstants.shoulderOffset / Math.PI / 2.0)) < 0.01) {
+    //     shoulderLeft.setControl(new DutyCycleOut(0));
+    //     shoulderRight.setControl(new DutyCycleOut(0));
+    // } else {
+        shoulderLeft.setControl(
+                new PositionVoltage(position).withPosition(position).withSlot(0));
+        shoulderRight.setControl(
+                new PositionVoltage(position).withPosition(position).withSlot(0));
+    // SmartDashboard.putNumber("shoulder target pos", position);
+    // SmartDashboard.putNumber("shoulder Left Position error", position - shoulderLeft.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber("shoulder Right Position error", position - shoulderRight.getPosition().getValueAsDouble());
+    //}
+  }
 
-
-  // set the velocity of each joint separately: 
+  /**
+   * Get shoulder position.
+   *
+   * @return averaged shoulder position in <em>radians</em>.
+   */
   public double getShoulderPosition() {
-    
     double position = (shoulderLeft.getPosition().getValueAsDouble() + shoulderRight.getPosition().getValueAsDouble())/2 * (2d * Math.PI);
     // SmartDashboard.putNumber("shoulder position", position);
 
     return position;
-}
+  }
 
-
+  /**
+   * Request the shoulder PIDs to target a velocity.
+   *
+   * @param velocity velocity to target in <em>rotations per second</em>.
+   */
   public void setShoulderVelocity(double velocity) {
     shoulderLeft.setControl(new VelocityVoltage(velocity).withSlot(1));
     shoulderRight.setControl(new VelocityVoltage(velocity).withSlot(1));
     // SmartDashboard.putNumber("shoulder target velocity limited", velocity);
   }
 
+  /**
+   * Request the elbow PIDs to target a velocity.
+   *
+   * @param velocity velocity to target in <em>rotations per second</em>.
+   */
   public void setElbowVelocity(double velocity) {
     elbowLeft.setControl(new VelocityVoltage(velocity).withSlot(1));
     elbowRight.setControl(new VelocityVoltage(velocity).withSlot(1));
     // SmartDashboard.putNumber("elbow target velocity limited", velocity);
   }
 
+  /**
+   * Request the wrist PID to target a velocity.
+   *
+   * @param velocity velocity to target in <em>rotations per second</em>.
+   */
   public void setWristVelocity(double velocity) {
     wrist.setControl(new VelocityVoltage(velocity));
   }
 
-
+  /**
+   * Get whether the arm is currently bent inwards.
+   *
+   * @return <code>true</code> if bent inwards.
+   */
+  // TODO: Not sure if this description is right.
   public boolean getCurrentInBend() {
     return getElbowPosition() - getShoulderPosition() < 0;
   }
 
+  /**
+   * Stop the shoulder and elbow motors.
+   */
   public void stopArm() {
     elbowLeft.stopMotor();
     elbowRight.stopMotor();
@@ -436,22 +568,35 @@ public void setShoulderAmpLimit(double amplimit) {
     shoulderRight.stopMotor();
   }
 
+  /**
+   * Set whether the arm is stowing.
+   *
+   * @param Stowing set <code>true</code> if the arm is stowing.
+   */
+  // TODO: Not sure if this description is right.
   public void setStowing(boolean Stowing) {
     stowing = Stowing;
   }
+
+  /**
+   * Get whether the wrist has reached near its target position.
+   *
+   * @return <code>true</code> if the wrist is near its target position.
+   */
   public boolean wristFinishedMoving() {
+      // TODO: This doesn't work for unrestricted angular domains.
     return Math.abs(getWristTarget() - wristTarget) < 0.2;
   }
-  
+
   @Override
   public void periodic() {
     updateWristSetpoints();
     // getShoulderPosition();
     // getElbowPosition();
-    
+
     // SignalLogger.writeDouble("shoulder Left amps", shoulderLeft.getStatorCurrent().getValueAsDouble());
     // SignalLogger.writeDouble("shoulder right amps", shoulderRight.getStatorCurrent().getValueAsDouble());
-    
+
     // SmartDashboard.putNumber("shoulder Left amps", shoulderLeft.getStatorCurrent().getValueAsDouble());
     // SmartDashboard.putNumber("shoulder right amps", shoulderRight.getStatorCurrent().getValueAsDouble());
     // getWristPosition();
