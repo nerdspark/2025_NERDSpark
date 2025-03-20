@@ -10,6 +10,7 @@ import java.util.List;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.subsystems.Arm;
@@ -18,7 +19,7 @@ import frc.robot.subsystems.Arm;
 public class ArmPoint {
     public Translation2d position;
     public boolean inBend = false;
-    public double wrist = 0;
+    public double wrist = Units.degreesToRadians(110);
     public ArmPoint(Translation2d point, boolean inBend, double wrist) {
         this.position = point;
         // if (position.getNorm() > ArmConstants.totalStageLength) {

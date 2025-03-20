@@ -10,6 +10,8 @@ import static edu.wpi.first.units.Units.Second;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.signals.Led1OffColorValue;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -18,19 +20,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.Constants.LEDConstants;
 
 public class LEDSubsytem extends SubsystemBase {
-  private static final int kPort = 9;
-  private static final int kLength = 120;
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
 
 
   public LEDSubsytem() {
-    m_led = new AddressableLED(kPort);
-    m_buffer = new AddressableLEDBuffer(kLength);
-    m_led.setLength(kLength);
+    m_led = new AddressableLED(LEDConstants.kPort);
+    m_buffer = new AddressableLEDBuffer(LEDConstants.kLength);
+    m_led.setLength(LEDConstants.kLength);
     m_led.start();
   }
 

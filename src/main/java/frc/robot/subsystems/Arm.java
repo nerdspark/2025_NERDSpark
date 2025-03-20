@@ -43,6 +43,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -50,6 +51,7 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmVelocityGains;
+import frc.robot.commands.ArmCommand;
 import frc.robot.util.ArmPoint;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
@@ -65,13 +67,13 @@ public class Arm extends SubsystemBase {
   private TalonFX shoulderLeft, shoulderRight, elbowLeft, elbowRight, wrist;
 
   public boolean finishedMoving = false;
-  private boolean wristStopped = false;
+  private boolean wristStopped = true;
   private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
   public boolean stowing = false;
   private SlewRateLimiter shoulderLimiter = new SlewRateLimiter(ArmConstants.shoulderSlewRate);
   private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
 
-  public double wristTarget = 0.0;
+  public double wristTarget = ArmSetpoints.armSetPoints[0].wrist;
 
   /**
    * Create a new Arm.
@@ -84,7 +86,6 @@ public class Arm extends SubsystemBase {
     wrist = new TalonFX(ArmConstants.wristMotorPort, ArmConstants.armCanBus);
 
     TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
-    TalonFXConfiguration wristTwistConfig = new TalonFXConfiguration();
     TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
     shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -451,6 +452,11 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("elbow to shoulder", elbowPose - shoulderLeft.getPosition());
     return elbowPose;
     //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
+  }
+
+  @Override
+  public Command getDefaultCommand() {
+    return new ArmCommand(this, () -> 0);
   }
 
   /**

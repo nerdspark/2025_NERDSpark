@@ -17,8 +17,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Vision;
 
@@ -116,6 +118,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+        // m_robotContainer.arm.setArmPosition(ArmSetpoints.home.plus(new Translation2d(4, 2)), false);
+
 // TODO: remove after testing
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

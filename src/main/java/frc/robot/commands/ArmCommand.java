@@ -14,12 +14,15 @@ import frc.robot.util.ArmPoint;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 
+import javax.crypto.SecretKeyFactorySpi;
+
 import org.opencv.core.Point;
 
 public class ArmCommand extends Command {
     private Arm arm;
     private Supplier<ArmPoint> point;
     private Supplier<Boolean> inBend;
+    private ArmPoint prevPoint = new ArmPoint(new Translation2d());
     /** Creates a new ArmCommand. */
     public ArmCommand(Arm arm, Supplier<ArmPoint> point) {
         this.arm = arm;
@@ -41,15 +44,22 @@ public class ArmCommand extends Command {
     public void initialize() {
         // arm.resetEncoders();
         
-        
+    }
+    public void setPosition() {
+        System.out.println("xy:" + point.get().position.toString());
+        System.out.println("wrist:" + point.get().wrist);
+        arm.setArmPosition(point.get().position, inBend.get());
+        arm.setWristTarget(point.get().wrist);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         // arm.getArmPosition();
-        arm.setArmPosition(point.get().position, inBend.get());
-        arm.setWristTarget(point.get().wrist);
+        if ((!point.get().position.equals(prevPoint.position)) || !(point.get().wrist == prevPoint.wrist)) {
+            setPosition();
+            prevPoint = point.get();
+        }
         
     }
 

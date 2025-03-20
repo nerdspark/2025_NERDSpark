@@ -19,10 +19,12 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
+import frc.robot.commands.GripperCommand;
 
 public class Gripper extends SubsystemBase {
   private TalonFX gripper;
@@ -39,7 +41,7 @@ public class Gripper extends SubsystemBase {
         gripperConfig.Feedback = new FeedbackConfigs()
           .withFeedbackRotorOffset(ArmConstants.gripperOffset)
           .withSensorToMechanismRatio(ArmConstants.gripperRadPerRot);
-        gripperConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
+        gripperConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.01);
         gripperConfig.Slot0 = new Slot0Configs()
           .withKP(ArmGains.gripperP)
           .withKI(ArmGains.gripperI)
@@ -66,6 +68,25 @@ public class Gripper extends SubsystemBase {
   public double getCurrentLimit() {
     return gripperConfig.CurrentLimits.StatorCurrentLimit;
   }
+  public Command algaeDefaultCommand() {
+    return new GripperCommand(this, 1.0, 10);
+  }
+  public Command coralDefaultCommand() {
+    return new GripperCommand(this, 0.0, 10);
+  }
+  public Command coralIntakeCommand() {
+    return new GripperCommand(this, 1.0, 20);
+  }
+  public Command algaeIntakeCommand() {
+    return new GripperCommand(this, 1.0, 20);
+  }
+  public Command spitOutCommand() {
+    return new GripperCommand(this, -1.0, 20);
+  }
+  public Command neutralCommand() {
+    return new GripperCommand(this, 0.0, 20);
+  }
+
 
   public boolean getCoralDetected() {
     for (double distance : prevDistances) {

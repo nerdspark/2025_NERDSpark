@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -28,19 +29,20 @@ public class ArmActions {
 
   /** grab coral from funnel */
   public static Command grabFromFunnel(Arm arm, Gripper gripper) {
-    return new ParallelCommandGroup(
-      new GripperCommand(gripper),
+    return new ParallelRaceGroup(
+      gripper.coralIntakeCommand(),
         new SequentialCommandGroup(
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10]).withTimeout(0.3), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].add(new Translation2d(0, -8))).withTimeout(0.2), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10]).withTimeout(0.3), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3)));
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(1), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(1), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(1), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(1), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(1)))
+      .andThen(arm.getDefaultCommand().alongWith(gripper.neutralCommand()));
   }
 
   /** move arm to ground intake position and begin intaking */
   public static Command groundIntake(Arm arm, Gripper gripper) {
-    return new ArmCommandPathToPoint(arm, () -> 8).alongWith(new GripperCommand(gripper, 1.0));
+    return new ArmCommandPathToPoint(arm, () -> 8).alongWith(gripper.coralIntakeCommand());
   }
 
     /** move arm to desired setpoint to drop coral on reef
@@ -56,7 +58,7 @@ public class ArmActions {
   public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return new ParallelCommandGroup(
       new ArmCommand(arm, () -> ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()]), 
-      new WaitCommand(0.2).andThen(new GripperCommand(gripper, -1))).withTimeout(0.5);
+      new WaitCommand(0.2).andThen(gripper.spitOutCommand())).withTimeout(0.5);
   }
 
   /** tilt wrist downwards manually 
@@ -71,7 +73,7 @@ public class ArmActions {
         * @param higherLevel true if the algae is at a higher level (L3.5); false if the algae is at a lower level (L2.5)
     */
     public static Command removeAlgae(Arm arm, Gripper gripper, BooleanSupplier higherLevel) {
-      return new ArmCommand(arm, () -> higherLevel.getAsBoolean() ? 6 : 5).alongWith(new GripperCommand(gripper));
+      return new ArmCommand(arm, () -> higherLevel.getAsBoolean() ? 6 : 5).alongWith(gripper.algaeIntakeCommand());
     }
 
     /** position arm to drop off algae in barge */
@@ -81,6 +83,6 @@ public class ArmActions {
 
     /** spin rollers to drop off algae in barge */
     public static Command shootAlgaeBarge(Gripper gripper) {
-      return new GripperCommand(gripper, -1.0);
+      return gripper.spitOutCommand();
     }
 }

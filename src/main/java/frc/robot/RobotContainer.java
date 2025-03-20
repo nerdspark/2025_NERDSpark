@@ -5,23 +5,30 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.rmi.dgc.Lease;
+
+import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandSequences.ArmActions;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commands.GripperCommand;
+import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.subsystems.Gripper;
+import frc.robot.subsystems.LEDSubsytem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
@@ -57,6 +64,7 @@ public class RobotContainer {
 
     public Arm arm;
     private Gripper gripper;
+    private LEDSubsytem LEDs;
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     // private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
@@ -95,6 +103,7 @@ public class RobotContainer {
     scoringSubsystem = new ScoringProfileSubsystem();
     arm = new Arm();
     gripper = new Gripper();
+    LEDs = new LEDSubsytem();
 
     configureNamedCommands();
 
@@ -148,16 +157,14 @@ public class RobotContainer {
 
 
 
-    arm.setDefaultCommand(new ArmCommand(arm, () -> 0));
+    // arm.setDefaultCommand(new ArmCommand(arm, () -> 0));
 
     // gripper.setDefaultCommand(new GripperCommand(gripper));
 
 
 
-    // m_LedSubsystem.setDefaultCommand(
-    //  new LEDCommand(m_LedSubsystem, armFinishedMoving, driveTrainFinishedMoving, hasCoral)
-    // );
-
+    LEDs.setDefaultCommand(
+     new LEDCommand(LEDs, new Trigger(() -> false), new Trigger(() -> false), new Trigger(() -> false)));
   }
 
 
@@ -165,25 +172,25 @@ public class RobotContainer {
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // * arm testing *
-    joystick.leftBumper().onTrue(ArmActions.armToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
-    joystick.a().onTrue(ArmActions.grabFromFunnel(arm, gripper));
-    joystick.rightBumper().onTrue(ArmActions.groundIntake(arm, gripper));
-    joystick.leftTrigger().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
-    joystick.x().onTrue(ArmActions.removeAlgae(arm, gripper, () -> ((scoringSubsystem.getBranch() / 2 % 2) == 0)));
-    joystick.y().onTrue(ArmActions.shootAlgaeBarge(gripper));
-    joystick.rightTrigger().onTrue(ArmActions.armToAlgaeBarge(arm));
+    // joystick.leftBumper().onTrue(ArmActions.armToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
+    // joystick.a().onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    // joystick.rightBumper().onTrue(ArmActions.groundIntake(arm, gripper));
+    // joystick.leftTrigger().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
+    // joystick.x().onTrue(ArmActions.removeAlgae(arm, gripper, () -> ((scoringSubsystem.getBranch() / 2 % 2) == 0)));
+    // joystick.y().onTrue(ArmActions.shootAlgaeBarge(gripper));
+    // joystick.rightTrigger().onTrue(ArmActions.armToAlgaeBarge(arm));
 
 
     // * real competition bindings *
 
     // home arm
     joystick.rightBumper().onTrue(arm.getDefaultCommand());
-    joystick.y().whileTrue(new GripperCommand(gripper, -1.0));
+    joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // coral dropoff 
     joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())));
-    joystick.leftBumper().onTrue(new GripperCommand(gripper, -1.0, 20.0))
-      .onFalse(new GripperCommand(gripper, 0.0).alongWith(arm.getDefaultCommand()));
+    joystick.leftBumper().onTrue(gripper.spitOutCommand())
+      .onFalse(gripper.neutralCommand()).onFalse(arm.getDefaultCommand());
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
