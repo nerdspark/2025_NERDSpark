@@ -29,7 +29,7 @@ public class ArmActions {
   /** grab coral from funnel */
   public static Command grabFromFunnel(Arm arm, Gripper gripper) {
     return new ParallelCommandGroup(
-      new GripperCommand(gripper, 1.0),
+      new GripperCommand(gripper),
         new SequentialCommandGroup(
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10].withWrist(Math.PI)).withTimeout(0.3), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[10]).withTimeout(0.3), 
@@ -70,12 +70,12 @@ public class ArmActions {
     /** position arm to remove algae while rolling rollers inwards
         * @param higherLevel true if the algae is at a higher level (L3.5); false if the algae is at a lower level (L2.5)
     */
-    public static Command removeAlgae(Arm arm, Gripper gripper, boolean higherLevel) {
-      return new ArmCommand(arm, () -> higherLevel ? 6 : 5).alongWith(new GripperCommand(gripper, 1.0));
+    public static Command removeAlgae(Arm arm, Gripper gripper, BooleanSupplier higherLevel) {
+      return new ArmCommand(arm, () -> higherLevel.getAsBoolean() ? 6 : 5).alongWith(new GripperCommand(gripper));
     }
 
     /** position arm to drop off algae in barge */
-    public static Command moveToAlgaeBarge(Arm arm) {
+    public static Command armToAlgaeBarge(Arm arm) {
       return new ArmCommand(arm, () -> 9);
     }
 

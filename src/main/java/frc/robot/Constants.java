@@ -292,9 +292,9 @@ public static class Vision {
     public static final int gripperSensorPort = 34;
     public static final String armCanBus = "canivore1";
 
-    public static final double currentLimitShoulder = 35.0;
-    public static final double currentLimitElbow = 35.0;
-    public static final double currentLimitWrist = 5.0; //40.0
+    public static final double currentLimitShoulder = 10.0;
+    public static final double currentLimitElbow = 10.0;
+    public static final double currentLimitWrist = 10.0; //40.0
     public static final double gripperCurrentLimitDefault = 10.0;
     public static final double gripperPowerDefault = 1.0;
     public static final int timesToTestPositive = 3; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive

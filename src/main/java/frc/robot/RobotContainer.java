@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandSequences.ArmActions;
+import frc.robot.commandSequences.Autos;
 import frc.robot.commands.GripperCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
@@ -163,13 +164,62 @@ public class RobotContainer {
   private void configureBindings() {
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
+    // * arm testing *
     joystick.leftBumper().onTrue(ArmActions.armToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
     joystick.a().onTrue(ArmActions.grabFromFunnel(arm, gripper));
     joystick.rightBumper().onTrue(ArmActions.groundIntake(arm, gripper));
     joystick.leftTrigger().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
-    joystick.x().onTrue(ArmActions.removeAlgae(arm, gripper, true));
+    joystick.x().onTrue(ArmActions.removeAlgae(arm, gripper, () -> ((scoringSubsystem.getBranch() / 2 % 2) == 0)));
     joystick.y().onTrue(ArmActions.shootAlgaeBarge(gripper));
-    joystick.rightTrigger().onTrue(ArmActions.moveToAlgaeBarge(arm));
+    joystick.rightTrigger().onTrue(ArmActions.armToAlgaeBarge(arm));
+
+
+    // * real competition bindings *
+
+    // home arm
+    joystick.rightBumper().onTrue(arm.getDefaultCommand());
+    joystick.y().whileTrue(new GripperCommand(gripper, -1.0));
+
+    // coral dropoff 
+    joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())));
+    joystick.leftBumper().onTrue(new GripperCommand(gripper, -1.0, 20.0))
+      .onFalse(new GripperCommand(gripper, 0.0).alongWith(arm.getDefaultCommand()));
+
+    // coral pickup
+    joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
+
+    // algae pickup
+    joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
+
+    // algae dropoff
+    joystick.povUp().onTrue(ArmActions.armToAlgaeBarge(arm))
+      .onFalse(ArmActions.shootAlgaeBarge(gripper));
+
+    /* autodrive TODO: rebind to not conflict with drive stick */
+    joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    ()->scoringSubsystem.getLevel(),
+    ()-> false,
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
+
+    joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
+
+    joystick.x().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedAlgae(),
+    ()->scoringSubsystem.getLevel(),
+    ()-> false,
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
   }
 
   private void configureAutoChooser() {

@@ -37,6 +37,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   private Pose2d selectedCoralStationPose = new Pose2d();
   private Pose2d selectedAlgaePose = new Pose2d();
   private boolean isOutsideCoralStation = false;
+  private boolean visionDisabled = false;
 
   private static final int [] branchesSimon = {5,4,3,2,1,0,11,10,9,8,7,6}; // Needed as the button board is assembled in incorrect orientation
   private static final int [] branchesSayan = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0}; // Needed as the button board is assembled in incorrect orientation
@@ -106,7 +107,10 @@ public class ScoringProfileSubsystem extends SubsystemBase {
         coralStationSide = FieldConstants.CoralStations.values()[k-17];
       }
     }
-    SmartDashboard.putNumber("reeflevel", reefLevel.level);
+
+    visionDisabled = DriverStation.getStickButton(1, 20);
+
+    // SmartDashboard.putNumber("reeflevel", reefLevel.level);
 
     
 
