@@ -333,9 +333,9 @@ public static class Vision {
     public static final double wristRadPerRot = wristGearRatio;
     public static final double gripperRadPerRot = gripperGearRatio;
     public static final double gripperOffset = 0;
-    public static final double shoulderOffset = 0;//Units.degreesToRotations(-30);//-0.54 / 2.0 / Math.PI; // radians, fwd = 0
-    public static final double elbowOffset = 0;//Units.degreesToRotations(118.5);//1.88 / 2.0 / Math.PI; // negative of measurement
-    public static final double wristOffset = Units.degreesToRotations(240);//(4.12) / 2.0 / Math.PI; // 
+    public static final double shoulderOffset = -0.54 / 2.0 / Math.PI; // radians, fwd = 0
+    public static final double elbowOffset = 1.88 / 2.0 / Math.PI; // negative of measurement
+    public static final double wristOffset = 4.12 / 2.0 / Math.PI; // 
 
     /** wrist flip belting ratio between elbow and the wrist */
     public static final double wristToElbowRatio = 1.0/(35.0 / 49.0);
