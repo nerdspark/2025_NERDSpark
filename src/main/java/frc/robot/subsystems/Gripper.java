@@ -46,7 +46,7 @@ public class Gripper extends SubsystemBase {
           .withKD(ArmGains.gripperD);
         gripperConfig.MotorOutput = new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
-            .withNeutralMode(NeutralModeValue.Brake);
+            .withNeutralMode(NeutralModeValue.Coast);
         gripper
           .getConfigurator()
           .apply(gripperConfig);

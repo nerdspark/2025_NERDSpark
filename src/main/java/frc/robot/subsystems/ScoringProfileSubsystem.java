@@ -104,6 +104,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
         coralStationSide = FieldConstants.CoralStations.values()[k-17];
       }
     }
+    SmartDashboard.putNumber("reeflevel", reefLevel.level);
 
     
 

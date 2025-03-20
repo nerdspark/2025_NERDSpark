@@ -234,9 +234,9 @@ public static class Vision {
       public static final double elbowI = 0.0;
       public static final double elbowD = 40.0;
       public static final double wristAccelerationTime = 0.3;
-      public static final double wristP = 200.0; //20.0
+      public static final double wristP = 50.0; //20.0
       public static final double wristG = 0.0; //20.0 
-      public static final double wristI = 200.0;
+      public static final double wristI = 0.0;
       public static final double wristD = 0;
       public static final double wristVelocity = 1.6;
       public static final double wristAcceleration = wristVelocity/wristAccelerationTime;
@@ -292,14 +292,13 @@ public static class Vision {
     public static final int elbowMotorLeftPort = 43;
     public static final int elbowMotorRightPort = 44;
     public static final int wristMotorPort = 45;
-    public static final int wristTwistMotorPort = 46;
-    public static final int gripperMotorPort = 47;
+    public static final int gripperMotorPort = 46;
     public static final int gripperSensorPort = 34;
     public static final String armCanBus = "canivore1";
 
     public static final double currentLimitShoulder = 35.0;
-    public static final double currentLimitElbow = 25.0;
-    public static final double currentLimitWrist = 45.0; //40.0
+    public static final double currentLimitElbow = 35.0;
+    public static final double currentLimitWrist = 5.0; //40.0
     public static final double gripperCurrentLimitDefault = 10.0;
     public static final double gripperPowerDefault = 1.0;
     public static final int timesToTestPositive = 3; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
@@ -334,9 +333,9 @@ public static class Vision {
     public static final double wristRadPerRot = wristGearRatio;
     public static final double gripperRadPerRot = gripperGearRatio;
     public static final double gripperOffset = 0;
-    public static final double shoulderOffset = -0.33 / 2.0 / Math.PI; // TODO fidn these, radians, fwd = 0
-    public static final double elbowOffset = 2.23 / 2.0 / Math.PI; // TODO find these, negative of measurement
-    public static final double wristOffset = (1.0) / 2.0 / Math.PI; // TODO 2.25.2025: retune (should be approx 0.50 / 2PI)
+    public static final double shoulderOffset = 0;//Units.degreesToRotations(-30);//-0.54 / 2.0 / Math.PI; // radians, fwd = 0
+    public static final double elbowOffset = 0;//Units.degreesToRotations(118.5);//1.88 / 2.0 / Math.PI; // negative of measurement
+    public static final double wristOffset = Units.degreesToRotations(240);//(4.12) / 2.0 / Math.PI; // 
 
     /** wrist flip belting ratio between elbow and the wrist */
     public static final double wristToElbowRatio = 1.0/(35.0 / 49.0);
@@ -352,7 +351,7 @@ public static class Vision {
   public static class ArmSetpoints {
 
     public static final int setPointCount = 10;
-    public static final Translation2d home = new Translation2d(6.8,14.1); //safest home and also closest possible distance arm is allowed to get to central joint
+    public static final Translation2d home = new Translation2d(8, 10.9).plus(new Translation2d(0, 5));//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
      * @home 0
@@ -374,7 +373,7 @@ public static class Vision {
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
-      armSetPoints[0] = new ArmPoint(home, Units.degreesToRadians(80));
+      armSetPoints[0] = new ArmPoint(home, Units.degreesToRadians(110));
 
       // armSetPoints[1] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(65)), Units.degreesToRadians(180));
       // armSetPoints[2] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), Units.degreesToRadians(150));
@@ -383,14 +382,14 @@ public static class Vision {
 
       double dropoffDistanceFromBumper = -5.0;
       Translation2d gripperOffset = new Translation2d(9.9, -2.0);
-      Translation2d gripperCoralOffset = gripperOffset.plus(new Translation2d(-2.7, 8.0));
-      Translation2d gripperCoralOffsetInverted = gripperCoralOffset.plus(new Translation2d(0.0, -11.9));
+      Translation2d gripperCoralOffset = gripperOffset.plus(new Translation2d(-1.9, 5.0));
+      Translation2d gripperCoralOffsetInverted = gripperCoralOffset.plus(new Translation2d(0.0, -11.875));
       Translation2d gripperAlgaeOffset = gripperOffset.plus(new Translation2d(8.0, 0.0));
 
       armSetPoints[1] = new ArmPoint(home);
-      armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 9.1), Units.degreesToRadians(180+145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
+      armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 9.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[3] = new ArmPoint(new Translation2d(-8.6, 25.0), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[4] = new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(120)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[4] = new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
       armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 13.8), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 29.7), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);

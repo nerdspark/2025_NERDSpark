@@ -45,7 +45,7 @@ public class ArmActions {
      * @param setPointIndex level on the reef
      */
   public static Command moveToCoralReef(Arm arm, IntSupplier setPointIndex) {
-    return new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()]);
+    return new ArmCommandPathToPoint(arm, setPointIndex);
   }
 
   /** tilt wrist downwards and release coral 

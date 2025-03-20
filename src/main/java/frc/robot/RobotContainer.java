@@ -149,7 +149,7 @@ public class RobotContainer {
 
     arm.setDefaultCommand(new ArmCommand(arm, () -> 0));
 
-    gripper.setDefaultCommand(new GripperCommand(gripper));
+    // gripper.setDefaultCommand(new GripperCommand(gripper));
 
 
 
@@ -163,7 +163,7 @@ public class RobotContainer {
   private void configureBindings() {
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    joystick.leftBumper().onTrue(ArmActions.moveToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
+    joystick.leftBumper().whileTrue(ArmActions.moveToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
     joystick.a().onTrue(ArmActions.grabFromFunnel(arm, gripper));
     joystick.rightBumper().onTrue(ArmActions.groundIntake(arm, gripper));
     joystick.leftTrigger().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));

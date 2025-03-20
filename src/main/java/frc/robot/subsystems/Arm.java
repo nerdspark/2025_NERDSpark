@@ -112,13 +112,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Brake)));
+        .withNeutralMode(NeutralModeValue.Coast)));
 
     shoulderRight
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.Clockwise_Positive)
-        .withNeutralMode(NeutralModeValue.Brake)));
+        .withNeutralMode(NeutralModeValue.Coast)));
 
 
     elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -145,13 +145,13 @@ public class Arm extends SubsystemBase {
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
         .withInverted(InvertedValue.CounterClockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Brake)));
+          .withNeutralMode(NeutralModeValue.Coast)));
 
     elbowRight
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.Clockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Brake)));
+          .withNeutralMode(NeutralModeValue.Coast)));
 
     wristConfig.CurrentLimits = new CurrentLimitsConfigs()
       .withStatorCurrentLimit(ArmConstants.currentLimitWrist)
@@ -168,7 +168,7 @@ public class Arm extends SubsystemBase {
     wrist
       .getConfigurator()
       .apply(wristConfig.withMotorOutput(new MotorOutputConfigs()
-      .withInverted(InvertedValue.CounterClockwise_Positive)
+      .withInverted(InvertedValue.Clockwise_Positive)
           .withNeutralMode(NeutralModeValue.Coast)));
 
     resetOffsets();
@@ -583,10 +583,10 @@ public class Arm extends SubsystemBase {
    *
    * @return <code>true</code> if the wrist is near its target position.
    */
-  public boolean wristFinishedMoving() {
+  // public boolean wristFinishedMoving() {
       // TODO: This doesn't work for unrestricted angular domains.
-    return Math.abs(getWristPosition() - wristTarget) < 0.2;
-  }
+    // return Math.abs(getWristPosition() - wristTarget) < 0.2;
+  // }
 
   @Override
   public void periodic() {
