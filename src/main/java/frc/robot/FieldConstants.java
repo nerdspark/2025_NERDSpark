@@ -63,6 +63,26 @@ public class FieldConstants {
             Units.inchesToMeters(33.526),
             Units.inchesToMeters(25.824),
             Rotation2d.fromDegrees(144.011 - 90));
+    public static final Pose2d leftOutsideFace =
+            new Pose2d(
+                Units.inchesToMeters(33.526),
+                Units.inchesToMeters(291.176),
+                Rotation2d.fromDegrees(90 - 144.011)).plus(new Transform2d(stationLength*0.4, 0, Rotation2d.fromDegrees(45))); // TODO: check coordinate system and tune before integrating
+    public static final Pose2d rightOutsideFace =
+            new Pose2d(
+                Units.inchesToMeters(33.526),
+                Units.inchesToMeters(25.824),
+                Rotation2d.fromDegrees(144.011 - 90)).plus(new Transform2d(stationLength*0.4, 0, Rotation2d.fromDegrees(-45)));
+    public static final Pose2d leftInsideFace =
+                new Pose2d(
+                    Units.inchesToMeters(33.526),
+                    Units.inchesToMeters(291.176),
+                    Rotation2d.fromDegrees(90 - 144.011)).plus(new Transform2d(stationLength*0.4, 0, Rotation2d.fromDegrees(45)));
+    public static final Pose2d rightInsideFace =
+                new Pose2d(
+                    Units.inchesToMeters(33.526),
+                    Units.inchesToMeters(25.824),
+                    Rotation2d.fromDegrees(144.011 - 90)).plus(new Transform2d(stationLength*0.4, 0, Rotation2d.fromDegrees(-45)));
   }
 
   public static class Reef {
@@ -77,6 +97,8 @@ public class FieldConstants {
     public static final List<Map<ReefLevel, Pose3d>> branchPositions =
         new ArrayList<>(); // Starting at the right branch facing the driver station in clockwise
     public static final List<Map<ReefLevel, Pose2d>> branchPositions2d = new ArrayList<>();
+    public static final List<Pose3d> algaePositions =
+        new ArrayList<>(); // Starting at the right branch facing the driver station in clockwise
 
     static {
       // Initialize faces
@@ -98,7 +120,7 @@ public class FieldConstants {
         Map<ReefLevel, Pose2d> fillLeft2d = new HashMap<>();
         for (var level : ReefLevel.values()) {
           Pose2d poseDirection = new Pose2d(center, Rotation2d.fromDegrees(180 - (60 * face)));
-          double adjustX = Units.inchesToMeters(28.738);
+          double adjustX = Units.inchesToMeters(30.738);
           double adjustY = Units.inchesToMeters(6.469);
 
           var rightBranchPose =
@@ -129,11 +151,26 @@ public class FieldConstants {
                       0,
                       Units.degreesToRadians(level.pitch),
                       poseDirection.getRotation().getRadians()));
+            var algaePose =
+                      new Pose3d(
+                          new Translation3d(
+                              poseDirection
+                                  .transformBy(new Transform2d(adjustX, 0, new Rotation2d()))
+                                  .getX(),
+                              poseDirection
+                                  .transformBy(new Transform2d(adjustX, 0, new Rotation2d()))
+                                  .getY(),
+                              level.height),
+                          new Rotation3d(
+                              0,
+                              Units.degreesToRadians(0),
+                              poseDirection.getRotation().getRadians()));        
 
           fillRight.put(level, rightBranchPose);
           fillLeft.put(level, leftBranchPose);
           fillRight2d.put(level, rightBranchPose.toPose2d());
           fillLeft2d.put(level, leftBranchPose.toPose2d());
+          algaePositions.add(algaePose);
         }
         branchPositions.add(fillRight);
         branchPositions.add(fillLeft);

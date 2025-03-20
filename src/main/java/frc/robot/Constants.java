@@ -195,11 +195,7 @@ public static class Vision {
           
           
         }
-    
-
-
-
-        
+        public static final Transform2d algaeOffset = new Transform2d(Units.inchesToMeters(20), 0, new Rotation2d(180));
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {

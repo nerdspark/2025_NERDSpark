@@ -35,6 +35,8 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
   private Pose2d selectedBranchPose = new Pose2d();
   private Pose2d selectedCoralStationPose = new Pose2d();
+  private Pose2d selectedAlgaePose = new Pose2d();
+  private boolean isOutsideCoralStation = false;
 
   private static final int [] branchesSimon = {5,4,3,2,1,0,11,10,9,8,7,6}; // Needed as the button board is assembled in incorrect orientation
   private static final int [] branchesSayan = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0}; // Needed as the button board is assembled in incorrect orientation
@@ -132,11 +134,12 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     DogLog.log("ScoringProfileSubSystem/Selected CoralStation", coralStationSide);
   }
     selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefLevel).toPose2d());
+    selectedAlgaePose = AllianceFlipUtil.apply(FieldConstants.Reef.algaePositions.get(branch/2).toPose2d());
     if(coralStationSide == FieldConstants.CoralStations.LEFT) {
-      selectedCoralStationPose = AllianceFlipUtil.apply(FieldConstants.CoralStation.leftCenterFace);
+      selectedCoralStationPose = AllianceFlipUtil.apply(isOutsideCoralStation ? FieldConstants.CoralStation.leftOutsideFace : FieldConstants.CoralStation.leftCenterFace);
     }
     else {
-      selectedCoralStationPose = AllianceFlipUtil.apply(FieldConstants.CoralStation.rightCenterFace);
+      selectedCoralStationPose = AllianceFlipUtil.apply(isOutsideCoralStation ? FieldConstants.CoralStation.rightOutsideFace :FieldConstants.CoralStation.rightCenterFace);
     }
 
     // DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
@@ -182,6 +185,10 @@ public class ScoringProfileSubsystem extends SubsystemBase {
    
       return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
 
+  }
+
+  public Pose2d getRobotPoseForSelectedAlgae() {
+    return selectedAlgaePose.plus(Constants.Vision.algaeOffset);
   }
 
   public Pose2d getRobotPoseForSelectedCoralStation() {
