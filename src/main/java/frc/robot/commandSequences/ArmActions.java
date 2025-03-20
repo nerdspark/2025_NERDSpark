@@ -4,6 +4,8 @@
 
 package frc.robot.commandSequences;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -44,8 +46,8 @@ public class ArmActions {
     /** move arm to desired setpoint to drop coral on reef
      * @param setPointIndex level on the reef
      */
-  public static Command moveToCoralReef(Arm arm, IntSupplier setPointIndex) {
-    return new ArmCommandPathToPoint(arm, setPointIndex);
+  public static Command armToCoralReef(Arm arm, IntSupplier setPointIndex) {
+    return new ArmCommand(arm, setPointIndex);
   }
 
   /** tilt wrist downwards and release coral 
@@ -55,6 +57,14 @@ public class ArmActions {
     return new ParallelCommandGroup(
       new ArmCommand(arm, () -> ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()]), 
       new WaitCommand(0.2).andThen(new GripperCommand(gripper, -1))).withTimeout(0.5);
+  }
+
+  /** tilt wrist downwards manually 
+    * @param setPointIndex level on the reef
+    @param dunkScalar amount to dunk by set by driver
+  */
+  public static Command dunkCoral(Arm arm, IntSupplier setPointIndex, DoubleSupplier dunkScalar) {
+    return new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].interpolate(ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()], dunkScalar.getAsDouble()));
   }
 
     /** position arm to remove algae while rolling rollers inwards

@@ -41,14 +41,16 @@ public class ArmCommand extends Command {
     public void initialize() {
         // arm.resetEncoders();
         
-        arm.setArmPosition(point.get().position, inBend.get());
-        arm.setWristTarget(point.get().wrist);
+        
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         // arm.getArmPosition();
+        arm.setArmPosition(point.get().position, inBend.get());
+        arm.setWristTarget(point.get().wrist);
+        
     }
 
     // Called once the command ends or is interrupted.

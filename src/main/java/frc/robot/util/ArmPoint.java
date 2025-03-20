@@ -71,6 +71,15 @@ public class ArmPoint {
     public ArmPoint add(Translation2d add) {
         return new ArmPoint(position.plus(add), inBend, wrist);
     }
+    /**
+     * Interpolates between two ArmPoints
+     * @param endPoint position to go to at alpha = 1
+     * @param alpha percentage of the way to the end point
+     * @return the interpolated ArmPoint
+     */
+    public ArmPoint interpolate(ArmPoint endPoint, double alpha) {
+        return new ArmPoint(position.plus(endPoint.position.minus(position).times(alpha)), alpha < ((ArmConstants.totalStageLength - endPoint.position.getNorm())/(2*ArmConstants.totalStageLength - position.getNorm() - endPoint.position.getNorm())) ? inBend : endPoint.inBend, wrist + (alpha * (endPoint.wrist - wrist)));
+    }
     public ArmPoint rotateBy(Rotation2d rotateBy) {
         return new ArmPoint(position.rotateBy(rotateBy), inBend, wrist);
     }
