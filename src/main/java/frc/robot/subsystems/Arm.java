@@ -41,6 +41,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -52,6 +53,7 @@ import frc.robot.Constants.ArmGains;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmVelocityGains;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ArmInstantCommand;
 import frc.robot.util.ArmPoint;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
@@ -72,8 +74,10 @@ public class Arm extends SubsystemBase {
   public boolean stowing = false;
   private SlewRateLimiter shoulderLimiter = new SlewRateLimiter(ArmConstants.shoulderSlewRate);
   private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
+  private double wristOffset = ArmConstants.wristOffset;
+  private TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
-  public double wristTarget = ArmSetpoints.armSetPoints[0].wrist;
+  public double wristTarget = ArmSetpoints.homeWrist;
 
   /**
    * Create a new Arm.
@@ -86,7 +90,6 @@ public class Arm extends SubsystemBase {
     wrist = new TalonFX(ArmConstants.wristMotorPort, ArmConstants.armCanBus);
 
     TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
-    TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
     shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
@@ -160,7 +163,7 @@ public class Arm extends SubsystemBase {
     wristConfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.wristOffset)
       .withSensorToMechanismRatio(ArmConstants.wristRadPerRot);
-    wristConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.05);
+    wristConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
     wristConfig.Slot0 = new Slot0Configs()
       .withKP(ArmGains.wristP)
       .withKI(ArmGains.wristI)
@@ -173,6 +176,14 @@ public class Arm extends SubsystemBase {
           .withNeutralMode(NeutralModeValue.Coast)));
 
     resetOffsets();
+  }
+
+  public double addToWristOffset(double addTo) {
+    wristOffset += addTo;
+    wrist.getConfigurator().apply(wristConfig.withFeedback(new FeedbackConfigs()
+    .withFeedbackRotorOffset(wristOffset)
+    .withSensorToMechanismRatio(ArmConstants.wristRadPerRot)));
+    return wristOffset;
   }
 
   /**
@@ -248,7 +259,7 @@ public class Arm extends SubsystemBase {
    * Obtain the 2d position of the wrist.
    * The 2d plane is the plane in which the arm's movement is constrained.
    *
-   * @return The wrist position.
+   * @return The arm position.
    */
   public Translation2d getArmPosition() {
     Translation2d jointPos = new Translation2d(
@@ -454,9 +465,8 @@ public class Arm extends SubsystemBase {
     //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
   }
 
-  @Override
-  public Command getDefaultCommand() {
-    return new ArmCommand(this, () -> 0);
+  public Command goToHome() {
+    return new ArmInstantCommand(this, () -> 0);
   }
 
   /**

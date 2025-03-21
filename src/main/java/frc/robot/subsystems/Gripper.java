@@ -29,12 +29,9 @@ import frc.robot.commands.GripperCommand;
 public class Gripper extends SubsystemBase {
   private TalonFX gripper;
   private TalonFXConfiguration gripperConfig = new TalonFXConfiguration();
-  private CANrange sensor; 
-  private double[] prevDistances = new double[ArmConstants.timesToTestPositive];
   /** Creates a new Gripper. */
   public Gripper() {
     gripper = new TalonFX(ArmConstants.gripperMotorPort, ArmConstants.armCanBus);
-    sensor = new CANrange(ArmConstants.gripperSensorPort, ArmConstants.armCanBus);
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(ArmConstants.gripperCurrentLimitDefault)
           .withStatorCurrentLimitEnable(true);
@@ -72,7 +69,7 @@ public class Gripper extends SubsystemBase {
     return new GripperCommand(this, 1.0, 10);
   }
   public Command coralDefaultCommand() {
-    return new GripperCommand(this, 0.0, 10);
+    return new GripperCommand(this, 0.2, 10);
   }
   public Command coralIntakeCommand() {
     return new GripperCommand(this, 1.0, 20);
@@ -88,31 +85,19 @@ public class Gripper extends SubsystemBase {
   }
 
 
-  public boolean getCoralDetected() {
-    for (double distance : prevDistances) {
-      if (distance > ArmConstants.coralDistance) {
-        return false;
-      }
-    }
-    return true;
-  }
 
-  public boolean getAlgaeDetected() {
-    for (double distance : prevDistances) {
-      if (distance > ArmConstants.algaeDistance) {
-        return false;
-      }
-    }
-    return false;
-  }
+  // public boolean getAlgaeDetected() {
+  //   for (double distance : prevDistances) {
+  //     if (distance > ArmConstants.algaeDistance) {
+  //       return false;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   @Override
   public void periodic() {
-    for (int i = prevDistances.length-1; i > 0; i--) {
-      prevDistances[i]  = prevDistances[i-1];
-    }
-    prevDistances[0] = sensor.getDistance().getValueAsDouble();
-
+    
     
     SmartDashboard.putNumber("Gripper velocity", gripper.getVelocity().getValueAsDouble()); // angular velocity (rotations per second)
 
