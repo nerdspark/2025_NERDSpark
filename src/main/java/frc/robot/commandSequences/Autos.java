@@ -65,6 +65,21 @@ public final class Autos {
           
   }
 
+  public static Command getAutoDriveCommandAlgae(
+     CommandSwerveDrivetrain drive,
+     Supplier<Pose2d> robotPoseSupplier,
+     Supplier<Pose2d> goalPoseSupplier,
+     DoubleSupplier linearFF_X,
+     DoubleSupplier linearFF_Y,
+      DoubleSupplier omegaFF) {
+
+       return new DriveToPose(drive, 
+       () -> getDriveTargetAlgae(()->drive.getState().Pose, ()->goalPoseSupplier.get()),
+       () -> getLinearVelocityFromJoysticks(linearFF_X.getAsDouble(),linearFF_Y.getAsDouble()), omegaFF);
+          
+          
+  }
+
   
   public static Command getAutoDriveCommandStation(
      CommandSwerveDrivetrain drive,
@@ -82,7 +97,6 @@ public final class Autos {
   }
 
   
-
     /** Get drive target. */
   private static Pose2d getDriveTargetReef(Supplier<Pose2d> robotPose, Supplier<Pose2d> goalPose, Supplier<ReefLevel> reefLevel, Supplier<Boolean> isBackwardsSupplier) {
     double maxDistanceReefLineup = 1.5;
@@ -96,32 +110,32 @@ public final class Autos {
     double rotationDiff = offset.getRotation().getDegrees();
 
      
-    boolean isBackwards = isBackwardsSupplier.get();
+    // boolean isBackwards = isBackwardsSupplier.get();
 
     double shiftXT = 0.0, shiftYT = 0.0;
 
-       if(reefLevel.get() == ReefLevel.L4 || reefLevel.get() == ReefLevel.L3 || reefLevel.get() == ReefLevel.L2) {
+      //  if(reefLevel.get() == ReefLevel.L4 || reefLevel.get() == ReefLevel.L3 || reefLevel.get() == ReefLevel.L2) {
    
-          if(isBackwards){
-            shiftXT = MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
-            0.0,1.0);
+          // if(isBackwards){
+          //   shiftXT = MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
+          //   0.0,1.0);
 
-            shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
+          //   shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
 
-           goal = goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
+          //  goal = goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
             
-          }else{
-            if(reefLevel.get() == ReefLevel.L4){
-              shiftXT = MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
-              0.0,1.0);
+          // }else{
+            // if(reefLevel.get() == ReefLevel.L4){
+            //   shiftXT = MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
+            //   0.0,1.0);
 
-              shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
+            //   shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
 
-              goal = goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
+            //   goal = goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
 
-            }else{
+            // }else{
               shiftXT =    MathUtil.clamp(((yDistance) / (Reef.faceLength *2 )) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
               0.0,1.0);
 
@@ -130,17 +144,17 @@ public final class Autos {
               goal = goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
 
-            }
-          }
-         }else{
-            shiftXT =    MathUtil.clamp(((yDistance) / (Reef.faceLength *2 )) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
-            0.0,1.0);
+            // }
+          // }
+        //  }else{
+        //     shiftXT =    MathUtil.clamp(((yDistance) / (Reef.faceLength *2 )) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
+        //     0.0,1.0);
 
-            shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / -Reef.faceLength), 0.0, 1.0);
+        //     shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / -Reef.faceLength), 0.0, 1.0);
 
-            goal = goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
+        //     goal = goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
-          }
+        //   }
           if (Vision.DOGLOG_ENABLED) {
             DogLog.log("AutoScoreCommand/offset" , offset);   
         
@@ -160,6 +174,13 @@ public final class Autos {
         DogLog.log("AutoScoreCommand/shiftedGoalPose", goal);
           }
         return goal;
+  }
+
+
+   /** Get drive target. */
+   private static Pose2d getDriveTargetAlgae(Supplier<Pose2d> robotPose, Supplier<Pose2d> goalPose) {
+    
+    return goalPose.get();
   }
 
    /** Get drive target. */
