@@ -97,7 +97,7 @@ public class FieldConstants {
     public static final List<Map<ReefLevel, Pose3d>> branchPositions =
         new ArrayList<>(); // Starting at the right branch facing the driver station in clockwise
     public static final List<Map<ReefLevel, Pose2d>> branchPositions2d = new ArrayList<>();
-    public static final List<Pose3d> algaePositions =
+    public static final List<Pose2d> algaePositions =
         new ArrayList<>(); // Starting at the right branch facing the driver station in clockwise
 
     static {
@@ -152,18 +152,15 @@ public class FieldConstants {
                       Units.degreesToRadians(level.pitch),
                       poseDirection.getRotation().getRadians()));
             var algaePose =
-                      new Pose3d(
-                          new Translation3d(
+                      new Pose2d(
+                          new Translation2d(
                               poseDirection
                                   .transformBy(new Transform2d(adjustX, 0, new Rotation2d()))
                                   .getX(),
                               poseDirection
                                   .transformBy(new Transform2d(adjustX, 0, new Rotation2d()))
-                                  .getY(),
-                              level.height),
-                          new Rotation3d(
-                              0,
-                              Units.degreesToRadians(0),
+                                  .getY()), 
+                          new Rotation2d(
                               poseDirection.getRotation().getRadians()));        
 
           fillRight.put(level, rightBranchPose);

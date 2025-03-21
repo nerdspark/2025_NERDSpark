@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.subsystems.Bucket;
 import frc.robot.subsystems.Gripper;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -54,6 +55,9 @@ public class GripperCommand extends InstantCommand {
 
     if (currentLimit != gripper.getCurrentLimit()) {
       gripper.setCurrentLimit(currentLimit);
+    }
+    if (power < 0) {
+      Bucket.gripperHasGamePiece = false;
     }
   }
 

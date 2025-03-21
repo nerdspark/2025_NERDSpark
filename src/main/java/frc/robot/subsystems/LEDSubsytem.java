@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.signals.Led1OffColorValue;
 
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -20,18 +21,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
-import frc.robot.Constants.LEDConstants;
 
 public class LEDSubsytem extends SubsystemBase {
+  private static final int kPort = Constants.LEDConstants.kPort;
+  private static final int kLength = Constants.LEDConstants.kLength;
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
 
 
   public LEDSubsytem() {
-    m_led = new AddressableLED(LEDConstants.kPort);
-    m_buffer = new AddressableLEDBuffer(LEDConstants.kLength);
-    m_led.setLength(LEDConstants.kLength);
+    m_led = new AddressableLED(kPort);
+    m_buffer = new AddressableLEDBuffer(kLength);
+    m_led.setLength(kLength);
     m_led.start();
   }
 
@@ -43,32 +45,33 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
+  public LEDPattern getPattern(Trigger driveTrainFinishedMoving, Trigger bucketHasCoral, Trigger gripperHasGamePiece){
+    boolean hasGamePiece = bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean();
+    Color color = (hasGamePiece) ? new Color(0, 1, 0) : new Color(0, 0, 1); 
+    boolean flashing = hasGamePiece ? driveTrainFinishedMoving.getAsBoolean() : false;
+    if (flashing) {
+      return LEDPattern.solid(color).blink(Time.ofBaseUnits(0.05, Second));
+    } else {
+      return LEDPattern.solid(color);
+    }
+  }
   public Color[] updateStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
     Color step1 = new Color();
     Color step2 = new Color();
-    Color step3 = new Color();
 
-    
-      if(armFinishedMoving.getAsBoolean()) { // 
-        step1 = new Color(1.0f, 1.0f, 0.0f); // yellow
+      if(hasCoral.getAsBoolean()) { // 
+        step2 = new Color(1.0f, 0.0f, 0.0f); // cyan
       } else {
-        step1 = new Color(1.0f, 0.0f, 1.0f); // cyan
+        step2 = new Color(0.0f, 1.0f, 0.0f); // red
       }
 
-      if(driveTrainFinishedMoving.getAsBoolean()) { // 
-        step2 = new Color(0.0f, 1.0f, 1.0f); // magenta
-      } else {
-        step2 = new Color(0.0f, 0.0f, 1.0f); // blue
-      }
+      // if (detectedCoral.get()) { // 
+      //   step3 =  new Color(1.0f, 0.0f, 0.0f); // green
+      // } else {
+      //   step3 = new Color(0.0f, 1.0f, 0.0f);  // red
+      // } 
 
-      if (hasCoral.getAsBoolean()) { // 
-        step3 =  new Color(1.0f, 0.0f, 0.0f); // green
-      } else {
-        step3 = new Color(0.0f, 1.0f, 0.0f);  // red
-
-      } 
-
-      Color[] colors = {step1, step2, step3};
+      Color[] colors = {step2};
       return colors;
   }
 
@@ -77,7 +80,11 @@ public class LEDSubsytem extends SubsystemBase {
    *
    * @param pattern the LED pattern to run
    */
-  public Command runPattern(LEDPattern pattern) {
-    return run(() -> pattern.applyTo(m_buffer));
+  public Command runPattern(Supplier<LEDPattern> pattern) {
+    return run(() -> pattern.get().applyTo(m_buffer));
   }
 }
+
+
+
+// distance between two poses -> ratio of gradient joystick.map()

@@ -138,7 +138,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     DogLog.log("ScoringProfileSubSystem/Selected CoralStation", coralStationSide);
   }
     selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefLevel).toPose2d());
-    selectedAlgaePose = AllianceFlipUtil.apply(FieldConstants.Reef.algaePositions.get(branch/2).toPose2d());
+    selectedAlgaePose = AllianceFlipUtil.apply(FieldConstants.Reef.algaePositions.get(branch/2));
     if(coralStationSide == FieldConstants.CoralStations.LEFT) {
       selectedCoralStationPose = AllianceFlipUtil.apply(isOutsideCoralStation ? FieldConstants.CoralStation.leftOutsideFace : FieldConstants.CoralStation.leftCenterFace);
     }

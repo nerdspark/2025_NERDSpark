@@ -19,7 +19,7 @@ import frc.robot.subsystems.Arm;
 public class ArmPoint {
     public Translation2d position;
     public boolean inBend = false;
-    public double wrist = Units.degreesToRadians(110);
+    public double wrist = ArmSetpoints.homeWrist;
     public ArmPoint(Translation2d point, boolean inBend, double wrist) {
         this.position = point;
         // if (position.getNorm() > ArmConstants.totalStageLength) {

@@ -54,7 +54,14 @@ import frc.robot.util.ArmPoint;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
+  
+  public static class ClimbConstants {
+    public static final int kLeftID = 61;
+    public static final int kRightID = 62;
+    public static final double currentLimit = 10;
+    public static final double power = 0.2;
+    public static final double rampRate = 0.2;
+  }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kMotorPort = 0;
@@ -122,14 +129,14 @@ public static class Vision {
 
         public static final String kCameraNameFront = "LeftCamera";
         public static final Transform3d kRobotToCamFront =
-                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters(-(12 - 5.56)), Units.inchesToMeters(17.00)), 
-                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-12))); //TODO: figure out if this is correct or not
+                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters((12 - 5.56)), Units.inchesToMeters(17.00)), 
+                new Rotation3d(0, Math.toRadians(-20), Math.toRadians(15))); //TODO: determine XYZ
 
 
         public static final String kCameraNameBack = "RightCamera";
         public static final Transform3d kRobotToCamBack =
-                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters(12 - 5.56), Units.inchesToMeters(17.00)), 
-                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(12))); //TODO: figure out if this negation is correct
+                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters(-(12 - 5.56)), Units.inchesToMeters(17.00)), 
+                new Rotation3d(0, Math.toRadians(-20), Math.toRadians(-15))); //TODO: determine XYZ
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -144,9 +151,9 @@ public static class Vision {
         public static final double kXYStdDev = 0.4; 
         public static final double kThetaStdDev = 1; 
 
-        public static final double TRANSLATION_TOLERANCE_X = 0.02; // Changed from 0.05 3/8/25
-        public static final double TRANSLATION_TOLERANCE_Y = 0.02; // Changed from 0.05 3/8/25
-        public static final double ROTATION_TOLERANCE = Math.toRadians(2.0); // /deg
+        public static final double TRANSLATION_TOLERANCE_X = 0.01; // Changed from 0.05 3/8/25
+        public static final double TRANSLATION_TOLERANCE_Y = 0.01; // Changed from 0.05 3/8/25
+        public static final double ROTATION_TOLERANCE = Math.toRadians(1.0); // /deg
 
         //Below same as pathplanner constants
         public static final double MAX_VELOCITY = 4.5; 
@@ -186,9 +193,9 @@ public static class Vision {
         static {
 
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(25), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(25), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(27), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           
@@ -221,6 +228,15 @@ public static class Vision {
   
   
 
+public static class BucketConstants {
+  public static final int leftSensorPort = 1;
+  public static final int rightSensorPort = 2;
+
+  public static final int timesForBucketToTestPositive = 10; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
+  public static final double coralDistance = 0.15; // maximum distance of distance sensor readings in order to consider coral to be detected
+  // public static final double algaeDistance = 0.05; // maximum distance of distance sensor readings in order to consider algae to be detected
+
+}
   public final class ArmGains {
       public static final double shoulderP = 200.0; //TODO CHANGE SOME OF THIS LATER //52.0
       public static final double shoulderI = 0.0;
@@ -228,13 +244,12 @@ public static class Vision {
       public static final double elbowP = 200.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 40.0;
-      public static final double wristAccelerationTime = 0.3;
-      public static final double wristP = 200.0; //20.0
+      public static final double wristP = 300.0; //20.0
       public static final double wristG = 0.0; //20.0 
       public static final double wristI = 0.0;
       public static final double wristD = 0;
-      public static final double wristVelocity = 1.6;
-      public static final double wristAcceleration = wristVelocity/wristAccelerationTime;
+      public static final double wristVelocity = 2;
+      public static final double wristAcceleration = 2;
       public static final double gripperP = 28.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
@@ -288,17 +303,13 @@ public static class Vision {
     public static final int elbowMotorRightPort = 44;
     public static final int wristMotorPort = 45;
     public static final int gripperMotorPort = 46;
-    public static final int gripperSensorPort = 34;
     public static final String armCanBus = "canivore1";
 
-    public static final double currentLimitShoulder = 15.0;
-    public static final double currentLimitElbow = 15.0;
-    public static final double currentLimitWrist = 25.0; //40.0
-    public static final double gripperCurrentLimitDefault = 5.0;
-    public static final double gripperPowerDefault = 1.0;
-    public static final int timesToTestPositive = 3; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
-    public static final double coralDistance = 0.1; // maximum distance of distance sensor readings in order to consider coral to be detected
-    public static final double algaeDistance = 0.1; // maximum distance of distance sensor readings in order to consider algae to be detected
+    public static final double currentLimitShoulder = 25.0;
+    public static final double currentLimitElbow = 25.0;
+    public static final double currentLimitWrist = 35.0; //40.0
+    public static final double gripperCurrentLimitDefault = 10.0;
+    public static final double gripperPowerDefault = 0.1;
 
 
     //shoulder true offset: 34.513 deg below forward horizontal
@@ -328,9 +339,9 @@ public static class Vision {
     public static final double wristRadPerRot = wristGearRatio;
     public static final double gripperRadPerRot = gripperGearRatio;
     public static final double gripperOffset = 0;
-    public static final double shoulderOffset = -0.54 / 2.0 / Math.PI; // radians, fwd = 0
-    public static final double elbowOffset = 1.88 / 2.0 / Math.PI; // negative of measurement
-    public static final double wristOffset = (4.12+0.79) / 2.0 / Math.PI; // 
+    public static final double shoulderOffset = -0.570 / 2.0 / Math.PI; // radians, fwd = 0
+    public static final double elbowOffset = 1.932 / 2.0 / Math.PI; // negative of measurement
+    public static final double wristOffset = 4.82 / 2.0 / Math.PI; // 
 
     /** wrist flip belting ratio between elbow and the wrist */
     public static final double wristToElbowRatio = 1.0/(35.0 / 50.0);
@@ -345,8 +356,9 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 10;
-    public static final Translation2d home = new Translation2d(8, 10.9).plus(new Translation2d(0, 0));//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
+    public static final int setPointCount = 11;
+    public static final Translation2d home = new Translation2d(10.6, 11.4);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
+    public static final double homeWrist = Units.degreesToRadians(110);
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
      * @home 0
@@ -364,11 +376,12 @@ public static class Vision {
      * @groundintake 8
      * 
      * **Algae dropoff**
-     * @AlgaeBarge 9 (max height straight up)
+     * @AlgaeBargePrepare 9 
+     * @AlgaeBargeThrow 10 
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
-      armSetPoints[0] = new ArmPoint(home, Units.degreesToRadians(110));
+      armSetPoints[0] = new ArmPoint(home, homeWrist);
 
       // armSetPoints[1] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(65)), Units.degreesToRadians(180));
       // armSetPoints[2] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), Units.degreesToRadians(150));
@@ -378,22 +391,23 @@ public static class Vision {
 
       double dropoffDistanceFromBumper = -5.0;
       Translation2d gripperOffset = new Translation2d(9.9, -2.0);
-      Translation2d gripperCoralOffset = gripperOffset.plus(new Translation2d(-1.9, 9.0));
-      Translation2d gripperCoralOffsetInverted = gripperCoralOffset.plus(new Translation2d(0.0, -11.875));
+      // Translation2d gripperCoralOffset = gripperOffset.plus(new Translation2d(-1.9, 9.0));
+      // Translation2d gripperCoralOffsetInverted = gripperCoralOffset.plus(new Translation2d(0.0, -11.875));
       Translation2d gripperAlgaeOffset = gripperOffset.plus(new Translation2d(8.0, 0.0));
 
       armSetPoints[1] = new ArmPoint(home, Units.degreesToRadians(110));
-      armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 9.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[3] = new ArmPoint(new Translation2d(-8.6, 25.0), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[4] = new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[2] = new ArmPoint(new Translation2d(-10.7, 25), Units.degreesToRadians(180 + 105));//new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
+      armSetPoints[3] = new ArmPoint(new Translation2d(-10.7, 30), Units.degreesToRadians(125));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(97)), Units.degreesToRadians(115));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 13.8), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
-      armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 29.7), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 20.8), Units.degreesToRadians(180+10)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 38.7), Units.degreesToRadians(180+10)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
-      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(240)).rotateElbowBy(Rotation2d.fromDegrees(-35));
+      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(225)).rotateElbowBy(Rotation2d.fromDegrees(-30));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
-      armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(45));
+      armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
+      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
       
       for (int i = 0; i < armSetPoints.length; i++) {
         if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {
@@ -419,8 +433,8 @@ public static class Vision {
     static {
       armSetPointsDunk[0] = armSetPoints[0];
       armSetPointsDunk[1] = armSetPoints[1];
-      armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-30));
-      armSetPointsDunk[3] = armSetPoints[3].addToWristFlip(Units.degreesToRadians(45));
+      armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-45)).add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.5))));
+      armSetPointsDunk[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.5))));
       armSetPointsDunk[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60));
     }
 
@@ -489,7 +503,7 @@ intermediatePoints[4][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double numOfSteps = 3.0;
     public static final int kPort = 3;
     public static final int kLength = 120;
-
+    public static final double blinkSeconds = 0.5;
   }
 
 }
