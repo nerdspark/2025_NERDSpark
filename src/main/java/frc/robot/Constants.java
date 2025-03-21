@@ -299,8 +299,8 @@ public static class Vision {
     public static final int gripperMotorPort = 46;
     public static final String armCanBus = "canivore1";
 
-    public static final double currentLimitShoulder = 15.0;
-    public static final double currentLimitElbow = 15.0;
+    public static final double currentLimitShoulder = 25.0;
+    public static final double currentLimitElbow = 25.0;
     public static final double currentLimitWrist = 25.0; //40.0
     public static final double gripperCurrentLimitDefault = 5.0;
     public static final double gripperPowerDefault = 1.0;
@@ -389,12 +389,12 @@ public static class Vision {
       Translation2d gripperAlgaeOffset = gripperOffset.plus(new Translation2d(8.0, 0.0));
 
       armSetPoints[1] = new ArmPoint(home, Units.degreesToRadians(110));
-      armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 9.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[3] = new ArmPoint(new Translation2d(-8.6, 25.0), Units.degreesToRadians(145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[4] = new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[2] = new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
+      armSetPoints[3] = new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(98)), Units.degreesToRadians(135));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 13.8), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
-      armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 29.7), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 17.8), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 33.7), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(240)).rotateElbowBy(Rotation2d.fromDegrees(-35));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
@@ -426,8 +426,8 @@ public static class Vision {
     static {
       armSetPointsDunk[0] = armSetPoints[0];
       armSetPointsDunk[1] = armSetPoints[1];
-      armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-30));
-      armSetPointsDunk[3] = armSetPoints[3].addToWristFlip(Units.degreesToRadians(45));
+      armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-45));
+      armSetPointsDunk[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.5))));
       armSetPointsDunk[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60));
     }
 
