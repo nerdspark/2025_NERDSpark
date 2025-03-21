@@ -205,7 +205,7 @@ public class RobotContainer {
     // hasCoral.onTrue(ArmActions.grabFromFunnel(arm, gripper).onlyIf(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
 
     // algae pickup
-    joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) != 0)));
+    joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
 
     // algae dropoff
     joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
