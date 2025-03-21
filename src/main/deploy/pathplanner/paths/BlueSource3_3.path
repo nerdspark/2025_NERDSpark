@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.962,
-        "y": 5.268
+        "x": 3.987,
+        "y": 5.225
       },
       "prevControl": {
-        "x": 3.7887962162703954,
-        "y": 5.842456655720645
+        "x": 3.8137962162703953,
+        "y": 5.799456655720645
       },
       "nextControl": null,
       "isLocked": false,
@@ -55,7 +55,12 @@
       "name": "gripperClose",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "gripperClose"
+        }
+      }
     },
     {
       "name": "armToL4",
