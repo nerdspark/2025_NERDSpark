@@ -162,7 +162,7 @@ public class Arm extends SubsystemBase {
     wristConfig.Feedback = new FeedbackConfigs()
       .withFeedbackRotorOffset(ArmConstants.wristOffset)
       .withSensorToMechanismRatio(ArmConstants.wristRadPerRot);
-    wristConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.05);
+    wristConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.1);
     wristConfig.Slot0 = new Slot0Configs()
       .withKP(ArmGains.wristP)
       .withKI(ArmGains.wristI)

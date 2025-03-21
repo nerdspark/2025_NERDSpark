@@ -69,7 +69,7 @@ public class Gripper extends SubsystemBase {
     return new GripperCommand(this, 1.0, 10);
   }
   public Command coralDefaultCommand() {
-    return new GripperCommand(this, 0.1, 10);
+    return new GripperCommand(this, 0.2, 10);
   }
   public Command coralIntakeCommand() {
     return new GripperCommand(this, 1.0, 20);

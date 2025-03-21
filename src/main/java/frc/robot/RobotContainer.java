@@ -24,11 +24,13 @@ import frc.robot.commands.ArmCommandPathToPoint;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.LEDSubsytem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -178,6 +180,8 @@ public class RobotContainer {
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
     gripperHasGamePiece = new Trigger(() -> Bucket.gripperHasGamePiece);
+    bucketHasCoral.whileTrue(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1)))
+      .onFalse(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0)));
 
 
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -207,7 +211,7 @@ public class RobotContainer {
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
-    // hasCoral.and(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5).onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    // bucketHasCoral.and(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5).onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
