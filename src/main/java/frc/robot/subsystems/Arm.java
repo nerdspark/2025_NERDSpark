@@ -74,6 +74,8 @@ public class Arm extends SubsystemBase {
   public boolean stowing = false;
   private SlewRateLimiter shoulderLimiter = new SlewRateLimiter(ArmConstants.shoulderSlewRate);
   private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
+  private double wristOffset = ArmConstants.wristOffset;
+  private TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
   public double wristTarget = ArmSetpoints.homeWrist;
 
@@ -88,7 +90,6 @@ public class Arm extends SubsystemBase {
     wrist = new TalonFX(ArmConstants.wristMotorPort, ArmConstants.armCanBus);
 
     TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
-    TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
     shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
@@ -175,6 +176,14 @@ public class Arm extends SubsystemBase {
           .withNeutralMode(NeutralModeValue.Coast)));
 
     resetOffsets();
+  }
+
+  public double addToWristOffset(double addTo) {
+    wristOffset += addTo;
+    wrist.getConfigurator().apply(wristConfig.withFeedback(new FeedbackConfigs()
+    .withFeedbackRotorOffset(wristOffset)
+    .withSensorToMechanismRatio(ArmConstants.wristRadPerRot)));
+    return wristOffset;
   }
 
   /**

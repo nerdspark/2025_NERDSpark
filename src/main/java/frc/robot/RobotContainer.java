@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -219,6 +221,10 @@ public class RobotContainer {
     // algae dropoff
     joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
       .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+
+    // wrist fix offset
+    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRadians(5))));
+    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRadians(-5))));
 
     /* autodrive TODO: rebind to not conflict with drive stick */
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
