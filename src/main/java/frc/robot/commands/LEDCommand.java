@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
@@ -23,11 +24,11 @@ import frc.robot.subsystems.ScoringProfileSubsystem;
 public class LEDCommand extends Command {
   private Trigger gripperHasGamePiece;
   private Trigger driveTrainFinishedMoving;
-  private Trigger bucketHasCoral;
+  private Supplier<Boolean> bucketHasCoral;
   private LEDSubsytem ledSubsytem;
 
   /** Creates a new LEDCommand. */
-  public LEDCommand(LEDSubsytem ledSubsytem, Trigger gripperHasGamePiece, Trigger bucketHasCoral, Trigger driveTrainFinishedMoving) {
+  public LEDCommand(LEDSubsytem ledSubsytem, Trigger gripperHasGamePiece, Supplier<Boolean> bucketHasCoral, Trigger driveTrainFinishedMoving) {
     this.ledSubsytem = ledSubsytem;
     this.gripperHasGamePiece = gripperHasGamePiece;
     this.driveTrainFinishedMoving = driveTrainFinishedMoving;
@@ -44,7 +45,7 @@ public class LEDCommand extends Command {
   @Override
   public void execute() {
     // Color[] returnColors = ledSubsytem.updateStepColor(gripperHasGamePiece, driveTrainFinishedMoving, bucketHasCoral);
-    ledSubsytem.runPattern(() -> ledSubsytem.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece));
+    // ledSubsytem.runPattern(() -> ledSubsytem.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece));
       // LEDPattern.steps(
       //   Map.of(
       //     0,

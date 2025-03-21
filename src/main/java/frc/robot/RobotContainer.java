@@ -95,9 +95,9 @@ public class RobotContainer {
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private Trigger driveTrainFinishedMoving;
-  private Trigger gripperHasGamePiece;
-  private Trigger bucketHasCoral;
+  private Supplier<Boolean> driveTrainFinishedMoving;
+  private Supplier<Boolean> gripperHasGamePiece;
+  private Supplier<Boolean> bucketHasCoral;
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -177,13 +177,15 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    bucketHasCoral = new Trigger(() -> bucket.getDetected());
-    driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+    bucketHasCoral = () -> bucket.getDetected();
+    driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
-    gripperHasGamePiece = new Trigger(() -> Bucket.gripperHasGamePiece);
-    // bucketHasCoral.whileTrue(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1)))
-    //   .onFalse(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0)));
+    .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
+    gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
+    // if(bucketHasCoral.get()) {
+    //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1));}
+    // else {
+    //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0));}
 
 
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -299,7 +301,30 @@ public class RobotContainer {
   }
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
-    joystick.rightBumper().onFalse(new LEDCommand(LEDs, gripperHasGamePiece, bucketHasCoral, driveTrainFinishedMoving));
+    if((bucketHasCoral.get() || gripperHasGamePiece.get()) && driveTrainFinishedMoving.get()){
+        joystick.rightBumper().onFalse(LEDs.runPattern(
+          () -> LEDPattern.steps(
+          Map.of(
+            0,
+            LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
+          )
+        ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+        ));
+      
+    } else {
+      joystick.rightBumper().onFalse(
+        LEDs.runPattern(
+      () -> LEDPattern.steps(
+      Map.of(
+        0,
+        LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
+      )
+      )
+    )
+      );
+    
+    }
+    
 
   }
 }

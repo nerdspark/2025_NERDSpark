@@ -45,35 +45,36 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
-  public LEDPattern getPattern(Trigger driveTrainFinishedMoving, Trigger bucketHasCoral, Trigger gripperHasGamePiece){
-    boolean hasGamePiece = bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean();
-    Color color = (hasGamePiece) ? new Color(0, 1, 0) : new Color(0, 0, 1); 
-    boolean flashing = hasGamePiece ? driveTrainFinishedMoving.getAsBoolean() : false;
-    if (flashing) {
-      return LEDPattern.solid(color).blink(Time.ofBaseUnits(0.05, Second));
-    } else {
-      return LEDPattern.solid(color);
-    }
+  public Color getPattern(Supplier<Boolean> driveTrainFinishedMoving, Supplier<Boolean> bucketHasCoral, Supplier<Boolean> gripperHasGamePiece){
+    boolean hasGamePiece = bucketHasCoral.get() || gripperHasGamePiece.get();
+    Color color = (hasGamePiece) ? new Color(0.0f, 1.0f, 0.0f) : new Color(0.0f, 0.0f, 1.0f); 
+    boolean flashing = hasGamePiece ? driveTrainFinishedMoving.get() : false;
+    // if (flashing) {
+    //   return LEDPattern.solid(color).blink(Time.ofBaseUnits(0.05, Second));
+    // } else {
+    //   return LEDPattern.solid(color);
+    // }
+    return color;
   }
-  public Color[] updateStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
-    Color step1 = new Color();
-    Color step2 = new Color();
+  // public Color[] updateStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
+  //   Color step1 = new Color();
+  //   Color step2 = new Color();
 
-      if(hasCoral.getAsBoolean()) { // 
-        step2 = new Color(1.0f, 0.0f, 0.0f); // cyan
-      } else {
-        step2 = new Color(0.0f, 1.0f, 0.0f); // red
-      }
+  //     if(hasCoral.getAsBoolean()) { // 
+  //       step2 = new Color(1.0f, 0.0f, 0.0f); // cyan
+  //     } else {
+  //       step2 = new Color(0.0f, 1.0f, 0.0f); // red
+  //     }
 
-      // if (detectedCoral.get()) { // 
-      //   step3 =  new Color(1.0f, 0.0f, 0.0f); // green
-      // } else {
-      //   step3 = new Color(0.0f, 1.0f, 0.0f);  // red
-      // } 
+  //     // if (detectedCoral.get()) { // 
+  //     //   step3 =  new Color(1.0f, 0.0f, 0.0f); // green
+  //     // } else {
+  //     //   step3 = new Color(0.0f, 1.0f, 0.0f);  // red
+  //     // } 
 
-      Color[] colors = {step2};
-      return colors;
-  }
+  //     Color[] colors = {step2};
+  //     return colors;
+  // }
 
   /**
    * Creates a command that runs a pattern on the entire LED strip.
