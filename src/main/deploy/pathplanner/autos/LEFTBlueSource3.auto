@@ -1,0 +1,138 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFTBlueSource3_1v2"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "gripperOpenToHome"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFTBlueSource3_2"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "sourceIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFTBlueSource3_3"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "gripperOpenToHome"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFTBlueSource3_4"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "sourceIntake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LEFTBlueSource3_5"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "gripperOpenToHome"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

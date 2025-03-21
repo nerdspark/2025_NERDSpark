@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.991,
+        "y": 2.8268
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.069088983078368,
+        "y": 2.3101557315867884
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.6652556818181818,
+        "y": 0.7108
+      },
+      "prevControl": {
+        "x": 2.3649490219682585,
+        "y": 1.488816138715348
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": -126.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Score1",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 0.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "gripperSource",
+      "waypointRelativePos": 0.6996466431095371,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "gripperSource"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.863,
+    "maxAcceleration": 3.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -126.0
+  },
+  "reversed": false,
+  "folder": "SourceAuton",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 119.99999999999999
+  },
+  "useDefaultConstraints": false
+}
