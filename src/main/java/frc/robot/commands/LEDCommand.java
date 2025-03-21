@@ -44,7 +44,7 @@ public class LEDCommand extends Command {
   @Override
   public void execute() {
     // Color[] returnColors = ledSubsytem.updateStepColor(gripperHasGamePiece, driveTrainFinishedMoving, bucketHasCoral);
-    ledSubsytem.runPattern(ledSubsytem.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece));
+    ledSubsytem.runPattern(() -> ledSubsytem.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece));
       // LEDPattern.steps(
       //   Map.of(
       //     0,

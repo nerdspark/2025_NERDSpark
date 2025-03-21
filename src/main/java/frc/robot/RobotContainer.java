@@ -6,6 +6,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.rmi.dgc.Lease;
+import java.util.Map;
+import java.util.function.Supplier;
 
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -236,6 +239,33 @@ public class RobotContainer {
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
+
+
+
+    // final Command noBlinkPattern = LEDs.runPattern(
+    //   () -> LEDPattern.steps(
+    //   Map.of(
+    //     0,
+    //     LEDs.updateStepColor(hasCoral)[0]
+    //   )
+    // )
+    // // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    // );
+    // final Command blinkPattern = LEDs.runPattern(
+    //   () -> LEDPattern.steps(
+    //   Map.of(
+    //     0,
+    //     LEDs.updateStepColor(hasCoral)[0] 
+    //   )
+    // ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+    // // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    // );
+
+    // if (detectedCoral.get()) {
+    //   joystick.back().onTrue(blinkPattern);
+    // } else {
+    //   joystick.back().onTrue(noBlinkPattern);
+    // }
   }
 
   private void configureAutoChooser() {
