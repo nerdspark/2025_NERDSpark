@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.rmi.dgc.Lease;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandSequences.ArmActions;
@@ -37,6 +38,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Bucket;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,6 +52,7 @@ public class RobotContainer {
   private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -65,6 +68,9 @@ public class RobotContainer {
     public Arm arm;
     private Gripper gripper;
     private LEDSubsytem LEDs;
+    private Bucket bucket;
+
+    private Trigger hasCoral = new Trigger(() -> bucket.getDetected());
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     // private Trigger armFinishedMoving = new Trigger(() -> arm.finishedMoving);
@@ -75,7 +81,6 @@ public class RobotContainer {
 
 
 
-    public final Vision vision = new Vision(Constants.Vision.kCameraNameFront, Constants.Vision.kRobotToCamFront);
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
     
 
@@ -104,6 +109,7 @@ public class RobotContainer {
     arm = new Arm();
     gripper = new Gripper();
     LEDs = new LEDSubsytem();
+    bucket = new Bucket();
 
     configureNamedCommands();
 
@@ -164,7 +170,7 @@ public class RobotContainer {
 
 
     LEDs.setDefaultCommand(
-     new LEDCommand(LEDs, new Trigger(() -> false), new Trigger(() -> false), new Trigger(() -> false)));
+     new LEDCommand(LEDs, new Trigger(() -> false), new Trigger(() -> false), hasCoral));
   }
 
 
@@ -184,16 +190,18 @@ public class RobotContainer {
     // * real competition bindings *
 
     // home arm
-    joystick.rightBumper().onTrue(arm.getDefaultCommand());
+    joystick.rightBumper().onTrue(arm.goToHome());
     joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // coral dropoff 
-    joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())));
+    joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
+      .onTrue(gripper.neutralCommand());
     joystick.leftBumper().onTrue(gripper.spitOutCommand())
-      .onFalse(gripper.neutralCommand()).onFalse(arm.getDefaultCommand());
+      .onFalse(gripper.neutralCommand()).onFalse(arm.goToHome());
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    hasCoral.onTrue(ArmActions.grabFromFunnel(arm, gripper).onlyIf(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));

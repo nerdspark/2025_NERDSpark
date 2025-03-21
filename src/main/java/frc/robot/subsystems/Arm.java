@@ -52,6 +52,7 @@ import frc.robot.Constants.ArmGains;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.ArmVelocityGains;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.ArmInstantCommand;
 import frc.robot.util.ArmPoint;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
@@ -248,7 +249,7 @@ public class Arm extends SubsystemBase {
    * Obtain the 2d position of the wrist.
    * The 2d plane is the plane in which the arm's movement is constrained.
    *
-   * @return The wrist position.
+   * @return The arm position.
    */
   public Translation2d getArmPosition() {
     Translation2d jointPos = new Translation2d(
@@ -454,9 +455,8 @@ public class Arm extends SubsystemBase {
     //          + ((ArmConstants.virtual4BarGearRatio - 1) * (getShoulderPosition() - ArmConstants.shoulderOffset));
   }
 
-  @Override
-  public Command getDefaultCommand() {
-    return new ArmCommand(this, () -> 0);
+  public Command goToHome() {
+    return new ArmInstantCommand(this, () -> 0);
   }
 
   /**

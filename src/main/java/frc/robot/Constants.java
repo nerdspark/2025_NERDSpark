@@ -276,6 +276,15 @@ public static class Vision {
   }
 
     
+  public static class BucketConstants {
+    public static final int leftSensorPort = 1;
+    public static final int rightSensorPort = 2;
+
+    public static final int timesForBucketToTestPositive = 5; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
+    public static final double coralDistance = 0.15; // maximum distance of distance sensor readings in order to consider coral to be detected
+    public static final double algaeDistance = 0.05; // maximum distance of distance sensor readings in order to consider algae to be detected
+
+  }
   public static class ArmConstants {
     
     public static final double elbowSlewRate = 4; // accel in rot/s/s
@@ -288,7 +297,6 @@ public static class Vision {
     public static final int elbowMotorRightPort = 44;
     public static final int wristMotorPort = 45;
     public static final int gripperMotorPort = 46;
-    public static final int gripperSensorPort = 34;
     public static final String armCanBus = "canivore1";
 
     public static final double currentLimitShoulder = 15.0;
@@ -296,9 +304,6 @@ public static class Vision {
     public static final double currentLimitWrist = 25.0; //40.0
     public static final double gripperCurrentLimitDefault = 5.0;
     public static final double gripperPowerDefault = 1.0;
-    public static final int timesToTestPositive = 3; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
-    public static final double coralDistance = 0.1; // maximum distance of distance sensor readings in order to consider coral to be detected
-    public static final double algaeDistance = 0.1; // maximum distance of distance sensor readings in order to consider algae to be detected
 
 
     //shoulder true offset: 34.513 deg below forward horizontal
@@ -346,7 +351,7 @@ public static class Vision {
   public static class ArmSetpoints {
 
     public static final int setPointCount = 10;
-    public static final Translation2d home = new Translation2d(8, 10.9).plus(new Translation2d(0, 0));//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
+    public static final Translation2d home = new Translation2d(12.5, 12.5).plus(new Translation2d(0, 0));//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
      * @home 0
