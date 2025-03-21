@@ -38,9 +38,9 @@ public class ArmActions {
           // new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.3), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.5), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.1), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.3), 
           gripper.coralDefaultCommand(), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.1), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
           arm.goToHome()); 
   }
 
