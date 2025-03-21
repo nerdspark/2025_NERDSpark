@@ -57,7 +57,7 @@ public class GripperCommand extends InstantCommand {
       gripper.setCurrentLimit(currentLimit);
     }
     if (power < 0) {
-      Bucket.hasAlgae = false;
+      Bucket.gripperHasGamePiece = false;
     }
   }
 

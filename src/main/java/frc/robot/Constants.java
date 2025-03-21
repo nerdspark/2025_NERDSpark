@@ -54,7 +54,13 @@ import frc.robot.util.ArmPoint;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
+  
+  public static class ClimbConstants {
+    public static final int kLeftID = 61;
+    public static final int kRightID = 62;
+    public static final double currentLimit = 20;
+    public static final double power = 0.2;
+  }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kMotorPort = 0;
@@ -228,13 +234,12 @@ public static class Vision {
       public static final double elbowP = 200.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 40.0;
-      public static final double wristAccelerationTime = 0.3;
       public static final double wristP = 200.0; //20.0
       public static final double wristG = 0.0; //20.0 
       public static final double wristI = 0.0;
       public static final double wristD = 0;
-      public static final double wristVelocity = 1.6;
-      public static final double wristAcceleration = wristVelocity/wristAccelerationTime;
+      public static final double wristVelocity = 1;
+      public static final double wristAcceleration = 3;
       public static final double gripperP = 28.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
@@ -301,9 +306,9 @@ public static class Vision {
 
     public static final double currentLimitShoulder = 25.0;
     public static final double currentLimitElbow = 25.0;
-    public static final double currentLimitWrist = 25.0; //40.0
-    public static final double gripperCurrentLimitDefault = 5.0;
-    public static final double gripperPowerDefault = 1.0;
+    public static final double currentLimitWrist = 15.0; //40.0
+    public static final double gripperCurrentLimitDefault = 10.0;
+    public static final double gripperPowerDefault = 0.1;
 
 
     //shoulder true offset: 34.513 deg below forward horizontal
@@ -396,7 +401,7 @@ public static class Vision {
       armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 17.8), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 33.7), Units.degreesToRadians(180+30)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
-      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(240)).rotateElbowBy(Rotation2d.fromDegrees(-35));
+      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(220)).rotateElbowBy(Rotation2d.fromDegrees(-35));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
       armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));

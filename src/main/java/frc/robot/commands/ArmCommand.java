@@ -43,11 +43,12 @@ public class ArmCommand extends Command {
     @Override
     public void initialize() {
         // arm.resetEncoders();
+        System.out.println("armcommand init " + point.get().position.toString() + "wrist " + point.get().wrist);
+        setPosition();
         
     }
     public void setPosition() {
-        System.out.println("xy:" + point.get().position.toString());
-        System.out.println("wrist:" + point.get().wrist);
+        System.out.println("armcommand refresh - xy:" + point.get().position.toString() + " - wrist:" + point.get().wrist);
         arm.setArmPosition(point.get().position, inBend.get());
         arm.setWristTarget(point.get().wrist);
     }
@@ -56,10 +57,10 @@ public class ArmCommand extends Command {
     @Override
     public void execute() {
         // arm.getArmPosition();
-        // if ((!point.get().position.equals(prevPoint.position)) || !(point.get().wrist == prevPoint.wrist)) {
+        if ((!point.get().position.equals(prevPoint.position)) || !(point.get().wrist == prevPoint.wrist)) {
             setPosition();
-            // prevPoint = point.get();
-        // }
+            prevPoint = point.get();
+        }
         
     }
 

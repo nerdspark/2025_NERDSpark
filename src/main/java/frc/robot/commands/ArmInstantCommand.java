@@ -23,7 +23,6 @@ public class ArmInstantCommand extends InstantCommand {
     private Arm arm;
     private Supplier<ArmPoint> point;
     private Supplier<Boolean> inBend;
-    private ArmPoint prevPoint = new ArmPoint(new Translation2d());
     /** Creates a new ArmCommand. */
     public ArmInstantCommand(Arm arm, Supplier<ArmPoint> point) {
         this.arm = arm;
@@ -43,9 +42,6 @@ public class ArmInstantCommand extends InstantCommand {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        setPosition();        
-    }
-    public void setPosition() {
         System.out.println("arm instant command init");
         System.out.println("xy:" + point.get().position.toString());
         System.out.println("wrist:" + point.get().wrist);

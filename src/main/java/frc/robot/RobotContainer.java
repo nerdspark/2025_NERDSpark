@@ -190,18 +190,19 @@ public class RobotContainer {
     // * real competition bindings *
 
     // home arm
-    joystick.rightBumper().onTrue(arm.goToHome());
+    joystick.rightBumper().whileTrue(arm.goToHome())
+      .whileTrue(gripper.neutralCommand());
     joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // coral dropoff 
     joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
-      .onTrue(gripper.neutralCommand());
+      .onTrue(gripper.coralDefaultCommand());
     joystick.leftBumper().onTrue(gripper.spitOutCommand())
       .onFalse(gripper.neutralCommand()).onFalse(arm.goToHome());
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
-    hasCoral.onTrue(ArmActions.grabFromFunnel(arm, gripper).onlyIf(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
+    // hasCoral.onTrue(ArmActions.grabFromFunnel(arm, gripper).onlyIf(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) != 0)));
