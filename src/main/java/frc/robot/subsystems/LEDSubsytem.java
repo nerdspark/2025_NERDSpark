@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.signals.Led1OffColorValue;
 
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -43,6 +44,16 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
+  public LEDPattern getPattern(Trigger driveTrainFinishedMoving, Trigger bucketHasCoral, Trigger gripperHasGamePiece){
+    boolean hasGamePiece = bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean();
+    Color color = (hasGamePiece) ? new Color(0, 1, 0) : new Color(0, 0, 1); 
+    boolean flashing = hasGamePiece ? driveTrainFinishedMoving.getAsBoolean() : false;
+    if (flashing) {
+      return LEDPattern.solid(color).blink(Time.ofBaseUnits(0.05, Second));
+    } else {
+      return LEDPattern.solid(color);
+    }
+  }
   public Color[] updateStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
     Color step1 = new Color();
     Color step2 = new Color();

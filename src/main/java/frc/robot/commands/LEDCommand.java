@@ -21,17 +21,17 @@ import frc.robot.subsystems.ScoringProfileSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LEDCommand extends Command {
-  private Trigger armFinishedMoving;
+  private Trigger gripperHasGamePiece;
   private Trigger driveTrainFinishedMoving;
-  private Trigger hasCoral;
+  private Trigger bucketHasCoral;
   private LEDSubsytem ledSubsytem;
 
   /** Creates a new LEDCommand. */
-  public LEDCommand(LEDSubsytem ledSubsytem, Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
+  public LEDCommand(LEDSubsytem ledSubsytem, Trigger gripperHasGamePiece, Trigger bucketHasCoral, Trigger driveTrainFinishedMoving) {
     this.ledSubsytem = ledSubsytem;
-    this.armFinishedMoving = armFinishedMoving;
+    this.gripperHasGamePiece = gripperHasGamePiece;
     this.driveTrainFinishedMoving = driveTrainFinishedMoving;
-    this.hasCoral = hasCoral;
+    this.bucketHasCoral = bucketHasCoral;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(ledSubsytem);
   }
@@ -43,20 +43,20 @@ public class LEDCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Color[] returnColors = ledSubsytem.updateStepColor(armFinishedMoving, driveTrainFinishedMoving, hasCoral);
-    ledSubsytem.runPattern(
-      LEDPattern.steps(
-        Map.of(
-          0,
-          returnColors[0], 
-          1 / Constants.LEDConstants.numOfSteps, 
-          returnColors[1], 
-          2 / Constants.LEDConstants.numOfSteps, 
-          returnColors[2]
-        )
-      )
-      .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
-    );
+    // Color[] returnColors = ledSubsytem.updateStepColor(gripperHasGamePiece, driveTrainFinishedMoving, bucketHasCoral);
+    ledSubsytem.runPattern(ledSubsytem.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece));
+      // LEDPattern.steps(
+      //   Map.of(
+      //     0,
+      //     returnColors[0], 
+      //     1 / Constants.LEDConstants.numOfSteps, 
+      //     returnColors[1], 
+      //     2 / Constants.LEDConstants.numOfSteps, 
+      //     returnColors[2]
+      //   )
+      // )
+      // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
+    // );
   }
 
   // Called once the command ends or is interrupted.
