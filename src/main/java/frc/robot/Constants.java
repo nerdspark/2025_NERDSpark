@@ -502,7 +502,7 @@ intermediatePoints[4][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double numOfSteps = 3.0;
     public static final int kPort = 3;
     public static final int kLength = 120;
-
+    public static final double blinkSeconds = 0.5;
   }
 
 }
