@@ -129,13 +129,13 @@ public static class Vision {
         public static final String kCameraNameFront = "LeftCamera";
         public static final Transform3d kRobotToCamFront =
                 new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters((12 - 5.56)), Units.inchesToMeters(17.00)), 
-                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(12))); //TODO: figure out if this is correct or not
+                new Rotation3d(0, Math.toRadians(-20), Math.toRadians(15))); //TODO: determine XYZ
 
 
         public static final String kCameraNameBack = "RightCamera";
         public static final Transform3d kRobotToCamBack =
                 new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters(-(12 - 5.56)), Units.inchesToMeters(17.00)), 
-                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-12))); //TODO: figure out if this negation is correct
+                new Rotation3d(0, Math.toRadians(-20), Math.toRadians(-15))); //TODO: determine XYZ
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
