@@ -58,8 +58,9 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 20;
+    public static final double currentLimit = 10;
     public static final double power = 0.2;
+    public static final double rampRate = 0.2;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
