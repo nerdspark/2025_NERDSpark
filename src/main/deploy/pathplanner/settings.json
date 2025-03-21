@@ -4,11 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "4 Piece",
-    "CenterAuton"
+    "CenterAuton",
+    "SourceAuton"
   ],
-  "autoFolders": [
-    "CenterAuton"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 4.863,
   "defaultMaxAccel": 4.0,
   "defaultMaxAngVel": 540.0,
