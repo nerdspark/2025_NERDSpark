@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.804618117229132,
+      "waypointRelativePos": 0.7488888888888889,
       "rotationDegrees": 126.0
     }
   ],
@@ -38,13 +38,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "gripperSource",
-      "waypointRelativePos": 0.7038869257950539,
+      "name": "armToHome",
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "gripperSource"
+          "name": "armToHome"
         }
       }
     }

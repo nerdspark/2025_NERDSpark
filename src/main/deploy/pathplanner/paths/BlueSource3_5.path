@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.75,
+      "waypointRelativePos": 0.6711111111111111,
       "rotationDegrees": -59.99999999999999
     }
   ],
@@ -52,13 +52,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "gripperClose",
+      "name": "grabFromFunnel",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "gripperClose"
+          "name": "grabFromFunnel"
         }
       }
     },

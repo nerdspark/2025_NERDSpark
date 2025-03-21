@@ -52,13 +52,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "gripperSource",
-      "waypointRelativePos": 0.6996466431095371,
+      "name": "armToHome",
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "gripperSource"
+          "name": "armToHome"
         }
       }
     }

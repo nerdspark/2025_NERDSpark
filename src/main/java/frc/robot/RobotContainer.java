@@ -131,10 +131,10 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("armToHome", new ArmCommandPathToPoint(arm, () -> 0));
+    NamedCommands.registerCommand("armToHome", arm.goToHome());
     NamedCommands.registerCommand("grabFromFunnel", ArmActions.grabFromFunnel(arm, gripper));
     NamedCommands.registerCommand("gripperToGroundIntake", ArmActions.groundIntake(arm, gripper));
-    NamedCommands.registerCommand("armToL4", new ArmCommandPathToPoint(arm, () -> 4));
+    NamedCommands.registerCommand("armToL4", ArmActions.armToCoralReef(arm, gripper, () -> 4));
     NamedCommands.registerCommand("dropOffCoral", ArmActions.dunkDropCoral(arm, gripper, () -> 4));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
     // NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
     // NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));

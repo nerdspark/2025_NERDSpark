@@ -52,9 +52,9 @@ public class ArmActions {
     /** move arm to desired setpoint to drop coral on reef
      * @param setPointIndex level on the reef
      */
-  public static Command armToCoralReef(Arm arm, IntSupplier setPointIndex) {
+  public static Command armToCoralReef(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     System.out.println("arm to coral reef");
-    return new ArmCommand(arm, setPointIndex);
+    return new ArmCommand(arm, setPointIndex).alongWith(gripper.coralDefaultCommand());
   }
 
   /** tilt wrist downwards and release coral 
