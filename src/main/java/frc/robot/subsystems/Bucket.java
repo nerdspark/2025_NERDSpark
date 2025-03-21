@@ -21,6 +21,7 @@ public class Bucket extends SubsystemBase {
   private double[] prevDistancesLeft = new double[BucketConstants.timesForBucketToTestPositive];
   private double[] prevDistancesRight = new double[BucketConstants.timesForBucketToTestPositive];
 
+  public static boolean hasAlgae = false;
   private CANrange sensorLeft; 
   private CANrange sensorRight; 
   private CANrangeConfiguration sensorConfig;
@@ -72,6 +73,6 @@ public class Bucket extends SubsystemBase {
     return true;
   }
   public boolean getDetected() {
-    return getLeftCoralDetected() || getRightCoralDetected();
+    return !hasAlgae && (getLeftCoralDetected() || getRightCoralDetected());
   }
 }

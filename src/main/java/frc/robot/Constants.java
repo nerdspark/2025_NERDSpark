@@ -122,14 +122,14 @@ public static class Vision {
 
         public static final String kCameraNameFront = "LeftCamera";
         public static final Transform3d kRobotToCamFront =
-                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters(-(12 - 5.56)), Units.inchesToMeters(17.00)), 
-                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-12))); //TODO: figure out if this is correct or not
+                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters((12 - 5.56)), Units.inchesToMeters(17.00)), 
+                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(12))); //TODO: figure out if this is correct or not
 
 
         public static final String kCameraNameBack = "RightCamera";
         public static final Transform3d kRobotToCamBack =
-                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters(12 - 5.56), Units.inchesToMeters(17.00)), 
-                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(12))); //TODO: figure out if this negation is correct
+                new Transform3d(new Translation3d(Units.inchesToMeters(14 - 5.03), Units.inchesToMeters(-(12 - 5.56)), Units.inchesToMeters(17.00)), 
+                new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-12))); //TODO: figure out if this negation is correct
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =
@@ -280,9 +280,9 @@ public static class Vision {
     public static final int leftSensorPort = 1;
     public static final int rightSensorPort = 2;
 
-    public static final int timesForBucketToTestPositive = 5; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
+    public static final int timesForBucketToTestPositive = 10; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
     public static final double coralDistance = 0.15; // maximum distance of distance sensor readings in order to consider coral to be detected
-    public static final double algaeDistance = 0.05; // maximum distance of distance sensor readings in order to consider algae to be detected
+    // public static final double algaeDistance = 0.05; // maximum distance of distance sensor readings in order to consider algae to be detected
 
   }
   public static class ArmConstants {
@@ -350,7 +350,7 @@ public static class Vision {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 10;
+    public static final int setPointCount = 11;
     public static final Translation2d home = new Translation2d(12.5, 12.5).plus(new Translation2d(0, 0));//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
@@ -369,7 +369,8 @@ public static class Vision {
      * @groundintake 8
      * 
      * **Algae dropoff**
-     * @AlgaeBarge 9 (max height straight up)
+     * @AlgaeBargePrepare 9 
+     * @AlgaeBargeThrow 10 
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
@@ -398,7 +399,8 @@ public static class Vision {
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(240)).rotateElbowBy(Rotation2d.fromDegrees(-35));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
-      armSetPoints[9] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(45));
+      armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
+      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
       
       for (int i = 0; i < armSetPoints.length; i++) {
         if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {

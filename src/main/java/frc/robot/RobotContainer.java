@@ -204,11 +204,11 @@ public class RobotContainer {
     hasCoral.onTrue(ArmActions.grabFromFunnel(arm, gripper).onlyIf(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
 
     // algae pickup
-    joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
+    joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) != 0)));
 
     // algae dropoff
-    joystick.povUp().onTrue(ArmActions.armToAlgaeBarge(arm))
-      .onFalse(ArmActions.shootAlgaeBarge(gripper));
+    joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
+      .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
 
     /* autodrive TODO: rebind to not conflict with drive stick */
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,

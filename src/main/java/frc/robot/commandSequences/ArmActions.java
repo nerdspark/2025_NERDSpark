@@ -19,9 +19,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandPathToPoint;
+import frc.robot.commands.ArmInstantCommand;
 import frc.robot.commands.GripperCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Bucket;
 import frc.robot.subsystems.Gripper;
 
 /** Add your docs here. */
@@ -73,6 +75,7 @@ public class ArmActions {
         * @param higherLevel true if the algae is at a higher level (L3.5); false if the algae is at a lower level (L2.5)
     */
     public static Command removeAlgae(Arm arm, Gripper gripper, BooleanSupplier higherLevel) {
+      Bucket.hasAlgae = true;
       return new ArmCommand(arm, () -> higherLevel.getAsBoolean() ? 6 : 5).alongWith(gripper.algaeIntakeCommand());
     }
 
@@ -82,7 +85,12 @@ public class ArmActions {
     }
 
     /** spin rollers to drop off algae in barge */
-    public static Command shootAlgaeBarge(Gripper gripper) {
-      return gripper.spitOutCommand();
+    public static Command shootAlgaeBarge(Arm arm, Gripper gripper) {
+      return new SequentialCommandGroup(
+        new ArmInstantCommand(arm, () -> 10), 
+        new WaitCommand(0.5), 
+        gripper.spitOutCommand(), 
+        new WaitCommand(0.2), 
+        arm.goToHome());
     }
 }
