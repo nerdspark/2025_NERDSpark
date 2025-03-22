@@ -37,7 +37,7 @@ public class ArmActions {
           gripper.coralIntakeCommand(),
           // new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.5), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.8), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.45), 
           gripper.coralDefaultCommand(), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
@@ -61,9 +61,9 @@ public class ArmActions {
     * @param setPointIndex level on the reef
   */
   public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
-    return new ParallelCommandGroup(
-      new ArmCommand(arm, () -> ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()]), 
-      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).withTimeout(0.35).andThen(arm.goToHome().alongWith(gripper.neutralCommand()));
+    return 
+      new ArmInstantCommand(arm, () -> ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()]).andThen(
+      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHome().alongWith(new WaitCommand(1).andThen(gripper.neutralCommand()))));
   }
 
   /** tilt wrist downwards manually 
