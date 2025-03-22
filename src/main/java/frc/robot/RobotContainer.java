@@ -211,7 +211,7 @@ public class RobotContainer {
     joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
       .onTrue(gripper.coralDefaultCommand());
     joystick.leftBumper().onTrue(gripper.spitOutCommand())
-      .onFalse(gripper.neutralCommand()).onFalse(arm.goToHome());
+      .onFalse(new WaitCommand(0.4).andThen(gripper.neutralCommand())).onFalse(new WaitCommand(0.2).andThen(arm.goToHome()));
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
