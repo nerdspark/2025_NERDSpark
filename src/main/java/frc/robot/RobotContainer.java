@@ -62,8 +62,11 @@ public class RobotContainer {
   private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
-    private Trigger bucketHasCoralTrigger;
+  // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  private BooleanSupplier driveTrainFinishedMoving = () -> false;
+  private BooleanSupplier gripperHasGamePiece = () -> false;
+  private BooleanSupplier bucketHasCoral = () -> false;
+    private Trigger bucketHasCoralTrigger = new Trigger(bucketHasCoral);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -99,10 +102,6 @@ public class RobotContainer {
     public final ScoringProfileSubsystem scoringSubsystem;
 
 
-  // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private BooleanSupplier driveTrainFinishedMoving = () -> false;
-  private BooleanSupplier gripperHasGamePiece = () -> false;
-  private BooleanSupplier bucketHasCoral = () -> false;
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -188,7 +187,7 @@ public class RobotContainer {
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
-    bucketHasCoralTrigger = new Trigger(bucketHasCoral);
+    // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     
   }
 
@@ -239,6 +238,8 @@ public class RobotContainer {
     // algae dropoff
     // joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
     //   .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+
+    joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
 
     // wrist fix offset
     joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));

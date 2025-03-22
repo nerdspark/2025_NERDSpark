@@ -239,8 +239,8 @@ public static class BucketConstants {
   public static final int leftSensorPort = 1;
   public static final int rightSensorPort = 2;
 
-  public static final int timesForBucketToTestPositive = 5; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
-  public static final double coralDistance = 0.15; // maximum distance of distance sensor readings in order to consider coral to be detected
+  public static final int timesForBucketToTestPositive = 8; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
+  public static final double coralDistance = 0.12; // maximum distance of distance sensor readings in order to consider coral to be detected
   // public static final double algaeDistance = 0.05; // maximum distance of distance sensor readings in order to consider algae to be detected
 
 }
@@ -363,7 +363,7 @@ public static class BucketConstants {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 12;
+    public static final int setPointCount = 13;
     public static final Translation2d home = new Translation2d(10.0, 11.0);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final double homeWrist = Units.degreesToRadians(110);
     /**
@@ -420,6 +420,8 @@ public static class BucketConstants {
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
 
       armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(125)), Units.degreesToRadians(260));
+
+      armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
       
       for (int i = 0; i < armSetPoints.length; i++) {
         if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {

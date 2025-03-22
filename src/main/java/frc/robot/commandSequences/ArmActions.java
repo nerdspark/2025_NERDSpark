@@ -86,7 +86,7 @@ public class ArmActions {
 
     /** position arm to drop off algae in barge */
     public static Command armToAlgaeBarge(Arm arm) {
-      return new ArmCommand(arm, () -> 9);
+      return new ArmInstantCommand(arm, () -> 9);
     }
 
     /** spin rollers to drop off algae in barge */
@@ -97,5 +97,9 @@ public class ArmActions {
         gripper.spitOutCommand(), 
         new WaitCommand(0.2), 
         arm.goToHome());
+    }
+
+    public static Command armToProcessor(Arm arm, Gripper gripper) {
+      return new ArmInstantCommand(arm, () -> 12).alongWith(gripper.algaeDefaultCommand());
     }
 }
