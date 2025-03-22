@@ -61,6 +61,9 @@ public final class Constants {
     public static final double currentLimit = 10;
     public static final double power = 0.2;
     public static final double rampRate = 0.2;
+    public static final double kP = 1.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -356,7 +359,7 @@ public static class BucketConstants {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 11;
+    public static final int setPointCount = 12;
     public static final Translation2d home = new Translation2d(10.6, 11.4);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final double homeWrist = Units.degreesToRadians(110);
     /**
@@ -378,6 +381,9 @@ public static class BucketConstants {
      * **Algae dropoff**
      * @AlgaeBargePrepare 9 
      * @AlgaeBargeThrow 10 
+     * 
+     * ** Climb **
+     * @climbPosition 11
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
@@ -408,6 +414,8 @@ public static class BucketConstants {
 
       armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
+
+      armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(60)), Units.degreesToRadians(240));
       
       for (int i = 0; i < armSetPoints.length; i++) {
         if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {

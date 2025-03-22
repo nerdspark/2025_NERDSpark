@@ -43,22 +43,40 @@ public class Climb extends SubsystemBase {
           .withFeedbackRotorOffset(0)
           .withSensorToMechanismRatio(1);
       climbConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(ClimbConstants.rampRate);
-      climbLeft
+      climbConfig.Slot0 = new Slot0Configs()
+      .withKP(ClimbConstants.kP)
+      .withKI(ClimbConstants.kI)
+      .withKD(ClimbConstants.kD);      climbLeft
           .getConfigurator()
           .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.CounterClockwise_Positive)
-              .withNeutralMode(NeutralModeValue.Brake)));
+              .withNeutralMode(NeutralModeValue.Coast)));
       climbRight
           .getConfigurator()
           .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.Clockwise_Positive)
-              .withNeutralMode(NeutralModeValue.Brake)));
+              .withNeutralMode(NeutralModeValue.Coast)));
       
   }
   
   public void setPower(double power) {
     climbLeft.set(power); 
     
+  }
+  public void stop() {
+    climbLeft.stopMotor(); 
+    
+  }
+  public void resetPosition() {
+    climbLeft.setPosition(0);
+    climbRight.setPosition(0);
+  }
+  public void setPosition(double position) {
+    climbLeft.setControl(new PositionVoltage(position)); 
+    
+  }
+  public double getPosition() {
+    return (climbLeft.getPosition().getValueAsDouble() + climbRight.getPosition().getValueAsDouble())/2;
   }
 
   public void setCurrentLimit(double currentLimit) {
@@ -71,8 +89,14 @@ public class Climb extends SubsystemBase {
   public double getCurrentLimit() {
     return climbConfig.CurrentLimits.StatorCurrentLimit;
   }
-  public Command outCommand() {
-    return new InstantCommand(() ->setPower(0.05));
+  public Command climb() {
+    return new InstantCommand(() ->setPower(-0.1));
+  }
+  public Command deploy() {
+    return new InstantCommand(() -> setPosition(125.0*0.5));
+  }
+  public Command stopCommand() {
+    return new InstantCommand(() -> stop());
   }
 
 
@@ -81,7 +105,9 @@ public class Climb extends SubsystemBase {
   @Override
   public void periodic() {
     
-    
+    SmartDashboard.putNumber("climb pos", getPosition());
+    SmartDashboard.putNumber("climb right pos", climbRight.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("climb left pos", climbLeft.getPosition().getValueAsDouble());
 
   }
 }
