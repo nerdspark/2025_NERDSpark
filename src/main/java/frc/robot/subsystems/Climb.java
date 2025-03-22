@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmGains;
 import frc.robot.Constants.ClimbConstants;
@@ -37,11 +38,11 @@ public class Climb extends SubsystemBase {
   private TalonFX climbLeft, climbRight;
   private TalonFXConfiguration climbConfig = new TalonFXConfiguration();
   private boolean ampTriggered, ampTriggerStarted = false;
-  private double startTime, toAmpTriggerStartTime = 0;
+  // private double startTime, toAmpTriggerStartTime = 0;
   /** Creates a new Gripper. */
   public Climb() {
-    climbLeft = new TalonFX(ClimbConstants.kLeftID, ArmConstants.armCanBus);
-    climbRight = new TalonFX(ClimbConstants.kRightID, ArmConstants.armCanBus);
+    climbLeft = new TalonFX(ClimbConstants.kLeftID, ClimbConstants.canBus);
+    climbRight = new TalonFX(ClimbConstants.kRightID, ClimbConstants.canBus);
     climbConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(ClimbConstants.currentLimit)
           .withStatorCurrentLimitEnable(true);
@@ -61,7 +62,7 @@ public class Climb extends SubsystemBase {
       climbRight
           .getConfigurator()
           .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.CounterClockwise_Positive)
+          .withInverted(InvertedValue.Clockwise_Positive)
               .withNeutralMode(NeutralModeValue.Brake)));
       
       resetPosition();
@@ -71,16 +72,16 @@ public class Climb extends SubsystemBase {
     climbLeft.set(power);
     climbRight.set(power);
   }
-  public void setClimb() {
-    if (ampTriggered) {
-      double current = -ClimbConstants.currentLimit * MathUtil.clamp(Math.abs(Timer.getFPGATimestamp() - startTime), 0, 1);
-      climbLeft.setControl(new TorqueCurrentFOC(current)); 
-      climbRight.setControl(new TorqueCurrentFOC(current)); 
-    } else {
-      climbLeft.set(ClimbConstants.power);
-      climbRight.set(ClimbConstants.power);
-    }
-  }
+  // public void setClimb() {
+  //   if (ampTriggered) {
+  //     double current = ClimbConstants.currentLimit * MathUtil.clamp(Math.abs(Timer.getFPGATimestamp() - startTime), 0, 1);
+  //     climbLeft.setControl(new TorqueCurrentFOC(current)); 
+  //     climbRight.setControl(new TorqueCurrentFOC(current)); 
+  //   } else {
+  //     climbLeft.set(ClimbConstants.power);
+  //     climbRight.set(ClimbConstants.power);
+  //   }
+  // }
   public void stop() {
     climbLeft.stopMotor(); 
     climbRight.stopMotor();
@@ -109,40 +110,47 @@ public class Climb extends SubsystemBase {
           climbRight.getConfigurator().apply(climbConfig);
         }
   public boolean climbed() {
-    return getPosition() < ClimbConstants.climbedPosition;
+    return Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
   }
 
   public double getCurrentLimit() {
     return climbConfig.CurrentLimits.StatorCurrentLimit;
   }
   public Command climb() {
-    return new Command() {
-      @Override
-      public void initialize() {
-        startTime = Timer.getFPGATimestamp();
-      }
-      @Override
-      public void execute() {
-        setClimb();
-        if (Math.abs(getCurrent()) > ClimbConstants.ampTriggeredCurrentLimit){
-          if (!ampTriggerStarted) {
-            toAmpTriggerStartTime = Timer.getFPGATimestamp();
-          }
-          if (!ampTriggered && ampTriggerStarted) {
-            if (Math.abs(toAmpTriggerStartTime - Timer.getFPGATimestamp()) < 0.05) {
-              ampTriggered = true;
-              startTime = Timer.getFPGATimestamp();
-            } 
-          }
-          
-        }
-      }
-      @Override
-      public void end(boolean interrupted) {
-        stop();
-      }
-    };
+    return new InstantCommand(() -> setFOC(ClimbConstants.currentLimit));
   }
+  public void setFOC(double current){
+    climbLeft.setControl(new TorqueCurrentFOC(current)); 
+    climbRight.setControl(new TorqueCurrentFOC(current)); 
+  }
+  // public Command climbSwitchToFOC() {
+  //   return new Command() {
+  //     @Override
+  //     public void initialize() {
+  //       startTime = Timer.getFPGATimestamp();
+  //     }
+  //     @Override
+  //     public void execute() {
+  //       setClimb();
+  //       if (Math.abs(getCurrent()) > ClimbConstants.ampTriggeredCurrentLimit){
+  //         if (!ampTriggerStarted) {
+  //           toAmpTriggerStartTime = Timer.getFPGATimestamp();
+  //         }
+  //         if (!ampTriggered && ampTriggerStarted) {
+  //           if (Math.abs(toAmpTriggerStartTime - Timer.getFPGATimestamp()) < 0.05) {
+  //             ampTriggered = true;
+  //             startTime = Timer.getFPGATimestamp();
+  //           } 
+  //         }
+          
+  //       }
+  //     }
+  //     @Override
+  //     public void end(boolean interrupted) {
+  //       stop();
+  //     }
+  //   };
+  // }
   public Command deploy() {
     return new InstantCommand(() -> setPosition(ClimbConstants.deployPosition));
   }
