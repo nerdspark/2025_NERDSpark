@@ -182,8 +182,8 @@ public class RobotContainer {
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
     gripperHasGamePiece = new Trigger(() -> Bucket.gripperHasGamePiece);
-    bucketHasCoral.whileTrue(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1)))
-      .onFalse(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0)));
+    // bucketHasCoral.whileTrue(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1)))
+    //   .onFalse(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0)));
 
 
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
