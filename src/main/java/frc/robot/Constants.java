@@ -58,9 +58,15 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 10;
-    public static final double power = 0.2;
+    public static final double currentLimit = 105;
+    public static final double ampTriggeredCurrentLimit = 25;
+    public static final double power = -0.16;
+    public static final double deployPosition = 76; // rot
+    public static final double climbedPosition = 22; // rot
     public static final double rampRate = 0.2;
+    public static final double kP = 0.5;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -356,7 +362,7 @@ public static class BucketConstants {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 11;
+    public static final int setPointCount = 12;
     public static final Translation2d home = new Translation2d(10.6, 11.4);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final double homeWrist = Units.degreesToRadians(110);
     /**
@@ -378,6 +384,9 @@ public static class BucketConstants {
      * **Algae dropoff**
      * @AlgaeBargePrepare 9 
      * @AlgaeBargeThrow 10 
+     * 
+     * ** Climb **
+     * @climbPosition 11
      */
     public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
     static{
@@ -397,7 +406,7 @@ public static class BucketConstants {
 
       armSetPoints[1] = new ArmPoint(home, Units.degreesToRadians(110));
       armSetPoints[2] = new ArmPoint(new Translation2d(-10.7, 25), Units.degreesToRadians(180 + 105));//new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
-      armSetPoints[3] = new ArmPoint(new Translation2d(-10.7, 27.5), Units.degreesToRadians(105));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[3] = new ArmPoint(new Translation2d(-10.7, 29), Units.degreesToRadians(105));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(97)), Units.degreesToRadians(115));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
       armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 26.0), Units.degreesToRadians(180+0)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
@@ -408,6 +417,8 @@ public static class BucketConstants {
 
       armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
+
+      armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(115)), Units.degreesToRadians(240));
       
       for (int i = 0; i < armSetPoints.length; i++) {
         if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {
@@ -433,8 +444,8 @@ public static class BucketConstants {
     static {
       armSetPointsDunk[0] = armSetPoints[0];
       armSetPointsDunk[1] = armSetPoints[1];
-      armSetPointsDunk[2] = armSetPoints[2].add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.25)))).addToWristFlip(Units.degreesToRadians(-45));
-      armSetPointsDunk[3] = armSetPoints[3].add(new Translation2d(-13, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.4)))).addToWristFlip(Units.degreesToRadians(30));
+      armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-45)).add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.5))));
+      armSetPointsDunk[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.3)))).addToWristFlip(Units.degreesToRadians(60));
       armSetPointsDunk[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60));
     }
 

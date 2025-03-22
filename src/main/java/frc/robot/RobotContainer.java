@@ -48,6 +48,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Bucket;
+import frc.robot.subsystems.Climb;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -77,6 +78,7 @@ public class RobotContainer {
     private Gripper gripper;
     private LEDSubsytem LEDs;
     private Bucket bucket;
+    private Climb climb;
 
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -97,9 +99,9 @@ public class RobotContainer {
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private BooleanSupplier driveTrainFinishedMoving;
-  private BooleanSupplier gripperHasGamePiece;
-  private BooleanSupplier bucketHasCoral;
+  private BooleanSupplier driveTrainFinishedMoving = () -> false;
+  private BooleanSupplier gripperHasGamePiece = () -> false;
+  private BooleanSupplier bucketHasCoral = () -> false;
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -116,7 +118,9 @@ public class RobotContainer {
     arm = new Arm();
     gripper = new Gripper();
     bucket = new Bucket();
+    climb = new Climb();
 
+    configureTriggers();
     configureNamedCommands();
 
 
@@ -177,14 +181,17 @@ public class RobotContainer {
 
 
   }
-
-
-  private void configureBindings() {
+  private void configureTriggers() {
     bucketHasCoral = () -> bucket.getDetected();
     driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
+    
+  }
+
+
+  private void configureBindings() {
     // if(bucketHasCoral.get()) {
     //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1));}
     // else {
@@ -229,8 +236,13 @@ public class RobotContainer {
     //   .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
 
     // wrist fix offset
-    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
-    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
+    // joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
+    // joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
+
+    // climb
+    joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
+    joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
+
 
     /* autodrive TODO: rebind to not conflict with drive stick */
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
@@ -312,7 +324,7 @@ public class RobotContainer {
             0,
             LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
           )
-        ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+        )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
         ));
       
     } else {

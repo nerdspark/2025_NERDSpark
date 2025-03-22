@@ -48,7 +48,7 @@ public class LEDSubsytem extends SubsystemBase {
 
   public Color getPattern(BooleanSupplier driveTrainFinishedMoving, BooleanSupplier bucketHasCoral, BooleanSupplier gripperHasGamePiece){
     boolean hasGamePiece = bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean();
-    Color color = (hasGamePiece) ? new Color(0.0f, 1.0f, 0.0f) : new Color(0.0f, 1.0f, 1.0f); 
+    Color color = (hasGamePiece) ? new Color(0.5f, 0.0f, 0.0f) : new Color(1.0f, 0.0f, 0.0f); // GRB
     boolean flashing = hasGamePiece ? driveTrainFinishedMoving.getAsBoolean() : false;
     // if (flashing) {
     //   return LEDPattern.solid(color).blink(Time.ofBaseUnits(0.05, Second));
