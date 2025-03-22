@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.rmi.dgc.Lease;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import frc.robot.Constants.ArmConstants;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.LEDSubsytem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -95,9 +97,9 @@ public class RobotContainer {
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private Supplier<Boolean> driveTrainFinishedMoving;
-  private Supplier<Boolean> gripperHasGamePiece;
-  private Supplier<Boolean> bucketHasCoral;
+  private BooleanSupplier driveTrainFinishedMoving;
+  private BooleanSupplier gripperHasGamePiece;
+  private BooleanSupplier bucketHasCoral;
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -136,6 +138,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("gripperToGroundIntake", ArmActions.groundIntake(arm, gripper));
     NamedCommands.registerCommand("armToL4", ArmActions.armToCoralReef(arm, gripper, () -> 4));
     NamedCommands.registerCommand("dropOffCoral", ArmActions.dunkDropCoral(arm, gripper, () -> 4));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
+    NamedCommands.registerCommand("waitUntilBucketHasCoral", new WaitUntilCommand(bucketHasCoral));
     // NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
     // NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
     // NamedCommands.registerCommand("intakeThrow", new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakePassive).until(() -> intake.getIntakeDeployPosition() < IntakeConstants.intakeThrowPosition)
@@ -205,13 +208,14 @@ public class RobotContainer {
     // home arm
     joystick.rightBumper().whileTrue(arm.goToHome())
       .whileTrue(gripper.neutralCommand());
-    joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
+    // joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // coral dropoff 
     joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
       .onTrue(gripper.coralDefaultCommand());
     joystick.leftBumper().onTrue(gripper.spitOutCommand())
       .onFalse(new WaitCommand(0.4).andThen(gripper.neutralCommand())).onFalse(new WaitCommand(0.2).andThen(arm.goToHome()));
+    joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
@@ -221,8 +225,8 @@ public class RobotContainer {
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
 
     // algae dropoff
-    joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
-      .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+    // joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
+    //   .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
 
     // wrist fix offset
     joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
@@ -245,7 +249,7 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    joystick.x().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedAlgae(),
     ()->scoringSubsystem.getLevel(),
@@ -301,7 +305,7 @@ public class RobotContainer {
   }
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
-    if((bucketHasCoral.get() || gripperHasGamePiece.get()) && driveTrainFinishedMoving.get()){
+    if((bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean()) && driveTrainFinishedMoving.getAsBoolean()){
         joystick.rightBumper().onFalse(LEDs.runPattern(
           () -> LEDPattern.steps(
           Map.of(
