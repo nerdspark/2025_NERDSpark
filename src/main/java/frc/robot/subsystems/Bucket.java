@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meters;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.FovParamsConfigs;
 import com.ctre.phoenix6.configs.ProximityParamsConfigs;
@@ -20,6 +21,7 @@ public class Bucket extends SubsystemBase {
   /** Creates a new Bucket. */
   private double[] prevDistancesLeft = new double[BucketConstants.timesForBucketToTestPositive];
   private double[] prevDistancesRight = new double[BucketConstants.timesForBucketToTestPositive];
+  private int i = 0;
 
   public static boolean gripperHasGamePiece = false;
   private CANrange sensorLeft; 
@@ -40,19 +42,18 @@ public class Bucket extends SubsystemBase {
   @Override
   public void periodic() {
     refreshSensors();
-    SmartDashboard.putBoolean("bucket detected", getDetected());
+    SignalLogger.writeBoolean("bucket detected", getDetected());
     // This method will be called once per scheduler run
   }
   public void refreshSensors() {
-    for (int i = prevDistancesLeft.length-1; i > 0; i--) {
-      prevDistancesLeft[i]  = prevDistancesLeft[i-1];
+    i++;
+    if (i >= BucketConstants.timesForBucketToTestPositive) {
+      i = 0;
     }
-    prevDistancesLeft[0] = sensorLeft.getIsDetected().getValue() ? sensorLeft.getDistance().getValueAsDouble() : 1000;
 
-    for (int i = prevDistancesRight.length-1; i > 0; i--) {
-      prevDistancesRight[i]  = prevDistancesRight[i-1];
-    }
-    prevDistancesRight[0] = sensorRight.getIsDetected().getValue() ? sensorRight.getDistance().getValueAsDouble() : 1000;
+    prevDistancesLeft[i] = sensorLeft.getIsDetected().getValue() ? sensorLeft.getDistance().getValueAsDouble() : 2.0;
+
+    prevDistancesRight[i] = sensorRight.getIsDetected().getValue() ? sensorRight.getDistance().getValueAsDouble() : 2.0;
 
   }
   
