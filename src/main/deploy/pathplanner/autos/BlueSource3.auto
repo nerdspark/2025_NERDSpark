@@ -36,9 +36,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "waitUntilBucketHasCoral"
           }
         },
         {
@@ -73,9 +73,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "waitUntilBucketHasCoral"
           }
         },
         {
