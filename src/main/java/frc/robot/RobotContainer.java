@@ -236,9 +236,11 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    joystick.a().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
+    () -> scoringSubsystem.getRobotPoseForSelectedAlgae(),
+    ()->scoringSubsystem.getLevel(),
+    ()-> false,
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
