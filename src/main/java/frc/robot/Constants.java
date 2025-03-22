@@ -201,8 +201,8 @@ public static class Vision {
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(27), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(27), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(180))));
           
           
@@ -407,7 +407,7 @@ public static class BucketConstants {
       armSetPoints[1] = new ArmPoint(home, Units.degreesToRadians(110));
       armSetPoints[2] = new ArmPoint(new Translation2d(-10.7, 25), Units.degreesToRadians(180 + 105));//new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
       armSetPoints[3] = new ArmPoint(new Translation2d(-10.7, 29), Units.degreesToRadians(105));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(97)), Units.degreesToRadians(115));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(115));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
       armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 26.0), Units.degreesToRadians(180+0)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 40.7), Units.degreesToRadians(180+0)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
@@ -440,13 +440,14 @@ public static class BucketConstants {
      * @L3 3 
      * @L4 4 
      */
-    public static ArmPoint[] armSetPointsDunk = new ArmPoint[5];
+    public static ArmPoint[] armSetPointsDunk = new ArmPoint[6];
     static {
       armSetPointsDunk[0] = armSetPoints[0];
       armSetPointsDunk[1] = armSetPoints[1];
       armSetPointsDunk[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-45)).add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.5))));
-      armSetPointsDunk[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.3)))).addToWristFlip(Units.degreesToRadians(60));
+      armSetPointsDunk[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.3)))).addToWristFlip(Units.degreesToRadians(45));
       armSetPointsDunk[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60));
+      armSetPointsDunk[5] = armSetPointsDunk[4].add(new Translation2d(5, -3));
     }
 
 

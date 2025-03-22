@@ -141,7 +141,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("grabFromFunnel", ArmActions.grabFromFunnel(arm, gripper));
     NamedCommands.registerCommand("gripperToGroundIntake", ArmActions.groundIntake(arm, gripper));
     NamedCommands.registerCommand("armToL4", ArmActions.armToCoralReef(arm, gripper, () -> 4));
-    NamedCommands.registerCommand("dropOffCoral", ArmActions.dunkDropCoral(arm, gripper, () -> 4));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
+    NamedCommands.registerCommand("dropOffCoral", ArmActions.dunkDropCoral(arm, gripper, () -> 5));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
     NamedCommands.registerCommand("waitUntilBucketHasCoral", new WaitUntilCommand(bucketHasCoral));
     // NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
     // NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
@@ -222,7 +222,7 @@ public class RobotContainer {
       .onTrue(gripper.coralDefaultCommand());
     joystick.leftBumper().onTrue(gripper.spitOutCommand())
       .onFalse(new WaitCommand(0.4).andThen(gripper.neutralCommand())).onFalse(new WaitCommand(0.2).andThen(arm.goToHome()));
-    joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
+    joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> (scoringSubsystem.getArmReefTarget() == 4 ? 5 : scoringSubsystem.getArmReefTarget())));
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
