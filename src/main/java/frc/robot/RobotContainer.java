@@ -236,12 +236,12 @@ public class RobotContainer {
     //   .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
 
     // wrist fix offset
-    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
-    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
+    // joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
+    // joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
 
     // climb
-    joystick.back().onTrue(climb.deploy().alongWith(new ArmCommand(arm, () -> 11)));
-    joystick.start().whileTrue(climb.climb()).onFalse(climb.stopCommand());
+    joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
+    joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
 
 
     /* autodrive TODO: rebind to not conflict with drive stick */
@@ -324,7 +324,7 @@ public class RobotContainer {
             0,
             LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
           )
-        ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+        )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
         ));
       
     } else {

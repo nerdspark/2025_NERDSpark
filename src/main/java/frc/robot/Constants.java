@@ -58,10 +58,13 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 10;
-    public static final double power = 0.2;
+    public static final double currentLimit = 105;
+    public static final double ampTriggeredCurrentLimit = 25;
+    public static final double power = -0.16;
+    public static final double deployPosition = 76; // rot
+    public static final double climbedPosition = 22; // rot
     public static final double rampRate = 0.2;
-    public static final double kP = 1.0;
+    public static final double kP = 0.5;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
   }
@@ -415,7 +418,7 @@ public static class BucketConstants {
       armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
 
-      armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(60)), Units.degreesToRadians(240));
+      armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(115)), Units.degreesToRadians(240));
       
       for (int i = 0; i < armSetPoints.length; i++) {
         if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {
