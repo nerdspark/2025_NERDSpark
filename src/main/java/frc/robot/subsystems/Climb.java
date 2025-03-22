@@ -46,15 +46,16 @@ public class Climb extends SubsystemBase {
       climbConfig.Slot0 = new Slot0Configs()
       .withKP(ClimbConstants.kP)
       .withKI(ClimbConstants.kI)
-      .withKD(ClimbConstants.kD);      climbLeft
+      .withKD(ClimbConstants.kD);
+      climbLeft
           .getConfigurator()
           .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.CounterClockwise_Positive)
+          .withInverted(InvertedValue.Clockwise_Positive)
               .withNeutralMode(NeutralModeValue.Coast)));
       climbRight
           .getConfigurator()
           .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.Clockwise_Positive)
+          .withInverted(InvertedValue.CounterClockwise_Positive)
               .withNeutralMode(NeutralModeValue.Coast)));
       
   }
@@ -93,7 +94,7 @@ public class Climb extends SubsystemBase {
     return new InstantCommand(() ->setPower(-0.1));
   }
   public Command deploy() {
-    return new InstantCommand(() -> setPosition(125.0*0.5));
+    return new InstantCommand(() -> setPosition(70));
   }
   public Command stopCommand() {
     return new InstantCommand(() -> stop());
