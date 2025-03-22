@@ -74,9 +74,12 @@ import dev.doglog.DogLog;
      // Simulation
      private PhotonCameraSim cameraSim;
      private VisionSystemSim visionSim;
+     private CommandSwerveDrivetrain driveTrain;
  
-     public Vision(String photonCamName, Transform3d robotToCam) {
+     public Vision(String photonCamName, Transform3d robotToCam, CommandSwerveDrivetrain driveTrain) {
         this.cameraName = photonCamName; 
+        this.driveTrain = driveTrain;
+
         camera = new PhotonCamera(photonCamName);
 
 
@@ -84,6 +87,8 @@ import dev.doglog.DogLog;
          photonPoseEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
          photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        // photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
+
 
          // Simulation
          if (Robot.isSimulation()) {
@@ -170,6 +175,7 @@ import dev.doglog.DogLog;
              int numTags = 0;
              double avgDist = 0;
  
+            // photonEstimator.addHeadingData(estimatedPose.get().timestampSeconds, driveTrain.getRotation3d());
              // Precalculation - see how many tags we found, and calculate an average-distance metric
              for (var tgt : targets) {
                  var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
@@ -196,7 +202,8 @@ import dev.doglog.DogLog;
                  if (numTags == 1 && avgDist > kSingleTagDistanceThreshold)
                      estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                  else if(numTags == 1 && avgDist < kSingleTagDistanceThreshold) {
-                     if(targets.get(0).getPoseAmbiguity() < kPoseAmbiguityThreshold) {
+                     if(estimatedPose.get().strategy == PoseStrategy.PNP_DISTANCE_TRIG_SOLVE || 
+                          (estimatedPose.get().strategy == PoseStrategy.LOWEST_AMBIGUITY && targets.get(0).getPoseAmbiguity() < kPoseAmbiguityThreshold)) {
                         //  estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
                         double xydeviations = kXYStdDev * Math.pow(avgDist, 2) / numTags ;
                         double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;

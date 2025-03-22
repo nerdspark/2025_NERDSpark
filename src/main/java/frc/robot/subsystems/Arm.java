@@ -178,12 +178,13 @@ public class Arm extends SubsystemBase {
     resetOffsets();
   }
 
-  public double addToWristOffset(double addTo) {
-    wristOffset += addTo;
-    wrist.getConfigurator().apply(wristConfig.withFeedback(new FeedbackConfigs()
-    .withFeedbackRotorOffset(wristOffset)
-    .withSensorToMechanismRatio(ArmConstants.wristRadPerRot)));
-    return wristOffset;
+  public void addToWristOffset(double addTo) {
+    // wristOffset += addTo;
+    // wrist.getConfigurator().apply(wristConfig.withFeedback(new FeedbackConfigs()
+    // .withFeedbackRotorOffset(wristOffset)
+    // .withSensorToMechanismRatio(ArmConstants.wristRadPerRot)));
+    wrist.setPosition(wrist.getPosition().getValueAsDouble()+addTo);
+    // return wristOffset;
   }
 
   /**

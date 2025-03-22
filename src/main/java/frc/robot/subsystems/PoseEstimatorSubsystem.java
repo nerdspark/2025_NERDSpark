@@ -60,8 +60,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             this.driveTrain = driveTrain;
             if(USE_VISION) {
     
-                this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront);
-                this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack);
+                this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront, driveTrain);
+                this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack, driveTrain);
     
                 allNotifier = new Notifier(() -> {
                     visionFront.run();

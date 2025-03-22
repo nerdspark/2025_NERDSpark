@@ -37,7 +37,7 @@ public class ArmActions {
           gripper.coralIntakeCommand(),
           // new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.5), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.4), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.6), 
           gripper.coralDefaultCommand(), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.4), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
@@ -52,9 +52,9 @@ public class ArmActions {
     /** move arm to desired setpoint to drop coral on reef
      * @param setPointIndex level on the reef
      */
-  public static Command armToCoralReef(Arm arm, IntSupplier setPointIndex) {
+  public static Command armToCoralReef(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     System.out.println("arm to coral reef");
-    return new ArmCommand(arm, setPointIndex);
+    return new ArmCommand(arm, setPointIndex).alongWith(gripper.coralDefaultCommand());
   }
 
   /** tilt wrist downwards and release coral 

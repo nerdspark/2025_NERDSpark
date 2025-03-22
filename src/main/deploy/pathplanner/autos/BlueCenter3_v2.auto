@@ -64,6 +64,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "CenterAuton",
+  "folder": null,
   "choreoAuto": false
 }
