@@ -62,7 +62,7 @@ public class ArmActions {
   */
   public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return 
-      new ArmInstantCommand(arm, () -> ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()]).andThen(
+      new ArmInstantCommand(arm, () -> ArmSetpoints.armSetPointsDunkAuto[setPointIndex.getAsInt()]).andThen(
       new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHome().alongWith(new WaitCommand(1).andThen(gripper.neutralCommand()))));
   }
 
@@ -72,7 +72,7 @@ public class ArmActions {
   */
   public static Command dunkCoral(Arm arm, IntSupplier setPointIndex, DoubleSupplier dunkScalar) {
     System.out.println("dunk coral");
-    return new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].interpolate(ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()], dunkScalar.getAsDouble()));
+    return new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].interpolate(ArmSetpoints.armSetPointsMicroAdjust[setPointIndex.getAsInt()], dunkScalar.getAsDouble()));
   }
 
     /** position arm to remove algae while rolling rollers inwards

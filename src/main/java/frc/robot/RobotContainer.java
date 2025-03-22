@@ -63,6 +63,7 @@ public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
+    private Trigger bucketHasCoralTrigger;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -187,6 +188,7 @@ public class RobotContainer {
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
+    bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     
   }
 
@@ -218,15 +220,18 @@ public class RobotContainer {
     // joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // coral dropoff 
+      //manual dunk
     joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
       .onTrue(gripper.coralDefaultCommand());
     joystick.leftBumper().onTrue(gripper.spitOutCommand())
       .onFalse(new WaitCommand(0.4).andThen(gripper.neutralCommand())).onFalse(new WaitCommand(0.2).andThen(arm.goToHome()));
-    joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> (scoringSubsystem.getArmReefTarget() == 4 ? 5 : scoringSubsystem.getArmReefTarget())));
+
+      // autodunk
+    joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
-    // bucketHasCoral.and(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5).onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    bucketHasCoralTrigger.and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
