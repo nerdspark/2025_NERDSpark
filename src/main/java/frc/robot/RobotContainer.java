@@ -223,8 +223,8 @@ public class RobotContainer {
       .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
 
     // wrist fix offset
-    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRadians(15))));
-    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRadians(-15))));
+    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
+    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
 
     /* autodrive TODO: rebind to not conflict with drive stick */
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
