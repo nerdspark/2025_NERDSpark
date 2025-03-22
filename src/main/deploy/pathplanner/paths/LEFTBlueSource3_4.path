@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.665,
-        "y": 0.7108
+        "x": 1.705,
+        "y": 0.7188
       },
       "prevControl": {
-        "x": 1.9138843232467944,
-        "y": 0.7343922369008364
+        "x": 1.9538843232467944,
+        "y": 0.7423922369008364
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,13 +38,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "gripperSource",
-      "waypointRelativePos": 0.7038869257950539,
+      "name": "armToHome",
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "gripperSource"
+          "name": "armToHome"
         }
       }
     }

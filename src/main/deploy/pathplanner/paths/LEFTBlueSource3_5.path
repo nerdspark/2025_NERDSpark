@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6652556818181818,
-        "y": 0.7108
+        "x": 1.705,
+        "y": 0.7188
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.652454131002649,
-        "y": 2.126758275441646
+        "x": 2.692198449184467,
+        "y": 2.134758275441646
       },
       "isLocked": false,
       "linkedName": null
@@ -52,13 +52,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "gripperClose",
+      "name": "grabFromFunnel",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "gripperClose"
+          "name": "grabFromFunnel"
         }
       }
     },

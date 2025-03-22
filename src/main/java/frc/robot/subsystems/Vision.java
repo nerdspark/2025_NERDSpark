@@ -86,8 +86,8 @@ import dev.doglog.DogLog;
            
          photonPoseEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
-        //  photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
+         photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        // photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
 
 
          // Simulation
@@ -175,7 +175,7 @@ import dev.doglog.DogLog;
              int numTags = 0;
              double avgDist = 0;
  
-            photonEstimator.addHeadingData(estimatedPose.get().timestampSeconds, driveTrain.getRotation3d());
+            // photonEstimator.addHeadingData(estimatedPose.get().timestampSeconds, driveTrain.getRotation3d());
              // Precalculation - see how many tags we found, and calculate an average-distance metric
              for (var tgt : targets) {
                  var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
