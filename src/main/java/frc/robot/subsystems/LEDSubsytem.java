@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
 
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.signals.Led1OffColorValue;
@@ -45,10 +46,10 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
-  public Color getPattern(Supplier<Boolean> driveTrainFinishedMoving, Supplier<Boolean> bucketHasCoral, Supplier<Boolean> gripperHasGamePiece){
-    boolean hasGamePiece = bucketHasCoral.get() || gripperHasGamePiece.get();
-    Color color = (hasGamePiece) ? new Color(0.0f, 1.0f, 0.0f) : new Color(0.0f, 1.0f, 1.0f); 
-    boolean flashing = hasGamePiece ? driveTrainFinishedMoving.get() : false;
+  public Color getPattern(BooleanSupplier driveTrainFinishedMoving, BooleanSupplier bucketHasCoral, BooleanSupplier gripperHasGamePiece){
+    boolean hasGamePiece = bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean();
+    Color color = (hasGamePiece) ? new Color(0.5f, 0.0f, 0.0f) : new Color(1.0f, 0.0f, 0.0f); // GRB
+    boolean flashing = hasGamePiece ? driveTrainFinishedMoving.getAsBoolean() : false;
     // if (flashing) {
     //   return LEDPattern.solid(color).blink(Time.ofBaseUnits(0.05, Second));
     // } else {

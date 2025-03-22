@@ -37,9 +37,9 @@ public class ArmActions {
           gripper.coralIntakeCommand(),
           // new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.5), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.8), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.45), 
           gripper.coralDefaultCommand(), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.4), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
           arm.goToHome()); 
   }
@@ -61,9 +61,9 @@ public class ArmActions {
     * @param setPointIndex level on the reef
   */
   public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
-    return new ParallelCommandGroup(
-      new ArmCommand(arm, () -> ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()]), 
-      new WaitCommand(0.2).andThen(gripper.spitOutCommand())).withTimeout(0.5);
+    return 
+      new ArmInstantCommand(arm, () -> ArmSetpoints.armSetPointsDunkAuto[setPointIndex.getAsInt()]).andThen(
+      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHome().alongWith(new WaitCommand(1).andThen(gripper.neutralCommand()))));
   }
 
   /** tilt wrist downwards manually 
@@ -72,7 +72,7 @@ public class ArmActions {
   */
   public static Command dunkCoral(Arm arm, IntSupplier setPointIndex, DoubleSupplier dunkScalar) {
     System.out.println("dunk coral");
-    return new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].interpolate(ArmSetpoints.armSetPointsDunk[setPointIndex.getAsInt()], dunkScalar.getAsDouble()));
+    return new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].interpolate(ArmSetpoints.armSetPointsMicroAdjust[setPointIndex.getAsInt()], dunkScalar.getAsDouble()));
   }
 
     /** position arm to remove algae while rolling rollers inwards
@@ -86,7 +86,7 @@ public class ArmActions {
 
     /** position arm to drop off algae in barge */
     public static Command armToAlgaeBarge(Arm arm) {
-      return new ArmCommand(arm, () -> 9);
+      return new ArmInstantCommand(arm, () -> 9);
     }
 
     /** spin rollers to drop off algae in barge */
@@ -97,5 +97,9 @@ public class ArmActions {
         gripper.spitOutCommand(), 
         new WaitCommand(0.2), 
         arm.goToHome());
+    }
+
+    public static Command armToProcessor(Arm arm, Gripper gripper) {
+      return new ArmInstantCommand(arm, () -> 12).alongWith(gripper.algaeDefaultCommand());
     }
 }

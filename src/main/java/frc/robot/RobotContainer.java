@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.*;
 
 import java.rmi.dgc.Lease;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import frc.robot.Constants.ArmConstants;
@@ -26,6 +27,7 @@ import frc.robot.subsystems.LEDSubsytem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -46,6 +48,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Bucket;
+import frc.robot.subsystems.Climb;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -59,7 +62,11 @@ public class RobotContainer {
   private SlewRateLimiter zLimiter = new SlewRateLimiter(25);    
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
+  // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  private BooleanSupplier driveTrainFinishedMoving = () -> false;
+  private BooleanSupplier gripperHasGamePiece = () -> false;
+  private BooleanSupplier bucketHasCoral = () -> false;
+    private Trigger bucketHasCoralTrigger = new Trigger(bucketHasCoral);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -75,6 +82,7 @@ public class RobotContainer {
     private Gripper gripper;
     private LEDSubsytem LEDs;
     private Bucket bucket;
+    private Climb climb;
 
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -94,10 +102,6 @@ public class RobotContainer {
     public final ScoringProfileSubsystem scoringSubsystem;
 
 
-  // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private Supplier<Boolean> driveTrainFinishedMoving;
-  private Supplier<Boolean> gripperHasGamePiece;
-  private Supplier<Boolean> bucketHasCoral;
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -114,7 +118,9 @@ public class RobotContainer {
     arm = new Arm();
     gripper = new Gripper();
     bucket = new Bucket();
+    climb = new Climb();
 
+    configureTriggers();
     configureNamedCommands();
 
 
@@ -136,6 +142,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("gripperToGroundIntake", ArmActions.groundIntake(arm, gripper));
     NamedCommands.registerCommand("armToL4", ArmActions.armToCoralReef(arm, gripper, () -> 4));
     NamedCommands.registerCommand("dropOffCoral", ArmActions.dunkDropCoral(arm, gripper, () -> 4));//new ArmCommandGripper(gripper, () -> false).alongWith(new ArmCommandPathToPoint(arm, () -> 18)));
+    NamedCommands.registerCommand("waitUntilBucketHasCoral", new WaitUntilCommand(bucketHasCoral));
     // NamedCommands.registerCommand("gripperOpenThenGroundIntake", new ArmCommandGripper(gripper, () -> false).withTimeout(0.25).andThen((new WaitCommand(1.0).andThen(new ArmCommandGripperGroundPickup(gripper))).raceWith((new ArmCommandPathToPoint(arm, () -> 14))).andThen(new WaitCommand(0.2)).andThen(new ArmCommandPathToPoint(arm, () -> 18))));
     // NamedCommands.registerCommand("armToStow", new ArmCommandPathToPoint(arm, () -> 17));
     // NamedCommands.registerCommand("intakeThrow", new IntakeCommandPower(intake, ()-> IntakeConstants.intakeThrowDeployPower, () -> IntakeConstants.intakePassive).until(() -> intake.getIntakeDeployPosition() < IntakeConstants.intakeThrowPosition)
@@ -174,14 +181,18 @@ public class RobotContainer {
 
 
   }
-
-
-  private void configureBindings() {
+  private void configureTriggers() {
     bucketHasCoral = () -> bucket.getDetected();
     driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
+    // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
+    
+  }
+
+
+  private void configureBindings() {
     // if(bucketHasCoral.get()) {
     //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1));}
     // else {
@@ -205,28 +216,39 @@ public class RobotContainer {
     // home arm
     joystick.rightBumper().whileTrue(arm.goToHome())
       .whileTrue(gripper.neutralCommand());
-    joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
+    // joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // coral dropoff 
+      //manual dunk
     joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
       .onTrue(gripper.coralDefaultCommand());
     joystick.leftBumper().onTrue(gripper.spitOutCommand())
       .onFalse(new WaitCommand(0.4).andThen(gripper.neutralCommand())).onFalse(new WaitCommand(0.2).andThen(arm.goToHome()));
 
+      // autodunk
+    joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
+
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
-    // bucketHasCoral.and(() -> arm.getArmPosition().getDistance(ArmSetpoints.home) < 5).onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    bucketHasCoralTrigger.and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
 
     // algae dropoff
-    joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
-      .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+    // joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
+    //   .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+
+    joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
 
     // wrist fix offset
     joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
     joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
+
+    // climb
+    // joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
+    // joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
+
 
     /* autodrive TODO: rebind to not conflict with drive stick */
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
@@ -245,7 +267,7 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
-    joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    joystick.x().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedAlgae(),
     ()->scoringSubsystem.getLevel(),
@@ -301,14 +323,14 @@ public class RobotContainer {
   }
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
-    if((bucketHasCoral.get() || gripperHasGamePiece.get()) && driveTrainFinishedMoving.get()){
+    if((bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean()) && driveTrainFinishedMoving.getAsBoolean()){
         joystick.rightBumper().onFalse(LEDs.runPattern(
           () -> LEDPattern.steps(
           Map.of(
             0,
             LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
           )
-        ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+        )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
         ));
       
     } else {
