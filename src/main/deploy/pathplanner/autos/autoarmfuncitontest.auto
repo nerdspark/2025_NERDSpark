@@ -11,9 +11,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "waitUntilBucketHasCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilBucketHasCoral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
+                }
+              }
+            ]
           }
         },
         {
