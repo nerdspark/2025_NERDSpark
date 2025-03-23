@@ -215,7 +215,7 @@ public class RobotContainer {
     // * real competition bindings *
 
     // home arm
-    joystick.rightBumper().whileTrue(arm.goToHome())
+    joystick.rightStick().whileTrue(arm.goToHome())
       .whileTrue(gripper.neutralCommand());
     // joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
@@ -253,6 +253,14 @@ public class RobotContainer {
 
     /* autodrive TODO: rebind to not conflict with drive stick */
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    () -> drivetrain.getState().Pose,
+    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
+    ()->scoringSubsystem.getLevel(),
+    ()-> false,
+    ()->-joystick.getRightY(),
+    ()->-joystick.getRightX(),
+    ()->-joystick.getLeftX()));
+    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
