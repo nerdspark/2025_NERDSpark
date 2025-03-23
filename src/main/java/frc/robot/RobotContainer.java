@@ -63,11 +63,20 @@ public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
+  
+  public Arm arm;
+  private Gripper gripper;
+  private LEDSubsytem LEDs;
+  private Bucket bucket;
+  private Climb climb;
+
+  private BooleanSupplier autoBucketEnabled = () -> true;
+
   private BooleanSupplier driveTrainFinishedMoving = () -> false;
   private BooleanSupplier gripperHasGamePiece = () -> false;
   private BooleanSupplier bucketHasCoral = () -> false;
     private Trigger bucketHasCoralTrigger = new Trigger(bucketHasCoral);
-    private BooleanSupplier autoBucketEnabled = () -> true;
+    private Trigger driveTrainFinishedMovingTrigger = new Trigger(driveTrainFinishedMoving);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -78,12 +87,6 @@ public class RobotContainer {
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-
-    public Arm arm;
-    private Gripper gripper;
-    private LEDSubsytem LEDs;
-    private Bucket bucket;
-    private Climb climb;
 
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -188,6 +191,7 @@ public class RobotContainer {
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
+    bucketHasCoralTrigger = new Trigger(bucketHasCoral).and(() -> DriverStation.isTeleop()).and(autoBucketEnabled).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
     // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     
   }
@@ -231,7 +235,7 @@ public class RobotContainer {
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper)).onTrue(new InstantCommand(() -> disableAutoBucket()));
-    bucketHasCoralTrigger.and(() -> DriverStation.isTeleop()).and(autoBucketEnabled).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    bucketHasCoralTrigger.onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
@@ -355,6 +359,8 @@ public class RobotContainer {
       );
     
     }
+    bucketHasCoralTrigger.or(driveTrainFinishedMoving).and(() -> DriverStation.isTeleop())
+      .onTrue(LEDs.blink()).onFalse(LEDs.breathe());
     
 
   }

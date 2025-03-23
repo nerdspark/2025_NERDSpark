@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Second;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.Map;
 import java.util.function.BooleanSupplier;
@@ -26,6 +27,7 @@ import frc.robot.Constants;
 public class LEDSubsytem extends SubsystemBase {
   private static final int kPort = Constants.LEDConstants.kPort;
   private static final int kLength = Constants.LEDConstants.kLength;
+  private Supplier<LEDPattern> currentPattern = () -> LEDPattern.kOff;
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
@@ -83,7 +85,14 @@ public class LEDSubsytem extends SubsystemBase {
    * @param pattern the LED pattern to run
    */
   public Command runPattern(Supplier<LEDPattern> pattern) {
+    currentPattern = pattern;
     return run(() -> pattern.get().applyTo(m_buffer));
+  }
+  public Command blink() {
+    return runPattern(() -> currentPattern.get().blink(Seconds.of(0.1)));
+  }
+  public Command breathe() {
+    return runPattern(() -> currentPattern.get().breathe(Seconds.of(2)));
   }
 }
 
