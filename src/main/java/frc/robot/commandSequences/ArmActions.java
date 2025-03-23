@@ -31,13 +31,13 @@ public class ArmActions {
 
   /** grab coral from funnel */
   public static Command grabFromFunnel(Arm arm, Gripper gripper) { // has bug where wrist slips while transferring and does not go low enough and messes up sequential scheduling (only when activated by the beambreak)
-    System.out.println("grab from funnel"); 
-    Bucket.gripperHasGamePiece = true;
+    // System.out.println("grab from funnel"); 
+    // Bucket.gripperHasGamePiece = true;
     return new SequentialCommandGroup(
           gripper.coralIntakeCommand(),
           // new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.5), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.45), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.6), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.55), 
           gripper.coralDefaultCommand(), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.2), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
@@ -53,7 +53,7 @@ public class ArmActions {
      * @param setPointIndex level on the reef
      */
   public static Command armToCoralReef(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
-    System.out.println("arm to coral reef");
+    // System.out.println("arm to coral reef");
     return new ArmCommand(arm, setPointIndex).alongWith(gripper.coralDefaultCommand());
   }
 
@@ -71,7 +71,7 @@ public class ArmActions {
     @param dunkScalar amount to dunk by set by driver
   */
   public static Command dunkCoral(Arm arm, IntSupplier setPointIndex, DoubleSupplier dunkScalar) {
-    System.out.println("dunk coral");
+    // System.out.println("dunk coral");
     return new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[setPointIndex.getAsInt()].interpolate(ArmSetpoints.armSetPointsMicroAdjust[setPointIndex.getAsInt()], dunkScalar.getAsDouble()));
   }
 
@@ -79,7 +79,7 @@ public class ArmActions {
         * @param higherLevel true if the algae is at a higher level (L3.5); false if the algae is at a lower level (L2.5)
     */
     public static Command removeAlgae(Arm arm, Gripper gripper, BooleanSupplier higherLevel) {
-      System.out.println("remove algae");
+      // System.out.println("remove algae");
       // Bucket.gripperHasGamePiece = true;
       return new ArmCommand(arm, () -> higherLevel.getAsBoolean() ? 6 : 5).alongWith(gripper.algaeIntakeCommand());
     }

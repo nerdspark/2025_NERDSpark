@@ -13,7 +13,9 @@ import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.hardware.CANrange;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.BucketConstants;
 
@@ -81,5 +83,13 @@ public class Bucket extends SubsystemBase {
   }
   public boolean getDetected() {
     return (getLeftCoralDetected() || getRightCoralDetected());
+  }
+  public Command disableAutoBucket() {
+    return new Command() {
+      @Override
+      public void initialize() {
+        gripperHasGamePiece = true;
+        }
+    };
   }
 }

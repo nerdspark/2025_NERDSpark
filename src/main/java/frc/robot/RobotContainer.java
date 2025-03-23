@@ -70,7 +70,7 @@ public class RobotContainer {
   private Bucket bucket;
   private Climb climb;
 
-  private BooleanSupplier autoBucketEnabled = () -> true;
+  public static BooleanSupplier autoBucketEnabled = () -> true;
 
   private BooleanSupplier driveTrainFinishedMoving = () -> false;
   private BooleanSupplier gripperHasGamePiece = () -> false;
@@ -188,10 +188,10 @@ public class RobotContainer {
   private void configureTriggers() {
     bucketHasCoral = () -> bucket.getDetected();
     driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
+    .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1;
+    //  || poseEstimatorSubsystem.getCurrentPose().getTranslation().getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
-    bucketHasCoralTrigger = new Trigger(bucketHasCoral).and(() -> DriverStation.isTeleop()).and(autoBucketEnabled).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
+    bucketHasCoralTrigger = new Trigger(bucketHasCoral).and(() -> DriverStation.isTeleop()).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
     // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     
   }
@@ -234,7 +234,7 @@ public class RobotContainer {
     joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
 
     // coral pickup
-    joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper)).onTrue(new InstantCommand(() -> disableAutoBucket()));
+    joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper)).onTrue(bucket.disableAutoBucket());
     bucketHasCoralTrigger.onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
@@ -363,8 +363,5 @@ public class RobotContainer {
       .onTrue(LEDs.blink()).onFalse(LEDs.breathe());
     
 
-  }
-  private void disableAutoBucket() {
-    autoBucketEnabled = () -> false;
   }
 }

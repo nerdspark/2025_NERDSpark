@@ -364,7 +364,7 @@ public static class BucketConstants {
   public static class ArmSetpoints {
 
     public static final int setPointCount = 13;
-    public static final Translation2d home = new Translation2d(10.0, 11.0);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
+    public static final Translation2d home = new Translation2d(9.7, 10.7);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final double homeWrist = Units.degreesToRadians(110);
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
