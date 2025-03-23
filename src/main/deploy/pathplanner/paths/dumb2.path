@@ -33,8 +33,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "armToL4",
+      "name": "grabFromFunnel",
       "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "grabFromFunnel"
+        }
+      }
+    },
+    {
+      "name": "armToL4",
+      "waypointRelativePos": 0.6711590296495961,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
