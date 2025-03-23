@@ -413,7 +413,7 @@ public static class BucketConstants {
       armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 26.0), Units.degreesToRadians(180+0)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 40.7), Units.degreesToRadians(180+0)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
-      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(225)).rotateElbowBy(Rotation2d.fromDegrees(-30));
+      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(221)).rotateElbowBy(Rotation2d.fromDegrees(-30));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
       armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
@@ -448,7 +448,7 @@ public static class BucketConstants {
       armSetPointsDunkAuto[0] = armSetPoints[0];
       armSetPointsDunkAuto[1] = armSetPoints[1];
       armSetPointsDunkAuto[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-45)).add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.5))));
-      armSetPointsDunkAuto[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.3)))).addToWristFlip(Units.degreesToRadians(45));
+      armSetPointsDunkAuto[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.2)))).addToWristFlip(Units.degreesToRadians(90));
       armSetPointsDunkAuto[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60)).add(new Translation2d(-2, -4));
     }
     public static ArmPoint[] armSetPointsMicroAdjust = new ArmPoint[5]; // manual dunks
