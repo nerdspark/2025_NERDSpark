@@ -67,6 +67,7 @@ public class RobotContainer {
   private BooleanSupplier gripperHasGamePiece = () -> false;
   private BooleanSupplier bucketHasCoral = () -> false;
     private Trigger bucketHasCoralTrigger = new Trigger(bucketHasCoral);
+    private BooleanSupplier autoBucketEnabled = () -> true;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -229,8 +230,8 @@ public class RobotContainer {
     joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
 
     // coral pickup
-    joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
-    bucketHasCoralTrigger.and(() -> DriverStation.isTeleop()).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper)).onTrue(new InstantCommand(() -> disableAutoBucket()));
+    bucketHasCoralTrigger.and(() -> DriverStation.isTeleop()).and(autoBucketEnabled).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
@@ -348,5 +349,8 @@ public class RobotContainer {
     }
     
 
+  }
+  private void disableAutoBucket() {
+    autoBucketEnabled = () -> false;
   }
 }

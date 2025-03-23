@@ -80,7 +80,7 @@ public class ArmActions {
     */
     public static Command removeAlgae(Arm arm, Gripper gripper, BooleanSupplier higherLevel) {
       System.out.println("remove algae");
-      Bucket.gripperHasGamePiece = true;
+      // Bucket.gripperHasGamePiece = true;
       return new ArmCommand(arm, () -> higherLevel.getAsBoolean() ? 6 : 5).alongWith(gripper.algaeIntakeCommand());
     }
 
