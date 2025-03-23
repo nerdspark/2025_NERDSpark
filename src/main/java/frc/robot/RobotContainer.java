@@ -235,7 +235,7 @@ public class RobotContainer {
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper)).onTrue(bucket.disableAutoBucket());
-    bucketHasCoralTrigger.onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    // bucketHasCoralTrigger.onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
