@@ -230,7 +230,7 @@ public class RobotContainer {
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper));
-    bucketHasCoralTrigger.and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    bucketHasCoralTrigger.and(() -> DriverStation.isTeleop()).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
