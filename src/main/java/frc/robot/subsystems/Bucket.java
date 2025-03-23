@@ -41,6 +41,12 @@ public class Bucket extends SubsystemBase {
   public void periodic() {
     refreshSensors();
     SmartDashboard.putBoolean("bucket detected", getDetected());
+    SmartDashboard.putBoolean("bucket detected", getDetected());
+    SmartDashboard.putNumber("bucket left sensor dist", sensorLeft.getDistance().getValueAsDouble());
+    SmartDashboard.putNumber("bucket right sensor dist", sensorRight.getDistance().getValueAsDouble());
+    SmartDashboard.putNumberArray("prevdistancesleft",prevDistancesLeft);
+    SmartDashboard.putBoolean("leftdetectedarray tripped", getLeftCoralDetected());
+    SmartDashboard.putBoolean("left considered detected", sensorLeft.getIsDetected().getValue());
     // This method will be called once per scheduler run
   }
   public void refreshSensors() {
@@ -73,6 +79,6 @@ public class Bucket extends SubsystemBase {
     return true;
   }
   public boolean getDetected() {
-    return !gripperHasGamePiece && (getLeftCoralDetected() || getRightCoralDetected());
+    return (getLeftCoralDetected() || getRightCoralDetected());
   }
 }

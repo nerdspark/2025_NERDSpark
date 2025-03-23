@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "dumb"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitUntilBucketHasCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "dumb2"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
