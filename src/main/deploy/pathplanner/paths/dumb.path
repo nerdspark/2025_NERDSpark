@@ -3,57 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.016,
-        "y": 2.784
+        "x": 2.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.094088983078368,
-        "y": 2.2673557315867883
+        "x": 3.0,
+        "y": 7.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.665,
-        "y": 0.711
+        "x": 5.0,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 2.364693340150077,
-        "y": 1.489016138715348
+        "x": 4.0,
+        "y": 7.0
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.85,
-      "rotationDegrees": -126.0
-    }
-  ],
-  "constraintZones": [
-    {
-      "name": "Score1",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.0,
-      "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 1.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "rotationTargets": [],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "armToHome",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -64,8 +45,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.863,
-    "maxAcceleration": 3.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -73,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "SourceAuton",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 0.0
   },
   "useDefaultConstraints": false
 }

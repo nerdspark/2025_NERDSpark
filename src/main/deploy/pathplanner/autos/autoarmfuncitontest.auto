@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "one coral path"
+            "pathName": "dumb"
           }
         },
         {
@@ -17,16 +17,22 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "dropOffCoral"
+                  "name": "waitUntilBucketHasCoral"
                 }
               },
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 3.0
+                  "waitTime": 5.0
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "dumb2"
           }
         }
       ]

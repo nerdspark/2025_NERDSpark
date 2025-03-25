@@ -78,6 +78,8 @@ public class Arm extends SubsystemBase {
   private TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
   public double wristTarget = ArmSetpoints.homeWrist;
+  public double elbowTarget = ArmConstants.shoulderOffset;
+  public double shoulderTarget = ArmConstants.elbowOffset;
 
   /**
    * Create a new Arm.
@@ -306,6 +308,8 @@ public class Arm extends SubsystemBase {
                 / (2 * distance * ArmConstants.secondStageLength));
         double shoulderPosition = position.getAngle().getRadians() + (BaseAngleArmDiff * (inBend ? 1 : -1));
         double elbowPosition = position.getAngle().getRadians() + (SecondAngleArmDiff * (inBend ? -1 : 1));
+        shoulderTarget = shoulderPosition;
+        elbowTarget = elbowPosition;
         setShoulderPosition(shoulderPosition);
         setElbowPosition(elbowPosition);
 
@@ -624,14 +628,19 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("wrist Twist amp", wristTwist.getStatorCurrent().getValueAsDouble());
     // SmartDashboard.putNumber("wrist twist pos", getWristTwistPosition());
     // SmartDashboard.putNumber("wrist flip pos", getWristPosition());
-    SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
-    SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
-    SmartDashboard.putNumber("elbow pos", getElbowPosition());
-    SmartDashboard.putNumber("shoulder pos", getShoulderPosition());
-    SmartDashboard.putNumber("wrist flip pos", getWristPosition());
+    SignalLogger.writeDouble("shoulder error", shoulderTarget - getShoulderPosition());
+    SignalLogger.writeDouble("elbow error", elbowTarget - getElbowPosition());
+    SignalLogger.writeDouble("wrist error", wristTarget - getWristPosition());
+    SignalLogger.writeDouble("arm pose x", getArmPosition().getX());
+    SignalLogger.writeDouble("arm pose y", getArmPosition().getY());
+    SignalLogger.writeDouble("elbow pos", getElbowPosition());
+    SignalLogger.writeDouble("shoulder pos", getShoulderPosition());
+    SignalLogger.writeDouble("wrist flip pos", getWristPosition());
     // SmartDashboard.putNumber("shoulder velocity", getShoulderVelocity());
     // SmartDashboard.putNumber("elbow velocity", getElbowVelocity());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());
+    SignalLogger.writeDouble("right shoulder amp", shoulderRight.getStatorCurrent().getValueAsDouble());
+    SignalLogger.writeDouble("left shoulder amp", shoulderLeft.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("right shoulder amp", shoulderRight.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("left shoulder amp", shoulderLeft.getStatorCurrent().getValueAsDouble());
     // This method will be called once per scheduler run
