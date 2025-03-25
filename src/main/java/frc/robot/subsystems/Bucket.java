@@ -64,6 +64,17 @@ public class Bucket extends SubsystemBase {
     prevDistancesRight[i] = sensorRight.getIsDetected().getValue() ? sensorRight.getDistance().getValueAsDouble() : 2.0;
 
   }
+  public boolean getSensorNotLagging() {
+    for (int j = 0; j < BucketConstants.timesForBucketToTestPositive - 1; j++){
+      double currentArrayLeft = prevDistancesLeft[j];
+      double currentArrayRight = prevDistancesRight[j];
+      if(((currentArrayLeft > prevDistancesLeft[j+1]) || (currentArrayLeft < prevDistancesLeft[j+1]))
+      && ((currentArrayRight > prevDistancesRight[j+1]) || (currentArrayRight < prevDistancesRight[j+1]))){
+        return true;
+      }
+    }
+    return false;
+  }
   
   public boolean getLeftCoralDetected() {
     for (double distance : prevDistancesLeft) {
