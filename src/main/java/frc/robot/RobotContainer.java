@@ -317,7 +317,7 @@ public class RobotContainer {
     // joystick.rightBumper().onFalse(new LEDCommand(LEDs, gripperHasGamePiece, bucketHasCoral, driveTrainFinishedMoving));
     /*
      * Not doing anything: rainbow scroll
-     * Intake:
+     * Intake: idfk
      * l1: red
      * l2: magenta
      * l3: blue
