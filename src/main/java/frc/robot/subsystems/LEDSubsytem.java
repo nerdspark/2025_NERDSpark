@@ -45,15 +45,43 @@ public class LEDSubsytem extends SubsystemBase {
     m_led.setData(m_buffer);
   }
 
-  public LEDPattern getPattern(Trigger driveTrainFinishedMoving, Trigger bucketHasCoral, Trigger gripperHasGamePiece){
-    boolean hasGamePiece = bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean();
-    Color color = (hasGamePiece) ? new Color(0, 1, 0) : new Color(0, 0, 1); 
-    boolean flashing = hasGamePiece ? driveTrainFinishedMoving.getAsBoolean() : false;
-    if (flashing) {
-      return LEDPattern.solid(color).blink(Time.ofBaseUnits(0.05, Second));
-    } else {
-      return LEDPattern.solid(color);
+  public Color getColor(Supplier<String> level){
+    // boolean hasGamePiece = bucketHasCoral.get() || gripperHasGamePiece.get();
+    Color color = new Color();
+    // boolean flashing = hasGamePiece ? driveTrainFinishedMoving.get() : false;
+
+    // if (l1.get() == true && l2.get() == false && l3.get() == false && l4.get() == false) {
+    //   color = new Color(0.0f, 1.0f, 0.0f); // red
+    // } else if (l1.get() == false && l2.get() == true && l3.get() == false && l4.get() == false) {
+    //   color = new Color(0.0f, 1.0f, 1.0f); // magenta
+    // } else if (l1.get() == false && l2.get() == false && l3.get() == true && l4.get() == false) {
+    //   color = new Color(0.0f, 0.0f, 1.0f); // blue
+    // } else if (l1.get() == false && l2.get() == false && l3.get() == false && l4.get() == true) {
+    //   color = new Color(1.0f, 0.0f, 0.0f); // green
+    // }
+
+    switch (level.get()) {
+      case "l1":
+        color = new Color(0.0f, 1.0f, 0.0f);  // red
+        break;
+      case "l2":
+        color = new Color(0.0f, 1.0f, 1.0f); // magenta
+        break;
+      case "l3":
+        color = new Color(0.0f, 0.0f, 1.0f); // blue
+        break;
+      case "l4":
+        color = new Color(1.0f, 0.0f, 0.0f); // green
+        break;
+      default:
+        color = new Color(1.0f, 1.0f, 1.0f); // default color: this case will never happen
     }
+
+
+    return color;
+
+    
+
   }
   public Color[] updateStepColor(Trigger armFinishedMoving, Trigger driveTrainFinishedMoving, Trigger hasCoral) {
     Color step1 = new Color();

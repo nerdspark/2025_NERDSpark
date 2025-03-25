@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
@@ -95,9 +96,9 @@ public class RobotContainer {
 
 
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  private Trigger driveTrainFinishedMoving;
-  private Trigger gripperHasGamePiece;
-  private Trigger bucketHasCoral;
+  private Supplier<Boolean> driveTrainFinishedMoving;
+  private Supplier<Boolean> gripperHasGamePiece;
+  private Supplier<Boolean> bucketHasCoral;
 
   /* Path follower */
   private SendableChooser<Command> autoChooser;
@@ -177,13 +178,19 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    bucketHasCoral = new Trigger(() -> bucket.getDetected());
-    driveTrainFinishedMoving = new Trigger(() -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+    bucketHasCoral = () -> bucket.getDetected();
+    driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1 || poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1);
-    gripperHasGamePiece = new Trigger(() -> Bucket.gripperHasGamePiece);
-    bucketHasCoral.whileTrue(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1)))
-      .onFalse(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0)));
+    .getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
+    gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
+    // bucketHasCoral.whileTrue(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1)))
+    //   .onFalse(new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0)));
+
+    if (bucketHasCoral.get()) {
+      new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1));
+    } else {
+      new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0));
+    }
 
 
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
@@ -298,8 +305,49 @@ public class RobotContainer {
 
   }
   private void configureLEDs() {
+
+    // buecketHasCoral, 
+    boolean hasGamePiece = bucketHasCoral.get() || gripperHasGamePiece.get();
+    // boolean flashing = hasGamePiece ? driveTrainFinishedMoving.get() : false;
     LEDs = new LEDSubsytem();
-    joystick.rightBumper().onFalse(new LEDCommand(LEDs, gripperHasGamePiece, bucketHasCoral, driveTrainFinishedMoving));
+    LEDPattern base = LEDPattern.gradient(LEDPattern.GradientType.kDiscontinuous, new Color(0.0f, 1.0f, 0.0f), new Color(0.0f, 0.0f, 1.0f));
+    Supplier<String> level = () -> "l1"; // hard-coded
+    Supplier<Boolean> linedUp = () -> true; // also hard-coded
+    Color levelColor = LEDs.getColor(level);
+    // joystick.rightBumper().onFalse(new LEDCommand(LEDs, gripperHasGamePiece, bucketHasCoral, driveTrainFinishedMoving));
+    /*
+     * Not doing anything: rainbow scroll
+     * Intake:
+     * l1: red
+     * l2: magenta
+     * l3: blue
+     * l4: green
+     * lined up: blinking
+     */
+
+
+     if (!hasGamePiece) {
+      joystick.rightBumper().onFalse(
+        LEDs.runPattern(
+          () -> base.scrollAtRelativeSpeed(Percent.per(Second).of(25))
+        )
+      );
+    } else {
+      if (linedUp.get()) {
+        joystick.rightBumper().onFalse(
+          LEDs.runPattern(
+            () -> LEDPattern.solid(levelColor).blink(Seconds.of(1.5))
+          )
+        );
+      } else {
+        joystick.rightBumper().onFalse(
+          LEDs.runPattern(
+            () -> LEDPattern.solid(levelColor)
+          )
+        );
+      }
+    }
+
 
   }
 }
