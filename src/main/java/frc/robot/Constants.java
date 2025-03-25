@@ -268,6 +268,8 @@ public static class BucketConstants {
       public static final double elbowG = 0.6;//0.3
       public static final double elbowV = 0.0;
       public static final double elbowA = 0.0;
+      public static final double cruiseVelocity = 0.5;
+      public static final double cruiseAcceleration = 2.0;
   }
   public static class ArmVelocityGains{
     public static final double shoulderP = 10.0; //TODO CHANGE SOME OF THIS LATER //52.0

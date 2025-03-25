@@ -112,8 +112,9 @@ public class Arm extends SubsystemBase {
         .withKD(ArmVelocityGains.shoulderD)
         .withKG(ArmVelocityGains.shoulderG)
         .withGravityType(GravityTypeValue.Arm_Cosine);
-
-
+    shoulderConfig.MotionMagic = new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(ArmGains.cruiseVelocity)
+        .withMotionMagicAcceleration(ArmGains.cruiseAcceleration);
     shoulderLeft
       .getConfigurator()
       .apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
@@ -147,6 +148,9 @@ public class Arm extends SubsystemBase {
       .withKG(ArmVelocityGains.elbowG)
       .withGravityType(GravityTypeValue.Arm_Cosine);
 
+    elbowConfig.MotionMagic = new MotionMagicConfigs()
+      .withMotionMagicCruiseVelocity(ArmGains.cruiseVelocity)
+      .withMotionMagicAcceleration(ArmGains.cruiseAcceleration);
     elbowLeft
       .getConfigurator()
       .apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
@@ -178,8 +182,8 @@ public class Arm extends SubsystemBase {
           .withNeutralMode(NeutralModeValue.Coast)));
 
     resetOffsets();
-  }
 
+  }
   public void addToWristOffset(double addTo) {
     // wristOffset += addTo;
     // wrist.getConfigurator().apply(wristConfig.withFeedback(new FeedbackConfigs()
@@ -391,10 +395,11 @@ public class Arm extends SubsystemBase {
     //     elbowLeft.setControl(new DutyCycleOut(0));
     //     elbowRight.setControl(new DutyCycleOut(0));
     // } else {
+    final MotionMagicVoltage m_request = new MotionMagicVoltage(position);
     elbowLeft.setControl(
-            new PositionVoltage(position).withPosition(position).withSlot(0));
+            m_request.withPosition(position));
     elbowRight.setControl(
-            new PositionVoltage(position).withPosition(position).withSlot(0));
+            m_request.withPosition(position));
     // }
     // SmartDashboard.putNumber("elbow Left Position error", position - elbowLeft.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("elbow Right Position error", position - elbowRight.getPosition().getValueAsDouble());
@@ -516,10 +521,11 @@ public class Arm extends SubsystemBase {
     //     shoulderLeft.setControl(new DutyCycleOut(0));
     //     shoulderRight.setControl(new DutyCycleOut(0));
     // } else {
+      final MotionMagicVoltage m_request = new MotionMagicVoltage(position);
         shoulderLeft.setControl(
-                new PositionVoltage(position).withPosition(position).withSlot(0));
+                m_request.withPosition(position));
         shoulderRight.setControl(
-                new PositionVoltage(position).withPosition(position).withSlot(0));
+                m_request.withPosition(position));
     // SmartDashboard.putNumber("shoulder target pos", position);
     // SmartDashboard.putNumber("shoulder Left Position error", position - shoulderLeft.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("shoulder Right Position error", position - shoulderRight.getPosition().getValueAsDouble());
