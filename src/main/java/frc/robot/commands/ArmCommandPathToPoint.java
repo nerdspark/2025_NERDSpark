@@ -56,7 +56,6 @@ public class ArmCommandPathToPoint extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    arm.finishedMoving = false;
     
     if (setPoint == null) {
       setPointIndex = setPointIntSupplier.getAsInt();
@@ -91,7 +90,6 @@ public class ArmCommandPathToPoint extends Command {
   public void execute() {//TODO: add wrist interpolation or other way to time wrist movement
     // System.out.println("ArmCommandPathToPoint/execute");
     if (ArmPathplannerUtil.CheckArmPosition(path.points, arm.getArmState())) {
-      arm.finishedMoving = true;
     }
     if (setPointIntSupplier != null) {
       if (setPointIndex != setPointIntSupplier.getAsInt()) {
@@ -99,11 +97,10 @@ public class ArmCommandPathToPoint extends Command {
         setPointIndex = setPointIntSupplier.getAsInt();
         setPoint = () -> ArmSetpoints.armSetPoints[setPointIndex];
         calculatePath();
-        arm.finishedMoving = false;
       }
     }
     // SmartDashboard.putBoolean("Check", false);
-    if (arm.finishedMoving){
+    if (arm.getIsFinishedMoving()){
       // SmartDashboard.putBoolean("Check", true);
       arm.setArmPosition(path.getTranslations().get(path.getTranslations().size()-1), path.points.get(path.getTranslations().size() - 1).inBend);
       // LEDSubsystem.runPattern(LEDPattern.solid(new Color(0.0f, 0.0f, 1.0f)));

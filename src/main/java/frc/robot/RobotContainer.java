@@ -264,14 +264,15 @@ public class RobotContainer {
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
-    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    
+    joystick.rightBumper().whileTrue(Autos.driveAndAutoDropoff(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
     ()-> false,
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
+    ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
 
     joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,

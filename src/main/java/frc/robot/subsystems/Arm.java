@@ -68,7 +68,6 @@ public class Arm extends SubsystemBase {
 
   private TalonFX shoulderLeft, shoulderRight, elbowLeft, elbowRight, wrist;
 
-  public boolean finishedMoving = false;
   private boolean wristStopped = true;
   private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
   public boolean stowing = false;
@@ -80,6 +79,7 @@ public class Arm extends SubsystemBase {
   public double wristTarget = ArmSetpoints.homeWrist;
   public double elbowTarget = ArmConstants.shoulderOffset;
   public double shoulderTarget = ArmConstants.elbowOffset;
+  private Translation2d targetPosition = new Translation2d();
 
   /**
    * Create a new Arm.
@@ -178,6 +178,10 @@ public class Arm extends SubsystemBase {
           .withNeutralMode(NeutralModeValue.Coast)));
 
     resetOffsets();
+  }
+
+  public boolean getIsFinishedMoving() {
+    return targetPosition.getDistance(getArmPosition()) < 1;
   }
 
   public void addToWristOffset(double addTo) {
@@ -295,6 +299,7 @@ public class Arm extends SubsystemBase {
    * * true = bend convex side facing positive rotation direction
    */
   public void setArmPosition(Translation2d position, boolean inBend) {  // rotates the two base stages 
+    targetPosition = position;
 
     double distance = MathUtil.clamp(position.getNorm(), ArmSetpoints.home.getNorm(), ArmConstants.baseStageLength + ArmConstants.secondStageLength);
 
