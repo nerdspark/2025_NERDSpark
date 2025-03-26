@@ -22,6 +22,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,7 +39,9 @@ import frc.robot.commands.GripperCommand;
 public class Climb extends SubsystemBase {
   private TalonFX climbLeft, climbRight;
   private TalonFXConfiguration climbConfig = new TalonFXConfiguration();
+  private Servo servo= new Servo(6);
   private boolean ampTriggered, ampTriggerStarted = false;
+  private boolean servoPosition;
   // private double startTime, toAmpTriggerStartTime = 0;
   /** Creates a new Gripper. */
   public Climb() {
@@ -68,6 +72,9 @@ public class Climb extends SubsystemBase {
       resetPosition();
   }
   
+
+
+
   public void setPower(double power) {
     climbLeft.set(power);
     climbRight.set(power);
@@ -86,6 +93,9 @@ public class Climb extends SubsystemBase {
     climbLeft.stopMotor(); 
     climbRight.stopMotor();
   }
+  public double getServoPosition(){
+    return servo.getPosition();
+  }
   public double getCurrent() {
     return (climbLeft.getStatorCurrent().getValueAsDouble() + climbRight.getStatorCurrent().getValueAsDouble())/2;
   }
@@ -94,6 +104,7 @@ public class Climb extends SubsystemBase {
     climbRight.setPosition(0);
   }
   public void setPosition(double position) {
+    
     climbLeft.setControl(new PositionVoltage(position)); 
     climbRight.setControl(new PositionVoltage(position)); 
     
@@ -123,6 +134,14 @@ public class Climb extends SubsystemBase {
     climbLeft.setControl(new TorqueCurrentFOC(current)); 
     climbRight.setControl(new TorqueCurrentFOC(current)); 
   }
+
+  public void setServoPosition(double servoPosition){
+    servo.setPosition(servoPosition);
+
+
+
+  }
+  
   // public Command climbSwitchToFOC() {
   //   return new Command() {
   //     @Override
