@@ -117,9 +117,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-        // m_robotContainer.arm.setArmPosition(ArmSetpoints.home.plus(new Translation2d(4, 2)), false);
 
-// TODO: remove after testing
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
