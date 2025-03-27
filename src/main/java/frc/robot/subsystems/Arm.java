@@ -395,12 +395,11 @@ public class Arm extends SubsystemBase {
     //     elbowLeft.setControl(new DutyCycleOut(0));
     //     elbowRight.setControl(new DutyCycleOut(0));
     // } else {
-    final MotionMagicVoltage m_request = new MotionMagicVoltage(position);
     elbowLeft.setControl(
-            m_request.withPosition(position));
+            new MotionMagicVoltage(position).withPosition(position).withSlot(0));
     elbowRight.setControl(
-            m_request.withPosition(position));
-    // }
+            new MotionMagicVoltage(position).withPosition(position).withSlot(0));
+      // }
     // SmartDashboard.putNumber("elbow Left Position error", position - elbowLeft.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("elbow Right Position error", position - elbowRight.getPosition().getValueAsDouble());
   }
@@ -521,12 +520,11 @@ public class Arm extends SubsystemBase {
     //     shoulderLeft.setControl(new DutyCycleOut(0));
     //     shoulderRight.setControl(new DutyCycleOut(0));
     // } else {
-      final MotionMagicVoltage m_request = new MotionMagicVoltage(position);
         shoulderLeft.setControl(
-                m_request.withPosition(position));
+                new MotionMagicVoltage(position).withPosition(position).withSlot(0));
         shoulderRight.setControl(
-                m_request.withPosition(position));
-    // SmartDashboard.putNumber("shoulder target pos", position);
+                new MotionMagicVoltage(position).withPosition(position).withSlot(0));
+          // SmartDashboard.putNumber("shoulder target pos", position);
     // SmartDashboard.putNumber("shoulder Left Position error", position - shoulderLeft.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("shoulder Right Position error", position - shoulderRight.getPosition().getValueAsDouble());
     //}

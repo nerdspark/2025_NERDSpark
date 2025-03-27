@@ -314,10 +314,10 @@ public static class BucketConstants {
     public static final int gripperMotorPort = 46;
     public static final String armCanBus = "canivore1";
 
-    public static final double currentLimitShoulder = 25.0;
-    public static final double currentLimitElbow = 25.0;
-    public static final double currentLimitWrist = 35.0; //40.0
-    public static final double gripperCurrentLimitDefault = 10.0;
+    public static final double currentLimitShoulder = 5.0;//25
+    public static final double currentLimitElbow = 5.0;//25
+    public static final double currentLimitWrist = 5.0; //35
+    public static final double gripperCurrentLimitDefault = 5.0;//10
     public static final double gripperPowerDefault = 0.1;
 
 
