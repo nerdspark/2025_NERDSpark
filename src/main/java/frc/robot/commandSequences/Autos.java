@@ -84,7 +84,7 @@ public final class Autos {
     linearFF_X,
     linearFF_Y,
     omegaFF), 
-    new WaitUntilCommand(() -> goalPoseSupplier.get().getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) < 1.5)
+    new WaitUntilCommand(() -> goalPoseSupplier.get().getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) < 1.0)
       .andThen(ArmActions.armToCoralReef(arm, gripper, setPointIndex)))
         .andThen(new WaitUntilCommand(() -> arm.getIsFinishedMoving()).withTimeout(1.0).andThen(ArmActions.dunkDropCoral(arm, gripper, setPointIndex)));
   }
