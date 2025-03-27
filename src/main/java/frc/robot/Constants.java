@@ -58,11 +58,11 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 30;
-    public static final double ampTriggeredCurrentLimit = 25;
-    public static final double power = 0.7;
-    public static final double deployPosition = -76 * 3; // rot
-    public static final double climbedPosition = -18 * 3; // rot
+    public static final double currentLimit = 100;
+    // public static final double ampTriggeredCurrentLimit = 2;
+    public static final double power = 0.4;
+    public static final double deployPosition = -74.5; // rot
+    // public static final double climbedPosition = -18; // rot
     public static final double rampRate = 0.2;
     public static final double kP = 1.0;
     public static final double kI = 0.0;
