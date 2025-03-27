@@ -387,6 +387,7 @@ public static class BucketConstants {
      * **Algae dropoff**
      * @AlgaeBargePrepare 9 
      * @AlgaeBargeThrow 10 
+     * @processor 12
      * 
      * ** Climb **
      * @climbPosition 11

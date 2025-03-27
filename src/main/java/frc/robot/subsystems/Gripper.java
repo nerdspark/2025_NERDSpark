@@ -66,7 +66,7 @@ public class Gripper extends SubsystemBase {
     return gripperConfig.CurrentLimits.StatorCurrentLimit;
   }
   public Command algaeDefaultCommand() {
-    return new GripperCommand(this, 0.5, 20);
+    return new GripperCommand(this, 1.0, 30);
   }
   public Command coralDefaultCommand() {
     return new GripperCommand(this, 0.2, 10);
@@ -79,6 +79,9 @@ public class Gripper extends SubsystemBase {
   }
   public Command spitOutCommand() {
     return new GripperCommand(this, -1.0, 20);
+  }
+  public Command algaeSpitCommand() {
+    return new GripperCommand(this, -1.0, 40);
   }
   public Command neutralCommand() {
     return new GripperCommand(this, 0.0, 20);

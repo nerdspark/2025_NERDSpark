@@ -241,10 +241,10 @@ public class RobotContainer {
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
 
     // algae dropoff
-    // joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
-    //   .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+    joystick.y().onTrue(ArmActions.armToAlgaeBarge(arm))
+      .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
 
-    joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
+    // joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
 
     // wrist fix offset
     joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
