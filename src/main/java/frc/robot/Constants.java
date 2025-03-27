@@ -69,6 +69,24 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
   }
+
+  public static class ElevatorConstants {
+    public static final double kElevatorKp = 0.1;
+    public static final double kElevatorKi = 0;
+    public static final double kElevatorKd = 0.0;
+    public static final double kElevatorkS = 0.0;
+    public static final double kElevatorkG = 0.0;
+    public static final double kElevatorkV = 0.0;
+    public static final double kElevatorkA = 0.0;
+
+    public static final double countsPerInch = 42.0;
+    
+    public static final double kElevatorDrumRadius = 0.0;
+    public static final double kElevatorGearing = 0.0;
+    public static final double kElevatorDefaultTolerance = 0.0;
+  }
+
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kMotorPort = 0;

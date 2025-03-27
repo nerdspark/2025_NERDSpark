@@ -335,32 +335,32 @@ public class RobotContainer {
 
   }
   private void configureLEDs() {
-    LEDs = new LEDSubsytem();
-    if((bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean()) && driveTrainFinishedMoving.getAsBoolean()){
-        joystick.rightBumper().onFalse(LEDs.runPattern(
-          () -> LEDPattern.steps(
-          Map.of(
-            0,
-            LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
-          )
-        )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
-        ));
+    // LEDs = new LEDSubsytem();
+    // if((bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean()) && driveTrainFinishedMoving.getAsBoolean()){
+    //     joystick.rightBumper().onFalse(LEDs.runPattern(
+    //       () -> LEDPattern.steps(
+    //       Map.of(
+    //         0,
+    //         LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
+    //       )
+    //     )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+    //     ));
       
-    } else {
-      joystick.rightBumper().onFalse(
-        LEDs.runPattern(
-      () -> LEDPattern.steps(
-      Map.of(
-        0,
-        LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
-      )
-      )
-    )
-      );
+    // } else {
+    //   joystick.rightBumper().onFalse(
+    //     LEDs.runPattern(
+    //   () -> LEDPattern.steps(
+    //   Map.of(
+    //     0,
+    //     LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
+    //   )
+    //   )
+    // )
+    //   );
     
-    }
-    bucketHasCoralTrigger.or(driveTrainFinishedMoving).and(() -> DriverStation.isTeleop())
-      .onTrue(LEDs.blink()).onFalse(LEDs.breathe());
+    // }
+    // bucketHasCoralTrigger.or(driveTrainFinishedMoving).and(() -> DriverStation.isTeleop())
+    //   .onTrue(LEDs.blink()).onFalse(LEDs.breathe());
     
 
   }
