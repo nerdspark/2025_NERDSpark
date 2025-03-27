@@ -136,7 +136,7 @@ public class RobotContainer {
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     configureAutoChooser();
-    // configureLEDs();
+    configureLEDs();
 
   }
   
@@ -272,7 +272,7 @@ public class RobotContainer {
     ()-> false,
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
+    ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget())).onFalse(arm.goToHome().alongWith(gripper.neutralCommand()));
 
     joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,

@@ -63,7 +63,7 @@ public class ArmActions {
   public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return 
       new ArmInstantCommand(arm, () -> ArmSetpoints.armSetPointsDunkAuto[setPointIndex.getAsInt()]).andThen(
-      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHome().alongWith(new WaitCommand(1).andThen(gripper.neutralCommand()))));
+      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHome().alongWith(new WaitCommand(0.4).andThen(gripper.neutralCommand()))));
   }
 
   /** tilt wrist downwards manually 
