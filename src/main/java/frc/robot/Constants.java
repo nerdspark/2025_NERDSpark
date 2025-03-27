@@ -68,6 +68,8 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
+    public static final double servoOpenPosition = 1.0;
+    public static final double servoCloseposition = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -354,10 +356,7 @@ public static class BucketConstants {
     public static final double wristToElbowRatio = 1.0/(35.0 / 50.0);
     public static final double rightServoOffset = 0.0;
     public static final double leftServoOffset = 0.0;
-    // public static final double onCloseServoPosition = 0.3;
-    // public static final double onOpenServoPosition = 0;
-    // public static final double openServoPosition = 1;
-    // public static final double closeServoPosition = 0;
+    
 
   }
 
