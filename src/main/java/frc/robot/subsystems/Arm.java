@@ -631,8 +631,8 @@ public class Arm extends SubsystemBase {
     SignalLogger.writeDouble("shoulder error", shoulderTarget - getShoulderPosition());
     SignalLogger.writeDouble("elbow error", elbowTarget - getElbowPosition());
     SignalLogger.writeDouble("wrist error", wristTarget - getWristPosition());
-    SignalLogger.writeDouble("arm pose x", getArmPosition().getX());
-    SignalLogger.writeDouble("arm pose y", getArmPosition().getY());
+    SmartDashboard.putNumber("arm pose x", getArmPosition().getX());
+    SmartDashboard.putNumber("arm pose y", getArmPosition().getY());
     SignalLogger.writeDouble("elbow pos", getElbowPosition());
     SignalLogger.writeDouble("shoulder pos", getShoulderPosition());
     SignalLogger.writeDouble("wrist flip pos", getWristPosition());

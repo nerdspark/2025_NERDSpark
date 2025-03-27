@@ -251,7 +251,7 @@ public class RobotContainer {
     // joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
 
     // climb
-    joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
+    joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(new WaitCommand(0.3).andThen(climb.deploy()));
     joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
 
 

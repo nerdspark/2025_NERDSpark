@@ -39,6 +39,7 @@ public class ArmCommand extends Command {
         addRequirements(arm);
     }
 
+    
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
