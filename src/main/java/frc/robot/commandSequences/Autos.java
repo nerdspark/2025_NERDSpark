@@ -31,6 +31,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -63,6 +65,28 @@ public final class Autos {
        () -> getLinearVelocityFromJoysticks(linearFF_X.getAsDouble(),linearFF_Y.getAsDouble()), omegaFF);
           
           
+  }
+
+  public static Command driveAndAutoDropoff(CommandSwerveDrivetrain drive,
+  Supplier<Pose2d> robotPoseSupplier,
+  Supplier<Pose2d> goalPoseSupplier,
+  Supplier<ReefLevel> reefLevelSupplier,
+  Supplier<Boolean> isBackwardsSupplier,
+  DoubleSupplier linearFF_X,
+  DoubleSupplier linearFF_Y,
+  DoubleSupplier omegaFF, 
+  Arm arm, Gripper gripper, IntSupplier setPointIndex) {
+    return new ParallelRaceGroup(getAutoDriveCommandReef(drive,
+    robotPoseSupplier,
+    goalPoseSupplier,
+    reefLevelSupplier,
+    isBackwardsSupplier,
+    linearFF_X,
+    linearFF_Y,
+    omegaFF), 
+    new WaitUntilCommand(() -> goalPoseSupplier.get().getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) < 1.0)
+      .andThen(ArmActions.armToCoralReef(arm, gripper, setPointIndex)))
+        .andThen(new WaitUntilCommand(() -> arm.getIsFinishedMoving()).withTimeout(1.0).andThen(ArmActions.dunkDropCoral(arm, gripper, setPointIndex)));
   }
 
   public static Command getAutoDriveCommandAlgae(

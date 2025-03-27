@@ -63,7 +63,7 @@ public class ArmActions {
   public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return 
       new ArmInstantCommand(arm, () -> ArmSetpoints.armSetPointsDunkAuto[setPointIndex.getAsInt()]).andThen(
-      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHome().alongWith(new WaitCommand(1).andThen(gripper.neutralCommand()))));
+      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHome().alongWith(new WaitCommand(0.4).andThen(gripper.neutralCommand()))));
   }
 
   /** tilt wrist downwards manually 
@@ -93,9 +93,9 @@ public class ArmActions {
     public static Command shootAlgaeBarge(Arm arm, Gripper gripper) {
       return new SequentialCommandGroup(
         new ArmInstantCommand(arm, () -> 10), 
-        new WaitCommand(0.2), 
+        new WaitCommand(0.16), 
         gripper.algaeSpitCommand(), 
-        new WaitCommand(0.04), 
+        new WaitCommand(0.1), 
         arm.goToHome(), 
         new WaitCommand(0.05),
         gripper.neutralCommand());

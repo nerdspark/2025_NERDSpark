@@ -145,7 +145,7 @@ public class RobotContainer {
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     configureAutoChooser();
-    // configureLEDs();
+    configureLEDs();
 
   }
   
@@ -261,17 +261,17 @@ public class RobotContainer {
     //algae dropoff driver-based
     joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
     .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), 0)))))
-    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.3)));
+    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.35)));
 
     // joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
 
     // wrist fix offset
-    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
-    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
+    // joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
+    // joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
 
     // climb
-    // joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
-    // joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
+    joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(new WaitCommand(0.3).andThen(climb.deploy()));
+    joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
 
 
     /* autodrive TODO: rebind to not conflict with drive stick */
@@ -283,14 +283,15 @@ public class RobotContainer {
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
-    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
+    
+    joystick.rightBumper().whileTrue(Autos.driveAndAutoDropoff(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
     ()-> false,
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
+    ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget())).onFalse(arm.goToHome().alongWith(gripper.neutralCommand()));
 
     joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,

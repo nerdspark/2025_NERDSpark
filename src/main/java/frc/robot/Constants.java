@@ -60,16 +60,18 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 30;
-    public static final double ampTriggeredCurrentLimit = 25;
-    public static final double power = 0.7;
-    public static final double deployPosition = -76 * 3; // rot
-    public static final double climbedPosition = -18 * 3; // rot
+    public static final double currentLimit = 105;
+    // public static final double ampTriggeredCurrentLimit = 2;
+    public static final double power = 0.3;
+    public static final double deployPosition = -70.5; // rot
+    // public static final double climbedPosition = -18; // rot
     public static final double rampRate = 0.2;
-    public static final double kP = 1.0;
+    public static final double kP = 1.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
+    public static final double servoOpenPosition = 1.0;
+    public static final double servoCloseposition = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -160,9 +162,9 @@ public static class Vision {
         public static final double kXYStdDev = 0.4; 
         public static final double kThetaStdDev = 1; 
 
-        public static final double TRANSLATION_TOLERANCE_X = 0.01; // Changed from 0.05 3/8/25
-        public static final double TRANSLATION_TOLERANCE_Y = 0.01; // Changed from 0.05 3/8/25
-        public static final double ROTATION_TOLERANCE = Math.toRadians(1.0); // /deg
+        public static final double TRANSLATION_TOLERANCE_X = 0.013; // Changed from 0.05 3/8/25
+        public static final double TRANSLATION_TOLERANCE_Y = 0.013; // Changed from 0.05 3/8/25
+        public static final double ROTATION_TOLERANCE = Math.toRadians(1.3); // /deg
 
         //Below same as pathplanner constants
         public static final double MAX_VELOCITY = 4.5; 
@@ -318,7 +320,7 @@ public static class BucketConstants {
 
     public static final double currentLimitShoulder = 30.0;//25
     public static final double currentLimitElbow = 30.0;//25
-    public static final double currentLimitWrist = 70.0; //35
+    public static final double currentLimitWrist = 60.0; //35
     public static final double gripperCurrentLimitDefault = 10.0;//10
     public static final double gripperPowerDefault = 0.1;
 
@@ -358,10 +360,7 @@ public static class BucketConstants {
     public static final double wristToElbowRatio = 1.0/(35.0 / 50.0);
     public static final double rightServoOffset = 0.0;
     public static final double leftServoOffset = 0.0;
-    // public static final double onCloseServoPosition = 0.3;
-    // public static final double onOpenServoPosition = 0;
-    // public static final double openServoPosition = 1;
-    // public static final double closeServoPosition = 0;
+    
 
   }
 
@@ -415,16 +414,16 @@ public static class BucketConstants {
       armSetPoints[3] = new ArmPoint(new Translation2d(-10.7, 27.5), Units.degreesToRadians(105));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(115));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-14.4, 21.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
-      armSetPoints[6] = new ArmPoint(new Translation2d(-14.4, 38.0), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 18.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 36.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(223.5)).rotateElbowBy(Rotation2d.fromDegrees(-30));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
       armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(90)), Units.degreesToRadians(80));
-      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(90));
+      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(80));
 
-      armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(125)), Units.degreesToRadians(260));
+      armSetPoints[11] = new ArmPoint(new Translation2d(-33, 30), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position
 
       armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
       
