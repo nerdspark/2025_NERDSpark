@@ -58,6 +58,7 @@ public class RobotContainer {
   
   private LEDSubsytem LEDs;
   private Climb climb;
+  private Intake intake;
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -106,6 +107,7 @@ public class RobotContainer {
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
     scoringSubsystem = new ScoringProfileSubsystem();
     climb = new Climb();
+    intake = new Intake();
 
     configureTriggers();
     configureNamedCommands();

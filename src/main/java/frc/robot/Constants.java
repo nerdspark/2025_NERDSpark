@@ -242,4 +242,9 @@ public static class Vision {
     public static final double blinkSeconds = 1.0;
   }
 
+
+  public static class IntakeConstants {
+    public static final double intakeDeployMotor = 3;
+    public static final double intakeGrabberMotor = 3;
+  }
 }
