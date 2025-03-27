@@ -255,11 +255,11 @@ public static class BucketConstants {
       public static final double elbowP = 200.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 40.0;
-      public static final double wristP = 25.0; //20.0
+      public static final double wristP = 18.0; //20.0
       public static final double wristG = 0.0; //20.0 
       public static final double wristI = 0.0;
       public static final double wristD = 0.0;
-      public static final double wristVelocity = 2;
+      public static final double wristVelocity = 3;
       public static final double wristAcceleration = 2;
       public static final double gripperP = 28.0; // 10.0
       public static final double gripperI = 0.0;
@@ -366,12 +366,13 @@ public static class BucketConstants {
 
   public static class ArmSetpoints {
 
-    public static final int setPointCount = 13;
+    public static final int setPointCount = 14;
     public static final Translation2d home = new Translation2d(8.5, 11.5);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final double homeWrist = Units.degreesToRadians(110);
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
      * @home 0
+     * @hotel 13 (position right before going to home)
      * 
      * **Reef**
      * @L1 1
@@ -414,7 +415,7 @@ public static class BucketConstants {
       armSetPoints[3] = new ArmPoint(new Translation2d(-10.7, 27.5), Units.degreesToRadians(105));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(115));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 18.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 20.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 36.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(223.5)).rotateElbowBy(Rotation2d.fromDegrees(-30));
@@ -426,6 +427,8 @@ public static class BucketConstants {
       armSetPoints[11] = new ArmPoint(new Translation2d(-21.5, 0.1), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
 
       armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
+
+      armSetPoints[13] = new ArmPoint(home, Units.degreesToRadians(200));
       
       for (int i = 0; i < armSetPoints.length; i++) {
         if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {

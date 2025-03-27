@@ -70,7 +70,7 @@ public class Gripper extends SubsystemBase {
   }
   
   public Command coralDefaultCommand() {
-    return new GripperCommand(this, 0.2, 10);
+    return new GripperCommand(this, 0.3, 10);
   }
   public Command coralIntakeCommand() {
     return new GripperCommand(this, 1.0, 20);
@@ -79,7 +79,7 @@ public class Gripper extends SubsystemBase {
     return new GripperCommand(this, 0.6, 30);
   }
   public Command algaeDefaultCommand() {
-    return new GripperCommand(this, 0.5, 17);
+    return new GripperCommand(this, 0.5, 15);
   }
   public Command spitOutCommand() {
     return new GripperCommand(this, -1.0, 20);

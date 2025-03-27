@@ -461,7 +461,7 @@ public class Arm extends SubsystemBase {
       // TODO: Same question in getWristTarget()
       flipPosition += getElbowPosition() * (ArmConstants.wristToElbowRatio - 1.0);
       flipPosition /= (2d*Math.PI);
-      wrist.setControl(new PositionVoltage(flipPosition).withPosition(flipPosition).withSlot(0));
+      wrist.setControl(new MotionMagicVoltage(flipPosition).withPosition(flipPosition).withSlot(0));
     }
   }
 
@@ -481,6 +481,9 @@ public class Arm extends SubsystemBase {
 
   public Command goToHome() {
     return new ArmInstantCommand(this, () -> 0);
+  }
+  public Command goToHotel() {
+    return new ArmInstantCommand(this, () -> 13);
   }
 
   /**
