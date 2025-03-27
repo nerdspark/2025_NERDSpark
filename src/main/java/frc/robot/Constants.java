@@ -58,16 +58,18 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 30;
-    public static final double ampTriggeredCurrentLimit = 25;
-    public static final double power = 0.7;
-    public static final double deployPosition = -76 * 3; // rot
-    public static final double climbedPosition = -18 * 3; // rot
+    public static final double currentLimit = 105;
+    // public static final double ampTriggeredCurrentLimit = 2;
+    public static final double power = 0.3;
+    public static final double deployPosition = -70.5; // rot
+    // public static final double climbedPosition = -18; // rot
     public static final double rampRate = 0.2;
-    public static final double kP = 1.0;
+    public static final double kP = 1.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
+    public static final double servoOpenPosition = 1.0;
+    public static final double servoCloseposition = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -354,10 +356,7 @@ public static class BucketConstants {
     public static final double wristToElbowRatio = 1.0/(35.0 / 50.0);
     public static final double rightServoOffset = 0.0;
     public static final double leftServoOffset = 0.0;
-    // public static final double onCloseServoPosition = 0.3;
-    // public static final double onOpenServoPosition = 0;
-    // public static final double openServoPosition = 1;
-    // public static final double closeServoPosition = 0;
+    
 
   }
 
@@ -419,7 +418,7 @@ public static class BucketConstants {
       armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
 
-      armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(125)), Units.degreesToRadians(260));
+      armSetPoints[11] = new ArmPoint(new Translation2d(-33, 30), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position
 
       armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
       

@@ -57,7 +57,7 @@ public class Climb extends SubsystemBase {
       climbLeft
           .getConfigurator()
           .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.Clockwise_Positive)
+          .withInverted(InvertedValue.CounterClockwise_Positive)
               .withNeutralMode(NeutralModeValue.Brake)));
       climbRight
           .getConfigurator()
@@ -110,14 +110,14 @@ public class Climb extends SubsystemBase {
           climbRight.getConfigurator().apply(climbConfig);
         }
   public boolean climbed() {
-    return Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
+    return false;//Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
   }
 
   public double getCurrentLimit() {
     return climbConfig.CurrentLimits.StatorCurrentLimit;
   }
   public Command climb() {
-    return new InstantCommand(() -> setFOC(ClimbConstants.currentLimit));
+    return new InstantCommand(() -> setPower(ClimbConstants.power));//setFOC(ClimbConstants.currentLimit));
   }
   public void setFOC(double current){
     climbLeft.setControl(new TorqueCurrentFOC(current)); 

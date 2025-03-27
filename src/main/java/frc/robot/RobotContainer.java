@@ -247,12 +247,12 @@ public class RobotContainer {
     joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
 
     // wrist fix offset
-    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
-    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
+    // joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
+    // joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
 
     // climb
-    // joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
-    // joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
+    joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(new WaitCommand(0.3).andThen(climb.deploy()));
+    joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
 
 
     /* autodrive TODO: rebind to not conflict with drive stick */
