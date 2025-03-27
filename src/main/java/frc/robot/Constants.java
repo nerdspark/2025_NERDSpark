@@ -423,7 +423,7 @@ public static class BucketConstants {
       armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(90)), Units.degreesToRadians(80));
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(80));
 
-      armSetPoints[11] = new ArmPoint(new Translation2d(-33, 30), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position
+      armSetPoints[11] = new ArmPoint(new Translation2d(-21.5, 0.1), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
 
       armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
       
