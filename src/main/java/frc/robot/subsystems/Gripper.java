@@ -76,10 +76,10 @@ public class Gripper extends SubsystemBase {
     return new GripperCommand(this, 1.0, 20);
   }
   public Command algaeIntakeCommand() {
-    return new GripperCommand(this, 0.7, 25);
+    return new GripperCommand(this, 0.6, 30);
   }
   public Command algaeDefaultCommand() {
-    return new GripperCommand(this, 0.5, 13);
+    return new GripperCommand(this, 0.5, 14);
   }
   public Command spitOutCommand() {
     return new GripperCommand(this, -1.0, 20);

@@ -93,11 +93,12 @@ public class ArmActions {
     public static Command shootAlgaeBarge(Arm arm, Gripper gripper) {
       return new SequentialCommandGroup(
         new ArmInstantCommand(arm, () -> 10), 
-        new WaitCommand(0.1), 
-        gripper.algaeSpitCommand(), 
         new WaitCommand(0.2), 
-        gripper.neutralCommand(),
-        arm.goToHome());
+        gripper.algaeSpitCommand(), 
+        new WaitCommand(0.04), 
+        arm.goToHome(), 
+        new WaitCommand(0.05),
+        gripper.neutralCommand());
     }
 
     public static Command armToProcessor(Arm arm, Gripper gripper) {
