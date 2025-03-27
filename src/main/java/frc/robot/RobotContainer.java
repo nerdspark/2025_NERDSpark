@@ -28,8 +28,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -104,6 +107,11 @@ public class RobotContainer {
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
     public final ScoringProfileSubsystem scoringSubsystem;
+    private final PIDController thetaController =
+    new PIDController(
+        3, 0,0);//, new TrapezoidProfile.Constraints(Math.toRadians(540), Math.toRadians(360))); //3, 10, 0
+
+          
 
 
 
@@ -115,6 +123,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
@@ -240,9 +249,19 @@ public class RobotContainer {
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
 
-    // algae dropoff
-    joystick.y().onTrue(ArmActions.armToAlgaeBarge(arm))
-      .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+    // algae dropoff (odo-based)
+    // joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)
+    //   .andThen(new WaitUntilCommand(() -> Math.abs(drivetrain.getState().Pose.getMeasureX().abs(Meter) - FieldConstants.fieldLength/2) < Constants.shootAlgaeDistance))
+    //   .andThen(ArmActions.shootAlgaeBarge(arm, gripper))
+    // .deadlineFor(
+    //   drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
+    //   .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), 0)))))
+    // .onFalse(arm.goToHome());
+
+    //algae dropoff driver-based
+    joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
+    .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), 0)))))
+    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.3)));
 
     // joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
 

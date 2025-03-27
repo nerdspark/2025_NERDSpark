@@ -396,9 +396,9 @@ public class Arm extends SubsystemBase {
     //     elbowRight.setControl(new DutyCycleOut(0));
     // } else {
     elbowLeft.setControl(
-            new MotionMagicVoltage(position).withPosition(position).withSlot(0));
+            new PositionVoltage(position).withPosition(position).withSlot(0));
     elbowRight.setControl(
-            new MotionMagicVoltage(position).withPosition(position).withSlot(0));
+            new PositionVoltage(position).withPosition(position).withSlot(0));
       // }
     // SmartDashboard.putNumber("elbow Left Position error", position - elbowLeft.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("elbow Right Position error", position - elbowRight.getPosition().getValueAsDouble());
@@ -456,7 +456,7 @@ public class Arm extends SubsystemBase {
       // TODO: Same question in getWristTarget()
       flipPosition += getElbowPosition() * (ArmConstants.wristToElbowRatio - 1.0);
       flipPosition /= (2d*Math.PI);
-      wrist.setControl(new MotionMagicVoltage(flipPosition).withPosition(flipPosition).withSlot(0));
+      wrist.setControl(new PositionVoltage(flipPosition).withPosition(flipPosition).withSlot(0));
     }
   }
 
@@ -521,9 +521,9 @@ public class Arm extends SubsystemBase {
     //     shoulderRight.setControl(new DutyCycleOut(0));
     // } else {
         shoulderLeft.setControl(
-                new MotionMagicVoltage(position).withPosition(position).withSlot(0));
+                new PositionVoltage(position).withPosition(position).withSlot(0));
         shoulderRight.setControl(
-                new MotionMagicVoltage(position).withPosition(position).withSlot(0));
+                new PositionVoltage(position).withPosition(position).withSlot(0));
           // SmartDashboard.putNumber("shoulder target pos", position);
     // SmartDashboard.putNumber("shoulder Left Position error", position - shoulderLeft.getPosition().getValueAsDouble());
     // SmartDashboard.putNumber("shoulder Right Position error", position - shoulderRight.getPosition().getValueAsDouble());
@@ -640,6 +640,9 @@ public class Arm extends SubsystemBase {
     SignalLogger.writeDouble("elbow pos", getElbowPosition());
     SignalLogger.writeDouble("shoulder pos", getShoulderPosition());
     SignalLogger.writeDouble("wrist flip pos", getWristPosition());
+    SmartDashboard.putNumber("elbow pos", getElbowPosition());
+    SmartDashboard.putNumber("shoulder pos", getShoulderPosition());
+    SmartDashboard.putNumber("wrist flip pos", getWristPosition());
     // SmartDashboard.putNumber("shoulder velocity", getShoulderVelocity());
     // SmartDashboard.putNumber("elbow velocity", getElbowVelocity());
     // SmartDashboard.putNumber("left elbow amp", elbowLeft.getDutyCycle().getValueAsDouble());

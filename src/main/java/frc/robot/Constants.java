@@ -54,6 +54,8 @@ import frc.robot.util.ArmPoint;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static double shootAlgaeDistance = 2; // m from center of field
+  public static double shootAlgaeDriveSpeed = 1; // max 5.81 m/s
   
   public static class ClimbConstants {
     public static final int kLeftID = 61;
@@ -251,10 +253,10 @@ public static class BucketConstants {
       public static final double elbowP = 200.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 40.0;
-      public static final double wristP = 300.0; //20.0
+      public static final double wristP = 25.0; //20.0
       public static final double wristG = 0.0; //20.0 
       public static final double wristI = 0.0;
-      public static final double wristD = 0;
+      public static final double wristD = 0.0;
       public static final double wristVelocity = 2;
       public static final double wristAcceleration = 2;
       public static final double gripperP = 28.0; // 10.0
@@ -314,10 +316,10 @@ public static class BucketConstants {
     public static final int gripperMotorPort = 46;
     public static final String armCanBus = "canivore1";
 
-    public static final double currentLimitShoulder = 5.0;//25
-    public static final double currentLimitElbow = 5.0;//25
-    public static final double currentLimitWrist = 5.0; //35
-    public static final double gripperCurrentLimitDefault = 5.0;//10
+    public static final double currentLimitShoulder = 25.0;//25
+    public static final double currentLimitElbow = 25.0;//25
+    public static final double currentLimitWrist = 65.0; //35
+    public static final double gripperCurrentLimitDefault = 10.0;//10
     public static final double gripperPowerDefault = 0.1;
 
 
@@ -348,9 +350,9 @@ public static class BucketConstants {
     public static final double wristRadPerRot = wristGearRatio;
     public static final double gripperRadPerRot = gripperGearRatio;
     public static final double gripperOffset = 0;
-    public static final double shoulderOffset = -0.570 / 2.0 / Math.PI; // radians, fwd = 0
-    public static final double elbowOffset = 1.932 / 2.0 / Math.PI; // negative of measurement
-    public static final double wristOffset = 4.82 / 2.0 / Math.PI; // 
+    public static final double shoulderOffset = -0.476 / 2.0 / Math.PI; // radians, fwd = 0
+    public static final double elbowOffset = 2.032 / 2.0 / Math.PI; // negative of measurement
+    public static final double wristOffset = 4.949 / 2.0 / Math.PI; // 
 
     /** wrist flip belting ratio between elbow and the wrist */
     public static final double wristToElbowRatio = 1.0/(35.0 / 50.0);
@@ -366,7 +368,7 @@ public static class BucketConstants {
   public static class ArmSetpoints {
 
     public static final int setPointCount = 13;
-    public static final Translation2d home = new Translation2d(9.7, 10.7);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
+    public static final Translation2d home = new Translation2d(8.5, 11.5);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final double homeWrist = Units.degreesToRadians(110);
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
@@ -419,8 +421,8 @@ public static class BucketConstants {
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(223.5)).rotateElbowBy(Rotation2d.fromDegrees(-30));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
-      armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
-      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(60)), Units.degreesToRadians(45));
+      armSetPoints[9] = new ArmPoint(new Translation2d(30, Rotation2d.fromDegrees(90)), Units.degreesToRadians(95));
+      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(95));
 
       armSetPoints[11] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(125)), Units.degreesToRadians(260));
 

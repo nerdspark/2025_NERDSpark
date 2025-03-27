@@ -54,6 +54,9 @@ public class Gripper extends SubsystemBase {
   public void setGripperPower(double power) {
     gripper.set(power); 
   }
+  public double getGripperVoltage() {
+    return gripper.getMotorVoltage().getValueAsDouble();
+  }
 
   public void setCurrentLimit(double currentLimit) {
     gripperConfig.CurrentLimits = new CurrentLimitsConfigs()
@@ -65,9 +68,7 @@ public class Gripper extends SubsystemBase {
   public double getCurrentLimit() {
     return gripperConfig.CurrentLimits.StatorCurrentLimit;
   }
-  public Command algaeDefaultCommand() {
-    return new GripperCommand(this, 1.0, 30);
-  }
+  
   public Command coralDefaultCommand() {
     return new GripperCommand(this, 0.2, 10);
   }
@@ -75,7 +76,10 @@ public class Gripper extends SubsystemBase {
     return new GripperCommand(this, 1.0, 20);
   }
   public Command algaeIntakeCommand() {
-    return new GripperCommand(this, 1.0, 30);
+    return new GripperCommand(this, 0.7, 25);
+  }
+  public Command algaeDefaultCommand() {
+    return new GripperCommand(this, 0.5, 13);
   }
   public Command spitOutCommand() {
     return new GripperCommand(this, -1.0, 20);
