@@ -77,9 +77,12 @@ public class Elevator extends SubsystemBase {
         return setGoal(height).until(()->aroundHeight(height));
     }
 
+
+    // we could prob condense these two functions into one
     public boolean aroundHeight(double height){
         return findIfAroundHeight(height, Constants.ElevatorConstants.kElevatorDefaultTolerance);
     }
+
     public boolean findIfAroundHeight(double height, double tolerance){
         return MathUtil.isNear(height,getPositionMeters(),tolerance);
     }
