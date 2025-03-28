@@ -7,7 +7,10 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -133,6 +136,7 @@ public static class Vision {
         public static boolean DOGLOG_ENABLED = false;
 
         public static final boolean USE_VISION = true;
+        public static final boolean USE_QUESTNAV = true;
 
         public static final boolean USE_BUTTON_BOARD = true;
 
@@ -220,6 +224,9 @@ public static class Vision {
           coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
          
         }
+        
+        public static final Set<Integer> nonReefTagFiducialIDs = new HashSet<>(Set.of(1, 2, 3, 4, 5, 12, 13, 14, 15, 16));
+
     }
 
     public static final double gyroP = 2;
