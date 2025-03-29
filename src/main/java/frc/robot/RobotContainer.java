@@ -293,7 +293,7 @@ public class RobotContainer {
     ()-> false,
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget())).onFalse(arm.goToHome().alongWith(gripper.neutralCommand()));
+    ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget())).and(() -> !gripper.hasGamePiece).onFalse(arm.goToHome().alongWith(gripper.neutralCommand()));
 
     joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
     () -> drivetrain.getState().Pose,

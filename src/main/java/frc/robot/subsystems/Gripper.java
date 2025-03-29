@@ -29,6 +29,7 @@ import frc.robot.commands.GripperCommand;
 public class Gripper extends SubsystemBase {
   private TalonFX gripper;
   private TalonFXConfiguration gripperConfig = new TalonFXConfiguration();
+  public boolean hasGamePiece = false;
   /** Creates a new Gripper. */
   public Gripper() {
     gripper = new TalonFX(ArmConstants.gripperMotorPort, ArmConstants.armCanBus);
@@ -53,6 +54,7 @@ public class Gripper extends SubsystemBase {
   
   public void setGripperPower(double power) {
     gripper.set(power); 
+    hasGamePiece = power > 0;
   }
   public double getGripperVoltage() {
     return gripper.getMotorVoltage().getValueAsDouble();
@@ -76,10 +78,10 @@ public class Gripper extends SubsystemBase {
     return new GripperCommand(this, 1.0, 20);
   }
   public Command algaeIntakeCommand() {
-    return new GripperCommand(this, 0.6, 30);
+    return new GripperCommand(this, 1.0, 40);
   }
   public Command algaeDefaultCommand() {
-    return new GripperCommand(this, 0.7, 18);
+    return new GripperCommand(this, 1.0, 40);
   }
   public Command spitOutCommand() {
     return new GripperCommand(this, -1.0, 20);

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandPathToPoint;
@@ -63,7 +64,7 @@ public class ArmActions {
   public static Command dunkDropCoral(Arm arm, Gripper gripper, IntSupplier setPointIndex) {
     return 
       new ArmInstantCommand(arm, () -> ArmSetpoints.armSetPointsDunkAuto[setPointIndex.getAsInt()]).andThen(
-      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHotel().andThen(new WaitCommand(0.7).andThen(gripper.neutralCommand().alongWith(arm.goToHome())))));
+      new WaitCommand(0.25).andThen(gripper.spitOutCommand())).andThen(new WaitCommand(0.35).andThen(arm.goToHotel().andThen(new WaitCommand(0.3).andThen(gripper.neutralCommand().alongWith(arm.goToHome())))));
   }
 
   /** tilt wrist downwards manually 
