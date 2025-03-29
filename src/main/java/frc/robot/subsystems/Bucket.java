@@ -78,7 +78,7 @@ public class Bucket extends SubsystemBase {
   
   public boolean getLeftCoralDetected() {
     for (double distance : prevDistancesLeft) {
-      if (distance > BucketConstants.coralDistance) {
+      if (distance > BucketConstants.coralDistance || distance < 0.001) {
         return false;
       }
     }
@@ -86,7 +86,7 @@ public class Bucket extends SubsystemBase {
   }
   public boolean getRightCoralDetected() {
     for (double distance : prevDistancesRight) {
-      if (distance > BucketConstants.coralDistance) {
+      if (distance > BucketConstants.coralDistance || distance < 0.001) {
         return false;
       }
     }

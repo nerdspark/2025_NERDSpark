@@ -80,6 +80,7 @@ public class RobotContainer {
   private BooleanSupplier bucketHasCoral = () -> false;
     private Trigger bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     private Trigger driveTrainFinishedMovingTrigger = new Trigger(driveTrainFinishedMoving);
+    private Supplier<Double> distanceToReef = () -> 0.0;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -196,6 +197,7 @@ public class RobotContainer {
   }
   private void configureTriggers() {
     bucketHasCoral = () -> bucket.getDetected();
+    distanceToReef = () -> drivetrain.getState().Pose.getTranslation().getDistance(scoringSubsystem.getRobotPoseForSelectedBranch().getTranslation()); 
     driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1;
     //  || poseEstimatorSubsystem.getCurrentPose().getTranslation().getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
@@ -244,7 +246,7 @@ public class RobotContainer {
 
     // coral pickup
     joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper)).onTrue(bucket.disableAutoBucket());
-    // bucketHasCoralTrigger.onTrue(ArmActions.grabFromFunnel(arm, gripper));
+    bucketHasCoralTrigger.onTrue(ArmActions.grabFromFunnel(arm, gripper));
 
     // algae pickup
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
@@ -356,31 +358,33 @@ public class RobotContainer {
   }
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
-    if((bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean()) && driveTrainFinishedMoving.getAsBoolean()){
-        joystick.rightBumper().onFalse(LEDs.runPattern(
-          () -> LEDPattern.steps(
-          Map.of(
-            0,
-            LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
-          )
-        )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
-        ));
-      
-    } else {
-      joystick.rightBumper().onFalse(
-        LEDs.runPattern(
-      () -> LEDPattern.steps(
-      Map.of(
-        0,
-        LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
-      )
-      )
-    )
-      );
     
-    }
-    bucketHasCoralTrigger.or(driveTrainFinishedMoving).and(() -> DriverStation.isTeleop())
-      .onTrue(LEDs.blink()).onFalse(LEDs.breathe());
+    LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(bucketHasCoral, () -> joystick.rightBumper().getAsBoolean(), distanceToReef))));
+    // if((bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean()) && driveTrainFinishedMoving.getAsBoolean()){
+    //     joystick.rightBumper().onFalse(LEDs.runPattern(
+    //       () -> LEDPattern.steps(
+    //       Map.of(
+    //         0,
+    //         LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
+    //       )
+    //     )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
+    //     ));
+      
+    // } else {
+    //   joystick.rightBumper().onFalse(
+    //     LEDs.runPattern(
+    //   () -> LEDPattern.steps(
+    //   Map.of(
+    //     0,
+    //     LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
+    //   )
+    //   )
+    // )
+    //   );
+    
+    // }
+    // bucketHasCoralTrigger.or(driveTrainFinishedMoving).and(() -> DriverStation.isTeleop())
+    //   .onTrue(LEDs.blink()).onFalse(LEDs.breathe());
     
 
   }

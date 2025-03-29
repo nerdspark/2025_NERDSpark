@@ -259,8 +259,8 @@ public static class BucketConstants {
       public static final double wristG = 0.0; //20.0 
       public static final double wristI = 0.0;
       public static final double wristD = 0.0;
-      public static final double wristVelocity = 8;
-      public static final double wristAcceleration = 6;
+      public static final double wristVelocity = 16;
+      public static final double wristAcceleration = 12;
       public static final double gripperP = 28.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
@@ -418,7 +418,7 @@ public static class BucketConstants {
       armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 20.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 36.5), Units.degreesToRadians(180)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
-      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(223.5)).rotateElbowBy(Rotation2d.fromDegrees(-30));
+      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(260)).rotateElbowBy(Rotation2d.fromDegrees(-25));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
       armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(90)), Units.degreesToRadians(80));
@@ -532,7 +532,7 @@ intermediatePoints[4][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final double scrollSpeed = 40; 
     public static final double numOfSteps = 3.0;
     public static final int kPort = 3;
-    public static final int kLength = 120;
+    public static final int kLength = 175;
     public static final double blinkSeconds = 1.0;
   }
 
