@@ -60,18 +60,18 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 105;
+    public static final double currentLimit = 105.0 / 1.8;
     // public static final double ampTriggeredCurrentLimit = 2;
-    public static final double power = 0.3;
-    public static final double deployPosition = -70.5; // rot
+    public static final double power = 0.15;
+    public static final double deployPosition = -71.5 * 1.8; // rot
     // public static final double climbedPosition = -18; // rot
     public static final double rampRate = 0.2;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
-    public static final double servoOpenPosition = 1.0;
-    public static final double servoCloseposition = 0.0;
+    // public static final double servoOpenPosition = 1.0;
+    // public static final double servoCloseposition = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -411,7 +411,7 @@ public static class BucketConstants {
       Translation2d gripperAlgaeOffset = gripperOffset.plus(new Translation2d(8.0, 0.0));
 
       armSetPoints[1] = new ArmPoint(home, Units.degreesToRadians(110));
-      armSetPoints[2] = new ArmPoint(new Translation2d(-10.7, 26), Units.degreesToRadians(180 + 105));//new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
+      armSetPoints[2] = new ArmPoint(new Translation2d(-10.7, 22), Units.degreesToRadians(180 + 105));//new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
       armSetPoints[3] = new ArmPoint(new Translation2d(-10.7, 27.5), Units.degreesToRadians(105));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(115));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
 
@@ -454,7 +454,7 @@ public static class BucketConstants {
     static {
       armSetPointsDunkAuto[0] = armSetPoints[0];
       armSetPointsDunkAuto[1] = armSetPoints[1];
-      armSetPointsDunkAuto[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-45)).add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.5))));
+      armSetPointsDunkAuto[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-60)).add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.5))));
       armSetPointsDunkAuto[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.2)))).addToWristFlip(Units.degreesToRadians(90));
       armSetPointsDunkAuto[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60)).add(new Translation2d(-2, -4));
     }
