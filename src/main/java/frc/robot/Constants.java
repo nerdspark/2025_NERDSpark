@@ -255,12 +255,12 @@ public static class BucketConstants {
       public static final double elbowP = 200.0;//20.0
       public static final double elbowI = 0.0;
       public static final double elbowD = 40.0;
-      public static final double wristP = 18.0; //20.0
+      public static final double wristP = 15.0; //20.0
       public static final double wristG = 0.0; //20.0 
       public static final double wristI = 0.0;
       public static final double wristD = 0.0;
-      public static final double wristVelocity = 3;
-      public static final double wristAcceleration = 2;
+      public static final double wristVelocity = 8;
+      public static final double wristAcceleration = 6;
       public static final double gripperP = 28.0; // 10.0
       public static final double gripperI = 0.0;
       public static final double gripperD = 0.0;
@@ -320,7 +320,7 @@ public static class BucketConstants {
 
     public static final double currentLimitShoulder = 30.0;//25
     public static final double currentLimitElbow = 30.0;//25
-    public static final double currentLimitWrist = 60.0; //35
+    public static final double currentLimitWrist = 75.0; //35
     public static final double gripperCurrentLimitDefault = 10.0;//10
     public static final double gripperPowerDefault = 0.1;
 
