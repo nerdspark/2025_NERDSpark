@@ -202,7 +202,7 @@ public class RobotContainer {
     .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1;
     //  || poseEstimatorSubsystem.getCurrentPose().getTranslation().getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     gripperHasGamePiece = () -> Bucket.gripperHasGamePiece;
-    bucketHasCoralTrigger = new Trigger(bucketHasCoral).and(() -> DriverStation.isTeleop()).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5));
+    bucketHasCoralTrigger = new Trigger(bucketHasCoral).and(() -> DriverStation.isTeleop()).and(() -> !Bucket.gripperHasGamePiece).and(() -> (arm.getArmPosition().getDistance(ArmSetpoints.home) < 5)).and(() -> scoringSubsystem.getArmReefTarget() >=2);
     // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     
   }

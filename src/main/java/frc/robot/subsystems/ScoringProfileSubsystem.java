@@ -62,7 +62,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   }
   public int getArmReefTarget() {
     
-    return reefLevel.level;
+    return reefLevel.level == 0 ? 1 : reefLevel.level;
     
   }
   public int getArmSubstationTarget() {
