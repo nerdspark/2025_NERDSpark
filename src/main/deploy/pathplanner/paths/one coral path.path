@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "armToL4",
-      "waypointRelativePos": 0.15073115860516673,
+      "waypointRelativePos": 0.6029246344206863,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
