@@ -168,8 +168,8 @@ public static class Vision {
         public static final double ROTATION_TOLERANCE = Math.toRadians(1.3); // /deg
 
         //Below same as pathplanner constants
-        public static final double MAX_VELOCITY = 4.5; 
-        public static final double MAX_ACCELARATION = 2; 
+        public static final double MAX_VELOCITY = 3; 
+        public static final double MAX_ACCELERATION = 5; 
         public static final double MAX_VELOCITY_ROTATION = 540; 
         public static final double MAX_ACCELARATION_ROTATION = 720;
         

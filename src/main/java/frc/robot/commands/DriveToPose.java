@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -53,10 +54,10 @@ public class DriveToPose extends Command {
 //       new ProfiledPIDController(
 //           Constants.Vision.kPXController, Constants.Vision.kIThetaController, Constants.Vision.kDThetaController, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs);
   
-
+private final SlewRateLimiter driveLimiter = new SlewRateLimiter(Constants.Vision.MAX_ACCELERATION);
 private final ProfiledPIDController driveController =
       new ProfiledPIDController(
-          15, 0, 0.1, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
+          0.5, 0, 0.1, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELERATION), loopPeriodSecs); //10, 0, 0
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
           7, 0,0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
@@ -98,18 +99,18 @@ private final ProfiledPIDController driveController =
     
     driveController.reset(
         currentPose.getTranslation().getDistance(poseSupplier.get().getTranslation()),
-        Math.min(
-            0.0,
+        // Math.min(
+            // 0.0,
             -new Translation2d(
-                drive.getCurrentRobotChassisSpeeds().vxMetersPerSecond, drive.getCurrentRobotChassisSpeeds().vyMetersPerSecond)
-                .rotateBy(
-                    poseSupplier
-                        .get()
-                        .getTranslation()
-                        .minus(drive.getState().Pose.getTranslation())
-                        .getAngle())
-                        .unaryMinus()
-                .getX()));
+                drive.getCurrentRobotChassisSpeeds().vxMetersPerSecond, drive.getCurrentRobotChassisSpeeds().vyMetersPerSecond).getNorm());
+                // .rotateBy(
+                //     poseSupplier
+                //         .get()
+                //         .getTranslation()
+                //         .minus(drive.getState().Pose.getTranslation())
+                //         .getAngle())
+                //         .unaryMinus()
+                // .getX());
     thetaController.reset(currentPose.getRotation().getRadians(), drive.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
     lastSetpointTranslation = drive.getState().Pose.getTranslation();
   }
@@ -132,21 +133,18 @@ private final ProfiledPIDController driveController =
     double currentDistance =
         currentPose.getTranslation().getDistance(poseSupplier.get().getTranslation());
     double ffScaler =
-        MathUtil.clamp(
-            (currentDistance - 0.1) / (0.8 - 0.1),
-            0.0,
-            1.0);
+        0.0;
     driveErrorAbs = currentDistance;
 
     driveController.reset(
         lastSetpointTranslation.getDistance(targetPose.getTranslation()),
         driveController.getSetpoint().velocity);
 
-    double driveVelocityScalar =
-        driveController.getSetpoint().velocity * ffScaler +
-             driveController.calculate(driveErrorAbs, 0.0);
+    double driveVelocityScalar = driveLimiter.calculate(
+        // driveController.getSetpoint().velocity * ffScaler +
+             driveController.calculate(driveErrorAbs, 0.0));
 
-    if (currentDistance < driveController.getPositionTolerance()) driveVelocityScalar = 0.0;
+    if (currentDistance < driveController.getPositionTolerance()) {driveVelocityScalar = 0.0;}
     lastSetpointTranslation =
         new Pose2d(
                 targetPose.getTranslation(),
@@ -184,19 +182,19 @@ private final ProfiledPIDController driveController =
     }
 
 
-    if(linearS >0)
-    driveVelocity =
-        driveVelocity.interpolate(linearFF.get().times(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)), linearS);
-    if(thetaS >0 )
-    thetaVelocity =
-        MathUtil.interpolate(
-            thetaVelocity, omegaFF.getAsDouble() * RotationsPerSecond.of(0.75).in(RadiansPerSecond), thetaS);
-            if (Vision.DOGLOG_ENABLED){
+    // if(linearS >0)
+    // driveVelocity =
+    //     driveVelocity.interpolate(linearFF.get().times(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)), linearS);
+    // if(thetaS >0 )
+    // thetaVelocity =
+    //     MathUtil.interpolate(
+    //         thetaVelocity, omegaFF.getAsDouble() * RotationsPerSecond.of(0.75).in(RadiansPerSecond), thetaS);
+    //         if (Vision.DOGLOG_ENABLED){
 
-            DogLog.log("DriveToPose/driveVelocity.X_I", driveVelocity.getX());
-            DogLog.log("DriveToPose/driveVelocity.Y_I", driveVelocity.getY());
-            DogLog.log("DriveToPose/thetaVelocity_I", thetaVelocity);
-            }
+    //         DogLog.log("DriveToPose/driveVelocity.X_I", driveVelocity.getX());
+    //         DogLog.log("DriveToPose/driveVelocity.Y_I", driveVelocity.getY());
+    //         DogLog.log("DriveToPose/thetaVelocity_I", thetaVelocity);
+    //         }
     
     drive.setControl(driveToPoseRequest.withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(driveVelocity.getX(),driveVelocity.getY(),
     thetaVelocity, drive.getState().Pose.getRotation())).withDriveRequestType(DriveRequestType.Velocity));
