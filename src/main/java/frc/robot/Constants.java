@@ -60,11 +60,12 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double currentLimit = 105.0 / 1.8;
+    public static final double climbCurrentLimit = 60;
+    public static final double holdCurrentLimit = 45;
     // public static final double ampTriggeredCurrentLimit = 2;
     public static final double power = 0.15;
-    public static final double deployPosition = -71.5 * 1.8; // rot
-    // public static final double climbedPosition = -18; // rot
+    public static final double deployPosition = -128.7; // rot
+    public static final double climbedPosition = -32.4; // rot
     public static final double rampRate = 0.2;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
@@ -424,7 +425,7 @@ public static class BucketConstants {
       armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(90)), Units.degreesToRadians(108));
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(108));
 
-      armSetPoints[11] = new ArmPoint(new Translation2d(-21.5, 0.1), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
+      armSetPoints[11] = new ArmPoint(new Translation2d(-20, 0.1), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
 
       armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
 
@@ -534,6 +535,18 @@ intermediatePoints[4][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translatio
     public static final int kPort = 3;
     public static final int kLength = 175;
     public static final double blinkSeconds = 1.0;
+    public static InterpolatingDoubleTreeMap driveToPoseDistanceMap = new InterpolatingDoubleTreeMap();
+      static {
+        // Key: cardinal joystick distance
+        // Value: % max speed
+        driveToPoseDistanceMap.put(0.02, 0.00);
+        driveToPoseDistanceMap.put(0.021, 0.25);
+        driveToPoseDistanceMap.put(0.05, 0.35);
+        driveToPoseDistanceMap.put(0.1, 0.45);
+        driveToPoseDistanceMap.put(0.2, 0.55);
+        driveToPoseDistanceMap.put(0.5, 0.65);
+        driveToPoseDistanceMap.put(1.0, 0.80);
+        driveToPoseDistanceMap.put(3.0, 1.0);
+      }
   }
-
 }

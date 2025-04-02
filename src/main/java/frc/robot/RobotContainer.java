@@ -263,7 +263,7 @@ public class RobotContainer {
     //algae dropoff driver-based
     joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
     .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), 0)))))
-    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.35)));
+    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.31)));
 
     // joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
 
@@ -273,7 +273,7 @@ public class RobotContainer {
 
     // climb
     joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(new WaitCommand(0.3).andThen(climb.deploy()));
-    joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
+    joystick.start().onTrue(climb.climb());
 
 
     /* autodrive TODO: rebind to not conflict with drive stick */

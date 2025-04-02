@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import com.ctre.phoenix6.signals.Led1OffColorValue;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
+import frc.robot.Constants.LEDConstants;
 public class LEDSubsytem extends SubsystemBase {
   private static final int kPort = Constants.LEDConstants.kPort;
   private static final int kLength = Constants.LEDConstants.kLength;
@@ -73,15 +76,17 @@ public class LEDSubsytem extends SubsystemBase {
     }
     
    } else {
-    if (distanceToReef.get() >= 1.0) {
-      color = new Color(0.0f, 1.0f, 0.0f); // red
-    } else if (distanceToReef.get() >= .3) {
-      color = new Color(0.0f, 1.0f, 1.0f); // magenta
-    } else if (distanceToReef.get() >= .1) {
-      color = new Color(0.0f, 0.0f, 1.0f); // blue
-    } else {
-      color = new Color(1.0f, 0.0f, 0.0f); // green
-    }
+    double colorRatio = MathUtil.clamp(LEDConstants.driveToPoseDistanceMap.get(distanceToReef.get()), 0, 1);
+    color = new Color(Math.abs(Math.sin(colorRatio*Math.PI*0.5)), Math.abs(Math.cos(colorRatio*Math.PI*0.5)), 0);
+    // if (distanceToReef.get() >= 1.0) {
+    //   color = new Color(0.0f, 1.0f, 0.0f); // red
+    // } else if (distanceToReef.get() >= .3) {
+    //   color = new Color(0.0f, 1.0f, 1.0f); // magenta
+    // } else if (distanceToReef.get() >= .1) {
+    //   color = new Color(0.0f, 0.0f, 1.0f); // blue
+    // } else {
+    //   color = new Color(1.0f, 0.0f, 0.0f); // green
+    // }
     }
    
     // if (driveTrainFinishedMoving.get()) {}

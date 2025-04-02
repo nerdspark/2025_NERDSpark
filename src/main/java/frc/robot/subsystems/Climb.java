@@ -44,7 +44,7 @@ public class Climb extends SubsystemBase {
     climbLeft = new TalonFX(ClimbConstants.kLeftID, ClimbConstants.canBus);
     climbRight = new TalonFX(ClimbConstants.kRightID, ClimbConstants.canBus);
     climbConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ClimbConstants.currentLimit)
+          .withStatorCurrentLimit(ClimbConstants.climbCurrentLimit)
           .withStatorCurrentLimitEnable(true);
       climbConfig.Feedback = new FeedbackConfigs()
           .withFeedbackRotorOffset(0)
@@ -110,14 +110,34 @@ public class Climb extends SubsystemBase {
           climbRight.getConfigurator().apply(climbConfig);
         }
   public boolean climbed() {
-    return false;//Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
+    return Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
   }
 
   public double getCurrentLimit() {
     return climbConfig.CurrentLimits.StatorCurrentLimit;
   }
   public Command climb() {
-    return new InstantCommand(() -> setPower(ClimbConstants.power));//setFOC(ClimbConstants.currentLimit));
+    return new Command() {
+      @Override
+      public void initialize() {
+        if (!climbed()) {
+          setPower(ClimbConstants.power);
+          setCurrentLimit(ClimbConstants.climbCurrentLimit);
+        }
+      }
+      @Override
+      public boolean isFinished() {
+        return climbed();
+      }
+      @Override
+      public void end(boolean interrupted) {
+        if (interrupted) {
+          stop();
+        } else {
+          setCurrentLimit(ClimbConstants.holdCurrentLimit);
+        }
+      }
+    };
   }
   public void setFOC(double current){
     climbLeft.setControl(new TorqueCurrentFOC(current)); 
