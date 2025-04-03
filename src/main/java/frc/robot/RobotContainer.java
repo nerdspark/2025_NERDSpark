@@ -273,7 +273,7 @@ public class RobotContainer {
 
     // climb
     joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(new WaitCommand(0.3).andThen(climb.deploy()));
-    joystick.start().onTrue(climb.climb());
+    joystick.start().whileTrue(climb.climb());//.climbInstantCommand()).onFalse(climb.stopCommand());
 
 
     /* autodrive TODO: rebind to not conflict with drive stick */
