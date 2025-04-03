@@ -37,7 +37,7 @@ public class ArmActions {
     return new SequentialCommandGroup(
           gripper.coralIntakeCommand(),
           // new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7].withWrist(Math.PI)).withTimeout(0.2), 
-          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.37), 
+          new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.40), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[0].withWrist(ArmSetpoints.armSetPoints[7].wrist)).withTimeout(0.38), 
           gripper.coralDefaultCommand(), 
           new ArmCommand(arm, () -> ArmSetpoints.armSetPoints[7]).withTimeout(0.2), 

@@ -263,7 +263,7 @@ public class RobotContainer {
 
     //algae dropoff driver-based
     joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
-    .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().equals(Alliance.Blue) ? 0 : Math.PI)))))
+    .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().get().equals(Alliance.Red) ? 0 : Math.PI)))))
     .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.31)));
 
     // joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
