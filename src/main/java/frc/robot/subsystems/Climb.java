@@ -106,8 +106,12 @@ public class Climb extends SubsystemBase {
     climbConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(currentLimit)
           .withStatorCurrentLimitEnable(true);
-          climbLeft.getConfigurator().apply(climbConfig);
-          climbRight.getConfigurator().apply(climbConfig);
+          climbLeft.getConfigurator().apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
+          .withInverted(InvertedValue.CounterClockwise_Positive)
+              .withNeutralMode(NeutralModeValue.Brake)));
+          climbRight.getConfigurator().apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
+          .withInverted(InvertedValue.Clockwise_Positive)
+              .withNeutralMode(NeutralModeValue.Brake)));
         }
   public boolean climbed() {
     return Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
@@ -118,26 +122,35 @@ public class Climb extends SubsystemBase {
   }
   public Command climb() {
     return new Command() {
+      // @Override
+      // public void initialize() {
+      //   if (!climbed()) {
+      //     setCurrentLimit(ClimbConstants.climbCurrentLimit);
+      //     setPower(ClimbConstants.power);
+      //   }
+      // }
       @Override
-      public void initialize() {
-        if (!climbed()) {
-          setPower(ClimbConstants.power);
-          setCurrentLimit(ClimbConstants.climbCurrentLimit);
-        }
-      }
-      @Override
-      public boolean isFinished() {
-        return climbed();
-      }
+          public void execute() {
+              // TODO Auto-generated method stub
+              if (!climbed()) {
+                setCurrentLimit(ClimbConstants.climbCurrentLimit);
+                setPower(ClimbConstants.power);
+              } else {
+                setCurrentLimit(ClimbConstants.holdCurrentLimit);
+                setPower(ClimbConstants.power);
+              }
+          }
+      
       @Override
       public void end(boolean interrupted) {
-        if (interrupted) {
+        // if (interrupted) {
           stop();
-        } else {
-          setCurrentLimit(ClimbConstants.holdCurrentLimit);
-        }
+        // }
       }
     };
+  }
+  public InstantCommand climbInstantCommand() {
+    return new InstantCommand(() -> setPower(ClimbConstants.power));
   }
   public void setFOC(double current){
     climbLeft.setControl(new TorqueCurrentFOC(current)); 
@@ -183,7 +196,10 @@ public class Climb extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
+    SignalLogger.writeDouble("climb pos", getPosition());
+    SignalLogger.writeDouble("climb right pos", climbRight.getPosition().getValueAsDouble());
+    SignalLogger.writeDouble("climb left pos", climbLeft.getPosition().getValueAsDouble());
+
     SmartDashboard.putNumber("climb pos", getPosition());
     SmartDashboard.putNumber("climb right pos", climbRight.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("climb left pos", climbLeft.getPosition().getValueAsDouble());

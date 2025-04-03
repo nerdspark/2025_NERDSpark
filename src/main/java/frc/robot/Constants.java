@@ -60,12 +60,12 @@ public final class Constants {
   public static class ClimbConstants {
     public static final int kLeftID = 61;
     public static final int kRightID = 62;
-    public static final double climbCurrentLimit = 60;
-    public static final double holdCurrentLimit = 45;
+    public static final double climbCurrentLimit = 65;
+    public static final double holdCurrentLimit = 25;
     // public static final double ampTriggeredCurrentLimit = 2;
-    public static final double power = 0.15;
+    public static final double power = 0.20;
     public static final double deployPosition = -128.7; // rot
-    public static final double climbedPosition = -32.4; // rot
+    public static final double climbedPosition = -25; // rot
     public static final double rampRate = 0.2;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
@@ -168,8 +168,8 @@ public static class Vision {
         public static final double ROTATION_TOLERANCE = Math.toRadians(1.3); // /deg
 
         //Below same as pathplanner constants
-        public static final double MAX_VELOCITY = 4.5; 
-        public static final double MAX_ACCELARATION = 2; 
+        public static final double MAX_VELOCITY = 3; 
+        public static final double MAX_ACCELERATION = 5; 
         public static final double MAX_VELOCITY_ROTATION = 540; 
         public static final double MAX_ACCELARATION_ROTATION = 720;
         
@@ -425,7 +425,7 @@ public static class BucketConstants {
       armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(90)), Units.degreesToRadians(108));
       armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(108));
 
-      armSetPoints[11] = new ArmPoint(new Translation2d(-20, 0.1), Units.degreesToRadians(270)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
+      armSetPoints[11] = new ArmPoint(new Translation2d(-18, 0.1), Units.degreesToRadians(265)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
 
       armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
 
