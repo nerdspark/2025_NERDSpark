@@ -207,8 +207,8 @@ public static class Vision {
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(27.0), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(22.5), 0, new Rotation2d(Math.toRadians(180))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(22.5), 0, new Rotation2d(Math.toRadians(180))));
           
           
@@ -244,8 +244,8 @@ public static class BucketConstants {
   public static final int leftSensorPort = 1;
   public static final int rightSensorPort = 2;
 
-  public static final int timesForBucketToTestPositive = 8; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
-  public static final double coralDistance = 0.08; // maximum distance of distance sensor readings in order to consider coral to be detected
+  public static final int timesForBucketToTestPositive = 3; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
+  public static final double coralDistance = 0.12; // maximum distance of distance sensor readings in order to consider coral to be detected
   // public static final double algaeDistance = 0.05; // maximum distance of distance sensor readings in order to consider algae to be detected
 
 }
@@ -368,7 +368,7 @@ public static class BucketConstants {
   public static class ArmSetpoints {
 
     public static final int setPointCount = 14;
-    public static final Translation2d home = new Translation2d(8.5, 11.5);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
+    public static final Translation2d home = new Translation2d(8.0, 11.3);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
     public static final double homeWrist = Units.degreesToRadians(110);
     /**
      * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
@@ -413,11 +413,11 @@ public static class BucketConstants {
 
       armSetPoints[2] = new ArmPoint(new Translation2d(-10.7, 22), Units.degreesToRadians(180 + 105));//new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
       armSetPoints[3] = new ArmPoint(new Translation2d(-13.7, 24.5), Units.degreesToRadians(125));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(130));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
+      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(97)), Units.degreesToRadians(129));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[1] = armSetPoints[4];
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 18.0), Units.degreesToRadians(200)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
-      armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 33.5), Units.degreesToRadians(200)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 19.0), Units.degreesToRadians(200)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 34.5), Units.degreesToRadians(200)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(250)).rotateElbowBy(Rotation2d.fromDegrees(-25));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);

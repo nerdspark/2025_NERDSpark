@@ -37,6 +37,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -146,7 +147,7 @@ public class RobotContainer {
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     configureAutoChooser();
-    configureLEDs();
+    // configureLEDs();
 
   }
   
@@ -262,7 +263,7 @@ public class RobotContainer {
 
     //algae dropoff driver-based
     joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
-    .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), 0)))))
+    .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().equals(Alliance.Blue) ? 0 : Math.PI)))))
     .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.31)));
 
     // joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
