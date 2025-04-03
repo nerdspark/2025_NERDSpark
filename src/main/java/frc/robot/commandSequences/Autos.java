@@ -85,9 +85,9 @@ public final class Autos {
     linearFF_X,
     linearFF_Y,
     omegaFF), 
-    new WaitUntilCommand(() -> goalPoseSupplier.get().getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) < 0.85)
+    new WaitUntilCommand(() -> goalPoseSupplier.get().getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) < 1.0)
       .andThen(ArmActions.armToCoralReef(arm, gripper, setPointIndex)))
-        .andThen(new WaitUntilCommand(() -> arm.getIsFinishedMoving()).withTimeout(0.2).andThen(ArmActions.dunkDropCoral(arm, gripper, setPointIndex))));
+        .andThen(new WaitUntilCommand(() -> arm.getIsFinishedMoving()).withTimeout(0.6).andThen(ArmActions.dunkDropCoral(arm, gripper, setPointIndex))));
   }
 
   public static Command getAutoDriveCommandAlgae(
