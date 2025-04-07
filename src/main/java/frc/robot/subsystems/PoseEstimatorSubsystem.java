@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.QuestNav.NerdQuestNav;
 
 
 public class PoseEstimatorSubsystem extends SubsystemBase {
@@ -41,6 +42,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     public Vision visionFront;
     public Vision visionBack;
     private static Notifier allNotifier;
+    private NerdQuestNav QuestNAV;
+
 
     Pose2d robotPose2d = new Pose2d();
     StructPublisher<Pose2d> publisher;
@@ -93,6 +96,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                     driveTrain.addVisionMeasurement(
                             est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
 
+                    if(Constants.Vision.QUEST_ENABLED){
+                        QuestNAV.resetPose(est.estimatedPose);
+                    }
+
                 });
 
             Optional<EstimatedRobotPose> visionEstBack  = visionBack.getEstimatedRobotPose();
@@ -106,6 +113,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
                 driveTrain.addVisionMeasurement(
                         est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
+
+                    if( Constants.Vision.QUEST_ENABLED){
+                        QuestNAV.resetPose(est.estimatedPose);
+                    }
 
                 });
 
@@ -141,8 +152,14 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             SmartDashboard.putData("Robot Pose in Field", field);
             SmartDashboard.putString("Formatted Pose", getFomattedPose());
 
-            // DogLog.log("PoseEstimator/Pose", getCurrentPose());
-            // DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
+            DogLog.log("PoseEstimator/ODO+Vision Pose", getCurrentPose());
+            DogLog.log("PoseEstimator/ODO+Vision Formatted Pose", getFomattedPose()); 
+            
+            if(Robot.isReal() && QuestNAV.getRobotPose().isPresent()) {
+                field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
+                SmartDashboard.putString("Quest Pose", getFomattedPose(QuestNAV.getRobotPose().get().toPose2d()));
+                DogLog.log("PoseEstimator/Quest Pose", QuestNAV.getRobotPose().get().toPose2d());
+            }
 
         }
     }

@@ -109,7 +109,7 @@ public class RobotContainer {
 
 
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
-    public final PoseEstimatorSubsystemQuest poseEstimatorSubsystemQuest;
+    // public final PoseEstimatorSubsystemQuest poseEstimatorSubsystemQuest;
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -134,7 +134,7 @@ public class RobotContainer {
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
-    poseEstimatorSubsystemQuest = new PoseEstimatorSubsystemQuest(drivetrain);
+    // poseEstimatorSubsystemQuest = new PoseEstimatorSubsystemQuest(drivetrain);
     scoringSubsystem = new ScoringProfileSubsystem();
     arm = new Arm();
     gripper = new Gripper();

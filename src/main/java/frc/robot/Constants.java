@@ -133,7 +133,7 @@ public final class Constants {
 
 public static class Vision {
 
-        public static boolean DOGLOG_ENABLED = false;
+        public static boolean DOGLOG_ENABLED = true;
 
         public static final boolean USE_VISION = true;
         public static final boolean USE_QUESTNAV = true;
@@ -226,6 +226,8 @@ public static class Vision {
         }
         
         public static final Set<Integer> nonReefTagFiducialIDs = new HashSet<>(Set.of(1, 2, 3, 4, 5, 12, 13, 14, 15, 16));
+
+        public static final boolean QUEST_ENABLED = false;
 
     }
 
