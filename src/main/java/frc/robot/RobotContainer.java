@@ -19,7 +19,6 @@ import frc.robot.commandSequences.Autos;
 import frc.robot.commands.GripperCommand;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
-import frc.robot.subsystems.PoseEstimatorSubsystemQuest;
 import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.ArmCommand;
@@ -109,7 +108,6 @@ public class RobotContainer {
 
 
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
-    // public final PoseEstimatorSubsystemQuest poseEstimatorSubsystemQuest;
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -134,7 +132,6 @@ public class RobotContainer {
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
-    // poseEstimatorSubsystemQuest = new PoseEstimatorSubsystemQuest(drivetrain);
     scoringSubsystem = new ScoringProfileSubsystem();
     arm = new Arm();
     gripper = new Gripper();

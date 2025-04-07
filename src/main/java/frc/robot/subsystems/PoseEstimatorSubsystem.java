@@ -86,6 +86,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         // Update pose estimator with drivetrain sensors
         if(USE_VISION) {
              Optional<EstimatedRobotPose> visionEstFront  = visionFront.getEstimatedRobotPose();
+          
             visionEstFront.ifPresent(
                 est -> {
                     // Change our trust in the measurement based on the tags we can see
@@ -96,11 +97,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                     driveTrain.addVisionMeasurement(
                             est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
 
-                    if(Constants.Vision.QUEST_ENABLED){
-                        QuestNAV.resetPose(est.estimatedPose);
-                    }
 
-                });
+                });    
 
             Optional<EstimatedRobotPose> visionEstBack  = visionBack.getEstimatedRobotPose();
 
@@ -114,11 +112,27 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 driveTrain.addVisionMeasurement(
                         est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
 
-                    if( Constants.Vision.QUEST_ENABLED){
-                        QuestNAV.resetPose(est.estimatedPose);
-                    }
+                });
+
+                if(Constants.Vision.QUEST_ENABLED){
+                    Optional<EstimatedRobotPose> visionEstFrontQuest  = visionFront.getEstimatedRobotPoseQuest();
+                    Optional<EstimatedRobotPose> visionEstBackQuest  = visionBack.getEstimatedRobotPoseQuest();
+
+                    visionEstFrontQuest.ifPresent(
+                    estQuest -> {                        
+                        QuestNAV.resetPose(estQuest.estimatedPose);                    
 
                 });
+
+                    visionEstBackQuest.ifPresent(
+                        estQuest -> {                        
+                            QuestNAV.resetPose(estQuest.estimatedPose);                    
+
+                    });
+
+                      
+                    
+                }
 
             if(Robot.isSimulation() ) {
                  visionFront.simulationPeriodic(getCurrentPose());
@@ -135,7 +149,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             if(visionEstBack.isPresent() && Constants.Vision.DOGLOG_ENABLED) {
                 DogLog.log("PoseEstimator/VisionEst", visionEstBack.get().estimatedPose.toPose2d());
              }
-
              
         }
         else {
