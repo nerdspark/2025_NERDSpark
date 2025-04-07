@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
@@ -24,9 +27,9 @@ public class Elevator extends SubsystemBase {
 
   /** Creates a new Elevator. */
   public Elevator() {
-    TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
+    TalonFXConfiguration elevatorConfigs = new TalonFXConfiguration();
     // set slot 0 gains
-    var slot0Configs = talonFXConfigs.Slot0;
+    var slot0Configs = elevatorConfigs.Slot0;
     slot0Configs.kS = ElevatorConstants.kElevatorkS; // Add 0.25 V output to overcome static friction
     slot0Configs.kV = ElevatorConstants.kElevatorkV; // A velocity target of 1 rps results in 0.12 V output
     slot0Configs.kA = ElevatorConstants.kElevatorkA; // An acceleration of 1 rps/s requires 0.01 V output
@@ -35,12 +38,23 @@ public class Elevator extends SubsystemBase {
     slot0Configs.kD = ElevatorConstants.kElevatorKd; // A velocity error of 1 rps results in 0.1 V output
 
     // set Motion Magic settings
-    var motionMagicConfigs = talonFXConfigs.MotionMagic;
+    var motionMagicConfigs = elevatorConfigs.MotionMagic;
     motionMagicConfigs.MotionMagicCruiseVelocity = ElevatorConstants.kCruiseVelocity; // Target cruise velocity of 80 rps
     motionMagicConfigs.MotionMagicAcceleration = ElevatorConstants.kAccel; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = ElevatorConstants.kJerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
-    leftMotor.getConfigurator().apply(talonFXConfigs);
+      elevatorConfigs.CurrentLimits =  new CurrentLimitsConfigs()
+        .withStatorCurrentLimit(ElevatorConstants.statorCurrentLimit)
+        .withStatorCurrentLimitEnable(true);
+
+      elevatorConfigs.Feedback = new FeedbackConfigs()
+        .withFeedbackRotorOffset(ElevatorConstants.feedbackRotorOffset)
+        .withSensorToMechanismRatio(ElevatorConstants.kElevatorGearing);
+      
+      elevatorConfigs.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(0.03); // TODO: Change newVoltageClosedLoopRampPeriod
+
+
+    leftMotor.getConfigurator().apply(elevatorConfigs);
     rightMotor.setControl(new Follower(0, false)); // TODO: Change MasterID
 
   }

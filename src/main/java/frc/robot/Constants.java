@@ -101,6 +101,10 @@ public final class Constants {
     public static final double kAccel = 0.0;
     public static final double kJerk = 0.0;
 
+    public static final double statorCurrentLimit = 0.0;
+    public static final double feedbackRotorOffset = 0.0;
+
+
 
     public static final double kHeightL1 = Units.inchesToMeters(25.0);
     public static final double kHeightL2 = Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625);
