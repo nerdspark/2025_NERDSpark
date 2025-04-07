@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants.CoralStations;
@@ -79,11 +82,28 @@ public final class Constants {
     public static final double kElevatorkV = 0.0;
     public static final double kElevatorkA = 0.0;
 
-    public static final double countsPerInch = 42.0;
+    // public static final double countsPerInch = 42.0;
+    public static final double kMinElevatorHeightMeters = 0.0;
+    public static final double kMaxElevatorHeightMeters = 0.0;
+    public static final double kMinElevatorHeightRotations = 0.0;
+    public static final double kMaxElevatorHeightRotations = 0.0;
     
     public static final double kElevatorDrumRadius = 0.0;
     public static final double kElevatorGearing = 0.0;
     public static final double kElevatorDefaultTolerance = 0.0;
+    public static final double kCarriageMass = 0.0;
+
+    // public static final Distance kMinElevatorHeight = Meters.of(kMinElevatorHeightMeters);
+    // public static final Distance kMaxElevatorHeight = Meters.of(kMaxElevatorHeightMeters);
+    // public static final Distance kStartingHeightSim = Meters.of(0);
+
+    public static final double kCruiseVelocity = 0.0;
+    public static final double kAccel = 0.0;
+    public static final double kJerk = 0.0;
+
+
+    public static final double kHeightL1 = Units.inchesToMeters(25.0);
+    public static final double kHeightL2 = Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625);
   }
 
 
