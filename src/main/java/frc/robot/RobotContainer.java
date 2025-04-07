@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.QuestNav.NerdQuestNav;
 import frc.robot.commandSequences.ArmActions;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commands.GripperCommand;
@@ -32,6 +33,9 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -73,6 +77,8 @@ public class RobotContainer {
   private LEDSubsytem LEDs;
   private Bucket bucket;
   private Climb climb;
+
+  private NerdQuestNav QuestTest = new NerdQuestNav(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(0))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -233,6 +239,9 @@ public class RobotContainer {
     joystick.rightStick().whileTrue(arm.goToHome())
       .whileTrue(gripper.neutralCommand());
     // joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
+
+    // Find Quest Offsets
+    joystick.leftStick().whileTrue(QuestTest.determineOffsetToRobotCenter(drivetrain));
 
     // coral dropoff 
       //manual dunk

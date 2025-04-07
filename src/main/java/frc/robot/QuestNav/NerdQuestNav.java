@@ -2,10 +2,7 @@ package frc.robot.QuestNav;
 
 import static edu.wpi.first.units.Units.Degrees;
 
-// import java.util.ArrayList;
-// import java.util.List;
 import java.util.Optional;
-
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -17,8 +14,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.FloatArraySubscriber;
 import edu.wpi.first.networktables.IntegerEntry;
@@ -30,7 +26,6 @@ import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -72,7 +67,13 @@ public class NerdQuestNav {
     private int _calculatedOffsetToRobotCenterCount = 0;
 
     private final SwerveRequest.ApplyRobotSpeeds m_ApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
-    private Field2d field = new Field2d();
+
+    /** Subscriber for heartbeat requests */
+    private DoubleSubscriber heartbeatRequestSub;
+    /** Publisher for heartbeat responses */
+    private DoublePublisher heartbeatResponsePub;
+    /** Last processed heartbeat request ID */
+    private double lastProcessedHeartbeatId = 0;
 
     public enum QuestCommand {
         RESET(1);
@@ -103,6 +104,16 @@ public class NerdQuestNav {
         setupInitialTimestamp();
     }
 
+    /** Process heartbeat requests from Quest and respond with the same ID */
+    public void processHeartbeat() {
+        double requestId = heartbeatRequestSub.get();
+        // Only respond to new requests to avoid flooding
+        if (requestId > 0 && requestId != lastProcessedHeartbeatId) {
+            heartbeatResponsePub.set(requestId);
+            lastProcessedHeartbeatId = requestId;
+        }
+    }
+
     private void setupInitialTimestamp() {
         startTimestamp = timestamp.get();
     }
@@ -119,6 +130,8 @@ public class NerdQuestNav {
         quaternion = networkTable.getFloatArrayTopic("quaternion").subscribe(new float[4], sPeriodic);
         eulerAngles = networkTable.getFloatArrayTopic("eulerAngles").subscribe(new float[3], periodic);
         battery = networkTable.getDoubleTopic("battery").subscribe(0.0, sPeriodic);
+        heartbeatRequestSub = networkTable.getDoubleTopic("heartbeat/quest_to_robot").subscribe(0.0);
+        heartbeatResponsePub = networkTable.getDoubleTopic("heartbeat/robot_to_quest").publish();
     }
 
     public Translation3d getRawPosition() {
