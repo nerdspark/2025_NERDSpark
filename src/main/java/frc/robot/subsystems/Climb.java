@@ -39,7 +39,7 @@ public class Climb extends SubsystemBase {
   public Climb() {
     winch = new TalonFX(ClimbConstants.winchId, ClimbConstants.canBus);
     climbConfig.CurrentLimits = new CurrentLimitsConfigs()
-          .withStatorCurrentLimit(ClimbConstants.climbCurrentLimit)
+          .withStatorCurrentLimit(ClimbConstants.currentLimit)
           .withStatorCurrentLimitEnable(true);
       climbConfig.Feedback = new FeedbackConfigs()
           .withFeedbackRotorOffset(0)
@@ -115,10 +115,10 @@ public class Climb extends SubsystemBase {
           public void execute() {
               // TODO Auto-generated method stub
               if (!climbed()) {
-                setCurrentLimit(ClimbConstants.climbCurrentLimit);
+                setCurrentLimit(ClimbConstants.currentLimit);
                 setPower(ClimbConstants.power);
               } else {
-                setCurrentLimit(ClimbConstants.holdCurrentLimit);
+                setCurrentLimit(ClimbConstants.currentLimit);
                 setPower(ClimbConstants.power);
               }
           }
@@ -179,12 +179,12 @@ public class Climb extends SubsystemBase {
   public void periodic() {
     
     SmartDashboard.putNumber("climb pos", getPosition());
-    SmartDashboard.putNumber("climb right pos", climbRight.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("climb left pos", climbLeft.getPosition().getValueAsDouble());
-    SignalLogger.writeDouble("climb left amp", climbLeft.getStatorCurrent().getValueAsDouble());
-    SignalLogger.writeDouble("climb right amp", climbRight.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("climb left amp", climbLeft.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("climb right amp", climbRight.getStatorCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber("climb right pos", climbRight.getPosition().getValueAsDouble());
+    // SmartDashboard.putNumber("climb left pos", climbLeft.getPosition().getValueAsDouble());
+    // SignalLogger.writeDouble("climb left amp", climbLeft.getStatorCurrent().getValueAsDouble());
+    // SignalLogger.writeDouble("climb right amp", climbRight.getStatorCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber("climb left amp", climbLeft.getStatorCurrent().getValueAsDouble());
+    // SmartDashboard.putNumber("climb right amp", climbRight.getStatorCurrent().getValueAsDouble());
 
 
   }
