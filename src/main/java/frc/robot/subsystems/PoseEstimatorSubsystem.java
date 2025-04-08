@@ -19,6 +19,8 @@ import dev.doglog.DogLog;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -65,6 +67,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     
                 this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront, driveTrain);
                 this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack, driveTrain);
+                QuestNAV = new NerdQuestNav(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
     
                 allNotifier = new Notifier(() -> {
                     visionFront.run();

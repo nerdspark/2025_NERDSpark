@@ -227,7 +227,7 @@ public static class Vision {
         
         public static final Set<Integer> nonReefTagFiducialIDs = new HashSet<>(Set.of(1, 2, 3, 4, 5, 12, 13, 14, 15, 16));
 
-        public static final boolean QUEST_ENABLED = false;
+        public static final boolean QUEST_ENABLED = true;
 
     }
 
