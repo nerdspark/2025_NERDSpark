@@ -29,20 +29,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmGains;
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.commands.GripperCommand;
 
 public class Climb extends SubsystemBase {
-  private TalonFX climbLeft, climbRight;
+  private TalonFX winch;
   private TalonFXConfiguration climbConfig = new TalonFXConfiguration();
-  private boolean ampTriggered, ampTriggerStarted = false;
   // private double startTime, toAmpTriggerStartTime = 0;
   /** Creates a new Gripper. */
   public Climb() {
-    climbLeft = new TalonFX(ClimbConstants.kLeftID, ClimbConstants.canBus);
-    climbRight = new TalonFX(ClimbConstants.kRightID, ClimbConstants.canBus);
+    winch = new TalonFX(ClimbConstants.winchId, ClimbConstants.canBus);
     climbConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(ClimbConstants.climbCurrentLimit)
           .withStatorCurrentLimitEnable(true);
@@ -54,23 +49,18 @@ public class Climb extends SubsystemBase {
       .withKP(ClimbConstants.kP)
       .withKI(ClimbConstants.kI)
       .withKD(ClimbConstants.kD);
-      climbLeft
-          .getConfigurator()
-          .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.CounterClockwise_Positive)
-              .withNeutralMode(NeutralModeValue.Brake)));
-      climbRight
+      winch
           .getConfigurator()
           .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.Clockwise_Positive)
               .withNeutralMode(NeutralModeValue.Brake)));
       
+      
       resetPosition();
   }
   
   public void setPower(double power) {
-    climbLeft.set(power);
-    climbRight.set(power);
+    winch.set(power);
   }
   // public void setClimb() {
   //   if (ampTriggered) {
@@ -83,35 +73,27 @@ public class Climb extends SubsystemBase {
   //   }
   // }
   public void stop() {
-    climbLeft.stopMotor(); 
-    climbRight.stopMotor();
+    winch.stopMotor(); 
   }
   public double getCurrent() {
-    return (climbLeft.getStatorCurrent().getValueAsDouble() + climbRight.getStatorCurrent().getValueAsDouble())/2;
+    return (winch.getStatorCurrent().getValueAsDouble() );
   }
   public void resetPosition() {
-    climbLeft.setPosition(0);
-    climbRight.setPosition(0);
+    winch.setPosition(0);
   }
   public void setPosition(double position) {
-    climbLeft.setControl(new PositionVoltage(position)); 
-    climbRight.setControl(new PositionVoltage(position)); 
+    winch.setControl(new PositionVoltage(position)); 
     
   }
   public double getPosition() {
-    return (climbLeft.getPosition().getValueAsDouble() + climbRight.getPosition().getValueAsDouble())/2;
+    return (winch.getPosition().getValueAsDouble());
   }
 
   public void setCurrentLimit(double currentLimit) {
     climbConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(currentLimit)
           .withStatorCurrentLimitEnable(true);
-          climbLeft.getConfigurator().apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.CounterClockwise_Positive)
-              .withNeutralMode(NeutralModeValue.Brake)));
-          climbRight.getConfigurator().apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
-          .withInverted(InvertedValue.Clockwise_Positive)
-              .withNeutralMode(NeutralModeValue.Brake)));
+          winch.getConfigurator().apply(climbConfig);
         }
   public boolean climbed() {
     return Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
@@ -153,8 +135,7 @@ public class Climb extends SubsystemBase {
     return new InstantCommand(() -> setPower(ClimbConstants.power));
   }
   public void setFOC(double current){
-    climbLeft.setControl(new TorqueCurrentFOC(current)); 
-    climbRight.setControl(new TorqueCurrentFOC(current)); 
+    winch.setControl(new TorqueCurrentFOC(current)); 
   }
   // public Command climbSwitchToFOC() {
   //   return new Command() {
@@ -196,10 +177,7 @@ public class Climb extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SignalLogger.writeDouble("climb pos", getPosition());
-    SignalLogger.writeDouble("climb right pos", climbRight.getPosition().getValueAsDouble());
-    SignalLogger.writeDouble("climb left pos", climbLeft.getPosition().getValueAsDouble());
-
+    
     SmartDashboard.putNumber("climb pos", getPosition());
     SmartDashboard.putNumber("climb right pos", climbRight.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("climb left pos", climbLeft.getPosition().getValueAsDouble());

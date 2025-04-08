@@ -5,19 +5,12 @@
 package frc.robot.commandSequences;
 
 import frc.robot.Constants;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.Vision;
 import frc.robot.FieldConstants;
 import frc.robot.FieldConstants.Reef;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.commands.DriveToPose;
-import frc.robot.commands.GripperCommand;
-import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Gripper;
-import frc.robot.util.ArmPoint;
-
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -68,27 +61,27 @@ public final class Autos {
           
   }
 
-  public static Command driveAndAutoDropoff(CommandSwerveDrivetrain drive,
-  Supplier<Pose2d> robotPoseSupplier,
-  Supplier<Pose2d> goalPoseSupplier,
-  Supplier<ReefLevel> reefLevelSupplier,
-  Supplier<Boolean> isBackwardsSupplier,
-  DoubleSupplier linearFF_X,
-  DoubleSupplier linearFF_Y,
-  DoubleSupplier omegaFF, 
-  Arm arm, Gripper gripper, IntSupplier setPointIndex) {
-    return gripper.coralDefaultCommand().andThen(new ParallelRaceGroup(getAutoDriveCommandReef(drive,
-    robotPoseSupplier,
-    goalPoseSupplier,
-    reefLevelSupplier,
-    isBackwardsSupplier,
-    linearFF_X,
-    linearFF_Y,
-    omegaFF), 
-    new WaitUntilCommand(() -> goalPoseSupplier.get().getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) < 1.0)
-      .andThen(ArmActions.armToCoralReef(arm, gripper, setPointIndex)))
-        .andThen(new WaitUntilCommand(() -> arm.getIsFinishedMoving()).withTimeout(0.6).andThen(ArmActions.dunkDropCoral(arm, gripper, setPointIndex))));
-  }
+  // public static Command driveAndAutoDropoff(CommandSwerveDrivetrain drive,
+  // Supplier<Pose2d> robotPoseSupplier,
+  // Supplier<Pose2d> goalPoseSupplier,
+  // Supplier<ReefLevel> reefLevelSupplier,
+  // Supplier<Boolean> isBackwardsSupplier,
+  // DoubleSupplier linearFF_X,
+  // DoubleSupplier linearFF_Y,
+  // DoubleSupplier omegaFF, 
+  // Arm arm, Gripper gripper, IntSupplier setPointIndex) {
+  //   return gripper.coralDefaultCommand().andThen(new ParallelRaceGroup(getAutoDriveCommandReef(drive,
+  //   robotPoseSupplier,
+  //   goalPoseSupplier,
+  //   reefLevelSupplier,
+  //   isBackwardsSupplier,
+  //   linearFF_X,
+  //   linearFF_Y,
+  //   omegaFF), 
+  //   new WaitUntilCommand(() -> goalPoseSupplier.get().getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) < 1.0)
+  //     .andThen(ArmActions.armToCoralReef(arm, gripper, setPointIndex)))
+  //       .andThen(new WaitUntilCommand(() -> arm.getIsFinishedMoving()).withTimeout(0.6).andThen(ArmActions.dunkDropCoral(arm, gripper, setPointIndex))));
+  // }
 
   public static Command getAutoDriveCommandAlgae(
      CommandSwerveDrivetrain drive,

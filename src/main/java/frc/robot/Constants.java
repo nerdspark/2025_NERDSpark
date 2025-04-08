@@ -36,14 +36,13 @@ import java.lang.reflect.Array;
 import java.rmi.MarshalException;
 import java.text.CollationElementIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
-import frc.robot.util.ArmPath;
-import frc.robot.util.ArmPoint;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -54,18 +53,85 @@ import frc.robot.util.ArmPoint;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  // public static double shootAlgaeDistance = 2; // m from center of field
-  public static double shootAlgaeDriveSpeed = 2.5; // max 5.81 m/s
+
+  public static class CoralConstants {
+    public static final int shooterID = 1;
+    public static final int indexerID = 2;
+    public static final int elevatorLeftID = 3;
+    public static final int elevatorRightID = 4;
+    public static final int deployID = 5;
+    public static final int intakeID = 6;
+    public static final int intakeSensorID = 7;
+    public static final int indexerSensorID = 8;
+    public static final double intakeSensorTriggerDistance = 0.1;
+    public static final double indexerSensorTriggerDistance = 0.1;
+    public static final double indexerTransferVoltage = 3;
+    public static final double intakeTransferVoltage = 3;
+    public static final double shooterTransferVoltage = 3;
+    public static final double deployPositionIntake = 0;
+    public static final double homePositionIntake = 0;
+    public static enum coralState {
+      empty, 
+      coralInRange,
+      coralInIntake, 
+      coralInIndexer, 
+      coralInElevator
+    }
+    public static enum elevatorLevel {
+      home(0, 2, 0), 
+      l1(1,13.85, 1.45),
+      l1upper(1,l1.height + 5, 1.45),
+      l1inside(1, l1.height + 5, 2.5),
+      l2(2,22.4, 4.5);
+      
+      elevatorLevel(int level, double height, double shootVoltage) {
+        this.height = height;
+        this.level = level; 
+        this.shootVoltage = shootVoltage;
+      }
+      public static elevatorLevel fromLevel(int level) {
+        for (elevatorLevel elev : elevatorLevel.values()) {
+          if (elev.level == level) {
+            return elev;
+          }
+        }
+        return home;
+      }
+      public final double shootVoltage;
+      public final double height;
+      public final int level;
+  
+    }
+
+    
+    public static final int pulleyTeeth = 12;
+    public static final double pulleyToothWidth = 5.0; // mm
+    public static final double pulleyCircumferenceMillimeters = pulleyTeeth * pulleyToothWidth; // mm
+    public static final double pulleyCircumferenceInches = pulleyCircumferenceMillimeters / 25.4; // inches
+    public static final double elevatorSensorRatio = 1/pulleyCircumferenceInches; // rot/inch
+    public static final double kP = 0.70; //1.05
+    public static final double kI = 0.00;
+    public static final double kD = 0.0;
+    public static final double kG = 0.42; //0.385
+    public static final double kS = 0.0; 
+    public static final double elevatorCurrentLimit = 40;
+    public static final double elevatorRampRate = 0.05;
+    public static final double elevatorTolerance = 0.1; // in
+    public static final double homePos = 3.0; // in
+    public static final double forwardLimit = 24;
+    public static final double reverseLimit = 0;
+
+    public static final double shooterCurrentLimit = 40;
+
+    
+  }
   
   public static class ClimbConstants {
-    public static final int kLeftID = 61;
-    public static final int kRightID = 62;
-    public static final double climbCurrentLimit = 65;
-    public static final double holdCurrentLimit = 25;
-    // public static final double ampTriggeredCurrentLimit = 2;
-    public static final double power = 0.20;
-    public static final double deployPosition = -128.7; // rot
-    public static final double climbedPosition = -25; // rot
+    public static final int winchId = 61;
+    public static final double currentLimit = 30;
+    public static final double power = 0.7;
+    public static final double deployPosition = -76 * 3; // rot
+    public static final double climbedPosition = -18 * 3; // rot
     public static final double rampRate = 0.2;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
@@ -239,294 +305,6 @@ public static class Vision {
 //     }
   
   
-
-public static class BucketConstants {
-  public static final int leftSensorPort = 1;
-  public static final int rightSensorPort = 2;
-
-  public static final int timesForBucketToTestPositive = 3; // number of consecutive loops a reading must be within detected coral/algae distance in order to test positive
-  public static final double coralDistance = 0.12; // maximum distance of distance sensor readings in order to consider coral to be detected
-  // public static final double algaeDistance = 0.05; // maximum distance of distance sensor readings in order to consider algae to be detected
-
-}
-  public final class ArmGains {
-      public static final double shoulderP = 200.0; //TODO CHANGE SOME OF THIS LATER //52.0
-      public static final double shoulderI = 0.0;
-      public static final double shoulderD = 40.0;
-      public static final double elbowP = 200.0;//20.0
-      public static final double elbowI = 0.0;
-      public static final double elbowD = 40.0;
-      public static final double wristP = 15.0; //20.0
-      public static final double wristG = 0.0; //20.0 
-      public static final double wristI = 0.0;
-      public static final double wristD = 0.0;
-      public static final double wristVelocity = 16;
-      public static final double wristAcceleration = 12;
-      public static final double gripperP = 28.0; // 10.0
-      public static final double gripperI = 0.0;
-      public static final double gripperD = 0.0;
-      public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.6; // 0.25
-      public static final double shoulderV = 0.0;
-      public static final double shoulderA = 0.0;
-      public static final double elbowS = 0.0;
-      public static final double elbowG = 0.6;//0.3
-      public static final double elbowV = 0.0;
-      public static final double elbowA = 0.0;
-      public static final double cruiseVelocity = 0.5;
-      public static final double cruiseAcceleration = 2.0;
-  }
-  public static class ArmVelocityGains{
-    public static final double shoulderP = 10.0; //TODO CHANGE SOME OF THIS LATER //52.0
-      public static final double shoulderI = 0.0;
-      public static final double shoulderD = 0.0;
-      public static final double elbowP = shoulderP*0.4;//20.0
-      public static final double elbowI = 0.0;
-      public static final double elbowD = 0.0;
-      public static final double shoulderS = 0.0;
-      public static final double shoulderG = 0.6; // 0.25
-      public static final double shoulderV = 0.0;
-      public static final double shoulderA = 0.0;
-      public static final double elbowS = 0.0;
-      public static final double elbowG = 0.6;//0.3
-      public static final double elbowV = 0.0;
-      public static final double elbowA = 0.0;
-      
-    public static final double lookAheadDistance = 15.0;
-    public static final double lookAheadDistanceBeforeInflecting = 1; 
-    public static final double endDistance = 13.0;
-    public static final double linearApproximationTime = 0.2; // seconds
-    public static final double velocity = 65;// does not seem to have any effect
-    public static final double maxMotorVelocity = 3.0;
-    public static final double arcRadius = 1;
-    public static final int arcPoints = 10;
-    public static final double interpolationDistance = 0.5; // inches
-    public static final double interpolationAngle = 0.2; // deg
-  }
-
-    
-  public static class ArmConstants {
-    
-    public static final double elbowSlewRate = 4; // accel in rot/s/s
-    public static final double shoulderSlewRate = 4;
-
-
-    public static final int shoulderMotorLeftPort = 41;
-    public static final int shoulderMotorRightPort = 42;
-    public static final int elbowMotorLeftPort = 43;
-    public static final int elbowMotorRightPort = 44;
-    public static final int wristMotorPort = 45;
-    public static final int gripperMotorPort = 46;
-    public static final String armCanBus = "canivore1";
-
-    public static final double currentLimitShoulder = 30.0;//25
-    public static final double currentLimitElbow = 30.0;//25
-    public static final double currentLimitWrist = 75.0; //35
-    public static final double gripperCurrentLimitDefault = 10.0;//10
-    public static final double gripperPowerDefault = 0.1;
-
-
-    //shoulder true offset: 34.513 deg below forward horizontal
-    //shoulder gearbox: 75:1
-    //shoulder stage 0: 36:26
-    public static final double shoulderGearRatio = 125.0*36.0/26.0;
-    
-    // elbow true offset: 122.198 deg above forward horizontal
-    // elbow gearbox: 75:1
-    //elbow stage 0: 38:26
-    // elbow stage 1: 50:50
-    public static final double elbowGearRatio = 75.0*38.0/26.0;
-
-    //wrist up/down gearbox: 25:1
-    //wrist up/down stage 0: 50:50
-    //wrist up/down stage 1: 50:50
-    //wrist up/down stage 2: 35:50
-    public static final double wristGearRatio = 25.0*50.0/50.0*35.0/50.0;
-    public static final double gripperGearRatio = 5.0*5.0 / 3.0;
-    public static final double baseStageLength = 23.158;
-    public static final double secondStageLength = 25.475;
-    public static final double totalStageLength = baseStageLength + secondStageLength;
-
-
-    public static final double shoulderRadPerRot = shoulderGearRatio; 
-    public static final double elbowRadPerRot = elbowGearRatio; 
-    public static final double wristRadPerRot = wristGearRatio;
-    public static final double gripperRadPerRot = gripperGearRatio;
-    public static final double gripperOffset = 0;
-    public static final double shoulderOffset = -0.476 / 2.0 / Math.PI; // radians, fwd = 0
-    public static final double elbowOffset = 2.032 / 2.0 / Math.PI; // negative of measurement
-    public static final double wristOffset = 4.949 / 2.0 / Math.PI; // 
-
-    /** wrist flip belting ratio between elbow and the wrist */
-    public static final double wristToElbowRatio = 1.0/(35.0 / 50.0);
-    public static final double rightServoOffset = 0.0;
-    public static final double leftServoOffset = 0.0;
-    
-
-  }
-
-  public static class ArmSetpoints {
-
-    public static final int setPointCount = 14;
-    public static final Translation2d home = new Translation2d(8.0, 11.3);//new Translation2d(15.65, Rotation2d.fromDegrees(60)); //safest home and also closest possible distance arm is allowed to get to central joint
-    public static final double homeWrist = Units.degreesToRadians(110);
-    /**
-     * contains a list of endpoints (0, 0) in arm coordinates = (6.4, 22.0) in bumper-relative coordinates
-     * @home 0
-     * @hotel 13 (position right before going to home)
-     * 
-     * **Reef**
-     * @L1 1
-     * @L2 2 (-2.2, 31.1) from bumper @ 55 degrees to horizontal
-     * @L3 3 (-2.2, 47.0) from bumper @ 55 degrees to horizontal
-     * @L4 4 (-2.0, 71.9) from bumper @ 90 degrees to horizontal
-     * @L2.5Algae 5 (-8, 35.8) from bumper @ 0 degrees to horizontal
-     * @L3.5Algae 6 (-8, 51.7) from bumper @ 0 degrees to horizontal
-     * 
-     * **Coral Intake**
-     * @grabFromFunnelPreparePosition 7
-     * @groundintake 8
-     * 
-     * **Algae dropoff**
-     * @AlgaeBargePrepare 9 
-     * @AlgaeBargeThrow 10 
-     * @processor 12
-     * 
-     * ** Climb **
-     * @climbPosition 11
-     */
-    public static ArmPoint[] armSetPoints = new ArmPoint[ArmSetpoints.setPointCount]; 
-    static{
-      armSetPoints[0] = new ArmPoint(home, homeWrist);
-
-      // armSetPoints[1] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(65)), Units.degreesToRadians(180));
-      // armSetPoints[2] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(35)), Units.degreesToRadians(150));
-      // armSetPoints[3] = new ArmPoint(new Translation2d(-8, 27), Units.degreesToRadians(145));
-      // armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(120));
-
-
-      double dropoffDistanceFromBumper = -5.0;
-      Translation2d gripperOffset = new Translation2d(5.9, -2.0);
-      // Translation2d gripperCoralOffset = gripperOffset.plus(new Translation2d(-1.9, 9.0));
-      // Translation2d gripperCoralOffsetInverted = gripperCoralOffset.plus(new Translation2d(0.0, -11.875));
-      Translation2d gripperAlgaeOffset = gripperOffset.plus(new Translation2d(8.0, 0.0));
-
-      armSetPoints[2] = new ArmPoint(new Translation2d(-13.7, 23.0), Units.degreesToRadians(180 + 105));//new ArmPoint(new Translation2d(-8.6, 20.1), Units.degreesToRadians(180 + 145)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffsetInverted);
-      armSetPoints[3] = new ArmPoint(new Translation2d(-13.5, 27.0), Units.degreesToRadians(125));//new ArmPoint(new Translation2d(-12.6, 28.0), Units.degreesToRadians(125)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(97)), Units.degreesToRadians(131));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
-      armSetPoints[1] = armSetPoints[4];
-
-      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 20.0), Units.degreesToRadians(200)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
-      armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 35.0), Units.degreesToRadians(200)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
-
-      armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(250)).rotateElbowBy(Rotation2d.fromDegrees(-25));
-      armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
-
-      armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(90)), Units.degreesToRadians(108));
-      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(90)), Units.degreesToRadians(108));
-
-      armSetPoints[11] = new ArmPoint(new Translation2d(-18, 0.1), Units.degreesToRadians(265)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
-
-      armSetPoints[12] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(110)), Units.degreesToRadians(180 + 20));
-
-      armSetPoints[13] = new ArmPoint(home.rotateBy(Rotation2d.fromDegrees(30)), Units.degreesToRadians(200));
-      
-      for (int i = 0; i < armSetPoints.length; i++) {
-        if (armSetPoints[i].position.getNorm() > ArmConstants.totalStageLength) {
-          armSetPoints[i] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, armSetPoints[i].position.getAngle()), armSetPoints[i].inBend, armSetPoints[i].wrist);
-          SmartDashboard.putBoolean("armpoint limit trip", true);
-          System.out.println("armsetpoint trip " + i);
-        } else if (armSetPoints[i].position.getNorm() < ArmSetpoints.home.getNorm()) {
-          armSetPoints[i] = new ArmPoint(new Translation2d(ArmSetpoints.home.getNorm(), armSetPoints[i].position.getAngle()), armSetPoints[i].inBend, armSetPoints[i].wrist);
-          SmartDashboard.putBoolean("armpoint limit trip", true);
-          System.out.println("armsetpoint trip " + i);
-        }
-        System.out.println("Arm Setpoint " + i + " " + armSetPoints[i].position.toString());
-      }
-    }
-
-    /** list of dunk setpoints for reef dropoff
-     * @L1 1
-     * @L2 2 
-     * @L3 3 
-     * @L4 4 
-     */
-    public static ArmPoint[] armSetPointsDunkAuto = new ArmPoint[5]; // autodunks
-    static {
-      armSetPointsDunkAuto[0] = armSetPoints[0];
-      armSetPointsDunkAuto[1] = armSetPoints[1];
-      armSetPointsDunkAuto[2] = armSetPoints[2].addToWristFlip(Units.degreesToRadians(-60)).add(new Translation2d(-9, new Rotation2d(armSetPoints[2].wrist + (Math.PI*0.5))));
-      armSetPointsDunkAuto[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.5)))).addToWristFlip(Units.degreesToRadians(90));
-      armSetPointsDunkAuto[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60)).add(new Translation2d(-2, -4));
-    }
-    public static ArmPoint[] armSetPointsMicroAdjust = new ArmPoint[5]; // manual dunks
-    static {
-      armSetPointsMicroAdjust[0] = armSetPoints[0];
-      armSetPointsMicroAdjust[1] = armSetPoints[1];
-      armSetPointsMicroAdjust[2] = armSetPoints[2].add(new Translation2d(0, -5));
-      armSetPointsMicroAdjust[3] = armSetPoints[3].add(new Translation2d(-9, new Rotation2d(armSetPoints[3].wrist - (Math.PI*0.3)))).addToWristFlip(Units.degreesToRadians(45));
-      armSetPointsMicroAdjust[4] = armSetPoints[4].addToWristFlip(Units.degreesToRadians(60));
-
-    }
-
-
-
-
-    /**
-     * contains a list of intermediate points from first index to second index
-     */
-    @SuppressWarnings("unchecked")
-    public static List<ArmPoint>[][] intermediatePoints = new List[ArmSetpoints.setPointCount][ArmSetpoints.setPointCount]; 
-    static{
-      // intermediatePoints[0][1] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(22.43, 30.52)), new ArmPoint(new Translation2d(47.519, 10.114)));
-intermediatePoints[0][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
-intermediatePoints[4][8] = (List<ArmPoint>) List.of((new ArmPoint(new Translation2d(34.5, 16.5), true)));
-
-// intermediatePoints[6][5] = List.of(armSetPoints[6].withWrist(Units.degreesToRadians(45)));
-      // intermediatePoints[1][4] = (List<ArmPoint>) List.of(new ArmPoint(new Translation2d(30.0, 24.0)));
-
-      for (int i = 0; i < ArmSetpoints.setPointCount; i++){
-        for (int j = 0; j < i; j++){
-          if (intermediatePoints[i][j] == null && intermediatePoints[j][i] != null){
-            intermediatePoints[i][j] = new ArrayList<>();
-            intermediatePoints[i][j].addAll(intermediatePoints[j][i]);
-            Collections.reverse(intermediatePoints[i][j]);
-          } else if (intermediatePoints[i][j] != null && intermediatePoints[j][i] == null){
-            intermediatePoints[j][i] = new ArrayList<>();
-            intermediatePoints[j][i].addAll(intermediatePoints[i][j]);
-            Collections.reverse(intermediatePoints[j][i]);
-          } else if (intermediatePoints[i][j] == null && intermediatePoints[j][i] == null) {
-            intermediatePoints[i][j] = List.of();
-            intermediatePoints[j][i] = List.of();
-          }
-        } 
-      }
-    }
-    
-
-    // /**
-    //  * contains a full path between two points
-    //  */
-    // public static ArmPath[][] armPaths = new ArmPath[ArmSetpoints.setPointCount][ArmSetpoints.setPointCount]; 
-    // static {
-    //   for (int i = 0; i < ArmSetpoints.setPointCount; i++){
-    //     for (int j = 0; j < ArmSetpoints.setPointCount; j++){
-    //       if (i != j){
-    //         if (intermediatePoints[i][j].size() != 0) {
-    //           armPaths[i][j] = new ArmPath(intermediatePoints[i][j], armSetPoints[i], armSetPoints[j]);
-    //         } else {
-    //           armPaths[i][j] = new ArmPath(armSetPoints[i], armSetPoints[j]);
-    //         }
-    //         // System.out.println("Created arm path" + i + " " + j);
-    //         // System.out.println(armPaths[i][j]);
-    //       } else { // set path to just the endpoint
-    //         armPaths[i][j] = new ArmPath(List.of(armSetPoints[i]));
-    //       }
-    //     }
-    //   }
-    // }
-    
-  }
   
 
   public static class LEDConstants {
