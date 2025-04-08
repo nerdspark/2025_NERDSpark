@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.CoralConstants.coralState;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commands.LEDCommand;
@@ -35,7 +37,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ElevIndexer;
+import frc.robot.subsystems.CoralManipulator;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -60,14 +62,11 @@ public class RobotContainer {
   
   private LEDSubsytem LEDs;
   private Climb climb;
-  private ElevIndexer elevIndexer;
+  private CoralManipulator coralManipulator;
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
   private BooleanSupplier driveTrainFinishedMoving = () -> false;
-  private BooleanSupplier gripperHasGamePiece = () -> false;
-  private BooleanSupplier bucketHasCoral = () -> false;
-    private Trigger bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     private Trigger driveTrainFinishedMovingTrigger = new Trigger(driveTrainFinishedMoving);
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -109,7 +108,7 @@ public class RobotContainer {
     // poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
-    elevIndexer = new ElevIndexer();
+    coralManipulator = new CoralManipulator();
 
     // configureTriggers();
     // configureNamedCommands();
@@ -158,15 +157,15 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    // joystick.rightBumper().onTrue(elevIndexer.setElevatorPosition(() -> 23.5)).onFalse(elevIndexer.stopElevator());
-    joystick.rightBumper().whileTrue(SubsystemActions.deployCoral(elevIndexer, () -> 22.4, () -> 4.5)).onFalse(elevIndexer.home());//stopElevator().alongWith(elevIndexer.stopShooter()));
+    joystick.povUp().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
+    joystick.povRight().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1inside)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
+    joystick.povLeft().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
+    joystick.povDown().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
     
-    joystick.leftBumper().whileTrue(SubsystemActions.placeCoral(elevIndexer, () -> 13.85, () -> 1.45)).onFalse(elevIndexer.home());//stopElevator().alongWith(elevIndexer.stopShooter()));
-    // if(bucketHasCoral.get()) {
-    //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1));}
-    // else {
-    //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0));}
+    new Trigger(() -> coralManipulator.getIntakeSensor() && coralManipulator.getCoralState().equals(coralState.coralInIntake)).onTrue(SubsystemActions.transferCoralToIndexer(coralManipulator));
+    new Trigger(() -> coralManipulator.getIndexerSensor() && coralManipulator.getCoralState().equals(coralState.coralInIndexer)).onTrue(SubsystemActions.transferCoralToElevator(coralManipulator));
 
+    
 
     // joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
@@ -192,32 +191,6 @@ public class RobotContainer {
   }
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
-    if((bucketHasCoral.getAsBoolean() || gripperHasGamePiece.getAsBoolean()) && driveTrainFinishedMoving.getAsBoolean()){
-        joystick.rightBumper().onFalse(LEDs.runPattern(
-          () -> LEDPattern.steps(
-          Map.of(
-            0,
-            LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
-          )
-        )//.blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
-        ));
-      
-    } else {
-      joystick.rightBumper().onFalse(
-        LEDs.runPattern(
-      () -> LEDPattern.steps(
-      Map.of(
-        0,
-        LEDs.getPattern(driveTrainFinishedMoving, bucketHasCoral, gripperHasGamePiece) 
-      )
-      )
-    )
-      );
-    
-    }
-    bucketHasCoralTrigger.or(driveTrainFinishedMoving).and(() -> DriverStation.isTeleop())
-      .onTrue(LEDs.blink()).onFalse(LEDs.breathe());
-    
 
   }
 }

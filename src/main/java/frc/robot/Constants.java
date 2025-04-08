@@ -36,6 +36,7 @@ import java.lang.reflect.Array;
 import java.rmi.MarshalException;
 import java.text.CollationElementIterator;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,33 +54,81 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static class ElevatorConstants {
-    public static final double elevatorCurrentLimit = 40;
-    public static final double shooterCurrentLimit = 40;
-    public static final double elevatorRampRate = 0.05;
-    public static final double elevatorTolerance = 0.1; // in
-    public static final double homePos = 3.0; // in
+  public static class CoralConstants {
+    public static final int shooterID = 1;
+    public static final int indexerID = 2;
+    public static final int elevatorLeftID = 3;
+    public static final int elevatorRightID = 4;
+    public static final int deployID = 5;
+    public static final int intakeID = 6;
+    public static final int intakeSensorID = 7;
+    public static final int indexerSensorID = 8;
+    public static final double intakeSensorTriggerDistance = 0.1;
+    public static final double indexerSensorTriggerDistance = 0.1;
+    public static final double indexerTransferVoltage = 3;
+    public static final double intakeTransferVoltage = 3;
+    public static final double shooterTransferVoltage = 3;
+    public static final double deployPositionIntake = 0;
+    public static final double homePositionIntake = 0;
+    public static enum coralState {
+      empty, 
+      coralInRange,
+      coralInIntake, 
+      coralInIndexer, 
+      coralInElevator
+    }
+    public static enum elevatorLevel {
+      home(0, 2, 0), 
+      l1(1,13.85, 1.45),
+      l1upper(1,l1.height + 5, 1.45),
+      l1inside(1, l1.height + 5, 2.5),
+      l2(2,22.4, 4.5);
+      
+      elevatorLevel(int level, double height, double shootVoltage) {
+        this.height = height;
+        this.level = level; 
+        this.shootVoltage = shootVoltage;
+      }
+      public static elevatorLevel fromLevel(int level) {
+        for (elevatorLevel elev : elevatorLevel.values()) {
+          if (elev.level == level) {
+            return elev;
+          }
+        }
+        return home;
+      }
+      public final double shootVoltage;
+      public final double height;
+      public final int level;
+  
+    }
 
+    
     public static final int pulleyTeeth = 12;
     public static final double pulleyToothWidth = 5.0; // mm
     public static final double pulleyCircumferenceMillimeters = pulleyTeeth * pulleyToothWidth; // mm
     public static final double pulleyCircumferenceInches = pulleyCircumferenceMillimeters / 25.4; // inches
-    public static final double elevatorSensorRatio = 1/pulleyCircumferenceInches;
+    public static final double elevatorSensorRatio = 1/pulleyCircumferenceInches; // rot/inch
     public static final double kP = 0.70; //1.05
     public static final double kI = 0.00;
     public static final double kD = 0.0;
     public static final double kG = 0.42; //0.385
     public static final double kS = 0.0; 
+    public static final double elevatorCurrentLimit = 40;
+    public static final double elevatorRampRate = 0.05;
+    public static final double elevatorTolerance = 0.1; // in
+    public static final double homePos = 3.0; // in
     public static final double forwardLimit = 24;
     public static final double reverseLimit = 0;
+
+    public static final double shooterCurrentLimit = 40;
+
     
   }
   
   public static class ClimbConstants {
-    public static final int kLeftID = 61;
-    public static final int kRightID = 62;
+    public static final int winchId = 61;
     public static final double currentLimit = 30;
-    public static final double ampTriggeredCurrentLimit = 25;
     public static final double power = 0.7;
     public static final double deployPosition = -76 * 3; // rot
     public static final double climbedPosition = -18 * 3; // rot
