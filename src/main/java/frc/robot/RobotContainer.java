@@ -193,11 +193,11 @@ public class RobotContainer {
     LEDs = new LEDSubsytem();
 
     if (!climb.climbed()) {
-      LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(bucketHasCoral, () -> joystick.rightBumper().getAsBoolean(), distanceToReef))));
+      LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(() -> false, () -> joystick.rightBumper().getAsBoolean(), () -> 0.0))));
     } else {
       LEDs.setDefaultCommand(
-        LEDs.runPattern(() -> LEDPattern.rainbow(255, 128).scrollAtRelativeSpeed(Percent.per(Second).of(25)));
-      )
+        LEDs.runPattern(() -> LEDPattern.rainbow(255, 128).scrollAtRelativeSpeed(Percent.per(Second).of(25)))
+      );
     }
 
   }
