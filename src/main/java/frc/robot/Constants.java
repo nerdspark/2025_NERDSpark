@@ -52,6 +52,28 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static class ElevatorConstants {
+    public static final double elevatorCurrentLimit = 40;
+    public static final double shooterCurrentLimit = 40;
+    public static final double elevatorRampRate = 0.05;
+    public static final double elevatorTolerance = 0.1; // in
+    public static final double homePos = 3.0; // in
+
+    public static final int pulleyTeeth = 12;
+    public static final double pulleyToothWidth = 5.0; // mm
+    public static final double pulleyCircumferenceMillimeters = pulleyTeeth * pulleyToothWidth; // mm
+    public static final double pulleyCircumferenceInches = pulleyCircumferenceMillimeters / 25.4; // inches
+    public static final double elevatorSensorRatio = 1/pulleyCircumferenceInches;
+    public static final double kP = 0.70; //1.05
+    public static final double kI = 0.00;
+    public static final double kD = 0.0;
+    public static final double kG = 0.42; //0.385
+    public static final double kS = 0.0; 
+    public static final double forwardLimit = 24;
+    public static final double reverseLimit = 0;
+    
+  }
   
   public static class ClimbConstants {
     public static final int kLeftID = 61;

@@ -16,9 +16,31 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.subsystems.ElevIndexer;
 
 /** Add your docs here. */
 public class SubsystemActions {
+    public static Command deployCoral(ElevIndexer elevIndexer, DoubleSupplier target, DoubleSupplier shootVoltage) {
+        return new SequentialCommandGroup(
+            elevIndexer.setElevatorPosition(target),
+            new WaitUntilCommand(() -> elevIndexer.elevatorAtTarget()),
+            new WaitCommand(0.08),
+            elevIndexer.shoot(shootVoltage)//, 
+            // new WaitCommand(0.2),
+            // elevIndexer.home()
+        );
+    }
+    public static Command placeCoral(ElevIndexer elevIndexer, DoubleSupplier target, DoubleSupplier shootVoltage) {
+        return new SequentialCommandGroup(
+            elevIndexer.setElevatorPosition(target),
+            new WaitUntilCommand(() -> elevIndexer.elevatorAtTarget()),
+            new WaitCommand(1.0),
+            elevIndexer.shoot(shootVoltage)//, 
+        //     new WaitCommand(1.0),
+        //     elevIndexer.home()
+        );
+    }
 
   
 }

@@ -11,8 +11,8 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commandSequences.Autos;
+import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
@@ -35,6 +35,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.ElevIndexer;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -58,6 +60,7 @@ public class RobotContainer {
   
   private LEDSubsytem LEDs;
   private Climb climb;
+  private ElevIndexer elevIndexer;
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -82,16 +85,16 @@ public class RobotContainer {
 
 
 
-    public final CommandSwerveDrivetrain drivetrain;
+    // public final CommandSwerveDrivetrain drivetrain;
 
 
 
-    public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
+    // public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
     
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
-    public final ScoringProfileSubsystem scoringSubsystem;
+    // public final ScoringProfileSubsystem scoringSubsystem;
 
 
 
@@ -102,13 +105,14 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    drivetrain = TunerConstants.createDrivetrain();
-    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
-    scoringSubsystem = new ScoringProfileSubsystem();
-    climb = new Climb();
+    // drivetrain = TunerConstants.createDrivetrain();
+    // poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    // scoringSubsystem = new ScoringProfileSubsystem();
+    // climb = new Climb();
+    elevIndexer = new ElevIndexer();
 
-    configureTriggers();
-    configureNamedCommands();
+    // configureTriggers();
+    // configureNamedCommands();
 
 
     // SignalLogger.start();
@@ -117,7 +121,7 @@ public class RobotContainer {
     configureBindings();
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
-    configureAutoChooser();
+    // configureAutoChooser();
     // configureLEDs();
 
   }
@@ -126,13 +130,13 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    drivetrain.setDefaultCommand(
-      drivetrain.applyRequest(() ->
-        drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
-          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
-          .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
-        )
-        );
+    // drivetrain.setDefaultCommand(
+    //   drivetrain.applyRequest(() ->
+    //     drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+    //       .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+    //       .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
+    //     )
+    //     );
     
     
 
@@ -145,8 +149,8 @@ public class RobotContainer {
 
   }
   private void configureTriggers() {
-    driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1;
+    // driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+    // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1;
     //  || poseEstimatorSubsystem.getCurrentPose().getTranslation().getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
     // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     
@@ -154,13 +158,17 @@ public class RobotContainer {
 
 
   private void configureBindings() {
+    // joystick.rightBumper().onTrue(elevIndexer.setElevatorPosition(() -> 23.5)).onFalse(elevIndexer.stopElevator());
+    joystick.rightBumper().whileTrue(SubsystemActions.deployCoral(elevIndexer, () -> 22.4, () -> 4.5)).onFalse(elevIndexer.home());//stopElevator().alongWith(elevIndexer.stopShooter()));
+    
+    joystick.leftBumper().whileTrue(SubsystemActions.placeCoral(elevIndexer, () -> 13.85, () -> 1.45)).onFalse(elevIndexer.home());//stopElevator().alongWith(elevIndexer.stopShooter()));
     // if(bucketHasCoral.get()) {
     //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 1));}
     // else {
     //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0));}
 
 
-    joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    // joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
 
   }

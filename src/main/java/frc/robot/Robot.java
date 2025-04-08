@@ -26,7 +26,7 @@ import frc.robot.Constants.Vision;
 import org.ironmaple.simulation.SimulatedArena;
 
 public class Robot extends TimedRobot {
-    private Command m_autonomousCommand;
+    // private Command m_autonomousCommand;
 
     private final RobotContainer m_robotContainer;
 
@@ -34,7 +34,7 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-    private final boolean kUseLimelight = false;
+    // private final boolean kUseLimelight = false;
 
     public Robot() {
         m_robotContainer = new RobotContainer();
@@ -48,17 +48,17 @@ public class Robot extends TimedRobot {
         // Pathfinding.setPathfinder(new LocalADStar());
         // PathfindingCommand.warmupCommand().schedule();
 
-        if(!Vision.DOGLOG_ENABLED){
-            DogLog.setEnabled(false);
-        }else{
-            DogLog.setEnabled(true);
-            DogLog.setOptions(new DogLogOptions()
-                .withLogExtras(true)
-                .withCaptureDs(true)
-                .withNtPublish(true)
-                .withCaptureNt(true));
-                DogLog.setPdh(new PowerDistribution());
-        }
+        // if(!Vision.DOGLOG_ENABLED){
+        //     DogLog.setEnabled(false);
+        // }else{
+        //     DogLog.setEnabled(true);
+        //     DogLog.setOptions(new DogLogOptions()
+        //         .withLogExtras(true)
+        //         .withCaptureDs(true)
+        //         .withNtPublish(true)
+        //         .withCaptureNt(true));
+        //         DogLog.setPdh(new PowerDistribution());
+        // }
 
     }
 
@@ -96,11 +96,11 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-        if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
-        }
+        // if (m_autonomousCommand != null) {
+        //     m_autonomousCommand.schedule();
+        // }
     }
 
     @Override
@@ -122,9 +122,9 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    } 
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.cancel();
+    // } 
   }
 
     @Override
