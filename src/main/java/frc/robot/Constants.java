@@ -305,14 +305,13 @@ public static class Vision {
   
   
 
-  public static class LEDConstants {
-    public static final double scrollSpeed = 40; 
-    public static final double numOfSteps = 3.0;
-    public static final int kPort = 3;
-    public static final int kLength = 120;
-    public static final double blinkSeconds = 1.0;
-
-    public static InterpolatingDoubleTreeMap driveToPoseDistanceMap = new InterpolatingDoubleTreeMap();
+public static class LEDConstants {
+  public static final double scrollSpeed = 40; 
+  public static final double numOfSteps = 3.0;
+  public static final int kPort = 3;
+  public static final int kLength = 175;
+  public static final double blinkSeconds = 1.0;
+  public static InterpolatingDoubleTreeMap driveToPoseDistanceMap = new InterpolatingDoubleTreeMap();
     static {
       // Key: cardinal joystick distance
       // Value: % max speed
@@ -325,7 +324,6 @@ public static class Vision {
       driveToPoseDistanceMap.put(1.0, 0.80);
       driveToPoseDistanceMap.put(3.0, 1.0);
     }
-  }
-  
-    
+}
+
 }
