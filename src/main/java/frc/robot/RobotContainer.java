@@ -15,6 +15,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.CoralConstants.coralState;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
+import frc.robot.commands.DriveToPose;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
 import frc.robot.subsystems.ScoringProfileSubsystem;
@@ -84,7 +85,7 @@ public class RobotContainer {
 
 
 
-    // public final CommandSwerveDrivetrain drivetrain;
+    public final CommandSwerveDrivetrain drivetrain;
 
 
 
@@ -104,7 +105,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    // drivetrain = TunerConstants.createDrivetrain();
+    drivetrain = TunerConstants.createDrivetrain();
     // poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
@@ -122,6 +123,7 @@ public class RobotContainer {
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     // configureAutoChooser();
     // configureLEDs();
+
 
   }
   
@@ -165,7 +167,8 @@ public class RobotContainer {
     new Trigger(() -> coralManipulator.getIntakeSensor() && coralManipulator.getCoralState().equals(coralState.coralInIntake)).onTrue(SubsystemActions.transferCoralToIndexer(coralManipulator));
     new Trigger(() -> coralManipulator.getIndexerSensor() && coralManipulator.getCoralState().equals(coralState.coralInIndexer)).onTrue(SubsystemActions.transferCoralToElevator(coralManipulator));
 
-    
+    joystick.rightBumper().whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getReefPoseOffset(
+      () -> joystick.getRightX(), FieldConstants.getClosestFace(() -> drivetrain.getState().Pose))));    
 
     // joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
@@ -193,11 +196,11 @@ public class RobotContainer {
     LEDs = new LEDSubsytem();
 
     if (!climb.climbed()) {
-      LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(bucketHasCoral, () -> joystick.rightBumper().getAsBoolean(), distanceToReef))));
+      LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(() -> true, () -> joystick.rightBumper().getAsBoolean(), () -> 0.0))));
     } else {
       LEDs.setDefaultCommand(
-        LEDs.runPattern(() -> LEDPattern.rainbow(255, 128).scrollAtRelativeSpeed(Percent.per(Second).of(25)));
-      )
+        LEDs.runPattern(() -> LEDPattern.rainbow(255, 128).scrollAtRelativeSpeed(Percent.per(Second).of(25)))
+      );
     }
 
   }
