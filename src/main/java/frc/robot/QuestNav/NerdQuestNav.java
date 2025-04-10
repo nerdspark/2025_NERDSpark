@@ -349,7 +349,7 @@ public class NerdQuestNav {
                 Commands.run(
                         () -> {
                             drivetrain.setControl(
-                                m_ApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0,0,0.314)));
+                                m_ApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0,0,0.4)));
                             
                         }, drivetrain).withTimeout(0.5),
                 Commands.runOnce(() -> {

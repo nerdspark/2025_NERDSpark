@@ -77,7 +77,7 @@ public class RobotContainer {
   private Bucket bucket;
   private Climb climb;
 
-  private NerdQuestNav QuestTest = new NerdQuestNav(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(0))));
+  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(-0.11473096826821018, 0.23257455155260365, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -131,7 +131,7 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     drivetrain = TunerConstants.createDrivetrain();
-    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain, QuestNav);
     scoringSubsystem = new ScoringProfileSubsystem();
     arm = new Arm();
     gripper = new Gripper();
@@ -238,7 +238,7 @@ public class RobotContainer {
     // joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // Find Quest Offsets
-    joystick.leftStick().whileTrue(QuestTest.determineOffsetToRobotCenter(drivetrain));
+    //joystick.leftStick().whileTrue(QuestTest.determineOffsetToRobotCenter(drivetrain));
 
     // coral dropoff 
       //manual dunk
@@ -284,7 +284,7 @@ public class RobotContainer {
 
     /* autodrive TODO: rebind to not conflict with drive stick */
     joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    () -> drivetrain.getState().Pose,
+    () -> QuestNav.getRobotPose().get().toPose2d(),
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
     ()-> false,
@@ -293,7 +293,7 @@ public class RobotContainer {
     ()->-joystick.getLeftX()));
     
     joystick.rightBumper().whileTrue(Autos.driveAndAutoDropoff(drivetrain,
-    () -> drivetrain.getState().Pose,
+    () -> QuestNav.getRobotPose().get().toPose2d(),
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
     ()-> false,
@@ -302,14 +302,14 @@ public class RobotContainer {
     ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget())).onFalse(arm.goToHome().alongWith(gripper.neutralCommand()));
 
     joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
-    () -> drivetrain.getState().Pose,
+    () -> QuestNav.getRobotPose().get().toPose2d(),
     () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
 
     joystick.x().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    () -> drivetrain.getState().Pose,
+    () -> QuestNav.getRobotPose().get().toPose2d(),
     () -> scoringSubsystem.getRobotPoseForSelectedAlgae(),
     ()->scoringSubsystem.getLevel(),
     ()-> false,

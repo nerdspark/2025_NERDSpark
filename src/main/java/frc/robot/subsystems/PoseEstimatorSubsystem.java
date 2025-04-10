@@ -61,14 +61,17 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
           
         // Simulation
     
-        public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain) {
+        public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain, NerdQuestNav questNav) {
             this.driveTrain = driveTrain;
             if(USE_VISION) {
     
                 this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront, driveTrain);
                 this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack, driveTrain);
-                QuestNAV = new NerdQuestNav(new Transform3d(0, 0, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
+                this.QuestNAV = questNav;
     
+                SmartDashboard.putBoolean("Photon Front Reset", false);
+                SmartDashboard.putBoolean("Photon Back Reset", false);
+                
                 allNotifier = new Notifier(() -> {
                     visionFront.run();
                     visionBack.run();
@@ -123,17 +126,25 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
                     visionEstFrontQuest.ifPresent(
                     estQuest -> {                        
-                        QuestNAV.resetPose(estQuest.estimatedPose);                    
-
+                        //QuestNAV.resetPose(estQuest.estimatedPose);  
+                        QuestNAV.hardReset(estQuest.estimatedPose);
+                        //SmartDashboard.putBoolean("Photon Front Reset", true);
                 });
 
                     visionEstBackQuest.ifPresent(
                         estQuest -> {                        
-                            QuestNAV.resetPose(estQuest.estimatedPose);                    
-
+                            //QuestNAV.resetPose(estQuest.estimatedPose);                    
+                            QuestNAV.hardReset(estQuest.estimatedPose);  
+                            //SmartDashboard.putBoolean("Photon Back Reset", true);
                     });
 
-                      
+                    // if (visionEstFrontQuest.isPresent() == false) {
+                    //     SmartDashboard.putString("Photon Vision Front Problem", "Vision Front Est is false");
+                    // }
+
+                    // if (visionEstBackQuest.isPresent() == false) {
+                    //     SmartDashboard.putString("Photon Vision Back Problem", "Vision back Est is false");
+                    // }
                     
                 }
 
@@ -159,13 +170,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
 
         if (getCurrentPose() != null) {
-            field.setRobotPose(getCurrentPose());
+            //field.setRobotPose(getCurrentPose());
             robotPose2d = getCurrentPose();
             publisher.set(robotPose2d);
 
             // field.getObject("VisionEstimation").setPoses();
 
-            SmartDashboard.putData("Robot Pose in Field", field);
+            // SmartDashboard.putData("Robot Pose in Field", field);
             SmartDashboard.putString("Formatted Pose", getFomattedPose());
 
             DogLog.log("PoseEstimator/ODO+Vision Pose", getCurrentPose());
@@ -175,6 +186,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
                 SmartDashboard.putString("Quest Pose", getFomattedPose(QuestNAV.getRobotPose().get().toPose2d()));
                 DogLog.log("PoseEstimator/Quest Pose", QuestNAV.getRobotPose().get().toPose2d());
+                SmartDashboard.putData("Robot Pose in Field", field);
             }
 
         }

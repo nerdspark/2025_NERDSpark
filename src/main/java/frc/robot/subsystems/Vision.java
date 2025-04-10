@@ -121,6 +121,7 @@ import dev.doglog.DogLog;
         optionalEstimatedRobotPose = getEstimatedGlobalPose(this.camera, this.photonPoseEstimator);
         if(Constants.Vision.QUEST_ENABLED){
            optionalEstimatedRobotPoseQuest = getEstimatedGlobalPoseQuest(this.camera, this.photonPoseEstimator);
+           
         }
      }
  
@@ -293,6 +294,8 @@ import dev.doglog.DogLog;
                                  .toPose2d()
                                  .getTranslation()
                                  .getDistance(visionEst.get().estimatedPose.toPose2d().getTranslation());
+                 avgDist /= numTags;
+                 //SmartDashboard.putNumber("Average Distance", avgDist);
              }
              if(numTags < 2 || avgDist >= 2) {
                 noGood = true;
@@ -317,9 +320,11 @@ import dev.doglog.DogLog;
             // }
         }
         if(noGood) {
+            //SmartDashboard.putString("Photon Vision Problem", "noGood is true");
             return Optional.empty();
         }
         else {
+            //SmartDashboard.putString("Photon Vision Problem", "Returning pose est");
             return visionEst;
         }
     }
