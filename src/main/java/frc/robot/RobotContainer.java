@@ -89,7 +89,7 @@ public class RobotContainer {
 
 
 
-    // public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
+    public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
     
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
@@ -106,7 +106,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     drivetrain = TunerConstants.createDrivetrain();
-    // poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
     coralManipulator = new CoralManipulator();
