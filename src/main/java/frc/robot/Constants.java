@@ -308,8 +308,8 @@ public static class Vision {
 public static class LEDConstants {
   public static final double scrollSpeed = 40; 
   public static final double numOfSteps = 3.0;
-  public static final int kPort = 3;
-  public static final int kLength = 175;
+  public static final int kPort = 9;
+  public static final int kLength = 125;
   public static final double blinkSeconds = 1.0;
   public static InterpolatingDoubleTreeMap driveToPoseDistanceMap = new InterpolatingDoubleTreeMap();
     static {
