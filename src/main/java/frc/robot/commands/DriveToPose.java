@@ -35,6 +35,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.Vision;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -45,7 +46,7 @@ public class DriveToPose extends Command {
   private final Supplier<Pose2d> poseSupplier;
 
   private boolean running = false;
-  double loopPeriodSecs = 0.02;
+  double loopPeriodSecs = AutoDropoff.loopPeriodSecs;
 //   private final ProfiledPIDController driveController =
 //       new ProfiledPIDController(
 //           Constants.Vision.kPXController, Constants.Vision.kIXController, Constants.Vision.kDXController, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs);
@@ -54,12 +55,8 @@ public class DriveToPose extends Command {
 //           Constants.Vision.kPXController, Constants.Vision.kIThetaController, Constants.Vision.kDThetaController, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs);
   
 
-private final ProfiledPIDController driveController =
-      new ProfiledPIDController(
-          15, 0, 0.1, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
-  private final ProfiledPIDController thetaController =
-      new ProfiledPIDController(
-          7, 0,0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
+  private  final ProfiledPIDController driveController = AutoDropoff.driveController;
+  private final ProfiledPIDController thetaController = AutoDropoff.thetaController;
  private double driveErrorAbs;
   private double thetaErrorAbs;
   private Translation2d lastSetpointTranslation;
@@ -135,7 +132,7 @@ private final ProfiledPIDController driveController =
         MathUtil.clamp(
             (currentDistance - 0.1) / (0.8 - 0.1),
             0.0,
-            1.0);
+            0.0);
     driveErrorAbs = currentDistance;
 
     driveController.reset(
@@ -264,6 +261,7 @@ private final ProfiledPIDController driveController =
         return this.atGoal();
     }
 
+    
   
     
 }

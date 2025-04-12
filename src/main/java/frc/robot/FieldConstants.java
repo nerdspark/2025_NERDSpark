@@ -12,13 +12,16 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogOutput;
+import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.Vision;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -249,14 +252,14 @@ public class FieldConstants {
 
   }
 
-  public static Pose2d getReefPoseOffset(DoubleSupplier offsetScalar, int reefFace) {
-    Pose2d facePose = Reef.centerFaces[reefFace];
-    // Transform2d offsetVector = new Transform2d(, , 0.0);
-    Translation2d offsetVectorTranslation2d = new Translation2d(offsetScalar.getAsDouble(), Rotation2d.fromDegrees(180 - (60 * reefFace)));
-    Transform2d offsetVector = new Transform2d(offsetVectorTranslation2d, new Rotation2d(0));
-    Pose2d drivePose = facePose.plus(offsetVector);
-    return drivePose; 
-  }
+//   public static Pose2d getReefPoseOffset(DoubleSupplier offsetScalar, int reefFace) {
+//     Pose2d facePose = Reef.centerFaces[reefFace];
+//     // Transform2d offsetVector = new Transform2d(, , 0.0);
+//     Translation2d offsetVectorTranslation2d = new Translation2d(offsetScalar.getAsDouble(), Rotation2d.fromDegrees(180 - (60 * reefFace)));
+//     Transform2d offsetVector = new Transform2d(offsetVectorTranslation2d, new Rotation2d(0));
+//     Pose2d drivePose = facePose.plus(offsetVector);
+//     return drivePose; 
+//   }
 
   public static int getClosestFace(Supplier<Pose2d> robotPose) {
     int minIndex = 0;
@@ -265,14 +268,38 @@ public class FieldConstants {
     double currentDistance = 0.0;
     for (int i=0; i<6; i++) {
         currentFacePose = Reef.centerFaces[i].minus(robotPose.get());
-        currentDistance = Math.pow(
-            Math.pow(currentFacePose.getX(),2.0) + Math.pow(currentFacePose.getY(), 2.0), .5);
+        currentDistance = currentFacePose.getTranslation().getNorm();
         if(currentDistance < minDistance) {
             minDistance = currentDistance;
             minIndex = i;
         }
     } 
     return minIndex;
+  }
+
+  /**
+   * gets only L2 pose
+   * @param robotPose
+   * @return
+   */
+  public static Pose2d getClosestPole(Supplier<Pose2d> robotPose) {
+    int minIndex = 0;
+    double minDistance = Double.MAX_VALUE;
+    Transform2d currentFacePose = new Transform2d(0.0, 0.0, new Rotation2d(0.0));
+    double currentDistance = 0.0;
+    for (int i=0; i<12; i++) {
+        currentFacePose = Reef.branchPositions2d.get(i).get(ReefLevel.L2).minus(robotPose.get());
+        currentDistance = currentFacePose.getTranslation().getNorm();
+        if(currentDistance < minDistance) {
+            minDistance = currentDistance;
+            minIndex = i;
+        }
+    } 
+    return Reef.branchPositions2d.get(minIndex).get(ReefLevel.L2);
+  }
+
+  public static boolean getCloseEnoughForAutoDrive(Supplier<Pose2d> robotPose) {
+    return robotPose.get().getTranslation().getDistance(Reef.center) < AutoDropoff.distanceToAutoDrive + Reef.faceLength;
   }
 
 }
