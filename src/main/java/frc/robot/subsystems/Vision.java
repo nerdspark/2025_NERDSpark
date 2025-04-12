@@ -37,8 +37,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
  import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
-import frc.robot.Robot;
+ import frc.robot.Robot;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -68,18 +67,16 @@ import dev.doglog.DogLog;
      private Matrix<N3, N1> curStdDevs;
      private String cameraName;
 
+     private final NetworkTable llTable;
 
      private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
  
      // Simulation
      private PhotonCameraSim cameraSim;
      private VisionSystemSim visionSim;
-     private CommandSwerveDrivetrain driveTrain;
  
-     public Vision(String photonCamName, Transform3d robotToCam, CommandSwerveDrivetrain driveTrain) {
+     public Vision(String photonCamName, Transform3d robotToCam) {
         this.cameraName = photonCamName; 
-        this.driveTrain = driveTrain;
-
         camera = new PhotonCamera(photonCamName);
 
 
@@ -87,8 +84,7 @@ import dev.doglog.DogLog;
          photonPoseEstimator =
                  new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, robotToCam);
          photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-        // photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
-
+         llTable = NetworkTableInstance.getDefault().getTable("limelight");
 
          // Simulation
          if (Robot.isSimulation()) {
@@ -175,7 +171,6 @@ import dev.doglog.DogLog;
              int numTags = 0;
              double avgDist = 0;
  
-            // photonEstimator.addHeadingData(estimatedPose.get().timestampSeconds, driveTrain.getRotation3d());
              // Precalculation - see how many tags we found, and calculate an average-distance metric
              for (var tgt : targets) {
                  var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
@@ -202,16 +197,13 @@ import dev.doglog.DogLog;
                  if (numTags == 1 && avgDist > kSingleTagDistanceThreshold)
                      estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
                  else if(numTags == 1 && avgDist < kSingleTagDistanceThreshold) {
-                     if(estimatedPose.get().strategy == PoseStrategy.PNP_DISTANCE_TRIG_SOLVE || 
-                          (estimatedPose.get().strategy == PoseStrategy.LOWEST_AMBIGUITY && targets.get(0).getPoseAmbiguity() < kPoseAmbiguityThreshold)) {
+                     if(targets.get(0).getPoseAmbiguity() < kPoseAmbiguityThreshold) {
                         //  estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
                         double xydeviations = kXYStdDev * Math.pow(avgDist, 2) / numTags ;
                         double thetadeviations = kThetaStdDev * Math.pow(avgDist, 2) / numTags ;
                         estStdDevs = VecBuilder.fill(xydeviations, xydeviations, thetadeviations);
-                        if (Constants.Vision.DOGLOG_ENABLED){
                         DogLog.log("Vision"+cameraName+"/PoseAmbiguity", targets.get(0).getPoseAmbiguity());
                         DogLog.log("Vision"+cameraName+"/estStdDevs", estStdDevs);
-                        }
                      }
                      else{
                          estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
@@ -241,7 +233,73 @@ import dev.doglog.DogLog;
          return curStdDevs;
      }
 
+     // - LimeLight
 
+     public double getTx() {
+        return llTable.getEntry("tx").getDouble(0.0);
+      }
+    
+      public double getTy() {
+        return llTable.getEntry("ty").getDouble(0.0);
+      }
+    
+      public double getTa() {
+        return llTable.getEntry("ta").getDouble(0.0);
+      }
+    
+      public boolean hasTarget() {
+        return llTable.getEntry("tv").getDouble(0.0) == 1.0;
+      }
+    
+      public long getID() {
+        return llTable.getEntry("tid").getInteger(0);
+      }
+    
+      public double[] getRelBotPose() {
+        NetworkTableEntry relbotpose = llTable.getEntry("targetpose_cameraspace");
+        return relbotpose.getDoubleArray(new double[6]);
+      }
+
+      public double[] getBotPose() {
+        NetworkTableEntry botpose = llTable.getEntry("botpose");
+        return botpose.getDoubleArray(new double[6]);
+      }
+    
+      public void setPipelineNumber(int i) {
+        llTable.getEntry("pipeline").setNumber(i);
+      }
+
+      public String getObjectClass() {
+        return llTable.getEntry("tclass").getString("none");
+      }
+
+      public double getHB() {
+        return llTable.getEntry("hb").getDouble(0.0);
+      }
+      
+      public double[] getCoordinates() {
+        double coords[] = new double[8];
+        if (llTable.getEntry("tcornxy").getDoubleArray(new double[1]).length == 8) {
+          coords = llTable.getEntry("tcornxy").getDoubleArray(new double[1]);
+        }
+        return coords;
+      }
+
+      public double getYaw() {
+        double[] botpose = getBotPose();
+        double yaw = 0.0;
+        if (botpose.length == 6) {
+            yaw = botpose[5];
+        } else {
+            yaw = 0.0;
+        }
+        return yaw;
+      }
+
+      public double getFPS() {
+        double[] hw = llTable.getEntry("hw").getDoubleArray(new double[5]);
+        return hw[0];
+      }
      // ----- Simulation
  
      public void simulationPeriodic(Pose2d robotSimPose) {

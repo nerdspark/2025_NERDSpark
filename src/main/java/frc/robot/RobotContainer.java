@@ -17,6 +17,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.CoralConstants.coralState;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
+import frc.robot.commands.DriveToCoral;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -173,6 +174,12 @@ public class RobotContainer {
 
   private void configureBindings() {
     // full auto dropoffs for L2
+    Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
+    Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
+    Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
+    
+    coralInRange.and(coralAutoTarget).and(coralInList).onTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose()));
+    
     joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
       .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose))
         .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)))
