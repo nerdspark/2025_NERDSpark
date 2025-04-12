@@ -3,39 +3,55 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.119715909090909,
-        "y": 2.0518
+        "x": 3.146,
+        "y": 4.191
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.153790082801841,
-        "y": 2.310619045102521
+        "x": 2.506105132450331,
+        "y": 4.112168874172185
+      },
+      "isLocked": false,
+      "linkedName": "LoliPops3"
+    },
+    {
+      "anchor": {
+        "x": 1.4963990066225168,
+        "y": 4.026
+      },
+      "prevControl": {
+        "x": 2.1580234066310364,
+        "y": 4.049104433162813
+      },
+      "nextControl": {
+        "x": 0.8347746066139969,
+        "y": 4.002895566837187
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.016,
-        "y": 2.784
+        "x": 3.146,
+        "y": 3.861
       },
       "prevControl": {
-        "x": 5.216,
-        "y": 2.4375898384862245
+        "x": 2.1290303850205277,
+        "y": 3.9409122298355586
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LoliPops4"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Score1",
-      "minWaypointRelativePos": 0.65,
-      "maxWaypointRelativePos": 1.0,
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.846643109540634,
+      "maxWaypointRelativePos": 0.9031802120141325,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.5,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -45,22 +61,10 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "armToL4",
-      "waypointRelativePos": 0.6,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "armToL4"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.96,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -68,13 +72,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "SourceAuton",
+  "folder": "LoliPops",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

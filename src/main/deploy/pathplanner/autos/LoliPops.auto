@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops5"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
