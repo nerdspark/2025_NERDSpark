@@ -278,7 +278,7 @@ import dev.doglog.DogLog;
                 int numTags = 0;
                 double avgDist = 0;
                 
-            // photonEstimator.addHeadingData(estimatedPose.get().timestampSeconds, driveTrain.getRotation3d());
+             // photonEstimator.addHeadingData(estimatedPose.get().timestampSeconds, driveTrain.getRotation3d());
              // Precalculation - see how many tags we found, and calculate an average-distance metric
              for (var tgt : change.getTargets()) {
                 if(Constants.Vision.nonReefTagFiducialIDs.contains(tgt.getFiducialId())) { 
@@ -294,9 +294,10 @@ import dev.doglog.DogLog;
                                  .toPose2d()
                                  .getTranslation()
                                  .getDistance(visionEst.get().estimatedPose.toPose2d().getTranslation());
-                 avgDist /= numTags;
-                 //SmartDashboard.putNumber("Average Distance", avgDist);
              }
+             avgDist /= numTags;
+             SmartDashboard.putNumber("Average Distance", avgDist);
+             SmartDashboard.putNumber("Tag Num", numTags);
              if(numTags < 2 || avgDist >= 2) {
                 noGood = true;
              }

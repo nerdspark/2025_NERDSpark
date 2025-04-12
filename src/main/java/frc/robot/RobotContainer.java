@@ -45,6 +45,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -77,7 +78,7 @@ public class RobotContainer {
   private Bucket bucket;
   private Climb climb;
 
-  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(-0.11473096826821018, 0.23257455155260365, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
+  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(-0.09323121087400962, 0.21503477530897955, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -218,7 +219,7 @@ public class RobotContainer {
     //   new InstantCommand(() -> joystick.setRumble(RumbleType.kBothRumble, 0));}
 
 
-    joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    //joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
     // * arm testing *
     // joystick.leftBumper().onTrue(ArmActions.armToCoralReef(arm, () -> scoringSubsystem.getArmReefTarget()));
@@ -238,7 +239,7 @@ public class RobotContainer {
     // joystick.y().whileTrue(gripper.spitOutCommand()).onFalse(gripper.neutralCommand());
 
     // Find Quest Offsets
-    //joystick.leftStick().whileTrue(QuestTest.determineOffsetToRobotCenter(drivetrain));
+    joystick.leftTrigger().whileTrue(QuestNav.determineOffsetToRobotCenter(drivetrain));
 
     // coral dropoff 
       //manual dunk

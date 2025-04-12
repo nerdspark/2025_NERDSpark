@@ -77,7 +77,7 @@ public class NerdQuestNav {
 
     public enum QuestCommand {
         RESET(1);
-
+        
         public final int questRequestCode;
 
         private QuestCommand(int command) {
@@ -119,17 +119,17 @@ public class NerdQuestNav {
     }
 
     private void setupNetworkTables(String root) {
-        PubSubOption periodic = PubSubOption.periodic(0);
-        PubSubOption sPeriodic = PubSubOption.periodic(30);
+        //PubSubOption periodic = PubSubOption.periodic(0);
+        //PubSubOption sPeriodic = PubSubOption.periodic(30);
         networkTable = networkTableInstance.getTable(root);
-        miso = networkTable.getIntegerTopic("miso").getEntry(0, periodic);
+        miso = networkTable.getIntegerTopic("miso").getEntry(0);
         mosi = networkTable.getIntegerTopic("mosi").publish();
-        frameCount = networkTable.getIntegerTopic("frameCount").subscribe(0, periodic);
-        timestamp = networkTable.getDoubleTopic("timestamp").subscribe(0.0, periodic);
-        position = networkTable.getFloatArrayTopic("position").subscribe(new float[3], periodic);
-        quaternion = networkTable.getFloatArrayTopic("quaternion").subscribe(new float[4], sPeriodic);
-        eulerAngles = networkTable.getFloatArrayTopic("eulerAngles").subscribe(new float[3], periodic);
-        battery = networkTable.getDoubleTopic("battery").subscribe(0.0, sPeriodic);
+        frameCount = networkTable.getIntegerTopic("frameCount").subscribe(0);
+        timestamp = networkTable.getDoubleTopic("timestamp").subscribe(0.0);
+        position = networkTable.getFloatArrayTopic("position").subscribe(new float[3]);
+        quaternion = networkTable.getFloatArrayTopic("quaternion").subscribe(new float[4]);
+        eulerAngles = networkTable.getFloatArrayTopic("eulerAngles").subscribe(new float[3]);
+        battery = networkTable.getDoubleTopic("battery").subscribe(0.0);
         heartbeatRequestSub = networkTable.getDoubleTopic("heartbeat/quest_to_robot").subscribe(0.0);
         heartbeatResponsePub = networkTable.getDoubleTopic("heartbeat/robot_to_quest").publish();
     }
@@ -245,7 +245,7 @@ public class NerdQuestNav {
 
     public void softReset(Pose3d pose) {
         softResetTransform = new Transform3d(pose.getTranslation().minus(getProcessedPosition()),
-                pose.getRotation().minus(getProcessedRotation()));
+                pose.getRotation().minus(getProcessedRotation())); // May need to minus/add 180 to getProcessedRotation()
         softResetPose = new Pose3d(getProcessedPosition(), getProcessedRotation());
     }
 
@@ -349,7 +349,7 @@ public class NerdQuestNav {
                 Commands.run(
                         () -> {
                             drivetrain.setControl(
-                                m_ApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0,0,0.4)));
+                                m_ApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0,0,0.35)));
                             
                         }, drivetrain).withTimeout(0.5),
                 Commands.runOnce(() -> {

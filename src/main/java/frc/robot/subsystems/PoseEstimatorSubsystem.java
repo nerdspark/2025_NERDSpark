@@ -49,6 +49,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     Pose2d robotPose2d = new Pose2d();
     StructPublisher<Pose2d> publisher;
+    StructPublisher<Pose2d> publisherQuest;
 
 
     //private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId);
@@ -82,6 +83,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
                 publisher = NetworkTableInstance.getDefault()
                 .getStructTopic("Robot Pose AdvScope", Pose2d.struct).publish();
+
+                publisherQuest = NetworkTableInstance.getDefault().getStructTopic("Robot Pose Quest", Pose2d.struct).publish();
               
         }        
 
@@ -121,21 +124,22 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 });
 
                 if(Constants.Vision.QUEST_ENABLED){
+                    SmartDashboard.putBoolean("Photon Back Reset", false);
                     Optional<EstimatedRobotPose> visionEstFrontQuest  = visionFront.getEstimatedRobotPoseQuest();
                     Optional<EstimatedRobotPose> visionEstBackQuest  = visionBack.getEstimatedRobotPoseQuest();
 
                     visionEstFrontQuest.ifPresent(
                     estQuest -> {                        
-                        //QuestNAV.resetPose(estQuest.estimatedPose);  
-                        QuestNAV.hardReset(estQuest.estimatedPose);
-                        //SmartDashboard.putBoolean("Photon Front Reset", true);
-                });
+                        QuestNAV.resetPose(estQuest.estimatedPose);
+                        //QuestNAV.hardReset(estQuest.estimatedPose);
+                        SmartDashboard.putBoolean("Photon Front Reset", true);
+                    });
 
                     visionEstBackQuest.ifPresent(
                         estQuest -> {                        
-                            //QuestNAV.resetPose(estQuest.estimatedPose);                    
-                            QuestNAV.hardReset(estQuest.estimatedPose);  
-                            //SmartDashboard.putBoolean("Photon Back Reset", true);
+                            QuestNAV.resetPose(estQuest.estimatedPose);                    
+                            //QuestNAV.hardReset(estQuest.estimatedPose);  
+                            SmartDashboard.putBoolean("Photon Back Reset", true);
                     });
 
                     // if (visionEstFrontQuest.isPresent() == false) {
@@ -186,6 +190,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
                 SmartDashboard.putString("Quest Pose", getFomattedPose(QuestNAV.getRobotPose().get().toPose2d()));
                 DogLog.log("PoseEstimator/Quest Pose", QuestNAV.getRobotPose().get().toPose2d());
+                publisherQuest.set(QuestNAV.getRobotPose().get().toPose2d());
                 SmartDashboard.putData("Robot Pose in Field", field);
             }
 
