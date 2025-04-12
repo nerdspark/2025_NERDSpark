@@ -282,16 +282,16 @@ public static class Vision {
         // public static final double kLimeLightAOD = -15.0;
 
         //NERDSwerve Dims.
-        public static final double kLimeLightHeight = 0.18;
-        public static final double kLimeLightXOffset = 0;
-        public static final double kLimeLightYOffset = 0.14;
-        public static final double kLimeLightAOD = -15.0;
+        // public static final double kLimeLightHeight = 0.18;
+        // public static final double kLimeLightXOffset = 0;
+        // public static final double kLimeLightYOffset = 0.14;
+        // public static final double kLimeLightAOD = -15.0;
 
         //Comp. Dims.
-        // public static final double kLimeLightHeight = 0.56552592;
-        // public static final double kLimeLightXOffset = -0.17145;
-        // public static final double kLimeLightYOffset = -0.18415;
-        // public static final double kLimeLightAOD = -15.0;
+        public static final double kLimeLightHeight = 1.02997;
+        public static final double kLimeLightXOffset = 0;
+        public static final double kLimeLightYOffset = -0.0007366;
+        public static final double kLimeLightAOD = -40.0;
 
         public static boolean kCoralTargeted = false;
         public static boolean kCoralInRange = false;
