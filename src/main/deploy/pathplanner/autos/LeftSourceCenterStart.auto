@@ -21,6 +21,54 @@
           "data": {
             "pathName": "LeftCenter3"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter7"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter8"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter9"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter10"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftCenter11"
+          }
         }
       ]
     }
