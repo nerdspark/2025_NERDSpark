@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.766,
-        "y": 4.986
+        "x": 3.296,
+        "y": 4.273
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.692528973506839,
-        "y": 4.860368377484329
+        "x": 2.15010145514707,
+        "y": 4.203569999971642
       },
       "isLocked": false,
       "linkedName": null
@@ -53,8 +53,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.846643109540634,
-      "maxWaypointRelativePos": 0.9031802120141325,
+      "minWaypointRelativePos": 0.7180212014134297,
+      "maxWaypointRelativePos": 0.8480565371024682,
       "constraints": {
         "maxVelocity": 0.5,
         "maxAcceleration": 1.0,
@@ -83,7 +83,7 @@
   "folder": "LoliPops",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

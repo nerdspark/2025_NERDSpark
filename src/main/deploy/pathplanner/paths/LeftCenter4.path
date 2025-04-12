@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.220488410596026,
-        "y": 7.5
+        "x": 3.852,
+        "y": 5.036
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.8319536423841054,
-        "y": 6.969722682119204
+        "x": 3.3520000000000003,
+        "y": 5.902025403784438
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.766,
-        "y": 4.986
+        "x": 2.753083609271523,
+        "y": 6.814403973509933
       },
       "prevControl": {
-        "x": 3.421378311258278,
-        "y": 5.608567880794701
+        "x": 3.11965209606183,
+        "y": 6.474363469316293
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 160.0
   },
   "reversed": false,
-  "folder": "LoliPops",
+  "folder": "LeftSourceCenterStart",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 119.99999999999999
   },
   "useDefaultConstraints": true
 }
