@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.AnalogOutput;
 import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Vision;
+import frc.robot.util.AllianceFlipUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -295,11 +296,13 @@ public class FieldConstants {
             minIndex = i;
         }
     } 
-    return Reef.branchPositions2d.get(minIndex).get(ReefLevel.L2);
+        return AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(minIndex).get(ReefLevel.L2).toPose2d()).plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L2));
+
+    // return Reef.branchPositions2d.get(minIndex).get(ReefLevel.L2);
   }
 
   public static boolean getCloseEnoughForAutoDrive(Supplier<Pose2d> robotPose) {
-    return robotPose.get().getTranslation().getDistance(Reef.center) < AutoDropoff.distanceToAutoDrive + Reef.faceLength;
+    return robotPose.get().getTranslation().getDistance(Reef.center) < AutoDropoff.distanceToAutoDrive + Reef.faceLength + AutoDropoff.robotThickness;
   }
 
 }
