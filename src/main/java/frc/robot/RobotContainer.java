@@ -5,16 +5,21 @@
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
+import java.lang.reflect.Field;
 import java.rmi.dgc.Lease;
 import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.CoralConstants.coralState;
+import frc.robot.Constants.CoralConstants.elevatorLevel;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
+import frc.robot.commands.DriveToCoral;
+import frc.robot.commands.DriveToCoralAuto;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -23,10 +28,15 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.LEDSubsytem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -34,6 +44,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.generated.TunerConstants;
@@ -60,7 +71,10 @@ public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
   // private final LEDSubsytem m_LedSubsystem = new LEDSubsytem();
-  
+
+  private final ProfiledPIDController driveController = AutoDropoff.driveController;
+  private final ProfiledPIDController thetaController = AutoDropoff.thetaController;
+    
   private LEDSubsytem LEDs;
   private Climb climb;
   private CoralManipulator coralManipulator;
@@ -104,6 +118,9 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    driveController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_X, Constants.Vision.VELOCITY_TOLERANCE_X);
+    thetaController.setTolerance(Constants.Vision.ROTATION_TOLERANCE,Constants.Vision.VELOCITY_TOLERANCE_OMEGA);      
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
@@ -112,7 +129,7 @@ public class RobotContainer {
     coralManipulator = new CoralManipulator();
 
     // configureTriggers();
-    // configureNamedCommands();
+    configureNamedCommands();
 
 
     // SignalLogger.start();
@@ -122,12 +139,21 @@ public class RobotContainer {
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
     // configureAutoChooser();
-    // configureLEDs();
+    configureLEDs();
 
 
   }
   
   private void configureNamedCommands(){
+    NamedCommands.registerCommand("intake", coralManipulator.intakeCommand());
+    NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> !coralManipulator.getCoralState().equals(coralState.empty)));
+    NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height));
+    NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
+    NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
+    NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1));
+    NamedCommands.registerCommand("elevatorToHome", coralManipulator.elevatorToHome());
+    NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
+    NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorSubsystem.getCurrentPose()));
   }
 
   private void configureDefaultCommands() {
@@ -159,19 +185,56 @@ public class RobotContainer {
 
 
   private void configureBindings() {
-    joystick.povUp().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
-    joystick.povRight().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1inside)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
-    joystick.povLeft().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
-    joystick.povDown().whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1)).onFalse(coralManipulator.elevatorHome());//stopElevator().alongWith(elevIndexer.stopShooter()));
+    joystick.back().whileTrue(SubsystemActions.resetDeploy(coralManipulator));
+    // full auto dropoffs for L2
+    // joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
+    //   .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose))
+    //     .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)))
+    //   .onFalse(coralManipulator.elevatorToHome());
+    Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
+    Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
+    Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
     
-    new Trigger(() -> coralManipulator.getIntakeSensor() && coralManipulator.getCoralState().equals(coralState.coralInIntake)).onTrue(SubsystemActions.transferCoralToIndexer(coralManipulator));
-    new Trigger(() -> coralManipulator.getIndexerSensor() && coralManipulator.getCoralState().equals(coralState.coralInIndexer)).onTrue(SubsystemActions.transferCoralToElevator(coralManipulator));
+    coralInRange.and(coralAutoTarget).and(coralInList).onTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose()));
+    
+    joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
+      .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose))
+        .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)))
+      .onFalse(coralManipulator.elevatorToHome());
+    
+    // semi auto dropoffs for L1
+    joystick.leftBumper()
+      .whileTrue(driveToLine(() -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)], () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX()), () -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)].getTranslation().minus(FieldConstants.Reef.center).getAngle()))
+      .and(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator))
+        .whileTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
 
-    joystick.rightBumper().whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getReefPoseOffset(
-      () -> joystick.getRightX(), FieldConstants.getClosestFace(() -> drivetrain.getState().Pose))));    
+    joystick.povUp()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorToHome());
+    joystick.povRight()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1inside)).onFalse(coralManipulator.elevatorToHome());
+    joystick.povLeft()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper)).onFalse(coralManipulator.elevatorToHome());
+    joystick.povDown()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1)).onFalse(coralManipulator.elevatorToHome());
 
-    // joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+    //intake commands
+    joystick.leftTrigger()
+    .onTrue(coralManipulator.setCoralStateCommand(coralState.empty))
+        .onTrue(coralManipulator.intakeCommand().onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
+        .onFalse(coralManipulator.intakeToHome());
 
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake))
+      .whileTrue(SubsystemActions.transferCoralToIndexer(coralManipulator))
+      .onFalse(coralManipulator.stopIndexer().andThen(coralManipulator.stopIntake()).andThen(coralManipulator.retractIntake()));
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
+      .onTrue(SubsystemActions.transferCoralToElevator(coralManipulator))
+      .onFalse(new SequentialCommandGroup(
+        coralManipulator.setCoralStateCommand(coralState.coralInElevator), 
+        coralManipulator.stopIndexer(),
+        coralManipulator.stopShooter(),
+        coralManipulator.elevatorToHome()));
+
+    joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
   }
 
@@ -194,14 +257,37 @@ public class RobotContainer {
   }
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
+    joystick.b().onTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(1, 1, 1))));
+    // if (!climb.climbed()) {
+      // LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(() -> true, () -> joystick.rightBumper().getAsBoolean(), () -> 1.0))));
+    // } else {
+    //   LEDs.setDefaultCommand(
+    //     LEDs.runPattern(() -> LEDPattern.rainbow(255, 128).scrollAtRelativeSpeed(Percent.per(Second).of(25)))
+    //   );
+    // }
 
-    if (!climb.climbed()) {
-      LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(() -> true, () -> joystick.rightBumper().getAsBoolean(), () -> 0.0))));
-    } else {
-      LEDs.setDefaultCommand(
-        LEDs.runPattern(() -> LEDPattern.rainbow(255, 128).scrollAtRelativeSpeed(Percent.per(Second).of(25)))
-      );
-    }
-
+  }
+  private Command driveToLine(Supplier<Pose2d> targetCenter, Supplier<Translation2d> joystickVector, Supplier<Rotation2d> targetVector) {
+    // double target = new Translation2d(targetCenter.get().getTranslation().getX() * targetVector.get().getCos(), targetCenter.get().getTranslation().getY() * targetVector.get().getSin()).getNorm();
+    return drivetrain.applyRequest(() ->
+    drive
+      .withVelocityX(xLimiter.calculate((OperatorConstants.joystickMap.get(joystickVector.get().getX() * targetVector.get().getCos()) * MaxSpeed) + driveController.calculate(
+        new Translation2d(
+          drivetrain.getState().Pose.getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+          drivetrain.getState().Pose.getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm(), 
+        new Translation2d(
+          targetCenter.get().getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+          targetCenter.get().getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm()
+      ) * targetVector.get().getSin()))
+      .withVelocityY(yLimiter.calculate((OperatorConstants.joystickMap.get(joystickVector.get().getY() * targetVector.get().getSin()) * MaxSpeed) 
+        + driveController.calculate(
+          new Translation2d(
+            drivetrain.getState().Pose.getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+            drivetrain.getState().Pose.getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm(), 
+          new Translation2d(
+            targetCenter.get().getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+            targetCenter.get().getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm()
+        ) * targetVector.get().getCos()))
+      .withRotationalRate(zLimiter.calculate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), targetVector.get().getRadians()))));
   }
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -22,6 +23,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -55,6 +57,24 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class CoralConstants {
+    public static final String canBus = "canivore1";
+    public static final double deployCurrentLimit = 70;
+    public static final double deployRampRate = 0.03;
+    public static final double deployOffset = 0.25-0.1; 
+    public static final double homePositionIntake = deployOffset + 0.04;
+    public static final double deployPositionIntake = deployOffset + 0.34; // 0.27 for algae
+    public static final double transferPositionIntake = deployOffset + 0.17; 
+    public static final double forwardLimitDeploy = deployPositionIntake;
+    public static final double reverseLimitDeploy = homePositionIntake;
+    public static final double kPDeploy = 15; // 100
+    public static final double kIDeploy = 0;
+    public static final double kDDeploy = 0;
+    public static final double kGDeploy = 0.39;
+    public static final double intakeCurrentLimit = 65;
+    public static final double deployGearRatio = 25.0;
+    public static final double deploySensorRatio = deployGearRatio;
+    public static final double intakeGearRatio = 5.0;
+    public static final double indexerGearRatio = 20.0;
     public static final int shooterID = 1;
     public static final int indexerID = 2;
     public static final int elevatorLeftID = 3;
@@ -63,13 +83,14 @@ public final class Constants {
     public static final int intakeID = 6;
     public static final int intakeSensorID = 7;
     public static final int indexerSensorID = 8;
-    public static final double intakeSensorTriggerDistance = 0.1;
+    public static final double intakeSensorTriggerDistance = 0.15;
     public static final double indexerSensorTriggerDistance = 0.1;
     public static final double indexerTransferVoltage = 3;
-    public static final double intakeTransferVoltage = 3;
-    public static final double shooterTransferVoltage = 3;
-    public static final double deployPositionIntake = 0;
-    public static final double homePositionIntake = 0;
+    public static final double intakeTransferVoltage = 12;
+    public static final double intakingVoltage = 16;
+    public static final double shooterTransferVoltage = 1;
+    public static final double elevatorTransferPosition = 2.0;
+    public static final double deployTolerance = 0.06;
     public static enum coralState {
       empty, 
       coralInRange,
@@ -82,7 +103,7 @@ public final class Constants {
       l1(1,13.85, 1.45),
       l1upper(1,l1.height + 5, 1.45),
       l1inside(1, l1.height + 5, 2.5),
-      l2(2,22.4, 4.5);
+      l2(2,22.7, 4.5);
       
       elevatorLevel(int level, double height, double shootVoltage) {
         this.height = height;
@@ -116,8 +137,8 @@ public final class Constants {
     public static final double kS = 0.0; 
     public static final double elevatorCurrentLimit = 40;
     public static final double elevatorRampRate = 0.05;
-    public static final double elevatorTolerance = 0.1; // in
-    public static final double homePos = 3.0; // in
+    public static final double elevatorTolerance = 0.15; // in
+    public static final double homePos = 1.5; // in
     public static final double forwardLimit = 24;
     public static final double reverseLimit = 0;
 
@@ -130,8 +151,9 @@ public final class Constants {
     public static final int winchId = 61;
     public static final double currentLimit = 30;
     public static final double power = 0.7;
-    public static final double deployPosition = -76 * 3; // rot
-    public static final double climbedPosition = -18 * 3; // rot
+    public static final double deployPosition = -76; // rot of kraken
+    public static final double homePosition = -100; // rot of kraken
+    public static final double climbedPosition = 18; // rot of kraken
     public static final double rampRate = 0.2;
     public static final double kP = 1.0;
     public static final double kI = 0.0;
@@ -192,8 +214,20 @@ public final class Constants {
   }
   }
 
+public static class AutoDropoff {
+  public static final double distanceToAutoDrive = 0.5; // meters
+  public static final double L1waitToHome = 1.5; // s
+  public static final double loopPeriodSecs = 0.02;
+  public static final ProfiledPIDController driveController =
+      new ProfiledPIDController(
+          15, 0, 0.1, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
+  public static final ProfiledPIDController thetaController =
+      new ProfiledPIDController(
+          7, 0,0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
 
+}
 public static class Vision {
+
 
         public static boolean DOGLOG_ENABLED = false;
 
@@ -262,6 +296,28 @@ public static class Vision {
         public static final double kCoralCenterUprightHeight = 0.225425; //in meters
         public static final double kCoralCenterFallenHeight = 0.0508; //in meters
         //Testboard Dims.
+        // public static final double kLimeLightHeight = 0.120;
+        // public static final double kLimeLightXOffset = 0;
+        // public static final double kLimeLightYOffset = 0;
+        // public static final double kLimeLightAOD = -15.0;
+
+        //NERDSwerve Dims.
+        // public static final double kLimeLightHeight = 0.18;
+        // public static final double kLimeLightXOffset = 0;
+        // public static final double kLimeLightYOffset = 0.14;
+        // public static final double kLimeLightAOD = -15.0;
+
+        //Comp. Dims.
+        public static final double kLimeLightHeight = 1.02997;
+        public static final double kLimeLightXOffset = 0;
+        public static final double kLimeLightYOffset = -0.0007366;
+        public static final double kLimeLightAOD = -50.0;
+
+        public static boolean kCoralTargeted = false;
+        public static boolean kCoralInRange = false;
+        public static boolean kCoralAutoTarget = false;
+
+        public static final boolean USE_LIMELIGHT = true;
         
 
 
@@ -308,8 +364,8 @@ public static class Vision {
 public static class LEDConstants {
   public static final double scrollSpeed = 40; 
   public static final double numOfSteps = 3.0;
-  public static final int kPort = 3;
-  public static final int kLength = 175;
+  public static final int kPort = 0;
+  public static final int kLength = 125;
   public static final double blinkSeconds = 1.0;
   public static InterpolatingDoubleTreeMap driveToPoseDistanceMap = new InterpolatingDoubleTreeMap();
     static {

@@ -40,7 +40,10 @@ public final class Autos {
   }
 
  
-  
+  // public static Command getAutoDriveReefWithOffset(CommandSwerveDrivetrain drivetrain, DoubleSupplier scalar) {
+  //   return new DriveToPose(drivetrain, () -> FieldConstants.getReefPoseOffset(
+  //     scalar, FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)));
+  // }
 
   public static Command getAutoDriveCommandReef(
      CommandSwerveDrivetrain drive,

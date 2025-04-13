@@ -35,18 +35,17 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
-import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.Vision;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.AllianceFlipUtil;
 
-public class DriveToPose extends Command {
+public class DriveToCoralAuto extends Command {
   private final CommandSwerveDrivetrain drive;
   private final Supplier<Pose2d> poseSupplier;
 
   private boolean running = false;
-  double loopPeriodSecs = AutoDropoff.loopPeriodSecs;
+  double loopPeriodSecs = 0.02;
 //   private final ProfiledPIDController driveController =
 //       new ProfiledPIDController(
 //           Constants.Vision.kPXController, Constants.Vision.kIXController, Constants.Vision.kDXController, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs);
@@ -55,8 +54,12 @@ public class DriveToPose extends Command {
 //           Constants.Vision.kPXController, Constants.Vision.kIThetaController, Constants.Vision.kDThetaController, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs);
   
 
-  private  final ProfiledPIDController driveController = AutoDropoff.driveController;
-  private final ProfiledPIDController thetaController = AutoDropoff.thetaController;
+private final ProfiledPIDController driveController =
+      new ProfiledPIDController(
+          15, 0, 0.1, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
+  private final ProfiledPIDController thetaController =
+      new ProfiledPIDController(
+          7, 0,0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
  private double driveErrorAbs;
   private double thetaErrorAbs;
   private Translation2d lastSetpointTranslation;
@@ -65,7 +68,7 @@ public class DriveToPose extends Command {
   private DoubleSupplier omegaFF = () -> 0.0;
 
   /** Drives to the specified pose under full software control. */
-  public DriveToPose(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier) {
+  public DriveToCoralAuto(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier) {
     this.drive = drive;
     this.poseSupplier = poseSupplier;
     addRequirements(drive);
@@ -73,7 +76,7 @@ public class DriveToPose extends Command {
   }
 
     /** Drives to the specified pose under full software control. */
-    public DriveToPose(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier,
+    public DriveToCoralAuto(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier,
      Supplier<Translation2d> linearFF,
       DoubleSupplier omegaFF) {
       this.drive = drive;
@@ -89,9 +92,11 @@ public class DriveToPose extends Command {
   public void initialize() {
 
     driveController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_X, Constants.Vision.VELOCITY_TOLERANCE_X);
-    thetaController.setTolerance(Constants.Vision.ROTATION_TOLERANCE,Constants.Vision.VELOCITY_TOLERANCE_OMEGA);
+    thetaController.setTolerance(Constants.Vision.ROTATION_TOLERANCE, Constants.Vision.VELOCITY_TOLERANCE_OMEGA);
     // Reset all controllers
     var currentPose = drive.getState().Pose;
+
+    Constants.Vision.kCoralTargeted = true;
     
     driveController.reset(
         currentPose.getTranslation().getDistance(poseSupplier.get().getTranslation()),
@@ -123,7 +128,7 @@ public class DriveToPose extends Command {
         SignalLogger.writeDouble("Y", error.getY());
         SignalLogger.writeDouble("O", error.getRotation().getDegrees());
 
-        System.out.println("x: " + error.getX() + "; Y: " + error.getY() + "; O: " + error.getRotation().getDegrees());
+        System.out.println("x: " + error.getX() + "; Y: " + error.getY() + "; O: " + Math.abs((currentPose.getRotation().getRadians()) - (targetPose.getRotation().getRadians()) + Math.PI));
         
     // Calculate drive speed
     double currentDistance =
@@ -132,7 +137,7 @@ public class DriveToPose extends Command {
         MathUtil.clamp(
             (currentDistance - 0.1) / (0.8 - 0.1),
             0.0,
-            0.0);
+            1.0);
     driveErrorAbs = currentDistance;
 
     driveController.reset(
@@ -158,7 +163,7 @@ public class DriveToPose extends Command {
          thetaController.calculate(
                 currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians());
     thetaErrorAbs =
-        Math.abs((currentPose.getRotation().minus(targetPose.getRotation())).getRadians());
+        Math.abs((currentPose.getRotation().getRadians()) - (targetPose.getRotation().getRadians()) + Math.PI);
     if (thetaErrorAbs < thetaController.getPositionTolerance()) thetaVelocity = 0.0;
 
 
@@ -170,7 +175,7 @@ public class DriveToPose extends Command {
             .getTranslation();
 
     // Scale feedback velocities by input ff
-    final double linearS = linearFF.get().getNorm() * 3.0;
+    final double linearS = linearFF.get().getNorm() * 6.0;
     final double thetaS = Math.abs(omegaFF.getAsDouble()) * 3.0;
     if (Vision.DOGLOG_ENABLED){
     DogLog.log("DriveToPose/driveVelocity.X", driveVelocity.getX());
@@ -183,7 +188,7 @@ public class DriveToPose extends Command {
 
     if(linearS >0)
     driveVelocity =
-        driveVelocity.interpolate(linearFF.get().times(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)), linearS);
+        driveVelocity.interpolate(linearFF.get().times(TunerConstants.kSpeedAt12Volts.in(MetersPerSecond)), linearS).times(3);
     if(thetaS >0 )
     thetaVelocity =
         MathUtil.interpolate(
@@ -225,6 +230,8 @@ public class DriveToPose extends Command {
   @Override
   public void end(boolean interrupted) {
     running = false;
+    Constants.Vision.kCoralTargeted = false;
+    Constants.Vision.kCoralAutoTarget = false;
     drive.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
     if (Vision.DOGLOG_ENABLED){
 
@@ -235,12 +242,14 @@ public class DriveToPose extends Command {
 
   /** Checks if the robot is stopped at the final pose. */
   public boolean atGoal() {
+    thetaErrorAbs =
+        Math.abs((drive.getState().Pose.getRotation().getRadians()) - (poseSupplier.get().getRotation().getRadians()) + Math.PI);
+    //boolean thetaAtGoal = (Math.abs(drive.getState().Pose.getRotation().getDegrees() - poseSupplier.get().getRotation().getDegrees()) < 20);
     if (Vision.DOGLOG_ENABLED){
-
     DogLog.log("DriveToPose/DriveControllerAtGoal1", driveController.atGoal());
     DogLog.log("DriveToPose/ThetaControllerAtGoal1", thetaController.atGoal());
     }
-    return running && driveController.atGoal() && thetaController.atGoal();
+    return running && driveController.atGoal() && (thetaController.atGoal());
   }
 
   /** Checks if the robot pose is within the allowed drive and theta tolerances. */
@@ -261,7 +270,6 @@ public class DriveToPose extends Command {
         return this.atGoal();
     }
 
-    
   
     
 }
