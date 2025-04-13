@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL1"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LoliPops2a"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL2"
           }
         },
         {
@@ -23,9 +35,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL2"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LoliPops4a"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL1"
           }
         },
         {
@@ -35,9 +59,34 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "driveToCoral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LoliPops6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL1"
           }
         },
         {
@@ -47,9 +96,34 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "driveToCoral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LoliPops8"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL1"
           }
         }
       ]
