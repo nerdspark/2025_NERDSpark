@@ -96,14 +96,14 @@ public class Climb extends SubsystemBase {
           winch.getConfigurator().apply(climbConfig);
         }
   public boolean climbed() {
-    return Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
+    return false;//Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
   }
 
   public double getCurrentLimit() {
     return climbConfig.CurrentLimits.StatorCurrentLimit;
   }
   public Command climb() {
-    return new InstantCommand(() -> setFOC(ClimbConstants.currentLimit));
+    return new InstantCommand(() -> setPower(ClimbConstants.power));//setFOC(ClimbConstants.currentLimit));
   }
   public void setFOC(double current){
     winch.setControl(new TorqueCurrentFOC(current)); 

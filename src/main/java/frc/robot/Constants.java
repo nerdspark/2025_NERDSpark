@@ -7,7 +7,10 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -161,10 +164,12 @@ public final class Constants {
     public static final double homePosition = -100; // rot of kraken
     public static final double climbedPosition = 18; // rot of kraken
     public static final double rampRate = 0.2;
-    public static final double kP = 1.0;
+    public static final double kP = 1.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
+    public static final double servoOpenPosition = 1.0;
+    public static final double servoCloseposition = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -239,6 +244,7 @@ public static class Vision {
         public static boolean DOGLOG_ENABLED = false;
 
         public static final boolean USE_VISION = true;
+        public static final boolean USE_QUESTNAV = true;
 
         public static final boolean USE_BUTTON_BOARD = true;
 
@@ -268,9 +274,9 @@ public static class Vision {
         public static final double kXYStdDev = 0.4; 
         public static final double kThetaStdDev = 1; 
 
-        public static final double TRANSLATION_TOLERANCE_X = 0.01; // Changed from 0.05 3/8/25
-        public static final double TRANSLATION_TOLERANCE_Y = 0.01; // Changed from 0.05 3/8/25
-        public static final double ROTATION_TOLERANCE = Math.toRadians(1.0); // /deg
+        public static final double TRANSLATION_TOLERANCE_X = 0.013; // Changed from 0.05 3/8/25
+        public static final double TRANSLATION_TOLERANCE_Y = 0.013; // Changed from 0.05 3/8/25
+        public static final double ROTATION_TOLERANCE = Math.toRadians(1.3); // /deg
 
         //Below same as pathplanner constants
         public static final double MAX_VELOCITY = 4.5; 
@@ -348,6 +354,11 @@ public static class Vision {
           coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
          
         }
+        
+        public static final Set<Integer> nonReefTagFiducialIDs = new HashSet<>(Set.of(1, 2, 3, 4, 5, 12, 13, 14, 15, 16));
+
+        public static final boolean QUEST_ENABLED = true;
+
     }
 
     public static final double gyroP = 2;
