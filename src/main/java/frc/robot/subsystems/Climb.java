@@ -26,39 +26,52 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.ClimbConstants;
 
 public class Climb extends SubsystemBase {
   private TalonFX winch;
-  private TalonFXConfiguration climbConfig = new TalonFXConfiguration();
+  private TalonFXConfiguration winchConfig = new TalonFXConfiguration();
   // private double startTime, toAmpTriggerStartTime = 0;
   /** Creates a new Gripper. */
   public Climb() {
     winch = new TalonFX(ClimbConstants.winchId, ClimbConstants.canBus);
-    climbConfig.CurrentLimits = new CurrentLimitsConfigs()
+    winchConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(ClimbConstants.currentLimit)
           .withStatorCurrentLimitEnable(true);
-      climbConfig.Feedback = new FeedbackConfigs()
+      winchConfig.Feedback = new FeedbackConfigs()
           .withFeedbackRotorOffset(0)
           .withSensorToMechanismRatio(1);
-      climbConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(ClimbConstants.rampRate);
-      climbConfig.Slot0 = new Slot0Configs()
+      winchConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(ClimbConstants.rampRate);
+      winchConfig.Slot0 = new Slot0Configs()
       .withKP(ClimbConstants.kP)
       .withKI(ClimbConstants.kI)
       .withKD(ClimbConstants.kD);
       winch
           .getConfigurator()
-          .apply(climbConfig.withMotorOutput(new MotorOutputConfigs()
+          .apply(winchConfig.withMotorOutput(new MotorOutputConfigs()
           .withInverted(InvertedValue.Clockwise_Positive)
               .withNeutralMode(NeutralModeValue.Brake)));
       
       
       resetPosition();
   }
-  
+  public Command extend() {
+    return new InstantCommand(() -> setPosition(ClimbConstants.deployPosition));
+  }
+  public Command contract() {
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> setPower(ClimbConstants.power)), 
+      new WaitUntilCommand(() -> getPosition() > ClimbConstants.climbedPosition),
+      stopCommand());
+  }
+  public Command returnToHome() {
+    return new InstantCommand(() -> setPosition(ClimbConstants.homePosition));
+  }
   public void setPower(double power) {
     winch.set(power);
   }
@@ -90,17 +103,17 @@ public class Climb extends SubsystemBase {
   }
 
   public void setCurrentLimit(double currentLimit) {
-    climbConfig.CurrentLimits = new CurrentLimitsConfigs()
+    winchConfig.CurrentLimits = new CurrentLimitsConfigs()
           .withStatorCurrentLimit(currentLimit)
           .withStatorCurrentLimitEnable(true);
-          winch.getConfigurator().apply(climbConfig);
+          winch.getConfigurator().apply(winchConfig);
         }
   public boolean climbed() {
     return false;//Math.abs(getPosition()) < Math.abs(ClimbConstants.climbedPosition);
   }
 
   public double getCurrentLimit() {
-    return climbConfig.CurrentLimits.StatorCurrentLimit;
+    return winchConfig.CurrentLimits.StatorCurrentLimit;
   }
   public Command climb() {
     return new InstantCommand(() -> setPower(ClimbConstants.power));//setFOC(ClimbConstants.currentLimit));
@@ -150,7 +163,7 @@ public class Climb extends SubsystemBase {
   public void periodic() {
     
     SmartDashboard.putNumber("winch pos", getPosition());
-    SignalLogger.writeDouble("winch amp", winch.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("winch amp", winch.getStatorCurrent().getValueAsDouble());
 
 
   }

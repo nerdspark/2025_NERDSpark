@@ -62,21 +62,21 @@ public final class Constants {
   public static class CoralConstants {
     public static final double indexerCurrentLimit = 30;
     public static final String canBus = "canivore1";
-    public static final double deployCurrentLimit = 60;
+    public static final double deployCurrentLimit = 65;
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1; 
     public static final double homePositionIntake = deployOffset + 0.07; // deployOffset + 0.02
-    public static final double deployPositionIntake = deployOffset + 0.34; // 0.27 for algae
+    public static final double deployPositionIntake = deployOffset + 0.325; // 0.27 for algae
     public static final double transferPositionIntake = deployPositionIntake - 0.15; 
     // public static final double elevatorPositionIntake = homePositionIntake + 0.1;
     public static final double forwardLimitDeploy = deployPositionIntake;
     public static final double reverseLimitDeploy = homePositionIntake;
-    public static final double kPDeploy = 25; // 12 for 25:1
+    public static final double kPDeploy = 12; // 12 for 25:1; 25 for 75 : 1
     public static final double kIDeploy = 0;
     public static final double kDDeploy = 0;
-    public static final double kGDeploy = 0.07; // 0.39 for 25:1
+    public static final double kGDeploy = 0.42; // 0.39 for 25:1; 0.07 for 75:1
     public static final double intakeCurrentLimit = 65;
-    public static final double deployGearRatio = 75.0;
+    public static final double deployGearRatio = 25.0;
     public static final double deploySensorRatio = deployGearRatio;
     public static final double intakeGearRatio = 5.0;
     public static final double indexerGearRatio = 20.0;
@@ -156,19 +156,24 @@ public final class Constants {
   }
   
   public static class ClimbConstants {
+    public static final double gearRatio = 125.0;
+    public static final double pulleyDiameter = 2.5; // inches
+    public static final double inchesPerRotation = pulleyDiameter * 2.0 * Math.PI / gearRatio;
     public static final int winchId = 61;
     public static final double currentLimit = 20;
-    public static final double power = 0.7;
-    public static final double deployPosition = -76; // rot of kraken
-    public static final double homePosition = -100; // rot of kraken
-    public static final double climbedPosition = 18; // rot of kraken
-    public static final double rampRate = 0.2;
+    public static final double power = 0.6;
+    public static final double deployPositionInches = -10.5;
+    public static final double climbedPositionInches = 32;
+    public static final double deployPosition = deployPositionInches / inchesPerRotation; // rot of kraken
+    public static final double homePosition = -0; // rot of kraken
+    public static final double climbedPosition = climbedPositionInches / inchesPerRotation; // rot of kraken
+    public static final double rampRate = 0.08;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
-    public static final double servoOpenPosition = 1.0;
-    public static final double servoCloseposition = 0.0;
+    // public static final double servoOpenPosition = 1.0;
+    // public static final double servoCloseposition = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;

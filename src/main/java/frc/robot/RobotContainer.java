@@ -138,6 +138,7 @@ public class RobotContainer {
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
     coralManipulator = new CoralManipulator();
+    climb = new Climb();
 
     // configureTriggers();
     configureNamedCommands();
@@ -199,6 +200,11 @@ public class RobotContainer {
     // Find Quest Offsets
     //joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
 
+    // climb
+    joystick.y().onTrue(climb.extend().alongWith(coralManipulator.deployIntake()));
+    joystick.x().onTrue(climb.returnToHome());
+    joystick.a().onTrue(climb.contract().alongWith(coralManipulator.stopDeploy()));
+    joystick.b().onTrue(climb.stopCommand());
 
     // coral manipulator
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
