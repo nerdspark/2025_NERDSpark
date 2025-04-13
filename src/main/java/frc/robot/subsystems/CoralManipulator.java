@@ -6,12 +6,15 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.FovParamsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.ProximityParamsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -25,6 +28,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,18 +48,44 @@ public class CoralManipulator extends SubsystemBase {
   private CANrange intakeSensor, indexerSensor;
   private TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
   private TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
-  private double targetPosition = 0;
+  private TalonFXConfiguration deployConfig = new TalonFXConfiguration();
+  private TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
+  private double targetPositionElevator, targetPositionDeploy = 0;
+  private CANrangeConfiguration intakeSensorConfig = new CANrangeConfiguration();
+  private CANrangeConfiguration indexerSensorConfig = new CANrangeConfiguration();
 
   /** Creates a new ElevIndexer. */
   public CoralManipulator() {
-    shooter = new TalonFX(CoralConstants.shooterID);
-    indexer = new TalonFX(CoralConstants.indexerID);
-    elevatorLeft = new TalonFX(CoralConstants.elevatorLeftID);
-    elevatorRight = new TalonFX(CoralConstants.elevatorRightID);
-    deploy = new TalonFX(CoralConstants.deployID);
-    intake = new TalonFX(CoralConstants.intakeID);
-    intakeSensor = new CANrange(CoralConstants.intakeSensorID);
-    indexerSensor = new CANrange(CoralConstants.indexerSensorID);
+    shooter = new TalonFX(CoralConstants.shooterID, CoralConstants.canBus);
+    indexer = new TalonFX(CoralConstants.indexerID, CoralConstants.canBus);
+    elevatorLeft = new TalonFX(CoralConstants.elevatorLeftID, CoralConstants.canBus);
+    elevatorRight = new TalonFX(CoralConstants.elevatorRightID, CoralConstants.canBus);
+    deploy = new TalonFX(CoralConstants.deployID, CoralConstants.canBus);
+    intake = new TalonFX(CoralConstants.intakeID, CoralConstants.canBus);
+    intakeSensor = new CANrange(CoralConstants.intakeSensorID, CoralConstants.canBus);
+    indexerSensor = new CANrange(CoralConstants.indexerSensorID, CoralConstants.canBus);
+    intakeSensorConfig = new CANrangeConfiguration()
+    .withFovParams(new FovParamsConfigs().withFOVRangeX(27).withFOVRangeY(27))
+    .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(CoralConstants.intakeSensorTriggerDistance).withMinSignalStrengthForValidMeasurement(2500));
+    intakeSensor.getConfigurator().apply(intakeSensorConfig);
+    indexerSensorConfig = new CANrangeConfiguration()
+    .withFovParams(new FovParamsConfigs().withFOVRangeX(27).withFOVRangeY(27))
+    .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(CoralConstants.indexerSensorTriggerDistance).withMinSignalStrengthForValidMeasurement(2500));
+    indexerSensor.getConfigurator().apply(indexerSensorConfig);
+    configureDeploy();
+    configureIntake();
+    configureShooter();
+    configureElevator();
+    resetMotors();
+    
+  }
+  private void configureIntake() {
+    intakeConfig.CurrentLimits = new CurrentLimitsConfigs().withStatorCurrentLimit(CoralConstants.intakeCurrentLimit).withStatorCurrentLimitEnable(true);
+    intakeConfig.OpenLoopRamps = new OpenLoopRampsConfigs().withVoltageOpenLoopRampPeriod(0.05);
+    intakeConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive);
+    intake.getConfigurator().apply(intakeConfig);
+  }
+  private void configureShooter() {
     shooterConfig.CurrentLimits = new CurrentLimitsConfigs()
       .withStatorCurrentLimit(CoralConstants.shooterCurrentLimit)
       .withStatorCurrentLimitEnable(true);
@@ -65,45 +95,82 @@ public class CoralManipulator extends SubsystemBase {
       .apply(shooterConfig.withMotorOutput(new MotorOutputConfigs()
       .withInverted(InvertedValue.CounterClockwise_Positive)
         .withNeutralMode(NeutralModeValue.Brake)));
-    elevatorConfig.CurrentLimits = new CurrentLimitsConfigs()
-      .withStatorCurrentLimit(CoralConstants.elevatorCurrentLimit)
+  }
+  private void configureDeploy() {
+    deployConfig.CurrentLimits = new CurrentLimitsConfigs()
+      .withStatorCurrentLimit(CoralConstants.deployCurrentLimit)
       .withStatorCurrentLimitEnable(true);
-      elevatorConfig.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(CoralConstants.elevatorSensorRatio);
-    elevatorConfig.Slot0 = new Slot0Configs()
-      .withKP(CoralConstants.kP)
-      .withKI(CoralConstants.kI)
-      .withKD(CoralConstants.kD)
-      .withKG(CoralConstants.kG)
-      .withKS(CoralConstants.kS)
-      .withGravityType(GravityTypeValue.Elevator_Static);
-    elevatorConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(CoralConstants.elevatorRampRate);
-    elevatorConfig.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs()
+    deployConfig.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(CoralConstants.deploySensorRatio);
+    deployConfig.Slot0 = new Slot0Configs()
+      .withKP(CoralConstants.kPDeploy)
+      .withKI(CoralConstants.kIDeploy)
+      .withKD(CoralConstants.kDDeploy)
+      .withKG(CoralConstants.kGDeploy)
+      .withGravityType(GravityTypeValue.Arm_Cosine);
+    deployConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(CoralConstants.deployRampRate);
+    deployConfig.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs()
       .withForwardSoftLimitEnable(true)
-      .withForwardSoftLimitThreshold(CoralConstants.forwardLimit)
+      .withForwardSoftLimitThreshold(CoralConstants.forwardLimitDeploy)
       .withReverseSoftLimitEnable(true)
-      .withReverseSoftLimitThreshold(CoralConstants.reverseLimit);
-    elevatorLeft
-      .getConfigurator()
-      .apply(elevatorConfig.withMotorOutput(new MotorOutputConfigs()
-      .withInverted(InvertedValue.Clockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
-    elevatorRight
-      .getConfigurator()
-      .apply(elevatorConfig.withMotorOutput(new MotorOutputConfigs()
-      .withInverted(InvertedValue.CounterClockwise_Positive)
-          .withNeutralMode(NeutralModeValue.Coast)));
+      .withReverseSoftLimitThreshold(CoralConstants.reverseLimitDeploy);
+    deployConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive).withNeutralMode(NeutralModeValue.Coast);
+    deploy.getConfigurator().apply(deployConfig);
+  }
+  private void configureElevator() {
+  elevatorConfig.CurrentLimits = new CurrentLimitsConfigs()
+    .withStatorCurrentLimit(CoralConstants.elevatorCurrentLimit)
+    .withStatorCurrentLimitEnable(true);
+    elevatorConfig.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(CoralConstants.elevatorSensorRatio);
+  elevatorConfig.Slot0 = new Slot0Configs()
+    .withKP(CoralConstants.kP)
+    .withKI(CoralConstants.kI)
+    .withKD(CoralConstants.kD)
+    .withKG(CoralConstants.kG)
+    .withKS(CoralConstants.kS)
+    .withGravityType(GravityTypeValue.Elevator_Static);
+  elevatorConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(CoralConstants.elevatorRampRate);
+  elevatorConfig.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs()
+    .withForwardSoftLimitEnable(true)
+    .withForwardSoftLimitThreshold(CoralConstants.forwardLimit)
+    .withReverseSoftLimitEnable(true)
+    .withReverseSoftLimitThreshold(CoralConstants.reverseLimit);
+  elevatorLeft
+    .getConfigurator()
+    .apply(elevatorConfig.withMotorOutput(new MotorOutputConfigs()
+    .withInverted(InvertedValue.Clockwise_Positive)
+        .withNeutralMode(NeutralModeValue.Brake)));
+  elevatorRight
+    .getConfigurator()
+    .apply(elevatorConfig.withMotorOutput(new MotorOutputConfigs()
+    .withInverted(InvertedValue.CounterClockwise_Positive)
+        .withNeutralMode(NeutralModeValue.Brake)));
+  }
+  
+  private void resetMotors() {
     elevatorLeft.setPosition(0);
     elevatorRight.setPosition(0);
+    deploy.setPosition(CoralConstants.deployOffset);
+  }
+  public Command resetDeploy() {
+    return new InstantCommand(() -> deploy.setPosition(CoralConstants.deployOffset));
+  }
+  public boolean deployAmpTriggered() {
+    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 10;
   }
   public coralState getCoralState() {
     return coralState;
   }
-  
+  public Command stopDeploy() {
+    return new InstantCommand(() -> deploy.stopMotor());
+  }
+  public Command setDeployVoltage(double voltage) {
+    return new InstantCommand(() -> deploy.setVoltage(voltage));
+  }
   public boolean getIntakeSensor() {
-    return intakeSensor.getDistance().getValueAsDouble() < CoralConstants.intakeSensorTriggerDistance && intakeSensor.getIsDetected().getValue();
+    return intakeSensor.getIsDetected().getValue();
   }
   public boolean getIndexerSensor() {
-    return indexerSensor.getDistance().getValueAsDouble() < CoralConstants.indexerSensorTriggerDistance && indexerSensor.getIsDetected().getValue();
+    return indexerSensor.getIsDetected().getValue();
   }
   public void setCoralState(coralState coralState) {
     this.coralState = coralState;
@@ -123,11 +190,18 @@ public class CoralManipulator extends SubsystemBase {
   public Command stopIndexer() {
     return new InstantCommand(() -> indexer.stopMotor());
   }
+  private void setDeployPosition(double position) {
+    deploy.setControl(new PositionVoltage(position));
+    targetPositionDeploy = position;
+  }
   public Command deployIntake() {
-    return new InstantCommand(() -> deploy.setControl(new PositionVoltage(CoralConstants.deployPositionIntake)));
+    return new InstantCommand(() -> setDeployPosition(CoralConstants.deployPositionIntake));
+  }
+  public Command transferIntake() {
+    return new InstantCommand(() -> setDeployPosition(CoralConstants.transferPositionIntake));
   }
   public Command retractIntake() {
-    return new InstantCommand(() -> deploy.setControl(new PositionVoltage(CoralConstants.homePositionIntake)));
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.homePositionIntake));
   }
 
 
@@ -139,16 +213,19 @@ public class CoralManipulator extends SubsystemBase {
     elevatorRight.setControl(request);
   }
   public void setElevPosition(double position) {
-    targetPosition = position;
+    targetPositionElevator = position;
     setElevatorControl(new PositionVoltage(position).withSlot(0));
   }
   public boolean elevatorAtTarget() {
-    return Math.abs((elevatorLeft.getPosition().getValueAsDouble() + elevatorRight.getPosition().getValueAsDouble())/2 - targetPosition) < CoralConstants.elevatorTolerance;
+    return Math.abs((elevatorLeft.getPosition().getValueAsDouble() + elevatorRight.getPosition().getValueAsDouble())/2 - targetPositionElevator) < CoralConstants.elevatorTolerance;
+  }
+  public boolean deployAtTarget() {
+    return Math.abs(deploy.getPosition().getValueAsDouble() - targetPositionDeploy) < CoralConstants.deployTolerance;
   }
   public Command setElevatorPosition(double position) {
     return new InstantCommand(() -> setElevPosition(position));
   }
-  public Command elevatorHome() {
+  public Command elevatorToHome() {
     return new SequentialCommandGroup(
       setElevatorPosition(CoralConstants.homePos),
       stopShooter(), 
@@ -167,15 +244,31 @@ public class CoralManipulator extends SubsystemBase {
   public Command stopElevator() {
     return new InstantCommand(() -> elevatorLeft.stopMotor()).alongWith(new InstantCommand(() -> elevatorRight.stopMotor())); 
   }
+  public Command intakeCommand() {
+    return deployIntake().alongWith(setIntakeVoltage(CoralConstants.intakingVoltage));
+  }
+  public Command intakeToHome() {
+    return retractIntake().alongWith(stopIntake());
+  }
 
   @Override
   public void periodic() {
+    if (getIntakeSensor()) {
+      setCoralState(coralState.coralInIntake);
+    } else if (getIndexerSensor()) {
+      setCoralState(coralState.coralInIndexer);
+    }
     SmartDashboard.putNumber("elev left pos", elevatorLeft.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elev right pos", elevatorRight.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elevator left amp", elevatorLeft.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("elevator right amp", elevatorRight.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("shooter pos", shooter.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("shooter amp", shooter.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("deploy pose", deploy.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("deploy error", targetPositionDeploy - deploy.getPosition().getValueAsDouble());
+    SmartDashboard.putString("coralState", getCoralState().name());
+    SmartDashboard.putBoolean("intake detected", getIntakeSensor());
+    SmartDashboard.putNumber("deploy amp", deploy.getStatorCurrent().getValueAsDouble());
     // This method will be called once per scheduler run
   }
 }

@@ -15,6 +15,7 @@ import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.CoralConstants.coralState;
+import frc.robot.Constants.CoralConstants.elevatorLevel;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commands.DriveToCoral;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.LEDSubsytem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -143,6 +145,14 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
+    NamedCommands.registerCommand("intake", coralManipulator.intakeCommand());
+    NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> !coralManipulator.getCoralState().equals(coralState.empty)));
+    NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height));
+    NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
+    NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
+    NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1));
+    NamedCommands.registerCommand("elevatorToHome", coralManipulator.elevatorToHome());
+    NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorSubsystem.getCurrentPose()));
   }
 
@@ -175,7 +185,12 @@ public class RobotContainer {
 
 
   private void configureBindings() {
+    joystick.back().whileTrue(SubsystemActions.resetDeploy(coralManipulator));
     // full auto dropoffs for L2
+    // joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
+    //   .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose))
+    //     .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)))
+    //   .onFalse(coralManipulator.elevatorToHome());
     Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
     Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
     Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
@@ -191,20 +206,35 @@ public class RobotContainer {
     joystick.leftBumper()
       .whileTrue(driveToLine(() -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)], () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX()), () -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)].getTranslation().minus(FieldConstants.Reef.center).getAngle()))
       .and(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator))
-        .whileTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));    
+        .whileTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
 
+    joystick.povUp()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorToHome());
     joystick.povRight()
-      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1inside)).onFalse(coralManipulator.elevatorHome());
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1inside)).onFalse(coralManipulator.elevatorToHome());
     joystick.povLeft()
-      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper)).onFalse(coralManipulator.elevatorHome());
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper)).onFalse(coralManipulator.elevatorToHome());
     joystick.povDown()
-      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1)).onFalse(coralManipulator.elevatorHome());
-    
-    new Trigger(() -> coralManipulator.getIntakeSensor() && coralManipulator.getCoralState().equals(coralState.coralInIntake)).onTrue(SubsystemActions.transferCoralToIndexer(coralManipulator));
-    new Trigger(() -> coralManipulator.getIndexerSensor() && coralManipulator.getCoralState().equals(coralState.coralInIndexer)).onTrue(SubsystemActions.transferCoralToElevator(coralManipulator));
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1)).onFalse(coralManipulator.elevatorToHome());
+
+    //intake commands
+    joystick.leftTrigger()
+    .onTrue(coralManipulator.setCoralStateCommand(coralState.empty))
+        .onTrue(coralManipulator.intakeCommand().onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
+        .onFalse(coralManipulator.intakeToHome());
+
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake))
+      .whileTrue(SubsystemActions.transferCoralToIndexer(coralManipulator))
+      .onFalse(coralManipulator.stopIndexer().andThen(coralManipulator.stopIntake()).andThen(coralManipulator.retractIntake()));
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
+      .onTrue(SubsystemActions.transferCoralToElevator(coralManipulator))
+      .onFalse(new SequentialCommandGroup(
+        coralManipulator.setCoralStateCommand(coralState.coralInElevator), 
+        coralManipulator.stopIndexer(),
+        coralManipulator.stopShooter(),
+        coralManipulator.elevatorToHome()));
 
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
 
   }
 
