@@ -136,6 +136,40 @@ public class CoralArrayManager {
         return corals;
     }
 
+    public List<CoralObject> possibilityFilter(List<CoralObject> corals) {
+        double fieldXDim = 17.55;
+        double fieldYDim = 8.05;
+
+        double borderThickness = 0.5;
+
+        int sizeCorals = corals.size();
+
+        for (int i = 0; i < sizeCorals; i++) {
+            Pose2d coralPose = corals.get(i).getPose();
+
+            double coralX = coralPose.getX();
+            double coralY = coralPose.getY();
+
+            if ((borderThickness > coralX) || ((fieldXDim - borderThickness) < coralX) || 
+            (borderThickness > coralY) || ((fieldYDim - borderThickness) < coralY)) {
+                CoralObject coralIgnored = corals.get(i);
+                coralIgnored.setCoralIgnored(true);
+                corals.set(i, coralIgnored);
+            }
+        }
+
+        for (int i = 0; i < sizeCorals; i++) {
+            CoralObject coralChecked = corals.get(i);
+            if (coralChecked.getIgnored()) {
+                corals.remove(i);
+                i--;
+                sizeCorals = corals.size();
+            }
+        }
+
+        return corals;
+    }
+
     /** Updates the distance and angle to each coral in the list. */
     public List<CoralObject> distanceAndYawUpdate(List<CoralObject> corals, Pose2d pose) {
         double poseX = pose.getX();

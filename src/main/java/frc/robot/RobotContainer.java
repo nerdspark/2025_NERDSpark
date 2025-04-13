@@ -18,6 +18,7 @@ import frc.robot.Constants.CoralConstants.coralState;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commands.DriveToCoral;
+import frc.robot.commands.DriveToCoralAuto;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -126,7 +127,7 @@ public class RobotContainer {
     coralManipulator = new CoralManipulator();
 
     // configureTriggers();
-    // configureNamedCommands();
+    configureNamedCommands();
 
 
     // SignalLogger.start();
@@ -142,6 +143,7 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
+    NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorSubsystem.getCurrentPose()));
   }
 
   private void configureDefaultCommands() {
