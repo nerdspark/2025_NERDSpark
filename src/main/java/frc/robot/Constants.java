@@ -315,7 +315,7 @@ public static class Vision {
         public static final double kLimeLightHeight = 1.02997;
         public static final double kLimeLightXOffset = 0;
         public static final double kLimeLightYOffset = -0.0007366;
-        public static final double kLimeLightAOD = -50.0;
+        public static final double kLimeLightAOD = -40.0;
 
         public static boolean kCoralTargeted = false;
         public static boolean kCoralInRange = false;
