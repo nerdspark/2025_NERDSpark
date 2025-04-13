@@ -65,9 +65,9 @@ public final class Constants {
     public static final double deployCurrentLimit = 60;
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1; 
-    public static final double homePositionIntake = deployOffset + 0.12; // deployOffset + 0.02
+    public static final double homePositionIntake = deployOffset + 0.07; // deployOffset + 0.02
     public static final double deployPositionIntake = deployOffset + 0.34; // 0.27 for algae
-    public static final double transferPositionIntake = deployPositionIntake - 0.13; 
+    public static final double transferPositionIntake = deployPositionIntake - 0.15; 
     // public static final double elevatorPositionIntake = homePositionIntake + 0.1;
     public static final double forwardLimitDeploy = deployPositionIntake;
     public static final double reverseLimitDeploy = homePositionIntake;
@@ -76,7 +76,7 @@ public final class Constants {
     public static final double kDDeploy = 0;
     public static final double kGDeploy = 0.07;
     public static final double intakeCurrentLimit = 65;
-    public static final double deployGearRatio = 25.0;
+    public static final double deployGearRatio = 75.0;
     public static final double deploySensorRatio = deployGearRatio;
     public static final double intakeGearRatio = 5.0;
     public static final double indexerGearRatio = 20.0;
@@ -90,11 +90,11 @@ public final class Constants {
     public static final int indexerSensorID = 8;
     public static final double intakeSensorTriggerDistance = 0.09;
     public static final double indexerSensorTriggerDistance = 0.1;
-    public static final double indexerTransferVoltage = 9;
-    public static final double intakeTransferVoltage = 6;
+    public static final double indexerTransferVoltage = 16;
+    public static final double intakeTransferVoltage = 16;
     public static final double intakingVoltage = 16;
     // public static final double shooterTransferVoltage = 2;
-    public static final double shooterRewindVoltage = -0.5;
+    public static final double shooterRewindVoltage = -1;
     // public static final double elevatorTransferPosition = 2.9;
     public static final double deployTolerance = 0.06;
     public static enum coralState {
@@ -110,7 +110,7 @@ public final class Constants {
       l1upper(1,l1.height + 5, 1.45),
       l1inside(1, l1.height + 5, 2.5),
       l2(2,22.7, 4.0), 
-      transfer(0, 2.9, 2),
+      transfer(0, 3.6, 2),
       panic(0, 7, 1), 
       visionClear(0, 5, 0);
       

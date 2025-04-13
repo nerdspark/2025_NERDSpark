@@ -94,10 +94,11 @@ public class SubsystemActions {
       new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
       coralManipulator.shoot(CoralConstants.shooterRewindVoltage), 
+      new WaitCommand(0.02),
       new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       coralManipulator.stopShooter(), 
       coralManipulator.stopIndexer(),
-      coralManipulator.elevatorToHome(), 
+      // coralManipulator.elevatorToHome(), 
       coralManipulator.setCoralStateCommand(coralState.coralInElevator)
       ).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
 

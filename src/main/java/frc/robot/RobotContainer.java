@@ -197,7 +197,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     // Find Quest Offsets
-    joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
+    //joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
 
 
     // coral manipulator

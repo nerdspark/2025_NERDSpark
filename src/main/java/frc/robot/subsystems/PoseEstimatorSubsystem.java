@@ -211,7 +211,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             DogLog.log("PoseEstimator/ODO+Vision Formatted Pose", getFomattedPose()); 
             
             if(Robot.isReal() && QuestNAV.getRobotPose().isPresent()) {
-                field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
+                //field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
                 SmartDashboard.putString("Quest Pose", getFomattedPose(QuestNAV.getRobotPose().get().toPose2d()));
                 DogLog.log("PoseEstimator/Quest Pose", QuestNAV.getRobotPose().get().toPose2d());
                 publisherQuest.set(QuestNAV.getRobotPose().get().toPose2d());
@@ -330,9 +330,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             double fps = visionFront.getFPS();
             corals.add(newCoral);
             coralManager.distanceAndYawUpdate(corals, getCurrentPose());
-            coralManager.expiryFilter(corals, hb, fps);
-            coralManager.displacementFilter(corals);
-            coralManager.possibilityFilter(corals);
+            // coralManager.expiryFilter(corals, hb, fps);
+            // coralManager.displacementFilter(corals);
+            //coralManager.possibilityFilter(corals);
             return corals;
         } else {
             return coralManager.selectCoral(corals);
