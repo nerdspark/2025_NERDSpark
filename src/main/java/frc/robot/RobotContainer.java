@@ -196,6 +196,11 @@ public class RobotContainer {
 
 
   private void configureBindings() {
+    // Find Quest Offsets
+    joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
+
+
+    // coral manipulator
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     joystick.back().whileTrue(SubsystemActions.resetDeploy(coralManipulator).alongWith(SubsystemActions.resetElevator(coralManipulator)));
 
@@ -212,39 +217,35 @@ public class RobotContainer {
     // joystick.povUp()
     // .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorToHome());
 
-    // Find Quest Offsets
-    joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
+    // semi auto dropoffs for L1
+    joystick.leftBumper()
+      .whileTrue(driveToLine(() -> AllianceFlipUtil.apply(FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)]).plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)), () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX()), () -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)].getTranslation().minus(FieldConstants.Reef.center).getAngle()))
+      .and(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator))
+        .whileTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
 
-    // climb
-    // joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
-    // joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
+    joystick.povRight()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1inside));
+    joystick.povLeft()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper));
+    joystick.povDown()
+      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1));
 
+    joystick.povRight().or(joystick.povLeft()).or(joystick.povDown()).or(joystick.povUp()).and(() -> !coralManipulator.getCoralState().equals(coralState.coralInElevator)).onFalse(coralManipulator.elevatorToHome());
 
+    //intake commands
+    joystick.leftTrigger()
+      .onTrue(coralManipulator.setCoralStateCommand(coralState.empty))
+      .onTrue(coralManipulator.intakeCommand())//.onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
+      .onFalse(coralManipulator.intakeToHome().onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)));
 
-    // final Command noBlinkPattern = LEDs.runPattern(
-    //   () -> LEDPattern.steps(
-    //   Map.of(
-    //     0,
-    //     LEDs.updateStepColor(hasCoral)[0]
-    //   )
-    // )
-    // // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
-    // );
-    // final Command blinkPattern = LEDs.runPattern(
-    //   () -> LEDPattern.steps(
-    //   Map.of(
-    //     0,
-    //     LEDs.updateStepColor(hasCoral)[0] 
-    //   )
-    // ).blink(Seconds.of(Constants.LEDConstants.blinkSeconds))
-    // // .scrollAtRelativeSpeed(Percent.per(Second).of(Constants.LEDConstants.scrollSpeed))
-    // );
+      Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
+      Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
+      Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
+      
+      joystick.leftTrigger().and(coralInRange).and(coralAutoTarget).and(coralInList).whileTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose()));
+      
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).onTrue(SubsystemActions.transferCoral(coralManipulator));
 
-    // if (detectedCoral.get()) {
-    //   joystick.back().onTrue(blinkPattern);
-    // } else {
-    //   joystick.back().onTrue(noBlinkPattern);
-    // }
   }
 
   private void configureAutoChooser() {
