@@ -71,10 +71,10 @@ public final class Constants {
     // public static final double elevatorPositionIntake = homePositionIntake + 0.1;
     public static final double forwardLimitDeploy = deployPositionIntake;
     public static final double reverseLimitDeploy = homePositionIntake;
-    public static final double kPDeploy = 25; // 100
+    public static final double kPDeploy = 25; // 12 for 25:1
     public static final double kIDeploy = 0;
     public static final double kDDeploy = 0;
-    public static final double kGDeploy = 0.07;
+    public static final double kGDeploy = 0.07; // 0.39 for 25:1
     public static final double intakeCurrentLimit = 65;
     public static final double deployGearRatio = 75.0;
     public static final double deploySensorRatio = deployGearRatio;
