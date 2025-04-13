@@ -37,6 +37,16 @@ public class SubsystemActions {
     //     //     elevIndexer.home()
     //     );
     // }
+    public static Command panicButton(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.setCoralStateCommand(coralState.empty),
+        coralManipulator.deployIntake(), 
+        coralManipulator.setIntakeVoltage(-5), 
+        coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage), 
+        coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.panic.height), 
+        coralManipulator.shoot(CoralConstants.elevatorLevel.panic.shootVoltage)
+      );
+    }
     public static Command resetDeploy(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
         coralManipulator.setDeployVoltage(-1), 
@@ -44,6 +54,19 @@ public class SubsystemActions {
         new WaitUntilCommand(() -> coralManipulator.deployAmpTriggered()), 
         coralManipulator.resetDeploy(), 
         coralManipulator.stopDeploy());
+    }
+    public static Command resetElevator(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.setElevatorLeftVoltage(-1), 
+        new WaitCommand(0.05),
+        new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()), 
+        coralManipulator.resetElevatorLeft(), 
+        coralManipulator.stopElevatorLeft()).alongWith(new SequentialCommandGroup(
+          coralManipulator.setElevatorRightVoltage(-1), 
+          new WaitCommand(0.05),
+          new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()), 
+          coralManipulator.resetElevatorRight(), 
+          coralManipulator.stopElevatorRight()));
     }
     public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level) {
         return new SequentialCommandGroup(
@@ -55,13 +78,38 @@ public class SubsystemActions {
             // new WaitCommand(1.0/level.shootVoltage), 
             coralManipulator.setCoralStateCommand(coralState.empty));
     }
+
+  public static Command transferCoral(CoralManipulator coralManipulator) {
+    return new SequentialCommandGroup(
+      coralManipulator.transferIntake(),
+      new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
+      coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
+      coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage), 
+      coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.transfer.height),
+      coralManipulator.shoot(CoralConstants.elevatorLevel.transfer.shootVoltage),
+      new WaitUntilCommand(() -> !coralManipulator.getIntakeSensor()), 
+      new WaitCommand(0.3), 
+      coralManipulator.retractIntake(),
+      coralManipulator.stopIntake(),
+      new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
+      new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
+      coralManipulator.shoot(CoralConstants.shooterRewindVoltage), 
+      new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
+      coralManipulator.stopShooter(), 
+      coralManipulator.stopIndexer(),
+      coralManipulator.elevatorToHome(), 
+      coralManipulator.setCoralStateCommand(coralState.coralInElevator)
+      ).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+
+  }
     
   public static Command transferCoralToIndexer(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(
       coralManipulator.transferIntake(),
       new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
-      coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage));
+      coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage), 
+      coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.transfer.height));
       // new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       // coralManipulator.setCoralStateCommand(coralState.coralInIndexer),
       // coralManipulator.stopIndexer(), 
@@ -71,12 +119,12 @@ public class SubsystemActions {
   
   public static Command transferCoralToElevator(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(
-      coralManipulator.setElevatorPosition(CoralConstants.elevatorTransferPosition),
+      coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.transfer.height),
       new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
-      coralManipulator.shoot(CoralConstants.shooterTransferVoltage));
-      // new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()),
-      // coralManipulator.setCoralStateCommand(coralState.coralInElevator), 
+      coralManipulator.shoot(CoralConstants.elevatorLevel.transfer.shootVoltage),
+      new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()),
+      coralManipulator.setCoralStateCommand(coralState.coralInElevator)); 
       // coralManipulator.stopIndexer(),
       // coralManipulator.stopShooter(),
       // coralManipulator.elevatorToHome());
