@@ -71,7 +71,7 @@ public class CoralManipulator extends SubsystemBase {
     intakeSensor.getConfigurator().apply(intakeSensorConfig);
     indexerSensorConfig = new CANrangeConfiguration()
     .withFovParams(new FovParamsConfigs().withFOVRangeX(7).withFOVRangeY(7))
-    .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(CoralConstants.indexerSensorTriggerDistance).withMinSignalStrengthForValidMeasurement(2500));
+    .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(CoralConstants.indexerSensorTriggerDistance).withMinSignalStrengthForValidMeasurement(5000));
     indexerSensor.getConfigurator().apply(indexerSensorConfig);
     configureDeploy();
     configureIntake();

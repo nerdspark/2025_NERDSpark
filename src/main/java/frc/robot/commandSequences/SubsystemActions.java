@@ -88,9 +88,8 @@ public class SubsystemActions {
       coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.transfer.height),
       coralManipulator.shoot(CoralConstants.elevatorLevel.transfer.shootVoltage),
       new WaitUntilCommand(() -> !coralManipulator.getIntakeSensor()), 
-      new WaitCommand(0.3), 
+      new WaitCommand(0.0), 
       coralManipulator.retractIntake(),
-      coralManipulator.stopIntake(),
       new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
       coralManipulator.shoot(CoralConstants.shooterRewindVoltage), 
@@ -98,8 +97,9 @@ public class SubsystemActions {
       new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       coralManipulator.stopShooter(), 
       coralManipulator.stopIndexer(),
+      coralManipulator.stopIntake(),
       // coralManipulator.elevatorToHome(), 
-      coralManipulator.setCoralStateCommand(coralState.coralInElevator)
+      coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
       ).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
 
   }
@@ -125,7 +125,7 @@ public class SubsystemActions {
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
       coralManipulator.shoot(CoralConstants.elevatorLevel.transfer.shootVoltage),
       new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()),
-      coralManipulator.setCoralStateCommand(coralState.coralInElevator)); 
+      coralManipulator.setCoralStateCommand(coralState.coralInIndexer)); 
       // coralManipulator.stopIndexer(),
       // coralManipulator.stopShooter(),
       // coralManipulator.elevatorToHome());

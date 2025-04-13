@@ -231,7 +231,7 @@ private final ProfiledPIDController driveController =
   public void end(boolean interrupted) {
     running = false;
     Constants.Vision.kCoralTargeted = false;
-    Constants.Vision.kCoralAutoTarget = false;
+    // Constants.Vision.kCoralAutoTarget = false;
     drive.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
     if (Vision.DOGLOG_ENABLED){
 
