@@ -57,6 +57,24 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class CoralConstants {
+    public static final String canBus = "canivore1";
+    public static final double deployCurrentLimit = 70;
+    public static final double deployRampRate = 0.03;
+    public static final double deployOffset = 0.25-0.1; 
+    public static final double homePositionIntake = deployOffset + 0.04;
+    public static final double deployPositionIntake = deployOffset + 0.34; // 0.27 for algae
+    public static final double transferPositionIntake = deployOffset + 0.17; 
+    public static final double forwardLimitDeploy = deployPositionIntake;
+    public static final double reverseLimitDeploy = homePositionIntake;
+    public static final double kPDeploy = 15; // 100
+    public static final double kIDeploy = 0;
+    public static final double kDDeploy = 0;
+    public static final double kGDeploy = 0.39;
+    public static final double intakeCurrentLimit = 65;
+    public static final double deployGearRatio = 25.0;
+    public static final double deploySensorRatio = deployGearRatio;
+    public static final double intakeGearRatio = 5.0;
+    public static final double indexerGearRatio = 20.0;
     public static final int shooterID = 1;
     public static final int indexerID = 2;
     public static final int elevatorLeftID = 3;
@@ -65,13 +83,14 @@ public final class Constants {
     public static final int intakeID = 6;
     public static final int intakeSensorID = 7;
     public static final int indexerSensorID = 8;
-    public static final double intakeSensorTriggerDistance = 0.1;
+    public static final double intakeSensorTriggerDistance = 0.15;
     public static final double indexerSensorTriggerDistance = 0.1;
     public static final double indexerTransferVoltage = 3;
-    public static final double intakeTransferVoltage = 3;
-    public static final double shooterTransferVoltage = 3;
-    public static final double deployPositionIntake = 0;
-    public static final double homePositionIntake = 0;
+    public static final double intakeTransferVoltage = 12;
+    public static final double intakingVoltage = 16;
+    public static final double shooterTransferVoltage = 1;
+    public static final double elevatorTransferPosition = 2.0;
+    public static final double deployTolerance = 0.06;
     public static enum coralState {
       empty, 
       coralInRange,
@@ -84,7 +103,7 @@ public final class Constants {
       l1(1,13.85, 1.45),
       l1upper(1,l1.height + 5, 1.45),
       l1inside(1, l1.height + 5, 2.5),
-      l2(2,22.4, 4.5);
+      l2(2,22.7, 4.5);
       
       elevatorLevel(int level, double height, double shootVoltage) {
         this.height = height;
@@ -118,8 +137,8 @@ public final class Constants {
     public static final double kS = 0.0; 
     public static final double elevatorCurrentLimit = 40;
     public static final double elevatorRampRate = 0.05;
-    public static final double elevatorTolerance = 0.1; // in
-    public static final double homePos = 3.0; // in
+    public static final double elevatorTolerance = 0.15; // in
+    public static final double homePos = 1.5; // in
     public static final double forwardLimit = 24;
     public static final double reverseLimit = 0;
 
@@ -132,8 +151,9 @@ public final class Constants {
     public static final int winchId = 61;
     public static final double currentLimit = 30;
     public static final double power = 0.7;
-    public static final double deployPosition = -76 * 3; // rot
-    public static final double climbedPosition = -18 * 3; // rot
+    public static final double deployPosition = -76; // rot of kraken
+    public static final double homePosition = -100; // rot of kraken
+    public static final double climbedPosition = 18; // rot of kraken
     public static final double rampRate = 0.2;
     public static final double kP = 1.0;
     public static final double kI = 0.0;
@@ -322,7 +342,7 @@ public static class Vision {
 public static class LEDConstants {
   public static final double scrollSpeed = 40; 
   public static final double numOfSteps = 3.0;
-  public static final int kPort = 9;
+  public static final int kPort = 0;
   public static final int kLength = 125;
   public static final double blinkSeconds = 1.0;
   public static InterpolatingDoubleTreeMap driveToPoseDistanceMap = new InterpolatingDoubleTreeMap();

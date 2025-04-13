@@ -25,45 +25,61 @@ import frc.robot.subsystems.CoralManipulator;
 
 /** Add your docs here. */
 public class SubsystemActions {
-    public static Command placeCoral(CoralManipulator coralManipulator, double target, double shootVoltage) {
-        return new SequentialCommandGroup(
-            coralManipulator.setElevatorPosition(target),
-            new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
-            new WaitCommand(0.08),
-            coralManipulator.shoot(shootVoltage)//, 
-        //     new WaitCommand(1.0),
-        //     elevIndexer.home()
-        );
+    // public static Command placeCoral(CoralManipulator coralManipulator, double target, double shootVoltage) {
+    //     return new SequentialCommandGroup(
+    //         coralManipulator.setElevatorPosition(target),
+    //         new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
+    //         new WaitCommand(0.08),
+    //         coralManipulator.shoot(shootVoltage), 
+    //         new WaitCommand(1.0), 
+    //         coralManipulator.setCoralStateCommand(coralState.empty)//, 
+    //     //     new WaitCommand(1.0),
+    //     //     elevIndexer.home()
+    //     );
+    // }
+    public static Command resetDeploy(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.setDeployVoltage(-1), 
+        new WaitCommand(0.1),
+        new WaitUntilCommand(() -> coralManipulator.deployAmpTriggered()), 
+        coralManipulator.resetDeploy(), 
+        coralManipulator.stopDeploy());
     }
     public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level) {
         return new SequentialCommandGroup(
+            // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
             coralManipulator.setElevatorPosition(level.height),
             new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
             new WaitCommand(0.08),
-            coralManipulator.shoot(level.shootVoltage));
+            coralManipulator.shoot(level.shootVoltage), 
+            new WaitCommand(1.0/level.shootVoltage), 
+            coralManipulator.setCoralStateCommand(coralState.empty));
     }
     
   public static Command transferCoralToIndexer(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(
+      coralManipulator.transferIntake(),
+      new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
-      coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage),
-      new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()),
-      coralManipulator.stopIndexer(), 
-      coralManipulator.stopIntake(), 
-      coralManipulator.retractIntake(), 
-      coralManipulator.setCoralStateCommand(coralState.coralInIndexer));
+      coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage));
+      // new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
+      // coralManipulator.setCoralStateCommand(coralState.coralInIndexer),
+      // coralManipulator.stopIndexer(), 
+      // coralManipulator.stopIntake(), 
+      // coralManipulator.retractIntake());
   }
   
   public static Command transferCoralToElevator(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(
+      coralManipulator.setElevatorPosition(CoralConstants.elevatorTransferPosition),
+      new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
-      coralManipulator.shoot(CoralConstants.shooterTransferVoltage),
-      new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
-      coralManipulator.stopIndexer(),
-      coralManipulator.stopShooter(),
-      coralManipulator.setCoralStateCommand(coralState.coralInElevator));
+      coralManipulator.shoot(CoralConstants.shooterTransferVoltage));
+      // new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()),
+      // coralManipulator.setCoralStateCommand(coralState.coralInElevator), 
+      // coralManipulator.stopIndexer(),
+      // coralManipulator.stopShooter(),
+      // coralManipulator.elevatorToHome());
   }
-
-
   
 }
