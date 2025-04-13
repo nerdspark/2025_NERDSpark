@@ -167,7 +167,9 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             DogLog.log("PoseEstimator/Formatted Pose", getFomattedPose());            
 
         }
-        SmartDashboard.putBoolean("tV", visionFront.hasTarget());              
+        SmartDashboard.putBoolean("tV", visionFront.hasTarget()); 
+        SmartDashboard.putBoolean("Coral In Range", coralInRange());  
+        SmartDashboard.putBoolean("Coral In List", coralInList());     
     }
     
 
