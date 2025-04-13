@@ -89,27 +89,26 @@ public final class Constants {
     public static final int intakeSensorID = 7;
     public static final int indexerSensorID = 8;
     public static final double intakeSensorTriggerDistance = 0.09;
-    public static final double indexerSensorTriggerDistance = 0.1;
+    public static final double indexerSensorTriggerDistance = 0.02;
     public static final double indexerTransferVoltage = 16;
     public static final double intakeTransferVoltage = 16;
     public static final double intakingVoltage = 16;
     // public static final double shooterTransferVoltage = 2;
-    public static final double shooterRewindVoltage = -1;
+    public static final double shooterRewindVoltage = -1.5;
     // public static final double elevatorTransferPosition = 2.9;
     public static final double deployTolerance = 0.06;
     public static enum coralState {
       empty, 
       coralInRange,
       coralInIntake, 
-      coralInIndexer, 
-      coralInElevator
+      coralInIndexer
     }
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
       l1upper(1,l1.height + 5, 1.45),
       l1inside(1, l1.height + 5, 2.5),
-      l2(2,22.7, 4.0), 
+      l2(2,22.0, 3.5), 
       transfer(0, 3.6, 2),
       panic(0, 7, 1), 
       visionClear(0, 5, 0);
@@ -144,7 +143,7 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kG = 0.42; //0.385
     public static final double kS = 0.0; 
-    public static final double elevatorCurrentLimit = 40;
+    public static final double elevatorCurrentLimit = 50;
     public static final double elevatorRampRate = 0.05;
     public static final double elevatorTolerance = 0.15; // in
     public static final double homePos = 1.5; // in
@@ -328,7 +327,7 @@ public static class Vision {
 
         public static boolean kCoralTargeted = false;
         public static boolean kCoralInRange = false;
-        public static boolean kCoralAutoTarget = true;
+        // public static boolean kCoralAutoTarget = true;
 
         public static final boolean USE_LIMELIGHT = true;
         
@@ -340,7 +339,7 @@ public static class Vision {
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(23), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(28.5), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(0))));
           
