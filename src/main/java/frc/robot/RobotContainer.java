@@ -15,6 +15,7 @@ import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.CoralConstants.coralState;
+import frc.robot.Constants.CoralConstants.elevatorLevel;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commands.DriveToPose;
@@ -142,6 +143,14 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
+    NamedCommands.registerCommand("intake", coralManipulator.intakeCommand());
+    NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> !coralManipulator.getCoralState().equals(coralState.empty)));
+    NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height));
+    NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
+    NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
+    NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1));
+    NamedCommands.registerCommand("elevatorToHome", coralManipulator.elevatorToHome());
+    NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
   }
 
   private void configureDefaultCommands() {
