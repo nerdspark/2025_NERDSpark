@@ -179,7 +179,6 @@ public class NerdQuestNav {
         Translation3d rotatedAxis = rotateAxes(offsetCorrection, initPose.getRotation());
         Translation3d hardResetTransformation = rotatedAxis.plus(initPose.getTranslation());
         return hardResetTransformation;
-
     }
 
     public Translation3d getPosition() {
@@ -245,7 +244,7 @@ public class NerdQuestNav {
 
     public void softReset(Pose3d pose) {
         softResetTransform = new Transform3d(pose.getTranslation().minus(getProcessedPosition()),
-                pose.getRotation().minus(getProcessedRotation())); // May need to minus/add 180 to getProcessedRotation()
+            pose.getRotation().minus(getProcessedRotation()));
         softResetPose = new Pose3d(getProcessedPosition(), getProcessedRotation());
     }
 
@@ -259,15 +258,9 @@ public class NerdQuestNav {
     }
 
     public void resetPose(Pose3d pose) {
-        SmartDashboard.putBoolean("Reset Pose", true);
         initializedPosition = true;
         softReset(pose);
     }
-
-    // @Override
-    // public ProviderType getType() {
-    //     return ProviderType.ENVIRONMENT_BASED;
-    // }
 
     public void resetPose() {
         initializedPosition = true;
@@ -344,39 +337,28 @@ public class NerdQuestNav {
         return new Translation2d(x, y);
     }
 
-    public Command determineOffsetToRobotCenter(CommandSwerveDrivetrain drivetrain) {
+    public Command determineOffsetToRobotCenter(CommandSwerveDrivetrain drivetrain, double speed) {
+        resetPose();
         return Commands.repeatingSequence(
-                Commands.run(
-                        () -> {
-                            drivetrain.setControl(
-                                m_ApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0,0,0.35)));
-                            
-                        }, drivetrain).withTimeout(0.5),
-                Commands.runOnce(() -> {
-                    // Update current offset
-                    Translation2d offset = calculateOffsetToRobotCenter();
+            Commands.run(() -> {
+                drivetrain.setControl(
+                    m_ApplyRobotSpeeds.withSpeeds(new ChassisSpeeds(0,0, speed)));
+            }, drivetrain).withTimeout(0.5),
+                
+            Commands.runOnce(() -> {
+                // Update current offset
+                Translation2d offset = calculateOffsetToRobotCenter();
 
-                    _calculatedOffsetToRobotCenter = _calculatedOffsetToRobotCenter
-                            .times((double) _calculatedOffsetToRobotCenterCount
-                                    / (_calculatedOffsetToRobotCenterCount + 1))
+                _calculatedOffsetToRobotCenter = _calculatedOffsetToRobotCenter
+                    .times((double) _calculatedOffsetToRobotCenterCount
+                        / (_calculatedOffsetToRobotCenterCount + 1))
                             .plus(offset.div(_calculatedOffsetToRobotCenterCount + 1));
-                    _calculatedOffsetToRobotCenterCount++;
+                _calculatedOffsetToRobotCenterCount++;
 
-                    SmartDashboard.putNumberArray("Quest Calculated Offset to Robot Center", new double[] {
-                            _calculatedOffsetToRobotCenter.getX(), _calculatedOffsetToRobotCenter.getY() });
+                SmartDashboard.putNumberArray("Quest Calculated Offset to Robot Center", new double[] {
+                    _calculatedOffsetToRobotCenter.getX(), _calculatedOffsetToRobotCenter.getY() });
 
-                }).onlyIf(() -> getRotation().getMeasureZ().in(Degrees) > 30));
+            }).onlyIf(() -> getRotation().getMeasureZ().in(Degrees) > 30 || getRotation().getMeasureZ().in(Degrees) < -90))
+            .onlyWhile(() -> getRotation().getMeasureZ().in(Degrees) >= 0 || getRotation().getMeasureZ().in(Degrees) < -90);
     }
-
-    // public Command calibrateWheelOdometry(CommandSwerveDrivetrain driveTrain) {
-    //     Pose2d poseEstimator = driveTrain.getState().Pose;
-
-    //     return Commands.run(() -> {}, driveTrain).beforeStarting(() -> {
-    //         poseEstimator.setState(State.ODOMETRY_ONLY);
-    //     }).finallyDo(() -> {
-    //         poseEstimator.setState(State.ALL);
-    //     });
-
-    // }
-
 }

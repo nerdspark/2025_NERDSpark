@@ -296,9 +296,7 @@ import dev.doglog.DogLog;
                                  .getDistance(visionEst.get().estimatedPose.toPose2d().getTranslation());
              }
              avgDist /= numTags;
-             SmartDashboard.putNumber("Average Distance", avgDist);
-             SmartDashboard.putNumber("Tag Num", numTags);
-             if(numTags < 2 || avgDist >= 2) {
+             if(numTags < 2 || avgDist >= 2.5) {
                 noGood = true;
              }
             }
@@ -321,11 +319,9 @@ import dev.doglog.DogLog;
             // }
         }
         if(noGood) {
-            //SmartDashboard.putString("Photon Vision Problem", "noGood is true");
             return Optional.empty();
         }
         else {
-            //SmartDashboard.putString("Photon Vision Problem", "Returning pose est");
             return visionEst;
         }
     }

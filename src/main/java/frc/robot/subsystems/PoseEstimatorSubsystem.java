@@ -69,9 +69,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront, driveTrain);
                 this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack, driveTrain);
                 this.QuestNAV = questNav;
-    
-                SmartDashboard.putBoolean("Photon Front Reset", false);
-                SmartDashboard.putBoolean("Photon Back Reset", false);
                 
                 allNotifier = new Notifier(() -> {
                     visionFront.run();
@@ -84,7 +81,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 publisher = NetworkTableInstance.getDefault()
                 .getStructTopic("Robot Pose AdvScope", Pose2d.struct).publish();
 
-                publisherQuest = NetworkTableInstance.getDefault().getStructTopic("Robot Pose Quest", Pose2d.struct).publish();
+                publisherQuest = NetworkTableInstance.getDefault()
+                .getStructTopic("Robot Pose Quest", Pose2d.struct).publish();
               
         }        
 
@@ -124,7 +122,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                 });
 
                 if(Constants.Vision.QUEST_ENABLED){
-                    SmartDashboard.putBoolean("Photon Back Reset", false);
                     Optional<EstimatedRobotPose> visionEstFrontQuest  = visionFront.getEstimatedRobotPoseQuest();
                     Optional<EstimatedRobotPose> visionEstBackQuest  = visionBack.getEstimatedRobotPoseQuest();
 
@@ -132,23 +129,13 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                     estQuest -> {                        
                         QuestNAV.resetPose(estQuest.estimatedPose);
                         //QuestNAV.hardReset(estQuest.estimatedPose);
-                        SmartDashboard.putBoolean("Photon Front Reset", true);
                     });
 
                     visionEstBackQuest.ifPresent(
                         estQuest -> {                        
                             QuestNAV.resetPose(estQuest.estimatedPose);                    
                             //QuestNAV.hardReset(estQuest.estimatedPose);  
-                            SmartDashboard.putBoolean("Photon Back Reset", true);
                     });
-
-                    // if (visionEstFrontQuest.isPresent() == false) {
-                    //     SmartDashboard.putString("Photon Vision Front Problem", "Vision Front Est is false");
-                    // }
-
-                    // if (visionEstBackQuest.isPresent() == false) {
-                    //     SmartDashboard.putString("Photon Vision Back Problem", "Vision back Est is false");
-                    // }
                     
                 }
 
