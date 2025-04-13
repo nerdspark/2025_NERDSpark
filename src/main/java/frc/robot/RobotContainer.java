@@ -200,7 +200,7 @@ public class RobotContainer {
     joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
       .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose))
         .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)))
-      .onFalse(coralManipulator.elevatorHome());
+      .onFalse(coralManipulator.elevatorToHome());
     
     // semi auto dropoffs for L1
     joystick.leftBumper()
