@@ -52,7 +52,7 @@ public class SubsystemActions {
             new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
             new WaitCommand(0.08),
             coralManipulator.shoot(level.shootVoltage), 
-            new WaitCommand(1.0/level.shootVoltage), 
+            // new WaitCommand(1.0/level.shootVoltage), 
             coralManipulator.setCoralStateCommand(coralState.empty));
     }
     
