@@ -24,6 +24,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,8 +68,8 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             this.driveTrain = driveTrain;
             if(USE_VISION) {
     
-                this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront, driveTrain);
-                this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack, driveTrain);
+                this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront);
+                this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack);
                 this.QuestNAV = questNav;
                 
                 allNotifier = new Notifier(() -> {

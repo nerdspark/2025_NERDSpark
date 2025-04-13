@@ -19,7 +19,6 @@ import frc.robot.QuestNav.NerdQuestNav;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.Constants.CoralConstants.coralState;
 import frc.robot.Constants.CoralConstants.elevatorLevel;
-import frc.robot.commandSequences.ArmActions;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commands.DriveToCoral;
@@ -135,7 +134,7 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     drivetrain = TunerConstants.createDrivetrain();
-    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain, QuestNav);
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
     coralManipulator = new CoralManipulator();
@@ -213,74 +212,12 @@ public class RobotContainer {
     // joystick.povUp()
     // .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorToHome());
 
-    // coral dropoff 
-      //manual dunk
-    joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
-      .onTrue(gripper.coralDefaultCommand());
-    joystick.leftBumper().onTrue(gripper.spitOutCommand())
-      .onFalse(new WaitCommand(0.4).andThen(gripper.neutralCommand())).onFalse(new WaitCommand(0.2).andThen(arm.goToHome()));
-
-      // autodunk
-    joystick.povUp().onTrue(ArmActions.dunkDropCoral(arm, gripper, () -> scoringSubsystem.getArmReefTarget()));
-
     // Find Quest Offsets
     joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
-
-    // coral pickup
-    joystick.povDown().onTrue(ArmActions.grabFromFunnel(arm, gripper)).onTrue(bucket.disableAutoBucket());
-    // bucketHasCoralTrigger.onTrue(ArmActions.grabFromFunnel(arm, gripper));
-
-    // algae pickup
-    joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
-
-    // algae dropoff
-    // joystick.povUp().whileTrue(ArmActions.armToAlgaeBarge(arm))
-    //   .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
-
-    joystick.y().onTrue(ArmActions.armToProcessor(arm, gripper));
-
-    // wrist fix offset
-    joystick.back().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(10))));
-    joystick.start().onTrue(new InstantCommand(() -> arm.addToWristOffset(Units.degreesToRotations(-10))));
 
     // climb
     // joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(climb.deploy());
     // joystick.start().and(() -> !climb.climbed()).whileTrue(climb.climb()).onFalse(climb.stopCommand());
-
-
-    /* autodrive TODO: rebind to not conflict with drive stick */
-    joystick.b().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    ()->scoringSubsystem.getLevel(),
-    ()-> false,
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
-    joystick.rightBumper().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
-    ()->scoringSubsystem.getLevel(),
-    ()-> false,
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
-
-    joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
-
-    joystick.x().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedAlgae(),
-    ()->scoringSubsystem.getLevel(),
-    ()-> false,
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
 
 
 
