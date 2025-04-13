@@ -18,6 +18,8 @@ import frc.robot.Constants.CoralConstants.coralState;
 import frc.robot.Constants.CoralConstants.elevatorLevel;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
+import frc.robot.commands.DriveToCoral;
+import frc.robot.commands.DriveToCoralAuto;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -127,7 +129,7 @@ public class RobotContainer {
     coralManipulator = new CoralManipulator();
 
     // configureTriggers();
-    // configureNamedCommands();
+    configureNamedCommands();
 
 
     // SignalLogger.start();
@@ -151,6 +153,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1));
     NamedCommands.registerCommand("elevatorToHome", coralManipulator.elevatorToHome());
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
+    NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorSubsystem.getCurrentPose()));
   }
 
   private void configureDefaultCommands() {
@@ -188,6 +191,16 @@ public class RobotContainer {
     //   .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose))
     //     .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)))
     //   .onFalse(coralManipulator.elevatorToHome());
+    Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
+    Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
+    Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
+    
+    coralInRange.and(coralAutoTarget).and(coralInList).onTrue(new DriveToCoral(drivetrain, () -> poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose()));
+    
+    joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
+      .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose))
+        .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)))
+      .onFalse(coralManipulator.elevatorHome());
     
     // semi auto dropoffs for L1
     joystick.leftBumper()
