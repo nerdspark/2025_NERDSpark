@@ -97,6 +97,7 @@ public final class Constants {
     public static final double shooterRewindVoltage = -1.5;
     // public static final double elevatorTransferPosition = 2.9;
     public static final double deployTolerance = 0.06;
+    public static final double autoShootVoltageTransfer = 1;
     public static enum coralState {
       empty, 
       coralInRange,
