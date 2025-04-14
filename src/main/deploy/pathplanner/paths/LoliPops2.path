@@ -71,19 +71,34 @@
       "name": "elevatorToHome",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToHome"
+        }
+      }
     },
     {
       "name": "intake",
       "waypointRelativePos": 0.26996625421823095,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
     },
     {
       "name": "elevatorToL2",
       "waypointRelativePos": 1.66029246344208,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToL2"
+        }
+      }
     }
   ],
   "globalConstraints": {

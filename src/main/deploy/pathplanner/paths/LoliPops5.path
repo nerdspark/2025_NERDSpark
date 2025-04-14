@@ -50,13 +50,23 @@
       "name": "elevatorToHome",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToHome"
+        }
+      }
     },
     {
       "name": "intake",
       "waypointRelativePos": 0.5916760404949298,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
     }
   ],
   "globalConstraints": {
