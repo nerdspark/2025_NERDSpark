@@ -157,6 +157,7 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
+    NamedCommands.registerCommand("zero elevator and intake", SubsystemActions.resetDeploy(coralManipulator).alongWith(SubsystemActions.resetElevator(coralManipulator)));
     NamedCommands.registerCommand("intake", coralManipulator.intakeCommand());
     NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> !coralManipulator.getCoralState().equals(coralState.empty)));
     NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height));
