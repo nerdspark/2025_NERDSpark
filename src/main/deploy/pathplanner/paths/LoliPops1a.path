@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.296,
-        "y": 4.273
+        "x": 3.166,
+        "y": 4.173
       },
       "prevControl": {
-        "x": 1.8504495033112578,
-        "y": 4.149510761589404
+        "x": 1.720449503311258,
+        "y": 4.049510761589405
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,10 +31,22 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "elevatorToL2",
+      "waypointRelativePos": 0.7528801843318008,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToL2"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -45,7 +57,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "LoliPops",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

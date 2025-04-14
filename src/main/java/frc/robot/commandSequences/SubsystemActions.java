@@ -103,6 +103,28 @@ public class SubsystemActions {
       ).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
 
   }
+
+  public static Command transferCoralForAuto(CoralManipulator coralManipulator) {
+    return new SequentialCommandGroup(
+      coralManipulator.transferIntake(),
+      new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
+      coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
+      coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage), 
+      coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.transfer.height),
+      coralManipulator.shoot(CoralConstants.autoShootVoltageTransfer),
+      new WaitUntilCommand(() -> !coralManipulator.getIntakeSensor()), 
+      new WaitCommand(0.0), 
+      coralManipulator.retractIntake(),
+      new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
+      new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
+      coralManipulator.stopShooter(), 
+      coralManipulator.stopIndexer(),
+      coralManipulator.stopIntake(),
+      // coralManipulator.elevatorToHome(), 
+      coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
+      ).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+
+  }
     
   public static Command transferCoralToIndexer(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(

@@ -89,7 +89,7 @@ public class RobotContainer {
   private Climb climb;
   private CoralManipulator coralManipulator;
 
-  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90))));
+  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -165,8 +165,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
     NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1));
     NamedCommands.registerCommand("elevatorToHome", coralManipulator.elevatorToHome());
+    NamedCommands.registerCommand("elevatorToHomeAndIntake", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height).alongWith(coralManipulator.intakeCommand()));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorSubsystem.getCurrentPose()));
+    NamedCommands.registerCommand("waitUntilCoralInElevator", new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor()));
+    NamedCommands.registerCommand("waitUntilAndElevatorL2", new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor()).andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)));
+    NamedCommands.registerCommand("waitUntilAndElevatorL1", new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor()).andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height)));
   }
 
   private void configureDefaultCommands() {
@@ -256,8 +260,9 @@ public class RobotContainer {
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation())));
 
       
-    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).onTrue(SubsystemActions.transferCoral(coralManipulator));
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).onTrue(SubsystemActions.transferCoral(coralManipulator));
 
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isAutonomous()).onTrue(SubsystemActions.transferCoralForAuto(coralManipulator));
     // new Trigger(() -> !coralManipulator.getIndexerSensor()).onTrue(coralManipulator.setCoralStateCommand(coralState.coralInIndexer));
   }
 
