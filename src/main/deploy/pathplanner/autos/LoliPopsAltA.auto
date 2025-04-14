@@ -11,9 +11,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL2"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LoliPops2a"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL1"
           }
         },
         {
@@ -23,33 +35,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL2"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LoliPops4a"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "elevatorShootL1"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LoliPops5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LoliPops6"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LoliPops7"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LoliPops8"
           }
         }
       ]

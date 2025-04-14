@@ -150,7 +150,7 @@ public class RobotContainer {
     configureBindings();
     
     // drivetrain.resetPose(FieldConstants.Reef.branchPositions2d.get(0).get(ReefLevel.L0).plus(new Transform2d(0.1,0.1,new Rotation2d())));
-    // configureAutoChooser();
+    configureAutoChooser();
     configureLEDs();
 
 

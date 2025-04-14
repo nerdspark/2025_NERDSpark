@@ -161,7 +161,7 @@ public final class Constants {
     public static final double inchesPerRotation = pulleyDiameter * 2.0 * Math.PI / gearRatio;
     public static final int winchId = 61;
     public static final double currentLimit = 20;
-    public static final double power = 0.6;
+    public static final double power = 0.7;
     public static final double deployPositionInches = -10.5;
     public static final double climbedPositionInches = 32;
     public static final double deployPosition = deployPositionInches / inchesPerRotation; // rot of kraken
