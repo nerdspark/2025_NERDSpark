@@ -204,14 +204,14 @@ public class RobotContainer {
     // climb
     joystick.y().onTrue(climb.extend().alongWith(coralManipulator.deployIntake()));
     joystick.x().onTrue(climb.returnToHome());
-    joystick.a().onTrue(climb.contract().alongWith(coralManipulator.stopDeploy()));
+    joystick.a().whileTrue(climb.contract().alongWith(coralManipulator.stopDeploy())).onFalse(climb.stopCommand());
     joystick.b().onTrue(climb.stopCommand());
 
     // coral manipulator
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     joystick.back().whileTrue(SubsystemActions.resetDeploy(coralManipulator).alongWith(SubsystemActions.resetElevator(coralManipulator)));
 
-    joystick.rightBumper().onTrue(SubsystemActions.panicButton(coralManipulator));
+    joystick.rightBumper().onTrue(SubsystemActions.panicButton(coralManipulator)).onFalse(coralManipulator.intakeToHome().alongWith(coralManipulator.stopIntake()).alongWith(coralManipulator.stopIndexer()).alongWith(coralManipulator.stopShooter()).alongWith(coralManipulator.elevatorToHome()));
 
     // full auto dropoffs for L2
     joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
@@ -250,7 +250,7 @@ public class RobotContainer {
       Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
       
 
-      joystick.leftTrigger().and(coralInRange).and(coralInList).whileTrue(new DriveToCoral(drivetrain, () -> new Pose2d(
+      joystick.rightTrigger().and(coralInRange).and(coralInList).whileTrue(new DriveToCoral(drivetrain, () -> new Pose2d(
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation())));

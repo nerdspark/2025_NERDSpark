@@ -57,12 +57,12 @@ public class SubsystemActions {
     }
     public static Command resetElevator(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
-        coralManipulator.setElevatorLeftVoltage(-1), 
+        coralManipulator.setElevatorLeftVoltage(-0.2), 
         new WaitCommand(0.05),
         new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()), 
         coralManipulator.resetElevatorLeft(), 
         coralManipulator.stopElevatorLeft()).alongWith(new SequentialCommandGroup(
-          coralManipulator.setElevatorRightVoltage(-1), 
+          coralManipulator.setElevatorRightVoltage(-0.2), 
           new WaitCommand(0.05),
           new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()), 
           coralManipulator.resetElevatorRight(), 

@@ -167,7 +167,7 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> elevatorRight.setPosition(0));
   }
   public boolean deployAmpTriggered() {
-    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 10;
+    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 15;
   }
   public coralState getCoralState() {
     return coralState;
@@ -238,10 +238,10 @@ public class CoralManipulator extends SubsystemBase {
   }
   
   public boolean elevatorLeftAmpTriggered() {
-    return Math.abs(elevatorLeft.getStatorCurrent().getValueAsDouble()) > 10;
+    return Math.abs(elevatorLeft.getStatorCurrent().getValueAsDouble()) > 5;
   }
   public boolean elevatorRightAmpTriggered() {
-    return Math.abs(elevatorRight.getStatorCurrent().getValueAsDouble()) > 10;
+    return Math.abs(elevatorRight.getStatorCurrent().getValueAsDouble()) > 5;
   }
   public void setElevPosition(double position) {
     targetPositionElevator = position;
