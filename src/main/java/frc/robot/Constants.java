@@ -204,17 +204,18 @@ public final class Constants {
   static {
     // Key: cardinal joystick distance
     // Value: % max speed
-    joystickMap.put(0.00, 0.00);
-    joystickMap.put(0.07, 0.05);
-    joystickMap.put(0.18, 0.1);
-    joystickMap.put(0.29, 0.15);
-    joystickMap.put(0.40, 0.2);
-    joystickMap.put(0.50, 0.3);
-    joystickMap.put(0.60, 0.50);
-    joystickMap.put(0.70, 0.65);
-    joystickMap.put(0.80, 0.80);
-    joystickMap.put(0.90, 1.00);
-    joystickMap.put(1.00, 1.00);
+    joystickMap.put(0.0, 0.0);
+    joystickMap.put(0.1, 0.02);
+    joystickMap.put(0.2, 0.05);
+    joystickMap.put(0.3, 0.1);
+    joystickMap.put(0.4, 0.15);
+    joystickMap.put(0.5, 0.21);
+    joystickMap.put(0.6, 0.30);
+    joystickMap.put(0.7, 0.45);
+    joystickMap.put(0.8, 0.62);
+    joystickMap.put(0.9, 0.85);
+    joystickMap.put(0.95, 1.00);
+    joystickMap.put(1.0, 1.00);
 
     joystickMap.put(-0.07, -0.10);
     joystickMap.put(-0.18, -0.15);
