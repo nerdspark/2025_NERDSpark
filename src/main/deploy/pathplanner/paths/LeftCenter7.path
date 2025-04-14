@@ -36,7 +36,12 @@
       "name": "elevatorToL1",
       "waypointRelativePos": 0.7180212014134287,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToL1"
+        }
+      }
     }
   ],
   "globalConstraints": {
