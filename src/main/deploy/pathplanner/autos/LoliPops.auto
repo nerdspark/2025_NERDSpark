@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops4a"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops7"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops8"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

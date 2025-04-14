@@ -37,7 +37,8 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
  import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
- import frc.robot.Robot;
+import frc.robot.Constants;
+import frc.robot.Robot;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -70,6 +71,8 @@ import dev.doglog.DogLog;
      private final NetworkTable llTable;
 
      private  Optional<EstimatedRobotPose> optionalEstimatedRobotPose = Optional.empty();
+     private  Optional<EstimatedRobotPose> optionalEstimatedRobotPoseQuest = Optional.empty();
+
  
      // Simulation
      private PhotonCameraSim cameraSim;
@@ -113,6 +116,10 @@ import dev.doglog.DogLog;
 
      public void run(){
         optionalEstimatedRobotPose = getEstimatedGlobalPose(this.camera, this.photonPoseEstimator);
+        if(Constants.Vision.QUEST_ENABLED){
+           optionalEstimatedRobotPoseQuest = getEstimatedGlobalPoseQuest(this.camera, this.photonPoseEstimator);
+           
+        }
      }
  
      /**
@@ -150,6 +157,9 @@ import dev.doglog.DogLog;
 
      public Optional<EstimatedRobotPose> getEstimatedRobotPose(){
         return this.optionalEstimatedRobotPose;
+     }
+     public Optional<EstimatedRobotPose> getEstimatedRobotPoseQuest(){
+        return this.optionalEstimatedRobotPoseQuest;
      }
   
      /**
@@ -316,4 +326,62 @@ import dev.doglog.DogLog;
          if (!Robot.isSimulation()) return null;
          return visionSim.getDebugField();
      }
+
+     public Optional<EstimatedRobotPose> getEstimatedGlobalPoseQuest(PhotonCamera camera, PhotonPoseEstimator photonEstimator) {
+        Optional<EstimatedRobotPose> visionEst = Optional.empty();
+        boolean noGood = false;
+        for (var change : camera.getAllUnreadResults()) {
+            visionEst = photonEstimator.update(change);
+            // updateEstimationStdDevs(visionEst, change.getTargets(), photonEstimator);
+            if(!visionEst.isEmpty() ) {
+                int numTags = 0;
+                double avgDist = 0;
+                
+             // photonEstimator.addHeadingData(estimatedPose.get().timestampSeconds, driveTrain.getRotation3d());
+             // Precalculation - see how many tags we found, and calculate an average-distance metric
+             for (var tgt : change.getTargets()) {
+                if(Constants.Vision.nonReefTagFiducialIDs.contains(tgt.getFiducialId())) { 
+                    noGood = true;
+                    break;
+                }
+                 var tagPose = photonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+                 if (tagPose.isEmpty()) continue;
+                 numTags++;
+                 avgDist +=
+                         tagPose
+                                 .get()
+                                 .toPose2d()
+                                 .getTranslation()
+                                 .getDistance(visionEst.get().estimatedPose.toPose2d().getTranslation());
+             }
+             avgDist /= numTags;
+             if(numTags < 2 || avgDist >= 2.5) {
+                noGood = true;
+             }
+            }
+            else {
+                noGood = true;
+            }
+
+          
+
+            // if (Robot.isSimulation()) {
+            //     visionEst.ifPresentOrElse(
+            //             est ->
+            //                     getSimDebugField()
+            //                             .getObject("VisionEstimation")
+            //                             .setPose(est.estimatedPose.toPose2d()),
+            //             () -> {
+            //                 getSimDebugField().getObject("VisionEstimation").setPoses();
+            //             });
+                     
+            // }
+        }
+        if(noGood) {
+            return Optional.empty();
+        }
+        else {
+            return visionEst;
+        }
+    }
  }

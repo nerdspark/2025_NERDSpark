@@ -7,7 +7,10 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 
 import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -57,19 +60,21 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class CoralConstants {
+    public static final double indexerCurrentLimit = 30;
     public static final String canBus = "canivore1";
-    public static final double deployCurrentLimit = 70;
+    public static final double deployCurrentLimit = 65;
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1; 
-    public static final double homePositionIntake = deployOffset + 0.04;
-    public static final double deployPositionIntake = deployOffset + 0.34; // 0.27 for algae
-    public static final double transferPositionIntake = deployOffset + 0.17; 
+    public static final double homePositionIntake = deployOffset + 0.07; // deployOffset + 0.02
+    public static final double deployPositionIntake = deployOffset + 0.325; // 0.27 for algae
+    public static final double transferPositionIntake = deployPositionIntake - 0.15; 
+    // public static final double elevatorPositionIntake = homePositionIntake + 0.1;
     public static final double forwardLimitDeploy = deployPositionIntake;
     public static final double reverseLimitDeploy = homePositionIntake;
-    public static final double kPDeploy = 15; // 100
+    public static final double kPDeploy = 12; // 12 for 25:1; 25 for 75 : 1
     public static final double kIDeploy = 0;
     public static final double kDDeploy = 0;
-    public static final double kGDeploy = 0.39;
+    public static final double kGDeploy = 0.42; // 0.39 for 25:1; 0.07 for 75:1
     public static final double intakeCurrentLimit = 65;
     public static final double deployGearRatio = 25.0;
     public static final double deploySensorRatio = deployGearRatio;
@@ -83,27 +88,31 @@ public final class Constants {
     public static final int intakeID = 6;
     public static final int intakeSensorID = 7;
     public static final int indexerSensorID = 8;
-    public static final double intakeSensorTriggerDistance = 0.15;
-    public static final double indexerSensorTriggerDistance = 0.1;
-    public static final double indexerTransferVoltage = 3;
-    public static final double intakeTransferVoltage = 12;
+    public static final double intakeSensorTriggerDistance = 0.09;
+    public static final double indexerSensorTriggerDistance = 0.02;
+    public static final double indexerTransferVoltage = 16;
+    public static final double intakeTransferVoltage = 16;
     public static final double intakingVoltage = 16;
-    public static final double shooterTransferVoltage = 1;
-    public static final double elevatorTransferPosition = 2.0;
+    // public static final double shooterTransferVoltage = 2;
+    public static final double shooterRewindVoltage = -1.5;
+    // public static final double elevatorTransferPosition = 2.9;
     public static final double deployTolerance = 0.06;
+    public static final double autoShootVoltageTransfer = 1;
     public static enum coralState {
       empty, 
       coralInRange,
       coralInIntake, 
-      coralInIndexer, 
-      coralInElevator
+      coralInIndexer
     }
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
       l1upper(1,l1.height + 5, 1.45),
       l1inside(1, l1.height + 5, 2.5),
-      l2(2,22.7, 4.5);
+      l2(2,22.0, 3.5), 
+      transfer(0, 3.6, 2),
+      panic(0, 7, 1), 
+      visionClear(0, 5, 0);
       
       elevatorLevel(int level, double height, double shootVoltage) {
         this.height = height;
@@ -135,7 +144,7 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kG = 0.42; //0.385
     public static final double kS = 0.0; 
-    public static final double elevatorCurrentLimit = 40;
+    public static final double elevatorCurrentLimit = 50;
     public static final double elevatorRampRate = 0.05;
     public static final double elevatorTolerance = 0.15; // in
     public static final double homePos = 1.5; // in
@@ -148,17 +157,24 @@ public final class Constants {
   }
   
   public static class ClimbConstants {
+    public static final double gearRatio = 125.0;
+    public static final double pulleyDiameter = 2.5; // inches
+    public static final double inchesPerRotation = pulleyDiameter * 2.0 * Math.PI / gearRatio;
     public static final int winchId = 61;
-    public static final double currentLimit = 30;
+    public static final double currentLimit = 20;
     public static final double power = 0.7;
-    public static final double deployPosition = -76; // rot of kraken
-    public static final double homePosition = -100; // rot of kraken
-    public static final double climbedPosition = 18; // rot of kraken
-    public static final double rampRate = 0.2;
-    public static final double kP = 1.0;
+    public static final double deployPositionInches = -10.5;
+    public static final double climbedPositionInches = 32;
+    public static final double deployPosition = deployPositionInches / inchesPerRotation; // rot of kraken
+    public static final double homePosition = -0; // rot of kraken
+    public static final double climbedPosition = climbedPositionInches / inchesPerRotation; // rot of kraken
+    public static final double rampRate = 0.08;
+    public static final double kP = 1.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final String canBus = "canivore1";
+    // public static final double servoOpenPosition = 1.0;
+    // public static final double servoCloseposition = 0.0;
   }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
@@ -189,17 +205,18 @@ public final class Constants {
   static {
     // Key: cardinal joystick distance
     // Value: % max speed
-    joystickMap.put(0.00, 0.00);
-    joystickMap.put(0.07, 0.05);
-    joystickMap.put(0.18, 0.1);
-    joystickMap.put(0.29, 0.15);
-    joystickMap.put(0.40, 0.2);
-    joystickMap.put(0.50, 0.3);
-    joystickMap.put(0.60, 0.50);
-    joystickMap.put(0.70, 0.65);
-    joystickMap.put(0.80, 0.80);
-    joystickMap.put(0.90, 1.00);
-    joystickMap.put(1.00, 1.00);
+    joystickMap.put(0.0, 0.0);
+    joystickMap.put(0.1, 0.02);
+    joystickMap.put(0.2, 0.05);
+    joystickMap.put(0.3, 0.1);
+    joystickMap.put(0.4, 0.15);
+    joystickMap.put(0.5, 0.21);
+    joystickMap.put(0.6, 0.30);
+    joystickMap.put(0.7, 0.45);
+    joystickMap.put(0.8, 0.62);
+    joystickMap.put(0.9, 0.85);
+    joystickMap.put(0.95, 1.00);
+    joystickMap.put(1.0, 1.00);
 
     joystickMap.put(-0.07, -0.10);
     joystickMap.put(-0.18, -0.15);
@@ -215,7 +232,8 @@ public final class Constants {
   }
 
 public static class AutoDropoff {
-  public static final double distanceToAutoDrive = 0.5; // meters
+  public static final double robotThickness = Units.inchesToMeters(11+3.125);
+  public static final double distanceToAutoDrive = Units.feetToMeters(4); // distance between station and bumpers
   public static final double L1waitToHome = 1.5; // s
   public static final double loopPeriodSecs = 0.02;
   public static final ProfiledPIDController driveController =
@@ -232,6 +250,7 @@ public static class Vision {
         public static boolean DOGLOG_ENABLED = false;
 
         public static final boolean USE_VISION = true;
+        public static final boolean USE_QUESTNAV = true;
 
         public static final boolean USE_BUTTON_BOARD = true;
 
@@ -261,9 +280,9 @@ public static class Vision {
         public static final double kXYStdDev = 0.4; 
         public static final double kThetaStdDev = 1; 
 
-        public static final double TRANSLATION_TOLERANCE_X = 0.01; // Changed from 0.05 3/8/25
-        public static final double TRANSLATION_TOLERANCE_Y = 0.01; // Changed from 0.05 3/8/25
-        public static final double ROTATION_TOLERANCE = Math.toRadians(1.0); // /deg
+        public static final double TRANSLATION_TOLERANCE_X = 0.013; // Changed from 0.05 3/8/25
+        public static final double TRANSLATION_TOLERANCE_Y = 0.013; // Changed from 0.05 3/8/25
+        public static final double ROTATION_TOLERANCE = Math.toRadians(1.3); // /deg
 
         //Below same as pathplanner constants
         public static final double MAX_VELOCITY = 4.5; 
@@ -311,11 +330,11 @@ public static class Vision {
         public static final double kLimeLightHeight = 1.02997;
         public static final double kLimeLightXOffset = 0;
         public static final double kLimeLightYOffset = -0.0007366;
-        public static final double kLimeLightAOD = -50.0;
+        public static final double kLimeLightAOD = -40.0;
 
         public static boolean kCoralTargeted = false;
         public static boolean kCoralInRange = false;
-        public static boolean kCoralAutoTarget = false;
+        // public static boolean kCoralAutoTarget = true;
 
         public static final boolean USE_LIMELIGHT = true;
         
@@ -325,11 +344,11 @@ public static class Vision {
         static {
 
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(28.5), 0, new Rotation2d(Math.toRadians(180))));
-          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(180))));
+          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(23), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(28.5), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(0))));
           
           
         }
@@ -341,6 +360,11 @@ public static class Vision {
           coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
          
         }
+        
+        public static final Set<Integer> nonReefTagFiducialIDs = new HashSet<>(Set.of(1, 2, 3, 4, 5, 12, 13, 14, 15, 16));
+
+        public static final boolean QUEST_ENABLED = false;
+
     }
 
     public static final double gyroP = 2;

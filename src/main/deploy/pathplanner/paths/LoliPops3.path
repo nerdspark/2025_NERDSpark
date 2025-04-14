@@ -3,44 +3,55 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.665,
-        "y": 7.341
+        "x": 3.146,
+        "y": 4.191
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6521875,
-        "y": 5.92503409090909
+        "x": 2.506105132450331,
+        "y": 4.112168874172185
+      },
+      "isLocked": false,
+      "linkedName": "LoliPops3"
+    },
+    {
+      "anchor": {
+        "x": 1.4963990066225168,
+        "y": 4.026
+      },
+      "prevControl": {
+        "x": 2.1580234066310364,
+        "y": 4.049104433162813
+      },
+      "nextControl": {
+        "x": 0.8347746066139969,
+        "y": 4.002895566837187
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.677,
-        "y": 5.104
+        "x": 3.146,
+        "y": 3.861
       },
       "prevControl": {
-        "x": 3.177,
-        "y": 5.9700254037844385
+        "x": 2.1290303850205277,
+        "y": 3.9409122298355586
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LoliPops4"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.6711111111111111,
-      "rotationDegrees": -59.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Score1",
-      "minWaypointRelativePos": 0.7986501687289221,
-      "maxWaypointRelativePos": 1.0,
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.8,
+      "maxWaypointRelativePos": 0.95,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 0.5,
         "maxAcceleration": 1.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
@@ -52,31 +63,31 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "grabFromFunnel",
-      "waypointRelativePos": 0,
+      "name": "elevatorToHomeAndIntake",
+      "waypointRelativePos": 0.45,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "grabFromFunnel"
+          "name": "elevatorToHomeAndIntake"
         }
       }
     },
     {
-      "name": "armToL4",
-      "waypointRelativePos": 0.6,
+      "name": "waitUntilAndElevatorL2",
+      "waypointRelativePos": 1.6,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "armToL4"
+          "name": "waitUntilAndElevatorL2"
         }
       }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 3.2,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -84,13 +95,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -59.99999999999999
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "SourceAuton",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 126.0
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

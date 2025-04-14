@@ -50,6 +50,7 @@ public class CoralManipulator extends SubsystemBase {
   private TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
   private TalonFXConfiguration deployConfig = new TalonFXConfiguration();
   private TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
+  private TalonFXConfiguration indexerConfig = new TalonFXConfiguration();
   private double targetPositionElevator, targetPositionDeploy = 0;
   private CANrangeConfiguration intakeSensorConfig = new CANrangeConfiguration();
   private CANrangeConfiguration indexerSensorConfig = new CANrangeConfiguration();
@@ -69,15 +70,20 @@ public class CoralManipulator extends SubsystemBase {
     .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(CoralConstants.intakeSensorTriggerDistance).withMinSignalStrengthForValidMeasurement(2500));
     intakeSensor.getConfigurator().apply(intakeSensorConfig);
     indexerSensorConfig = new CANrangeConfiguration()
-    .withFovParams(new FovParamsConfigs().withFOVRangeX(27).withFOVRangeY(27))
-    .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(CoralConstants.indexerSensorTriggerDistance).withMinSignalStrengthForValidMeasurement(2500));
+    .withFovParams(new FovParamsConfigs().withFOVRangeX(7).withFOVRangeY(7))
+    .withProximityParams(new ProximityParamsConfigs().withProximityThreshold(CoralConstants.indexerSensorTriggerDistance).withMinSignalStrengthForValidMeasurement(5000));
     indexerSensor.getConfigurator().apply(indexerSensorConfig);
     configureDeploy();
     configureIntake();
     configureShooter();
     configureElevator();
-    resetMotors();
-    
+    configureIndexer(); 
+    resetMotors();   
+  }
+  private void configureIndexer() {
+    indexerConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive).withNeutralMode(NeutralModeValue.Brake);
+    indexerConfig.OpenLoopRamps = new OpenLoopRampsConfigs().withVoltageOpenLoopRampPeriod(CoralConstants.indexerCurrentLimit);
+    indexer.getConfigurator().apply(indexerConfig);
   }
   private void configureIntake() {
     intakeConfig.CurrentLimits = new CurrentLimitsConfigs().withStatorCurrentLimit(CoralConstants.intakeCurrentLimit).withStatorCurrentLimitEnable(true);
@@ -154,14 +160,26 @@ public class CoralManipulator extends SubsystemBase {
   public Command resetDeploy() {
     return new InstantCommand(() -> deploy.setPosition(CoralConstants.deployOffset));
   }
+  public Command resetElevatorLeft() {
+    return new InstantCommand(() -> elevatorLeft.setPosition(0));
+  }
+  public Command resetElevatorRight() {
+    return new InstantCommand(() -> elevatorRight.setPosition(0));
+  }
   public boolean deployAmpTriggered() {
-    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 10;
+    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 15;
   }
   public coralState getCoralState() {
     return coralState;
   }
   public Command stopDeploy() {
     return new InstantCommand(() -> deploy.stopMotor());
+  }
+  public Command stopElevatorLeft() {
+    return new InstantCommand(() -> elevatorLeft.stopMotor());
+  }
+  public Command stopElevatorRight() {
+    return new InstantCommand(() -> elevatorRight.stopMotor());
   }
   public Command setDeployVoltage(double voltage) {
     return new InstantCommand(() -> deploy.setVoltage(voltage));
@@ -212,6 +230,19 @@ public class CoralManipulator extends SubsystemBase {
     elevatorLeft.setControl(request);
     elevatorRight.setControl(request);
   }
+  public Command setElevatorLeftVoltage(double voltage) {
+    return new InstantCommand(() -> elevatorLeft.setVoltage(voltage));
+  }
+  public Command setElevatorRightVoltage(double voltage) {
+    return new InstantCommand(() -> elevatorRight.setVoltage(voltage));
+  }
+  
+  public boolean elevatorLeftAmpTriggered() {
+    return Math.abs(elevatorLeft.getStatorCurrent().getValueAsDouble()) > 5;
+  }
+  public boolean elevatorRightAmpTriggered() {
+    return Math.abs(elevatorRight.getStatorCurrent().getValueAsDouble()) > 5;
+  }
   public void setElevPosition(double position) {
     targetPositionElevator = position;
     setElevatorControl(new PositionVoltage(position).withSlot(0));
@@ -253,10 +284,10 @@ public class CoralManipulator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (getIntakeSensor()) {
-      setCoralState(coralState.coralInIntake);
-    } else if (getIndexerSensor()) {
+    if (getIndexerSensor()) {
       setCoralState(coralState.coralInIndexer);
+    } else if (getIntakeSensor()) {
+      setCoralState(coralState.coralInIntake);
     }
     SmartDashboard.putNumber("elev left pos", elevatorLeft.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elev right pos", elevatorRight.getPosition().getValueAsDouble());

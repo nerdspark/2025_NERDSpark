@@ -231,7 +231,7 @@ private final ProfiledPIDController driveController =
   public void end(boolean interrupted) {
     running = false;
     Constants.Vision.kCoralTargeted = false;
-    Constants.Vision.kCoralAutoTarget = false;
+    // Constants.Vision.kCoralAutoTarget = false;
     drive.applyRequest(() -> new SwerveRequest.SwerveDriveBrake());
     if (Vision.DOGLOG_ENABLED){
 
@@ -267,7 +267,7 @@ private final ProfiledPIDController driveController =
       // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return this.atGoal() || !Constants.Vision.kCoralAutoTarget;
+        return this.atGoal();// || !Constants.Vision.kCoralAutoTarget;
     }
 
   
