@@ -17,12 +17,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "waitUntilCoralInElevator"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "elevatorShootL2"
                 }
               }
@@ -55,19 +49,32 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "waitUntilCoralInElevator"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "waitUntilCoralInElevator"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "elevatorShootL1"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "elevatorShootL1"
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -99,19 +106,32 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "waitUntilCoralInElevator"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "waitUntilCoralInElevator"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "elevatorShootL2"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "elevatorShootL2"
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -143,19 +163,32 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "race",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "waitUntilCoralInElevator"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "waitUntilCoralInElevator"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "elevatorShootL1"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "elevatorShootL1"
+                  "waitTime": 1.0
                 }
               }
             ]
@@ -206,9 +239,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "driveToCoral"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "driveToCoral"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilHasCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoliPops5aB"
           }
         }
       ]
