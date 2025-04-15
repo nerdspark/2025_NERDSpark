@@ -259,7 +259,7 @@ public static class Vision {
         public static boolean DOGLOG_ENABLED = false;
 
         public static final boolean USE_VISION = true;
-        public static final boolean USE_QUESTNAV = true;
+        public static final boolean USE_QUESTNAV = false;
 
         public static final boolean USE_BUTTON_BOARD = true;
 

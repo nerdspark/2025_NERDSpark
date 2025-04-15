@@ -66,6 +66,9 @@ public class PoseEstimatorQuestSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
+        SmartDashboard.putData("Robot Quest debug Pose in Field", field);
+
         if (USE_QUESTNAV) {
             Optional<EstimatedRobotPose> visionEstFrontQuest  = visionFront.getEstimatedRobotPoseQuest();
             Optional<EstimatedRobotPose> visionEstBackQuest  = visionBack.getEstimatedRobotPoseQuest();
@@ -85,35 +88,35 @@ public class PoseEstimatorQuestSubsystem extends SubsystemBase {
                 SmartDashboard.putString("Quest Pose", getFomattedPose(QuestNAV.getRobotPose().get().toPose2d()));
                 DogLog.log("PoseEstimator/Quest Pose", QuestNAV.getRobotPose().get().toPose2d());
                 publisherQuest.set(QuestNAV.getRobotPose().get().toPose2d());
-                SmartDashboard.putData("Robot Pose in Field", field);
+                SmartDashboard.putData("Robot Quest Pose in Field", field);
             }
         }
         
             //coral code
             
-            if (Constants.Vision.USE_LIMELIGHT) {
+            // if (Constants.Vision.USE_LIMELIGHT) {
 
-                // CoralObject newCoral = newCoral();
-                // if (!newCoral.getIgnored() && visionFront.hasTarget()) {
-                //     corals.add(newCoral); 
-                // }
+            //     // CoralObject newCoral = newCoral();
+            //     // if (!newCoral.getIgnored() && visionFront.hasTarget()) {
+            //     //     corals.add(newCoral); 
+            //     // }
     
                 
     
-                corals = coralArrayUpdateReturn();
-                SmartDashboard.putNumber("size", corals.size());
-                SmartDashboard.putBoolean("targeting", Constants.Vision.kCoralTargeted);
-                coralInRange = coralInRange();
+            //     corals = coralArrayUpdateReturn();
+            //     SmartDashboard.putNumber("size", corals.size());
+            //     SmartDashboard.putBoolean("targeting", Constants.Vision.kCoralTargeted);
+            //     coralInRange = coralInRange();
     
                 
     
-                if (corals.size() > 0) {
-                    Pose2d coralPose = corals.get(corals.size() - 1).getPose();
-                    SmartDashboard.putString("coralPose", getFomattedPose(coralPose));
-                }
+            //     if (corals.size() > 0) {
+            //         Pose2d coralPose = corals.get(corals.size() - 1).getPose();
+            //         SmartDashboard.putString("coralPose", getFomattedPose(coralPose));
+            //     }
                 
-        SmartDashboard.putBoolean("Coral In Range", coralInRange());  
-        SmartDashboard.putBoolean("Coral In List", coralInList());     
+        // SmartDashboard.putBoolean("Coral In Range", coralInRange());  
+        // SmartDashboard.putBoolean("Coral In List", coralInList());     
                 
                 // if (corals.size() > 0) {
                 //     int size = corals.size();
@@ -127,7 +130,7 @@ public class PoseEstimatorQuestSubsystem extends SubsystemBase {
                 // Pose2d coralPose = newCoral.getPose();
                 // SmartDashboard.putNumber("coralX", coralPose.getX());
                 // SmartDashboard.putNumber("coralY", coralPose.getY());
-            }
+            // }
     }
     public Pose2d getCurrentPose() {
         return QuestNAV.getRobotPose().isPresent() ? QuestNAV.getRobotPose().get().toPose2d() : new Pose2d(new Translation2d(FieldConstants.fieldLength / 2, FieldConstants.fieldWidth / 2), new Rotation2d());
@@ -139,99 +142,99 @@ public class PoseEstimatorQuestSubsystem extends SubsystemBase {
             pose.getX(), pose.getY(), pose.getRotation().getDegrees());
     }
     
-    public CoralObject newCoral() {
-        //Rotation2d yaw = gyro.getGyro();
-        //Pose2d pose = new Pose2d(0.0,0.0,yaw);
-        Pose2d pose = getCurrentPose();
-        double poseX = pose.getX();
-        double poseY = pose.getY();
-        Rotation2d yaw = pose.getRotation();
+    // public CoralObject newCoral() {
+    //     //Rotation2d yaw = gyro.getGyro();
+    //     //Pose2d pose = new Pose2d(0.0,0.0,yaw);
+    //     Pose2d pose = getCurrentPose();
+    //     double poseX = pose.getX();
+    //     double poseY = pose.getY();
+    //     Rotation2d yaw = pose.getRotation();
 
-        SmartDashboard.putNumber("poseX", poseX);
-        SmartDashboard.putNumber("poseY", poseY);
-        SmartDashboard.putNumber("yaw", -yaw.getDegrees());
+    //     SmartDashboard.putNumber("poseXQuest", poseX);
+    //     SmartDashboard.putNumber("poseYQuest", poseY);
+    //     SmartDashboard.putNumber("yawQuest", -yaw.getDegrees());
 
-        double tx = visionFront.getTx();
-        double ty = visionFront.getTy();
-        double hb = visionFront.getHB();
-        boolean upfall = false;
-        boolean ignored = false;
-        boolean targeted = false;
+    //     double tx = visionFront.getTx();
+    //     double ty = visionFront.getTy();
+    //     double hb = visionFront.getHB();
+    //     boolean upfall = false;
+    //     boolean ignored = false;
+    //     boolean targeted = false;
 
-        Translation2d offset = new Translation2d();
-        //Translation2d offset = new Translation2d(-0.90, new Rotation2d((-yaw.getDegrees() + tx) * Math.PI / 180));
+    //     Translation2d offset = new Translation2d();
+    //     //Translation2d offset = new Translation2d(-0.90, new Rotation2d((-yaw.getDegrees() + tx) * Math.PI / 180));
 
-        //DriverStation.getMatchTime();
+    //     //DriverStation.getMatchTime();
 
-        double boundingHeight = 0.0;
-        double boundingWidth = 0.0;       
+    //     double boundingHeight = 0.0;
+    //     double boundingWidth = 0.0;       
 
-        double[] xys = visionFront.getCoordinates();
-        if (xys.length != 0) { //debug
-            boundingHeight = xys[5] - xys[3];
-            boundingWidth = xys[2] - xys[0];
-            SmartDashboard.putNumber("boundingHeight", boundingHeight);
-            SmartDashboard.putNumber("boundingWidth", boundingWidth);
-        }
+    //     double[] xys = visionFront.getCoordinates();
+    //     if (xys.length != 0) { //debug
+    //         boundingHeight = xys[5] - xys[3];
+    //         boundingWidth = xys[2] - xys[0];
+    //         SmartDashboard.putNumber("boundingHeight", boundingHeight);
+    //         SmartDashboard.putNumber("boundingWidth", boundingWidth);
+    //     }
 
-        double distance = 0.0;
-        double theta = 0.0;
-        if (boundingHeight > boundingWidth) {               
-            upfall = false;
-            ignored = true;
-        } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
-            distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos((tx) * Math.PI / 180);
-            upfall = true;
-            ignored = false;
-        } else {
-            distance = 0.0;
-            SmartDashboard.putString("orientation", "");
-            ignored = true;
-        }
-        if (distance > 0.0) {
-            Rotation2d coralOrientation = new   Rotation2d(theta);
-            Pose2d coralPose = new Pose2d(distance * Math.cos((yaw.getDegrees()-tx) * (Math.PI / 180)) + poseX + offset.getX(), 
-                                          distance * Math.sin((yaw.getDegrees()-tx) * (Math.PI / 180)) + poseY + offset.getY(), 
-                                          yaw);
-            //Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
-            SmartDashboard.putNumber("distance", distance);
-            ignored = false;
-            CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
-            return newCoral;
-        } else {
-            Pose2d zeroed = new Pose2d(0,0, new Rotation2d(0.0));
-            ignored = true;
-            CoralObject newCoral = new CoralObject(zeroed, hb, distance, upfall, targeted, ignored);
-            // Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
-            // SmartDashboard.putNumber("distance", distance);
-            // ignored = false;
-            // CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
-            return newCoral;
-        }
-    }
+    //     double distance = 0.0;
+    //     double theta = 0.0;
+    //     if (boundingHeight > boundingWidth) {               
+    //         upfall = false;
+    //         ignored = true;
+    //     } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
+    //         distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos((tx) * Math.PI / 180);
+    //         upfall = true;
+    //         ignored = false;
+    //     } else {
+    //         distance = 0.0;
+    //         SmartDashboard.putString("orientation", "");
+    //         ignored = true;
+    //     }
+    //     if (distance > 0.0) {
+    //         Rotation2d coralOrientation = new   Rotation2d(theta);
+    //         Pose2d coralPose = new Pose2d(distance * Math.cos((yaw.getDegrees()-tx) * (Math.PI / 180)) + poseX + offset.getX(), 
+    //                                       distance * Math.sin((yaw.getDegrees()-tx) * (Math.PI / 180)) + poseY + offset.getY(), 
+    //                                       yaw);
+    //         //Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
+    //         SmartDashboard.putNumber("distance", distance);
+    //         ignored = false;
+    //         CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
+    //         return newCoral;
+    //     } else {
+    //         Pose2d zeroed = new Pose2d(0,0, new Rotation2d(0.0));
+    //         ignored = true;
+    //         CoralObject newCoral = new CoralObject(zeroed, hb, distance, upfall, targeted, ignored);
+    //         // Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
+    //         // SmartDashboard.putNumber("distance", distance);
+    //         // ignored = false;
+    //         // CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
+    //         return newCoral;
+    //     }
+    // }
 
-    public List<CoralObject> coralArrayUpdateReturn() {
-        if (!Constants.Vision.kCoralTargeted) {
-            CoralObject newCoral = newCoral();
-            double hb = visionFront.getHB();
-            double fps = visionFront.getFPS();
-            corals.add(newCoral);
-            coralManager.distanceAndYawUpdate(corals, getCurrentPose());
-            coralManager.expiryFilter(corals, hb, fps);
-            coralManager.displacementFilter(corals);
-            coralManager.possibilityFilter(corals);
-            return corals;
-        } else {
-            return coralManager.selectCoral(corals);
-        }
-    }
+    // public List<CoralObject> coralArrayUpdateReturn() {
+    //     if (!Constants.Vision.kCoralTargeted) {
+    //         CoralObject newCoral = newCoral();
+    //         double hb = visionFront.getHB();
+    //         double fps = visionFront.getFPS();
+    //         corals.add(newCoral);
+    //         coralManager.distanceAndYawUpdate(corals, getCurrentPose());
+    //         coralManager.expiryFilter(corals, hb, fps);
+    //         coralManager.displacementFilter(corals);
+    //         coralManager.possibilityFilter(corals);
+    //         return corals;
+    //     } else {
+    //         return coralManager.selectCoral(corals);
+    //     }
+    // }
 
-    public boolean coralInRange() {
-        coralInRange = coralManager.getCoralInRange(corals, getCurrentPose());
-        return coralInRange; 
-    }
+    // public boolean coralInRange() {
+    //     coralInRange = coralManager.getCoralInRange(corals, getCurrentPose());
+    //     return coralInRange; 
+    // }
 
-    public boolean coralInList() {
-        return (corals.size() > 0);
-    }
+    // public boolean coralInList() {
+    //     return (corals.size() > 0);
+    // }
 }

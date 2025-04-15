@@ -4,6 +4,7 @@
 
 package frc.robot;
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.Vision.USE_QUESTNAV;
 import static frc.robot.Constants.Vision.coralStationOffSetsMap;
 
 import java.lang.reflect.Field;
@@ -92,7 +93,7 @@ public class RobotContainer {
   private Climb climb;
   private CoralManipulator coralManipulator;
 
-  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(-90))));
+  // private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(-90))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -121,7 +122,7 @@ public class RobotContainer {
 
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
 
-    public final PoseEstimatorQuestSubsystem poseEstimatorQuestSubsystem;
+    // public final PoseEstimatorQuestSubsystem poseEstimatorQuestSubsystem;
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -141,7 +142,7 @@ public class RobotContainer {
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
-    poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
+    // poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
     
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
@@ -171,7 +172,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("resetSubsystems", SubsystemActions.resetDeploy(coralManipulator).alongWith(climb.returnToHome()).alongWith(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height)).alongWith(coralManipulator.setCoralStateCommand(coralState.coralInIndexer)));
     NamedCommands.registerCommand("intake", coralManipulator.intakeCommand().alongWith(coralManipulator.setCoralStateCommand(coralState.empty)));
     NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)));
-    NamedCommands.registerCommand("waitUntilCoralInRange", new WaitUntilCommand(() -> poseEstimatorQuestSubsystem.coralInRange()));
+    NamedCommands.registerCommand("waitUntilCoralInRange", new WaitUntilCommand(() -> poseEstimatorSubsystem.coralInRange()));
     NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(elevatorLevel.l2.height));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(elevatorLevel.l1.height));
@@ -181,7 +182,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorToHome", coralManipulator.setElevatorPosition(elevatorLevel.visionClear.height));
     NamedCommands.registerCommand("elevatorToHomeAndIntake", coralManipulator.setElevatorPosition(elevatorLevel.visionClear.height).alongWith(coralManipulator.intakeCommand()));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2));
-    NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorQuestSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorQuestSubsystem.getCurrentPose()).withTimeout(2));
+    NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : getQuestPose()).withTimeout(2));
     NamedCommands.registerCommand("waitUntilCoralInElevator", waitUntilCoralInElevator());
     NamedCommands.registerCommand("waitUntilAndElevatorL2", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l2.height)));
     NamedCommands.registerCommand("waitUntilAndElevatorL1", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1.height)));
@@ -211,6 +212,9 @@ public class RobotContainer {
   // }
 
 
+  private Pose2d getQuestPose() {
+    return /*USE_QUESTNAV ? poseEstimatorQuestSubsystem.getCurrentPose() : */drivetrain.getState().Pose;
+  }
   private void configureBindings() {
     // Find Quest Offsets
     //joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
@@ -230,7 +234,7 @@ public class RobotContainer {
 
     joystick.back().whileTrue(new DriveBetweenCages(
         drivetrain, 
-        () -> new Pose2d(new Translation2d(0, FieldConstants.getClosestBargeGap(() -> drivetrain.getState().Pose)), Rotation2d.kCCW_90deg), 
+        () -> new Pose2d(new Translation2d(0, FieldConstants.getClosestBargeGap(() -> getQuestPose())), Rotation2d.kCCW_90deg), 
         () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))));
 
     // full auto dropoffs for L2
@@ -272,17 +276,17 @@ public class RobotContainer {
     joystick.start().onTrue(SubsystemActions.prepareDropOffAlgae(coralManipulator)).onFalse(SubsystemActions.dropOffAlgae(coralManipulator));
 
 
-      Trigger coralInRange = new Trigger(() -> poseEstimatorQuestSubsystem.coralInRange());
+      Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
       // Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
-      Trigger coralInList = new Trigger(() -> poseEstimatorQuestSubsystem.coralInList());
+      Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
       
 
       joystick.leftTrigger().and(coralInRange).and(coralInList).whileTrue(new DriveToCoral(drivetrain,
           () -> new Pose2d(
-            poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.381, poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
-            poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.381, poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
-            poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()), 
-          () -> poseEstimatorQuestSubsystem.getCurrentPose()));
+            poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
+            poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
+            poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()), 
+          () -> getQuestPose()));
 
       
     new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).onTrue(SubsystemActions.transferCoral(coralManipulator));
