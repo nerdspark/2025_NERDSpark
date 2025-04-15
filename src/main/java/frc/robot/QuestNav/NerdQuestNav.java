@@ -34,7 +34,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /** Add your docs here. */
 public class NerdQuestNav {
-    private boolean initializedPosition = false;
+    public boolean initializedPosition = false;
     public static boolean isActive = false;
     private String networkTableRoot = "questnav";
     private NetworkTableInstance networkTableInstance = NetworkTableInstance.getDefault();
@@ -215,7 +215,6 @@ public class NerdQuestNav {
     public boolean isActive() {
         double t = timestamp.get();
         boolean simulation = RobotBase.isSimulation();
-        boolean disabled = DriverStation.isDisabled();
         double frame = frameCount.get();
         double previousFrame = previousFrameCount;
         if (t == 0 || simulation || previousFrame == frame) {

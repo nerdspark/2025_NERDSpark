@@ -116,7 +116,7 @@ import dev.doglog.DogLog;
 
      public void run(){
         optionalEstimatedRobotPose = getEstimatedGlobalPose(this.camera, this.photonPoseEstimator);
-        if(Constants.Vision.QUEST_ENABLED){
+        if(Constants.Vision.USE_QUESTNAV){
            optionalEstimatedRobotPoseQuest = getEstimatedGlobalPoseQuest(this.camera, this.photonPoseEstimator);
            
         }

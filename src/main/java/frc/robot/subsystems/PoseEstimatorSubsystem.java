@@ -43,12 +43,10 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
     public Vision visionFront;
     public Vision visionBack;
     private static Notifier allNotifier;
-    private NerdQuestNav QuestNAV;
 
 
     Pose2d robotPose2d = new Pose2d();
     StructPublisher<Pose2d> publisher;
-    StructPublisher<Pose2d> publisherQuest;
 
 
     //private final Pigeon2 gyro = new Pigeon2(TunerConstants.kPigeonId);
@@ -64,13 +62,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
           
         // Simulation
     
-        public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain, NerdQuestNav questNav) {
+        public PoseEstimatorSubsystem(CommandSwerveDrivetrain driveTrain) {
             this.driveTrain = driveTrain;
             if(USE_VISION) {
     
                 this.visionFront = new Vision(kCameraNameFront, kRobotToCamFront);
                 this.visionBack = new Vision(kCameraNameBack, kRobotToCamBack);
-                this.QuestNAV = questNav;
                 
                 allNotifier = new Notifier(() -> {
                     visionFront.run();
@@ -82,9 +79,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
                 publisher = NetworkTableInstance.getDefault()
                 .getStructTopic("Robot Pose AdvScope", Pose2d.struct).publish();
-
-                publisherQuest = NetworkTableInstance.getDefault()
-                .getStructTopic("Robot Pose Quest", Pose2d.struct).publish();
               
         }        
 
@@ -121,24 +115,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
                         est.estimatedPose.toPose2d(), Utils.fpgaToCurrentTime(est.timestampSeconds), estStdDevs);
             
                 });
-
-                if(Constants.Vision.QUEST_ENABLED){
-                    Optional<EstimatedRobotPose> visionEstFrontQuest  = visionFront.getEstimatedRobotPoseQuest();
-                    Optional<EstimatedRobotPose> visionEstBackQuest  = visionBack.getEstimatedRobotPoseQuest();
-
-                    visionEstFrontQuest.ifPresent(
-                    estQuest -> {                        
-                        QuestNAV.resetPose(estQuest.estimatedPose);
-                        //QuestNAV.hardReset(estQuest.estimatedPose);
-                    });
-
-                    visionEstBackQuest.ifPresent(
-                        estQuest -> {                        
-                            QuestNAV.resetPose(estQuest.estimatedPose);                    
-                            //QuestNAV.hardReset(estQuest.estimatedPose);  
-                    });
-                    
-                }
 
             if(Robot.isSimulation() ) {
                  visionFront.simulationPeriodic(getCurrentPose());
@@ -209,15 +185,6 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             DogLog.log("PoseEstimator/ODO+Vision Pose", getCurrentPose());
             DogLog.log("PoseEstimator/ODO+Vision Formatted Pose", getFomattedPose()); 
-            
-            if(Robot.isReal() && QuestNAV.getRobotPose().isPresent()) {
-                //field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
-                SmartDashboard.putString("Quest Pose", getFomattedPose(QuestNAV.getRobotPose().get().toPose2d()));
-                DogLog.log("PoseEstimator/Quest Pose", QuestNAV.getRobotPose().get().toPose2d());
-                publisherQuest.set(QuestNAV.getRobotPose().get().toPose2d());
-                SmartDashboard.putData("Robot Pose in Field", field);
-            }
-
         }
         SmartDashboard.putBoolean("tV", visionFront.hasTarget()); 
         SmartDashboard.putBoolean("Coral In Range", coralInRange());  
