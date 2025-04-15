@@ -4,60 +4,39 @@
     {
       "anchor": {
         "x": 3.15,
-        "y": 3.8
+        "y": 4.191
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4437938621582447,
-        "y": 3.529534919296924
+        "x": 2.510105132450331,
+        "y": 4.112168874172185
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LoliPops3"
     },
     {
       "anchor": {
-        "x": 0.8865154109589041,
-        "y": 2.086686643835617
+        "x": 0.75,
+        "y": 4.026
       },
       "prevControl": {
-        "x": 0.736441726204629,
-        "y": 2.4990107039523415
-      },
-      "nextControl": {
-        "x": 1.036589095713179,
-        "y": 1.6743625837188951
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 1.4574914383561646,
-        "y": 1.140068493150685
-      },
-      "prevControl": {
-        "x": 1.096875,
-        "y": 1.5006849315068496
+        "x": 1.4116244000085196,
+        "y": 4.049104433162813
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.1,
-      "rotationDegrees": -91.09618532085211
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.0,
+      "minWaypointRelativePos": 0.5013623978201636,
+      "maxWaypointRelativePos": 0.6594005449591281,
       "constraints": {
-        "maxVelocity": 0.5,
-        "maxAcceleration": 1.0,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -69,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "intake",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.15803814713896416,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -80,7 +59,7 @@
     },
     {
       "name": "elevatorToHome",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.4359673024523161,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -99,8 +78,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": -9.090276920822266
+    "velocity": 0,
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
