@@ -93,7 +93,7 @@ public class RobotContainer {
   private Climb climb;
   private CoralManipulator coralManipulator;
 
-  // private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(-90))));
+  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(-90))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -122,7 +122,7 @@ public class RobotContainer {
 
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
 
-    // public final PoseEstimatorQuestSubsystem poseEstimatorQuestSubsystem;
+    public final PoseEstimatorQuestSubsystem poseEstimatorQuestSubsystem;
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -142,7 +142,7 @@ public class RobotContainer {
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
-    // poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
+    poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
     
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
@@ -213,7 +213,7 @@ public class RobotContainer {
 
 
   private Pose2d getQuestPose() {
-    return /*USE_QUESTNAV ? poseEstimatorQuestSubsystem.getCurrentPose() : */drivetrain.getState().Pose;
+    return USE_QUESTNAV ? poseEstimatorQuestSubsystem.getCurrentPose() : drivetrain.getState().Pose;
   }
   private void configureBindings() {
     // Find Quest Offsets
