@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.296,
+        "x": 3.15,
         "y": 4.026
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6659147350993377,
+        "x": 2.519914735099338,
         "y": 4.221129966887417
       },
       "isLocked": false,
@@ -16,19 +16,24 @@
     },
     {
       "anchor": {
-        "x": 1.6198882450331125,
-        "y": 5.194515728476819
+        "x": 1.1269263698630136,
+        "y": 5.798030821917808
       },
       "prevControl": {
-        "x": 2.048468543046358,
-        "y": 4.627918046357614
+        "x": 1.1269263698630136,
+        "y": 4.686028616722687
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5358744394618834,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -47,20 +52,31 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "elevatorToHomeAndIntake",
-      "waypointRelativePos": 0.3,
+      "name": "intake",
+      "waypointRelativePos": 0.22070844686648497,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "elevatorToHomeAndIntake"
+          "name": "intake"
+        }
+      }
+    },
+    {
+      "name": "elevatorToHome",
+      "waypointRelativePos": 0.4114441416893732,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToHome"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.96,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -68,7 +84,7 @@
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": 119.99999999999999
+    "rotation": 88.02506598911802
   },
   "reversed": false,
   "folder": null,

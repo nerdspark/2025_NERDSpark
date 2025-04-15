@@ -11,9 +11,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "elevatorShootL2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilCoralInElevator"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "elevatorShootL2"
+                }
+              }
+            ]
           }
         },
         {
@@ -23,9 +36,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "elevatorShootL1"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilCoralInElevator"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "elevatorShootL1"
+                }
+              }
+            ]
           }
         },
         {
@@ -35,9 +61,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "elevatorShootL2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilCoralInElevator"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "elevatorShootL2"
+                }
+              }
+            ]
           }
         },
         {
@@ -47,15 +86,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "elevatorShootL1"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "waitUntilCoralInElevator"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "elevatorShootL1"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "LoliPops5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "driveToCoral"
           }
         }
       ]
