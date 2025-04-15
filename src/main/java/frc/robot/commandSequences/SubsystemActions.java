@@ -37,10 +37,38 @@ public class SubsystemActions {
     //     //     elevIndexer.home()
     //     );
     // }
+    public static Command prepareDropOffAlgae(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.intakeToProcessor(),
+        coralManipulator.setIntakeVoltage(CoralConstants.intakeAlgaeVoltage)
+      );
+    }
+    public static Command dropOffAlgae(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.intakeToProcessor(), 
+        new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
+        coralManipulator.setIntakeVoltage(CoralConstants.processorVoltage), 
+        new WaitCommand(0.2),
+        coralManipulator.intakeToRetract(),
+        new WaitCommand(0.8),
+        coralManipulator.intakeToHome()
+      );
+    }
+    public static Command intakeAlgae(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.setCoralStateCommand(coralState.algaeInIntake), 
+        coralManipulator.intakeToAlgaeDeploy(),
+        coralManipulator.setIntakeVoltage(CoralConstants.intakeAlgaeVoltage),
+        new WaitUntilCommand(() -> coralManipulator.getIntakeSensor()), 
+        coralManipulator.intakeToAlgaeHome(), 
+        new WaitCommand(0.5),
+        coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)
+      );
+    }
     public static Command panicButton(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
         coralManipulator.setCoralStateCommand(coralState.empty),
-        coralManipulator.deployIntake(), 
+        coralManipulator.intakeToDeploy(), 
         coralManipulator.setIntakeVoltage(-5), 
         coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage), 
         coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.panic.height), 
@@ -81,7 +109,7 @@ public class SubsystemActions {
 
   public static Command transferCoral(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(
-      coralManipulator.transferIntake(),
+      coralManipulator.intakeToTransfer(),
       new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
       coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage), 
@@ -89,7 +117,7 @@ public class SubsystemActions {
       coralManipulator.shoot(CoralConstants.elevatorLevel.transfer.shootVoltage),
       new WaitUntilCommand(() -> !coralManipulator.getIntakeSensor()), 
       new WaitCommand(0.0), 
-      coralManipulator.retractIntake(),
+      coralManipulator.intakeToRetract(),
       new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
       coralManipulator.shoot(CoralConstants.shooterRewindVoltage), 
@@ -106,7 +134,7 @@ public class SubsystemActions {
 
   public static Command transferCoralForAuto(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(
-      coralManipulator.transferIntake(),
+      coralManipulator.intakeToTransfer(),
       new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
       coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage), 
@@ -114,7 +142,7 @@ public class SubsystemActions {
       coralManipulator.shoot(CoralConstants.autoShootVoltageTransfer),
       new WaitUntilCommand(() -> !coralManipulator.getIntakeSensor()), 
       new WaitCommand(0.0), 
-      coralManipulator.retractIntake(),
+      coralManipulator.intakeToRetract(),
       new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
       coralManipulator.stopShooter(), 
@@ -128,7 +156,7 @@ public class SubsystemActions {
     
   public static Command transferCoralToIndexer(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(
-      coralManipulator.transferIntake(),
+      coralManipulator.intakeToTransfer(),
       new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
       coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
       coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage), 

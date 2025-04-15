@@ -60,14 +60,18 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class CoralConstants {
-    public static final double indexerCurrentLimit = 30;
+    public static final double indexerCurrentLimit = 35;
     public static final String canBus = "canivore1";
-    public static final double deployCurrentLimit = 65;
+    public static final double deployCurrentLimit = 75;
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1; 
     public static final double homePositionIntake = deployOffset + 0.07; // deployOffset + 0.02
+    public static final double algaeHomePositionIntake = deployOffset + 0.12; 
+    public static final double algaeDeployPositionIntake = deployOffset + 0.25;
+    public static final double processorPositionIntake = deployOffset + 0.2;
     public static final double deployPositionIntake = deployOffset + 0.325; // 0.27 for algae
     public static final double transferPositionIntake = deployPositionIntake - 0.15; 
+    public static final double processorVoltage = -16;
     // public static final double elevatorPositionIntake = homePositionIntake + 0.1;
     public static final double forwardLimitDeploy = deployPositionIntake;
     public static final double reverseLimitDeploy = homePositionIntake;
@@ -92,6 +96,8 @@ public final class Constants {
     public static final double indexerSensorTriggerDistance = 0.02;
     public static final double indexerTransferVoltage = 16;
     public static final double intakeTransferVoltage = 16;
+    public static final double intakeAlgaeVoltage = 16;
+    public static final double neutralAlgaeVoltage = 8;
     public static final double intakingVoltage = 16;
     // public static final double shooterTransferVoltage = 2;
     public static final double shooterRewindVoltage = -1.5;
@@ -102,7 +108,8 @@ public final class Constants {
       empty, 
       coralInRange,
       coralInIntake, 
-      coralInIndexer
+      coralInIndexer, 
+      algaeInIntake
     }
     public static enum elevatorLevel {
       home(0, 2, 0), 
@@ -163,6 +170,7 @@ public final class Constants {
     public static final int winchId = 61;
     public static final double currentLimit = 20;
     public static final double power = 0.7;
+    public static final double offset = 17;
     public static final double deployPositionInches = -10.5;
     public static final double climbedPositionInches = 32;
     public static final double deployPosition = deployPositionInches / inchesPerRotation; // rot of kraken

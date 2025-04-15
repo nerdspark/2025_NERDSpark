@@ -212,15 +212,25 @@ public class CoralManipulator extends SubsystemBase {
     deploy.setControl(new PositionVoltage(position));
     targetPositionDeploy = position;
   }
-  public Command deployIntake() {
+  public Command intakeToDeploy() {
     return new InstantCommand(() -> setDeployPosition(CoralConstants.deployPositionIntake));
   }
-  public Command transferIntake() {
+  public Command intakeToTransfer() {
     return new InstantCommand(() -> setDeployPosition(CoralConstants.transferPositionIntake));
   }
-  public Command retractIntake() {
+  public Command intakeToRetract() {
     return new InstantCommand(() ->setDeployPosition(CoralConstants.homePositionIntake));
   }
+  public Command intakeToAlgaeDeploy() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.algaeDeployPositionIntake));
+  }
+  public Command intakeToAlgaeHome() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.algaeHomePositionIntake));
+  }
+  public Command intakeToProcessor() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.processorPositionIntake));
+  }
+  
 
 
   public void setShooter(double voltage) {
@@ -276,18 +286,20 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> elevatorLeft.stopMotor()).alongWith(new InstantCommand(() -> elevatorRight.stopMotor())); 
   }
   public Command intakeCommand() {
-    return deployIntake().alongWith(setIntakeVoltage(CoralConstants.intakingVoltage));
+    return intakeToDeploy().alongWith(setIntakeVoltage(CoralConstants.intakingVoltage));
   }
   public Command intakeToHome() {
-    return retractIntake().alongWith(stopIntake());
+    return intakeToRetract().alongWith(stopIntake());
   }
 
   @Override
   public void periodic() {
-    if (getIndexerSensor()) {
-      setCoralState(coralState.coralInIndexer);
-    } else if (getIntakeSensor()) {
-      setCoralState(coralState.coralInIntake);
+    if (!coralState.equals(coralState.algaeInIntake)) {
+      if (getIndexerSensor()) {
+        setCoralState(coralState.coralInIndexer);
+      } else if (getIntakeSensor()) {
+        setCoralState(coralState.coralInIntake);
+      }
     }
     SmartDashboard.putNumber("elev left pos", elevatorLeft.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elev right pos", elevatorRight.getPosition().getValueAsDouble());

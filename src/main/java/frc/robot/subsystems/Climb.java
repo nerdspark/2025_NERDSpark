@@ -92,7 +92,7 @@ public class Climb extends SubsystemBase {
     return (winch.getStatorCurrent().getValueAsDouble() );
   }
   public void resetPosition() {
-    winch.setPosition(0);
+    winch.setPosition(ClimbConstants.offset);
   }
   public void setPosition(double position) {
     winch.setControl(new PositionVoltage(position)); 
