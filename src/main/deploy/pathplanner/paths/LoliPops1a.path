@@ -8,8 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.282320205479452,
-        "y": 7.1052654109589035
+        "x": 3.996832191780822,
+        "y": 7.210445205479452
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.0,
+        "y": 4.791309931506849
+      },
+      "prevControl": {
+        "x": 3.021441031678082,
+        "y": 5.210976883561643
+      },
+      "nextControl": {
+        "x": 2.978558968321918,
+        "y": 4.371642979452054
       },
       "isLocked": false,
       "linkedName": null
@@ -45,7 +61,7 @@
     },
     {
       "name": "elevatorToL2",
-      "waypointRelativePos": 0.6158038147138966,
+      "waypointRelativePos": 0.9591280653950951,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

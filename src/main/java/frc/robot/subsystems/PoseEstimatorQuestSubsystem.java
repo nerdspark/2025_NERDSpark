@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.QuestNav.NerdQuestNav;
 import frc.robot.util.CoralObject;
 import frc.robot.util.CoralArrayManager;
@@ -129,7 +130,7 @@ public class PoseEstimatorQuestSubsystem extends SubsystemBase {
             }
     }
     public Pose2d getCurrentPose() {
-        return QuestNAV.getRobotPose().get().toPose2d();
+        return QuestNAV.getRobotPose().isPresent() ? QuestNAV.getRobotPose().get().toPose2d() : new Pose2d(new Translation2d(FieldConstants.fieldLength / 2, FieldConstants.fieldWidth / 2), new Rotation2d());
     }
 
     private String getFomattedPose(Pose2d pose) {
