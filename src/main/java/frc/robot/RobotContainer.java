@@ -30,6 +30,7 @@ import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.subsystems.LEDSubsytem;
+import frc.robot.subsystems.PoseEstimatorQuestSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -117,6 +118,8 @@ public class RobotContainer {
 
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
 
+    public final PoseEstimatorQuestSubsystem poseEstimatorQuestSubsystem;
+
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
     // public final ScoringProfileSubsystem scoringSubsystem;
@@ -134,7 +137,9 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     drivetrain = TunerConstants.createDrivetrain();
-    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain, QuestNav);
+    poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
+    poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
+    
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
     coralManipulator = new CoralManipulator();
