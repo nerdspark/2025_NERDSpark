@@ -172,11 +172,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
     NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1));
-    NamedCommands.registerCommand("elevatorToHome", coralManipulator.elevatorToHome());
+    NamedCommands.registerCommand("elevatorToHome", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
     NamedCommands.registerCommand("elevatorToHomeAndIntake", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height).alongWith(coralManipulator.intakeCommand()));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorSubsystem.getCurrentPose()));
-    NamedCommands.registerCommand("waitUntilCoralInElevator", new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer)));
+    NamedCommands.registerCommand("waitUntilCoralInElevator", new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor()));
     NamedCommands.registerCommand("waitUntilAndElevatorL2", new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor()).andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)));
     NamedCommands.registerCommand("waitUntilAndElevatorL1", new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor()).andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height)));
   }
