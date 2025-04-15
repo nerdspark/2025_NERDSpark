@@ -62,23 +62,26 @@ private final ProfiledPIDController driveController =
           0.5, 0,0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
  private double driveErrorAbs;
   private double thetaErrorAbs;
+  private Supplier<Pose2d> robotPoseSupplier;
   private Translation2d lastSetpointTranslation;
     private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
   private Supplier<Translation2d> linearFF = () -> Translation2d.kZero;
   private DoubleSupplier omegaFF = () -> 0.0;
 
   /** Drives to the specified pose under full software control. */
-  public DriveToCoral(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier) {
+  public DriveToCoral(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier, Supplier<Pose2d> robotPoseSupplier) {
     this.drive = drive;
     this.poseSupplier = poseSupplier;
+    this.robotPoseSupplier = robotPoseSupplier;
     addRequirements(drive);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
     /** Drives to the specified pose under full software control. */
-    public DriveToCoral(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier,
+    public DriveToCoral(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier, Supplier<Pose2d>robotPoseSupplier,
      Supplier<Translation2d> linearFF,
       DoubleSupplier omegaFF) {
+        this.robotPoseSupplier = robotPoseSupplier;
       this.drive = drive;
       this.poseSupplier = poseSupplier;
       this.linearFF = linearFF;
@@ -94,7 +97,7 @@ private final ProfiledPIDController driveController =
     driveController.setTolerance(Constants.Vision.TRANSLATION_TOLERANCE_X, Constants.Vision.VELOCITY_TOLERANCE_X);
     thetaController.setTolerance(Constants.Vision.ROTATION_TOLERANCE, Constants.Vision.VELOCITY_TOLERANCE_OMEGA);
     // Reset all controllers
-    var currentPose = drive.getState().Pose;
+    var currentPose = robotPoseSupplier.get();
 
     Constants.Vision.kCoralTargeted = true;
     
@@ -113,7 +116,7 @@ private final ProfiledPIDController driveController =
                         .unaryMinus()
                 .getX()));
     thetaController.reset(currentPose.getRotation().getRadians(), drive.getCurrentRobotChassisSpeeds().omegaRadiansPerSecond);
-    lastSetpointTranslation = drive.getState().Pose.getTranslation();
+    lastSetpointTranslation = currentPose.getTranslation();
   }
 
   @Override
@@ -121,7 +124,7 @@ private final ProfiledPIDController driveController =
     running = true;
 
     // Get current and target pose
-    var currentPose = drive.getState().Pose;
+    var currentPose = robotPoseSupplier.get();
     var targetPose = poseSupplier.get();
     Transform2d error = currentPose.minus(targetPose);
         SignalLogger.writeDouble("X", error.getX());
