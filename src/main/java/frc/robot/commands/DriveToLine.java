@@ -105,10 +105,8 @@ public class DriveToLine extends Command {
         System.out.println("LINEx: " + error.getX() + "; Y: " + error.getY() + "; O: " + error.getRotation().getDegrees());
         
     // Calculate drive speed
-    double currentDistance =
-        error.getTranslation().getNorm() * (error.getRotation().minus(poseSupplier.get().getRotation()).getCos());
 
-    driveErrorAbs = currentDistance;
+    driveErrorAbs = error.getTranslation().getNorm() * (error.getTranslation().getAngle().minus(poseSupplier.get().getTranslation().getAngle()).getCos());
 
     driveController.reset(
         lastSetpointTranslation.getDistance(targetPose.getTranslation()),
@@ -117,7 +115,7 @@ public class DriveToLine extends Command {
     double driveVelocityScalar =
              driveController.calculate(driveErrorAbs, 0.0);
 
-    if (currentDistance < driveController.getPositionTolerance()) {driveVelocityScalar = 0.0;}
+    // if (driveErrorAbs < driveController.getPositionTolerance()) {driveVelocityScalar = 0.0;}
 
     lastSetpointTranslation =
         new Pose2d(
@@ -136,16 +134,16 @@ public class DriveToLine extends Command {
     if (thetaErrorAbs < thetaController.getPositionTolerance()) thetaVelocity = 0.0;
 
 
-    Translation2d driveVelocity =
-        new Pose2d(
-                new Translation2d(),
-                poseSupplier.get().getRotation())
-            .transformBy(new Transform2d(driveVelocityScalar, 0.0, new Rotation2d()))
-            .getTranslation();
+    Translation2d driveVelocity = new Translation2d(driveVelocityScalar, poseSupplier.get().getRotation());
+        // new Pose2d(
+        //         new Translation2d(),
+        //         poseSupplier.get().getRotation())
+        //     .transformBy(new Transform2d(driveVelocityScalar, 0.0, new Rotation2d()))
+        //     .getTranslation();
 
     Rotation2d joystickDirection = poseSupplier.get().getRotation().plus(Rotation2d.kCW_90deg);
     Translation2d joystickAddition = new Translation2d(joystickVector.get().getNorm() * joystickVector.get().getAngle().minus(joystickDirection).getCos(), joystickDirection);
-    driveVelocity = driveVelocity.plus(joystickAddition);
+    driveVelocity = driveVelocity.times(-1).plus(joystickAddition.times(AllianceFlipUtil.shouldFlip() ? -1 : 1));
 
 
 
