@@ -115,7 +115,7 @@ public final class Constants {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
       l1upper(1,l1.height + 5, 1.45),
-      l1inside(1, l1.height + 5, 2.5),
+      l1corner(1, l1.height, 2.5),
       l2(2,22.0, 3.5), 
       transfer(0, 3.6, 2),
       panic(0, 7, 1), 
