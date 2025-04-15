@@ -90,7 +90,7 @@ public class RobotContainer {
   private Climb climb;
   private CoralManipulator coralManipulator;
 
-  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(90))));
+  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(-90))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
