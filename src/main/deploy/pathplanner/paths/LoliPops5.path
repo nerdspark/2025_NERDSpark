@@ -16,28 +16,28 @@
     },
     {
       "anchor": {
-        "x": 0.5860017123287671,
-        "y": 2.5975599315068494
+        "x": 0.6911815068493151,
+        "y": 2.4172517123287673
       },
       "prevControl": {
-        "x": 0.5409246575342466,
-        "y": 3.589255136986302
+        "x": 0.7813356164383564,
+        "y": 3.123458904109589
       },
       "nextControl": {
-        "x": 0.6153477366357171,
-        "y": 1.9519473967539502
+        "x": 0.6093419592564313,
+        "y": 1.7761752561845114
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.9766695205479452,
-        "y": 1.455607876712329
+        "x": 1.2471318493150685,
+        "y": 1.2903253424657533
       },
       "prevControl": {
-        "x": 0.6160530821917807,
-        "y": 1.8162243150684936
+        "x": 0.8564640410958904,
+        "y": 1.575813356164383
       },
       "nextControl": null,
       "isLocked": false,
@@ -68,24 +68,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0.5,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "intake"
-        }
-      }
-    },
-    {
       "name": "elevatorToHome",
-      "waypointRelativePos": 0.8,
+      "waypointRelativePos": 0.11989100817438636,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "elevatorToHome"
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 0.6594005449591286,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
         }
       }
     }

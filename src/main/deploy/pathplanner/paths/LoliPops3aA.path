@@ -59,7 +59,7 @@
     },
     {
       "name": "elevatorToHome",
-      "waypointRelativePos": 0.4359673024523161,
+      "waypointRelativePos": 0.1689373297002726,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

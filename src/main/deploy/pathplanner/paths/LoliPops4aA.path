@@ -52,24 +52,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "intake",
-      "waypointRelativePos": 0.22070844686648503,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "intake"
-        }
-      }
-    },
-    {
       "name": "elevatorToHome",
-      "waypointRelativePos": 0.38692098092643057,
+      "waypointRelativePos": 0.11989100817438691,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "elevatorToHome"
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 0.3106267029972751,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
         }
       }
     }

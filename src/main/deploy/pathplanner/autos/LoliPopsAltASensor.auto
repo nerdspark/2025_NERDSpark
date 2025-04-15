@@ -15,9 +15,22 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "elevatorShootL2"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "waitUntilAndShootL2"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.1
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -65,13 +78,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "waitUntilCoralInElevator"
+                        "name": "waitUntilAndShootL1"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "elevatorShootL1"
+                        "waitTime": 0.3
                       }
                     }
                   ]
@@ -122,13 +135,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "waitUntilCoralInElevator"
+                        "name": "waitUntilAndShootL2"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "elevatorShootL2"
+                        "waitTime": 0.1
                       }
                     }
                   ]
@@ -179,13 +192,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "waitUntilCoralInElevator"
+                        "name": "waitUntilAndShootL1"
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "elevatorShootL1"
+                        "waitTime": 0.3
                       }
                     }
                   ]
@@ -217,6 +230,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "intake"
           }
         },
         {

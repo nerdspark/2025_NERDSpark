@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "waitUntilAndElevatorL1",
-      "waypointRelativePos": 0.5,
+      "waypointRelativePos": 0.9046321525885563,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
