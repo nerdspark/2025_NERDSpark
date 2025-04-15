@@ -23,6 +23,7 @@ import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
 import frc.robot.commands.DriveToCoral;
 import frc.robot.commands.DriveToCoralAuto;
+import frc.robot.commands.DriveToLine;
 import frc.robot.commands.DriveToPose;
 import frc.robot.commands.LEDCommand;
 import frc.robot.subsystems.PoseEstimatorSubsystem;
@@ -237,9 +238,13 @@ public class RobotContainer {
 
     // semi auto dropoffs for L1
     joystick.leftBumper()
-      .whileTrue(driveToLine(() -> AllianceFlipUtil.apply(FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)]).plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)), () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX()), () -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)].getTranslation().minus(FieldConstants.Reef.center).getAngle()))
+      .whileTrue(new DriveToLine(
+        drivetrain, 
+        () -> AllianceFlipUtil.apply(FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)]).plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)), 
+        () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX()), 
+        () -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)].getTranslation().minus(FieldConstants.Reef.center).getAngle()))
       .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
-        .whileTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height));
+        .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
 
     joystick.povRight()
       .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1inside));
@@ -306,27 +311,27 @@ public class RobotContainer {
     // }
 
   }
-  private Command driveToLine(Supplier<Pose2d> targetCenter, Supplier<Translation2d> joystickVector, Supplier<Rotation2d> targetVector) {
-    // double target = new Translation2d(targetCenter.get().getTranslation().getX() * targetVector.get().getCos(), targetCenter.get().getTranslation().getY() * targetVector.get().getSin()).getNorm();
-    return drivetrain.applyRequest(() ->
-    drive
-      .withVelocityX(xLimiter.calculate((OperatorConstants.joystickMap.get(joystickVector.get().getX() * targetVector.get().getCos()) * MaxSpeed) + driveController.calculate(
-        new Translation2d(
-          drivetrain.getState().Pose.getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
-          drivetrain.getState().Pose.getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm(), 
-        new Translation2d(
-          targetCenter.get().getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
-          targetCenter.get().getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm()
-      ) * targetVector.get().getSin()))
-      .withVelocityY(yLimiter.calculate((OperatorConstants.joystickMap.get(joystickVector.get().getY() * targetVector.get().getSin()) * MaxSpeed) 
-        + driveController.calculate(
-          new Translation2d(
-            drivetrain.getState().Pose.getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
-            drivetrain.getState().Pose.getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm(), 
-          new Translation2d(
-            targetCenter.get().getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
-            targetCenter.get().getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm()
-        ) * targetVector.get().getCos()))
-      .withRotationalRate(zLimiter.calculate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), targetVector.get().getRadians()))));
-  }
+  // private Command driveToLine(Supplier<Pose2d> targetCenter, Supplier<Translation2d> joystickVector, Supplier<Rotation2d> targetVector) {
+  //   // double target = new Translation2d(targetCenter.get().getTranslation().getX() * targetVector.get().getCos(), targetCenter.get().getTranslation().getY() * targetVector.get().getSin()).getNorm();
+  //   return drivetrain.applyRequest(() ->
+  //   drive
+  //     .withVelocityX(xLimiter.calculate((OperatorConstants.joystickMap.get(joystickVector.get().getX() * targetVector.get().getCos()) * MaxSpeed) + driveController.calculate(
+  //       new Translation2d(
+  //         drivetrain.getState().Pose.getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+  //         drivetrain.getState().Pose.getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm(), 
+  //       new Translation2d(
+  //         targetCenter.get().getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+  //         targetCenter.get().getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm()
+  //     ) * targetVector.get().getSin()))
+  //     .withVelocityY(yLimiter.calculate((OperatorConstants.joystickMap.get(joystickVector.get().getY() * targetVector.get().getSin()) * MaxSpeed) 
+  //       + driveController.calculate(
+  //         new Translation2d(
+  //           drivetrain.getState().Pose.getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+  //           drivetrain.getState().Pose.getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm(), 
+  //         new Translation2d(
+  //           targetCenter.get().getTranslation().getX() * targetVector.get().plus(Rotation2d.kCCW_90deg).getCos(), 
+  //           targetCenter.get().getTranslation().getY() * targetVector.get().plus(Rotation2d.kCCW_90deg).getSin()).getNorm()
+  //       ) * targetVector.get().getCos()))
+  //     .withRotationalRate(zLimiter.calculate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), targetVector.get().getRadians()))));
+  // }
 }
