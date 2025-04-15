@@ -162,9 +162,11 @@ public class RobotContainer {
 
 
   }
+  private Command waitUntilCoralInElevator() {
+    return new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor());
+  }
   
   private void configureNamedCommands(){
-    Command waitUntilCoralInElevator = new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor());
     NamedCommands.registerCommand("resetSubsystems", SubsystemActions.resetDeploy(coralManipulator).alongWith(climb.returnToHome()).alongWith(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height)).alongWith(coralManipulator.setCoralStateCommand(coralState.coralInIndexer)));
     NamedCommands.registerCommand("intake", coralManipulator.intakeCommand().alongWith(coralManipulator.setCoralStateCommand(coralState.empty)));
     NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> !coralManipulator.getCoralState().equals(coralState.empty)));
@@ -177,11 +179,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorToHomeAndIntake", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height).alongWith(coralManipulator.intakeCommand()));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorQuestSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorQuestSubsystem.getCurrentPose()));
-    NamedCommands.registerCommand("waitUntilCoralInElevator", waitUntilCoralInElevator);
-    NamedCommands.registerCommand("waitUntilAndElevatorL2", waitUntilCoralInElevator.andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)));
-    NamedCommands.registerCommand("waitUntilAndElevatorL1", waitUntilCoralInElevator.andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height)));
-    NamedCommands.registerCommand("waitUntilAndShootL2", waitUntilCoralInElevator.andThen(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2)));
-    NamedCommands.registerCommand("waitUntilAndShootL1", waitUntilCoralInElevator.andThen(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1)));
+    NamedCommands.registerCommand("waitUntilCoralInElevator", waitUntilCoralInElevator());
+    NamedCommands.registerCommand("waitUntilAndElevatorL2", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)));
+    NamedCommands.registerCommand("waitUntilAndElevatorL1", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l1.height)));
+    NamedCommands.registerCommand("waitUntilAndShootL2", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2)));
+    NamedCommands.registerCommand("waitUntilAndShootL1", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1)));
   }
 
   private void configureDefaultCommands() {

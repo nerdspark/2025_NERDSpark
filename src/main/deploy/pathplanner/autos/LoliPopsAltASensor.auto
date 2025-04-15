@@ -293,6 +293,12 @@
           "data": {
             "pathName": "LoliPops5aB"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "waitUntilAndShootL2"
+          }
         }
       ]
     }
