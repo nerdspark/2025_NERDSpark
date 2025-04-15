@@ -242,7 +242,7 @@ public final class Constants {
 
 public static class AutoDropoff {
   public static final double robotThickness = Units.inchesToMeters(11+3.125);
-  public static final double distanceToAutoDrive = Units.feetToMeters(4); // distance between station and bumpers
+  public static final double distanceToAutoDrive = Units.feetToMeters(6); // distance between station and bumpers
   public static final double L1waitToHome = 1.5; // s
   public static final double loopPeriodSecs = 0.02;
   public static final ProfiledPIDController driveController =
@@ -268,13 +268,13 @@ public static class Vision {
         public static final String kCameraNameFront = "LeftCamera";
         public static final Transform3d kRobotToCamFront =
                 new Transform3d(new Translation3d(-Units.inchesToMeters(8.503), Units.inchesToMeters((6.281)), Units.inchesToMeters(8.216)), 
-                new Rotation3d(Math.toRadians(-0), Math.toRadians(-15), Math.toRadians(180+35))); //TODO: determine XYZ
+                new Rotation3d(Math.toRadians(-0), Math.toRadians(-15), Math.toRadians(180+35))); 
 
 
         public static final String kCameraNameBack = "RightCamera";
         public static final Transform3d kRobotToCamBack =
                 new Transform3d(new Translation3d(-Units.inchesToMeters(8.503), -Units.inchesToMeters((6.281)), Units.inchesToMeters(8.216)), 
-                new Rotation3d(Math.toRadians(-0), Math.toRadians(-15), Math.toRadians(180-35))); //TODO: determine XYZ
+                new Rotation3d(Math.toRadians(-0), Math.toRadians(-15), Math.toRadians(180-35)));
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =

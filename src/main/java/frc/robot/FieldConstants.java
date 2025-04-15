@@ -11,7 +11,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.AnalogOutput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoDropoff;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Vision;
@@ -57,9 +59,34 @@ public class FieldConstants {
     public static final Translation2d closeCage =
         new Translation2d(Units.inchesToMeters(345.428), Units.inchesToMeters(199.947));
 
+    public static final double cageThickness = Units.inchesToMeters(6);
+    public static final double middlePoleThickness = Units.inchesToMeters(12);
     // Measured from floor to bottom of cage
     public static final double deepHeight = Units.inchesToMeters(3.125);
     public static final double shallowHeight = Units.inchesToMeters(30.125);
+    public static final double[] bargeGaps = new double[8];
+    static {
+        bargeGaps[0] = (fieldWidth + farCage.getY() + cageThickness * 0.5) * 0.5;
+        bargeGaps[1] = (farCage.getY() + middleCage.getY()) * 0.5;
+        bargeGaps[2] = (closeCage.getY() + middleCage.getY()) * 0.5;
+        bargeGaps[3] = (closeCage.getY() - cageThickness * 0.5 + middlePoleThickness * 0.5 + fieldLength * 0.5) * 0.5;
+        for (int i = 0; i <= 3; i++) {
+            bargeGaps[7 - i] = fieldWidth -bargeGaps[i];
+        }
+    }
+  }
+  public static double getClosestBargeGap(Supplier<Pose2d> robotPose) {
+    double currentY = robotPose.get().getY();
+    double minDistance = Double.MAX_VALUE;
+    double chosenGapPos = fieldWidth * 0.5;
+    for (double gapPos : Barge.bargeGaps) {
+        if (Math.abs(currentY - gapPos) < minDistance) {
+            minDistance = Math.abs(currentY - gapPos);
+            chosenGapPos = gapPos;
+        }
+    }
+    SmartDashboard.putNumber("chosengappos", chosenGapPos);
+    return chosenGapPos;
   }
 
   public static class CoralStation {
@@ -79,7 +106,7 @@ public class FieldConstants {
             new Pose2d(
                 Units.inchesToMeters(33.526),
                 Units.inchesToMeters(291.176),
-                Rotation2d.fromDegrees(90 - 144.011)).plus(new Transform2d(stationLength*0.4, 0, Rotation2d.fromDegrees(45))); // TODO: check coordinate system and tune before integrating
+                Rotation2d.fromDegrees(90 - 144.011)).plus(new Transform2d(stationLength*0.4, 0, Rotation2d.fromDegrees(45)));
     public static final Pose2d rightOutsideFace =
             new Pose2d(
                 Units.inchesToMeters(33.526),
