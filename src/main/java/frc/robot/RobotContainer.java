@@ -239,7 +239,7 @@ public class RobotContainer {
     // .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorToHome());
 
     // semi auto dropoffs for L1
-    joystick.leftBumper()
+    joystick.leftBumper().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
       .whileTrue(new DriveToLine(
         drivetrain, 
         () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose), 
