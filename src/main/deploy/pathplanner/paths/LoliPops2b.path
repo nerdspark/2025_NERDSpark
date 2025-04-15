@@ -53,8 +53,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6566757493188011,
-      "maxWaypointRelativePos": 1.7929155313351504,
+      "minWaypointRelativePos": 1.6375545851528377,
+      "maxWaypointRelativePos": 1.7729257641921385,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 5.0,
@@ -66,7 +66,52 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "waitUntilAndElevatorL2",
+      "waypointRelativePos": 0.6331877729257642,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "waitUntilAndElevatorL2"
+        }
+      }
+    },
+    {
+      "name": "waitUntilAndShootL2",
+      "waypointRelativePos": 0.960698689956332,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "waitUntilAndShootL2"
+        }
+      }
+    },
+    {
+      "name": "elevatorToHome",
+      "waypointRelativePos": 1.2401746724890792,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToHome"
+        }
+      }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 1.5065502183406119,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 5.96,
     "maxAcceleration": 5.0,

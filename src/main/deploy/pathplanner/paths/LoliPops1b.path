@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3273972602739725,
-        "y": 6.849828767123288
+        "x": 5.364169520547945,
+        "y": 6.939982876712329
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.696318493150685,
-        "y": 5.121875
+        "x": 3.681292808219178,
+        "y": 5.091823630136987
       },
       "prevControl": {
-        "x": 3.9128248440967948,
-        "y": 5.246875
+        "x": 3.8926650339769218,
+        "y": 5.2253218779839825
       },
       "nextControl": {
-        "x": 3.4798121422045756,
-        "y": 4.996875
+        "x": 3.395804794520548,
+        "y": 4.911515410958905
       },
       "isLocked": false,
       "linkedName": null
@@ -47,11 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.6726457399103144,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 95.0
     },
     {
       "waypointRelativePos": 1.2,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 95.0
     },
     {
       "waypointRelativePos": 1.6143497757847534,
@@ -74,8 +74,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.634877384196185,
-      "maxWaypointRelativePos": 1.7493188010899188,
+      "minWaypointRelativePos": 1.6462882096069835,
+      "maxWaypointRelativePos": 1.7729257641921394,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 5.0,
@@ -100,6 +100,17 @@
       }
     },
     {
+      "name": "elevatorToL1",
+      "waypointRelativePos": 0.729257641921397,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToL2"
+        }
+      }
+    },
+    {
       "name": "elevatorShootL1Corner",
       "waypointRelativePos": 0.8828337874659397,
       "endWaypointRelativePos": null,
@@ -111,19 +122,8 @@
       }
     },
     {
-      "name": "elevatorToL1",
-      "waypointRelativePos": 0.9591280653950951,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "elevatorToL2"
-        }
-      }
-    },
-    {
       "name": "elevatorToHome",
-      "waypointRelativePos": 1.3841961852861067,
+      "waypointRelativePos": 1.2270742358078603,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

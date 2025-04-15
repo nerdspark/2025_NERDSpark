@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8,
-        "y": 1.8
+        "x": 0.7,
+        "y": 1.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4523116438356167,
-        "y": 2.1756352739726026
+        "x": 0.9616438356164382,
+        "y": 2.958176369863013
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1704195205479455,
-        "y": 3.5892551369863015
+        "x": 3.1,
+        "y": 3.861
       },
       "prevControl": {
-        "x": 3.323904673926674,
-        "y": 3.3919170826422222
+        "x": 1.7777397260273973,
+        "y": 3.861
       },
       "nextControl": {
-        "x": 3.016934367169215,
-        "y": 3.786593191330383
+        "x": 3.3499999999999956,
+        "y": 3.861
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.9916952054794521,
-        "y": 1.9664811643835618
+        "x": 0.826,
+        "y": 1.9
       },
       "prevControl": {
-        "x": 1.0367722602739726,
-        "y": 2.8079195205479444
+        "x": 0.8710770547945205,
+        "y": 2.7414383561643825
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,19 +47,23 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.7299813780260705,
-      "rotationDegrees": -135.0
+      "rotationDegrees": 180.0
     },
     {
-      "waypointRelativePos": 1.3705772811918127,
-      "rotationDegrees": -135.0
+      "waypointRelativePos": 1.3556797020484193,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.7318435754190047,
+      "rotationDegrees": -105.00000000000001
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "waitUntilAndElevatorL1Inside",
-      "waypointRelativePos": 0.703056768558952,
+      "name": "waitUntilAndElevatorL2",
+      "waypointRelativePos": 0.7510917030567686,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -69,7 +73,7 @@
       }
     },
     {
-      "name": "waitUntilAndShootL1Inside",
+      "name": "waitUntilAndShootL2",
       "waypointRelativePos": 0.9388646288209607,
       "endWaypointRelativePos": null,
       "command": {
@@ -80,10 +84,26 @@
       }
     },
     {
+      "name": "elevatorToHome",
+      "waypointRelativePos": 1.2314410480349363,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorToHome"
+        }
+      }
+    },
+    {
       "name": "intake",
       "waypointRelativePos": 1.6331877729257598,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "intake"
+        }
+      }
     }
   ],
   "globalConstraints": {
@@ -96,13 +116,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -94.57392125990089
+    "rotation": -94.574
   },
   "reversed": false,
   "folder": "LoliPopsAltB",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": -150.0
   },
   "useDefaultConstraints": true
 }

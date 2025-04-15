@@ -180,7 +180,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorToHome", coralManipulator.setElevatorPosition(elevatorLevel.visionClear.height));
     NamedCommands.registerCommand("elevatorToHomeAndIntake", coralManipulator.setElevatorPosition(elevatorLevel.visionClear.height).alongWith(coralManipulator.intakeCommand()));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2));
-    NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorQuestSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorQuestSubsystem.getCurrentPose()));
+    NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorQuestSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorQuestSubsystem.coralArrayUpdateReturn().get(0).getPose() : poseEstimatorQuestSubsystem.getCurrentPose()).withTimeout(2));
     NamedCommands.registerCommand("waitUntilCoralInElevator", waitUntilCoralInElevator());
     NamedCommands.registerCommand("waitUntilAndElevatorL2", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l2.height)));
     NamedCommands.registerCommand("waitUntilAndElevatorL1", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1.height)));
