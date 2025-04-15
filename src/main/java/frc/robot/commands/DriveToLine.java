@@ -47,14 +47,6 @@ public class DriveToLine extends Command {
 
   private boolean running = false;
   double loopPeriodSecs = AutoDropoff.loopPeriodSecs;
-//   private final ProfiledPIDController driveController =
-//       new ProfiledPIDController(
-//           Constants.Vision.kPXController, Constants.Vision.kIXController, Constants.Vision.kDXController, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs);
-//   private final ProfiledPIDController thetaController =
-//       new ProfiledPIDController(
-//           Constants.Vision.kPXController, Constants.Vision.kIThetaController, Constants.Vision.kDThetaController, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs);
-  
-
   private  final ProfiledPIDController driveController = AutoDropoff.driveController;
   private final ProfiledPIDController thetaController = AutoDropoff.thetaController;
  private double driveErrorAbs;
@@ -63,7 +55,6 @@ public class DriveToLine extends Command {
   private Supplier<Translation2d> joystickVector;
     private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
 
-  /** Drives to the specified pose under full software control. */
   public DriveToLine(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier, Supplier<Translation2d> joystickVector) {
     this.drive = drive;
     this.poseSupplier = poseSupplier;
@@ -101,13 +92,12 @@ public class DriveToLine extends Command {
 
   @Override
   public void execute() {
-    Rotation2d lineVector = poseSupplier.get().getRotation().plus(Rotation2d.kCW_90deg);
     running = true;
 
     // Get current and target pose
     var currentPose = drive.getState().Pose;
     var targetPose = poseSupplier.get();
-    Transform2d error = currentPose.minus(targetPose);
+    Transform2d error = targetPose.minus(currentPose);
         SignalLogger.writeDouble("LINEX", error.getX());
         SignalLogger.writeDouble("LINEY", error.getY());
         SignalLogger.writeDouble("LINEO", error.getRotation().getDegrees());
@@ -116,7 +106,7 @@ public class DriveToLine extends Command {
         
     // Calculate drive speed
     double currentDistance =
-        error.getTranslation().times(error.getRotation().minus(lineVector).getCos()).getNorm();
+        error.getTranslation().getNorm() * (error.getRotation().minus(poseSupplier.get().getRotation()).getCos());
 
     driveErrorAbs = currentDistance;
 
@@ -149,11 +139,11 @@ public class DriveToLine extends Command {
     Translation2d driveVelocity =
         new Pose2d(
                 new Translation2d(),
-                lineVector)
+                poseSupplier.get().getRotation())
             .transformBy(new Transform2d(driveVelocityScalar, 0.0, new Rotation2d()))
             .getTranslation();
 
-    Rotation2d joystickDirection = poseSupplier.get().getRotation();
+    Rotation2d joystickDirection = poseSupplier.get().getRotation().plus(Rotation2d.kCW_90deg);
     Translation2d joystickAddition = new Translation2d(joystickVector.get().getNorm() * joystickVector.get().getAngle().minus(joystickDirection).getCos(), joystickDirection);
     driveVelocity = driveVelocity.plus(joystickAddition);
 

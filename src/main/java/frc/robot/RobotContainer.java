@@ -164,7 +164,7 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("resetSubsystems", SubsystemActions.resetDeploy(coralManipulator).alongWith(SubsystemActions.resetElevator(coralManipulator)).alongWith(climb.returnToHome()));
+    NamedCommands.registerCommand("resetSubsystems", SubsystemActions.resetDeploy(coralManipulator).alongWith(climb.returnToHome()).alongWith(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height)));
     NamedCommands.registerCommand("intake", coralManipulator.intakeCommand());
     NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> !coralManipulator.getCoralState().equals(coralState.empty)));
     NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height));
@@ -188,24 +188,15 @@ public class RobotContainer {
           .withRotationalRate(zLimiter.calculate(-joystick.getLeftX() * MaxAngularRate))
         )
         );
-    
-    
-
-
-
-
-    // gripper.setDefaultCommand(new GripperCommand(gripper));
-
-
 
   }
-  private void configureTriggers() {
-    // driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
-    // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1;
-    //  || poseEstimatorSubsystem.getCurrentPose().getTranslation().getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
-    // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
+  // private void configureTriggers() {
+  //   // driveTrainFinishedMoving = () -> poseEstimatorSubsystem.getCurrentPose().getTranslation()
+  //   // .getDistance(scoringSubsystem.getSelectedBranchPose().getTranslation()) < 1;
+  //   //  || poseEstimatorSubsystem.getCurrentPose().getTranslation().getDistance((scoringSubsystem.getSelectedCoralStationPose().getTranslation()))<1;
+  //   // bucketHasCoralTrigger = new Trigger(bucketHasCoral);
     
-  }
+  // }
 
 
   private void configureBindings() {
@@ -215,12 +206,12 @@ public class RobotContainer {
     // climb
     copilot.y().onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
     copilot.x().onTrue(climb.returnToHome());
-    copilot.a().whileTrue(climb.contract().alongWith(coralManipulator.stopDeploy())).onFalse(climb.stopCommand());
+    copilot.a().onTrue(climb.contract().alongWith(coralManipulator.stopDeploy())).onFalse(climb.stopCommand());
     copilot.b().onTrue(climb.stopCommand());
 
-    // coral manipulator
+    //reset buttons
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    joystick.start().whileTrue(SubsystemActions.resetDeploy(coralManipulator).alongWith(SubsystemActions.resetElevator(coralManipulator)));
+    copilot.start().whileTrue(SubsystemActions.resetDeploy(coralManipulator));
 
     // panic button
     joystick.y().onTrue(SubsystemActions.panicButton(coralManipulator)).onFalse(coralManipulator.intakeToHome().alongWith(coralManipulator.stopIntake()).alongWith(coralManipulator.stopIndexer()).alongWith(coralManipulator.stopShooter()).alongWith(coralManipulator.elevatorToHome()));
@@ -240,7 +231,7 @@ public class RobotContainer {
     joystick.leftBumper()
       .whileTrue(new DriveToLine(
         drivetrain, 
-        () -> AllianceFlipUtil.apply(FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)]).plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)), 
+        () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose), 
         () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX())))
       .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
         .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));

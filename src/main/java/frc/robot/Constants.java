@@ -119,7 +119,7 @@ public final class Constants {
       l2(2,22.0, 3.5), 
       transfer(0, 3.6, 2),
       panic(0, 7, 1), 
-      visionClear(0, 5, 0);
+      visionClear(0, transfer.height, 0);// 5 inches
       
       elevatorLevel(int level, double height, double shootVoltage) {
         this.height = height;

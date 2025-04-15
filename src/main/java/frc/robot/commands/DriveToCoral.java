@@ -42,7 +42,7 @@ import frc.robot.util.AllianceFlipUtil;
 
 public class DriveToCoral extends Command {
   private final CommandSwerveDrivetrain drive;
-  private final Supplier<Pose2d> poseSupplier;
+  private Supplier<Pose2d> poseSupplier;
 
   private boolean running = false;
   double loopPeriodSecs = 0.02;

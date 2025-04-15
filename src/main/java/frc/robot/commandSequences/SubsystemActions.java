@@ -83,19 +83,19 @@ public class SubsystemActions {
         coralManipulator.resetDeploy(), 
         coralManipulator.stopDeploy());
     }
-    public static Command resetElevator(CoralManipulator coralManipulator) {
-      return new SequentialCommandGroup(
-        coralManipulator.setElevatorLeftVoltage(-0.2), 
-        new WaitCommand(0.05),
-        new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()), 
-        coralManipulator.resetElevatorLeft(), 
-        coralManipulator.stopElevatorLeft()).alongWith(new SequentialCommandGroup(
-          coralManipulator.setElevatorRightVoltage(-0.2), 
-          new WaitCommand(0.05),
-          new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()), 
-          coralManipulator.resetElevatorRight(), 
-          coralManipulator.stopElevatorRight()));
-    }
+    // public static Command resetElevator(CoralManipulator coralManipulator) {
+    //   return new SequentialCommandGroup(
+    //     coralManipulator.setElevatorLeftVoltage(-0.2), 
+    //     new WaitCommand(0.05),
+    //     new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()), 
+    //     coralManipulator.resetElevatorLeft(), 
+    //     coralManipulator.stopElevatorLeft()).alongWith(new SequentialCommandGroup(
+    //       coralManipulator.setElevatorRightVoltage(-0.2), 
+    //       new WaitCommand(0.05),
+    //       new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()), 
+    //       coralManipulator.resetElevatorRight(), 
+    //       coralManipulator.stopElevatorRight()));
+    // }
     public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level) {
         return new SequentialCommandGroup(
             // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),

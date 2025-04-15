@@ -17,6 +17,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Vision;
 import frc.robot.util.AllianceFlipUtil;
 
+import static frc.robot.Constants.Vision.reefLevelOffsetsMap;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -262,20 +264,20 @@ public class FieldConstants {
 //     return drivePose; 
 //   }
 
-  public static int getClosestFace(Supplier<Pose2d> robotPose) {
+  public static Pose2d getClosestL1(Supplier<Pose2d> robotPose) {
     int minIndex = 0;
     double minDistance = Double.MAX_VALUE;
     Transform2d currentFacePose = new Transform2d(0.0, 0.0, new Rotation2d(0.0));
     double currentDistance = 0.0;
     for (int i=0; i<6; i++) {
-        currentFacePose = Reef.centerFaces[i].minus(robotPose.get());
+        currentFacePose = AllianceFlipUtil.apply(Reef.centerFaces[i]).minus(robotPose.get());
         currentDistance = currentFacePose.getTranslation().getNorm();
         if(currentDistance < minDistance) {
             minDistance = currentDistance;
             minIndex = i;
         }
     } 
-    return minIndex;
+    return AllianceFlipUtil.apply(Reef.centerFaces[minIndex].plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)));//.getTranslation()), Reef.centerFaces[minIndex].getRotation().plus(Rotatio)));
   }
 
   /**
