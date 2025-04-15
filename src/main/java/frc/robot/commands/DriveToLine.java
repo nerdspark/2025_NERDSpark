@@ -61,15 +61,13 @@ public class DriveToLine extends Command {
   private double thetaErrorAbs;
   private Translation2d lastSetpointTranslation;
   private Supplier<Translation2d> joystickVector;
-  private Supplier<Rotation2d> lineVector;
     private final SwerveRequest.ApplyRobotSpeeds driveToPoseRequest = new SwerveRequest.ApplyRobotSpeeds();
 
   /** Drives to the specified pose under full software control. */
-  public DriveToLine(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier, Supplier<Translation2d> joystickVector, Supplier<Rotation2d> lineVector) {
+  public DriveToLine(CommandSwerveDrivetrain drive, Supplier<Pose2d> poseSupplier, Supplier<Translation2d> joystickVector) {
     this.drive = drive;
     this.poseSupplier = poseSupplier;
     this.joystickVector = joystickVector;
-    this.lineVector = lineVector;
     addRequirements(drive);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -103,7 +101,7 @@ public class DriveToLine extends Command {
 
   @Override
   public void execute() {
-    poseSupplier = () -> new Pose2d(poseSupplier.get().getTranslation(), lineVector.get().plus(Rotation2d.kCCW_90deg));
+    Rotation2d lineVector = poseSupplier.get().getRotation().plus(Rotation2d.kCW_90deg);
     running = true;
 
     // Get current and target pose
@@ -118,7 +116,7 @@ public class DriveToLine extends Command {
         
     // Calculate drive speed
     double currentDistance =
-        error.getTranslation().times(error.getRotation().minus(lineVector.get()).getCos()).getNorm();
+        error.getTranslation().times(error.getRotation().minus(lineVector).getCos()).getNorm();
 
     driveErrorAbs = currentDistance;
 
@@ -151,11 +149,11 @@ public class DriveToLine extends Command {
     Translation2d driveVelocity =
         new Pose2d(
                 new Translation2d(),
-                lineVector.get())
+                lineVector)
             .transformBy(new Transform2d(driveVelocityScalar, 0.0, new Rotation2d()))
             .getTranslation();
 
-    Rotation2d joystickDirection = lineVector.get().plus(Rotation2d.kCCW_90deg);
+    Rotation2d joystickDirection = poseSupplier.get().getRotation();
     Translation2d joystickAddition = new Translation2d(joystickVector.get().getNorm() * joystickVector.get().getAngle().minus(joystickDirection).getCos(), joystickDirection);
     driveVelocity = driveVelocity.plus(joystickAddition);
 

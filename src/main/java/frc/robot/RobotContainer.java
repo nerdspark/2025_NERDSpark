@@ -241,8 +241,7 @@ public class RobotContainer {
       .whileTrue(new DriveToLine(
         drivetrain, 
         () -> AllianceFlipUtil.apply(FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)]).plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)), 
-        () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX()), 
-        () -> FieldConstants.Reef.centerFaces[FieldConstants.getClosestFace(() -> drivetrain.getState().Pose)].getTranslation().minus(FieldConstants.Reef.center).getAngle()))
+        () -> new Translation2d(-joystick.getRightY(), -joystick.getRightX())))
       .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
         .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
 
