@@ -106,6 +106,16 @@ public class SubsystemActions {
             // new WaitCommand(1.0/level.shootVoltage), 
             coralManipulator.setCoralStateCommand(coralState.empty));
     }
+    public static Command placeCoralAuto(CoralManipulator coralManipulator, elevatorLevel level) {
+      return new SequentialCommandGroup(
+          // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
+          coralManipulator.setElevatorPosition(level.height),
+          new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
+          // new WaitCommand(0.08),
+          coralManipulator.shoot(level.shootVoltage), 
+          // new WaitCommand(1.0/level.shootVoltage), 
+          coralManipulator.setCoralStateCommand(coralState.empty));
+  }
 
   public static Command transferCoral(CoralManipulator coralManipulator) {
     return new SequentialCommandGroup(

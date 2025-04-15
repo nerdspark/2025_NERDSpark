@@ -3,72 +3,87 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.22,
-        "y": 7.5
+        "x": 0.8,
+        "y": 1.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0051369863013697,
-        "y": 7.0151113013698625
+        "x": 1.4523116438356167,
+        "y": 2.1756352739726026
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 4.9716181506849315
+        "x": 3.1704195205479455,
+        "y": 3.5892551369863015
       },
       "prevControl": {
-        "x": 3.0051369863013697,
-        "y": 5.948287671232877
+        "x": 3.323904673926674,
+        "y": 3.3919170826422222
       },
       "nextControl": {
-        "x": 2.997789830373725,
-        "y": 4.551409650489367
+        "x": 3.016934367169215,
+        "y": 3.786593191330383
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 4.173
+        "x": 0.9916952054794521,
+        "y": 1.9664811643835618
       },
       "prevControl": {
-        "x": 2.975085616438356,
-        "y": 5.302183219178082
+        "x": 1.0367722602739726,
+        "y": 2.8079195205479444
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.7299813780260705,
+      "rotationDegrees": -135.0
+    },
+    {
+      "waypointRelativePos": 1.3705772811918127,
+      "rotationDegrees": -135.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "resetSubsystems",
-      "waypointRelativePos": 0,
+      "name": "waitUntilAndElevatorL1Inside",
+      "waypointRelativePos": 0.703056768558952,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "resetSubsystems"
+          "name": "waitUntilAndElevatorL1Inside"
         }
       }
     },
     {
-      "name": "elevatorToL2",
-      "waypointRelativePos": 0.9591280653950951,
+      "name": "waitUntilAndShootL1Inside",
+      "waypointRelativePos": 0.9388646288209607,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "elevatorToL2"
+          "name": "waitUntilAndShootL1Inside"
         }
       }
+    },
+    {
+      "name": "intake",
+      "waypointRelativePos": 1.6331877729257598,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -81,13 +96,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -94.57392125990089
   },
   "reversed": false,
-  "folder": "LoliPopsAltASensor",
+  "folder": "LoliPopsAltB",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -135.0
   },
   "useDefaultConstraints": true
 }

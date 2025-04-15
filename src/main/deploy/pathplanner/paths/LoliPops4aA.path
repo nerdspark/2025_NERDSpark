@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 0.6911815068493151,
-        "y": 1.6359160958904113
+        "x": 0.8,
+        "y": 1.75
       },
       "prevControl": {
-        "x": 0.8161815068493151,
-        "y": 1.852422446836521
+        "x": 1.0180019247911019,
+        "y": 1.968001924791094
       },
       "nextControl": null,
       "isLocked": false,
@@ -87,7 +87,7 @@
     "rotation": -135.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "LoliPopsAltASensor",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

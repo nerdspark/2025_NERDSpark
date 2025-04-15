@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7,
-        "y": 6.5
+        "x": 0.9,
+        "y": 6.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.5750000000000002,
-        "y": 6.716506350946109
+        "x": 0.7750000000000002,
+        "y": 6.61650635094611
       },
       "isLocked": false,
       "linkedName": null
@@ -71,7 +71,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "LoliPopsAltASensor",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 119.99999999999999

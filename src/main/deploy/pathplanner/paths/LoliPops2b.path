@@ -3,37 +3,58 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.75,
-        "y": 4.026
+        "x": 0.7,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4120276893895065,
-        "y": 4.026
+        "x": 1.5927226027397259,
+        "y": 4.926541095890411
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 3.861
+        "x": 3.1,
+        "y": 4.173
       },
       "prevControl": {
-        "x": 1.9830303850205278,
-        "y": 3.9409122298355586
+        "x": 1.7169022295907974,
+        "y": 4.173
+      },
+      "nextControl": {
+        "x": 3.35,
+        "y": 4.173
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7,
+        "y": 4.025
+      },
+      "prevControl": {
+        "x": 1.9383133561643837,
+        "y": 3.9949486301369865
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LoliPops4"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6457399103139017,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.0,
+      "minWaypointRelativePos": 1.6566757493188011,
+      "maxWaypointRelativePos": 1.7929155313351504,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 5.0,
@@ -45,30 +66,7 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "waitUntilAndElevatorL2",
-      "waypointRelativePos": 0.8365122615803815,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "waitUntilAndElevatorL2"
-        }
-      }
-    },
-    {
-      "name": "waitUntilAndShootL2",
-      "waypointRelativePos": 0.9318801089918268,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "waitUntilAndShootL2"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.96,
     "maxAcceleration": 5.0,
@@ -82,10 +80,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "LoliPopsAltASensor",
+  "folder": "LoliPopsAltB",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 160.0
   },
   "useDefaultConstraints": true
 }

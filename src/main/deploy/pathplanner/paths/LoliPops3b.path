@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.15,
-        "y": 3.8
+        "x": 0.7,
+        "y": 4.025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.374058219178082,
-        "y": 3.5742294520547944
+        "x": 1.2621575342465754,
+        "y": 3.8747431506849312
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.0517979452054795,
-        "y": 2.5675085616438356
+        "x": 3.1,
+        "y": 3.861
       },
       "prevControl": {
-        "x": 1.309977517111949,
-        "y": 3.201222056323351
+        "x": 2.225277974003838,
+        "y": 3.861
       },
       "nextControl": {
-        "x": 0.8865154109589041,
-        "y": 2.1618150684931505
+        "x": 3.35,
+        "y": 3.861
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.05,
-        "y": 1.5
+        "x": 0.8,
+        "y": 1.8
       },
       "prevControl": {
-        "x": 0.9898972602739726,
-        "y": 1.78548801369863
+        "x": 1.8279537671232875,
+        "y": 2.8517979452054796
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,18 +46,22 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6681614349775785,
-      "rotationDegrees": -73.55612680048128
+      "waypointRelativePos": 1.345291479820629,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.5784753363228703,
+      "rotationDegrees": -135.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.0,
+      "minWaypointRelativePos": 1.602179836512261,
+      "maxWaypointRelativePos": 1.7329700272479565,
       "constraints": {
-        "maxVelocity": 0.5,
-        "maxAcceleration": 1.0,
+        "maxVelocity": 1.0,
+        "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -68,26 +72,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "elevatorToHome",
-      "waypointRelativePos": 0.11989100817438636,
+      "name": "waitUntilAndElevatorL2",
+      "waypointRelativePos": 0.6103542234332424,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "elevatorToHome"
-        }
-      }
+      "command": null
     },
     {
-      "name": "intake",
-      "waypointRelativePos": 0.6594005449591286,
+      "name": "waitUntilAndShootL2",
+      "waypointRelativePos": 0.8228882833787463,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "intake"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {
@@ -99,13 +93,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": -75.0
+    "velocity": 0,
+    "rotation": -135.0
   },
   "reversed": false,
-  "folder": "LoliPopsAltASensor",
+  "folder": "LoliPopsAltB",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 180.0
   },
   "useDefaultConstraints": true

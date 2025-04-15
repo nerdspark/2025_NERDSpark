@@ -10,6 +10,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 
 /** Manages a coral list. */
 public class CoralArrayManager {
@@ -210,7 +211,7 @@ public class CoralArrayManager {
 
         int sizeCoral = corals.size();
 
-        double minRange = 1.52; //2 ft in m
+        double minRange = Units.feetToMeters(5); //2 ft in m
 
         for (int i = 0; i < sizeCoral; i++) {
             CoralObject coralChecked = corals.get(i);

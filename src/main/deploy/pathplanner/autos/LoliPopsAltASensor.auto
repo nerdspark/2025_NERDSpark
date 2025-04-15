@@ -141,7 +141,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.1
+                        "waitTime": 0.0
                       }
                     }
                   ]
@@ -297,7 +297,7 @@
         {
           "type": "named",
           "data": {
-            "name": "waitUntilAndShootL2"
+            "name": "waitUntilAndShootL1"
           }
         }
       ]
