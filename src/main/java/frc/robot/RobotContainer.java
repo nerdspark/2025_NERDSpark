@@ -100,6 +100,7 @@ public class RobotContainer {
 
   private BooleanSupplier driveTrainFinishedMoving = () -> false;
     private Trigger driveTrainFinishedMovingTrigger = new Trigger(driveTrainFinishedMoving);
+    public boolean aimAssistEnabled = true;
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -216,9 +217,14 @@ public class RobotContainer {
   private Pose2d getQuestPose() {
     return USE_QUESTNAV ? poseEstimatorQuestSubsystem.getCurrentPose() : drivetrain.getState().Pose;
   }
+  private void disableAimAssist() {
+    aimAssistEnabled = false;
+  }
   private void configureBindings() {
     // Find Quest Offsets
     //joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
+
+    joystick.b().onTrue(new InstantCommand(() -> disableAimAssist()));
 
     // climb
     copilot.y().onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
@@ -285,7 +291,30 @@ public class RobotContainer {
       Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
       
 
-      joystick.leftTrigger().and(coralInRange).and(coralInList).whileTrue(new DriveToCoral(drivetrain,
+
+          // AIMASSIST
+      coralInList
+      .and(coralInRange)
+      .and(() -> joystick.getLeftTriggerAxis() < 0.2)
+      .and(() -> coralManipulator.getCoralState()
+      .equals(coralState.empty)).and(() -> joystick.rightTrigger().getAsBoolean())
+      .and(() -> aimAssistEnabled)
+        .whileTrue(
+          drivetrain.applyRequest(() ->
+            drive.withVelocityX(
+              Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+               * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
+               * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getCos())
+               .withVelocityY(
+                Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+                 * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
+                 * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getSin())
+              .withRotationalRate(thetaController.calculate(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians(), drivetrain.getState().Pose.getRotation().getRadians()))
+            ));
+        
+            // DRIVETOCORAL
+          joystick.leftTrigger().and(coralInRange).and(coralInList)
+        .whileTrue(new DriveToCoral(drivetrain,
           () -> new Pose2d(
             poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
             poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),

@@ -66,7 +66,7 @@ public class PoseEstimatorQuestSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        field.setRobotPose(QuestNAV.getRobotPose().get().toPose2d());
+        field.setRobotPose(getCurrentPose());
         SmartDashboard.putData("Robot Quest debug Pose in Field", field);
 
         if (USE_QUESTNAV) {

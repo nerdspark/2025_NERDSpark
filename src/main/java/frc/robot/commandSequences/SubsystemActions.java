@@ -48,10 +48,10 @@ public class SubsystemActions {
         coralManipulator.intakeToProcessor(), 
         new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
         coralManipulator.setIntakeVoltage(CoralConstants.processorVoltage), 
-        new WaitCommand(0.2),
+        new WaitCommand(1.0),
         coralManipulator.intakeToRetract(),
-        new WaitCommand(0.8),
-        coralManipulator.intakeToHome()
+        new WaitCommand(0.5),
+        coralManipulator.stopIntake()
       );
     }
     public static Command intakeAlgae(CoralManipulator coralManipulator) {

@@ -69,7 +69,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-
+        SmartDashboard.putNumber("speed", Math.hypot(m_robotContainer.drivetrain.getCurrentRobotChassisSpeeds().vxMetersPerSecond, m_robotContainer.drivetrain.getCurrentRobotChassisSpeeds().vyMetersPerSecond));
+        SmartDashboard.putBoolean("aim assist enabled", m_robotContainer.aimAssistEnabled);
         /*
          * This example of adding Limelight is very simple and may not be sufficient for on-field use.
          * Users typically need to provide a standard deviation that scales with the distance to target
