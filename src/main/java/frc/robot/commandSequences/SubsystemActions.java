@@ -68,7 +68,7 @@ public class SubsystemActions {
     public static Command panicButton(CoralManipulator coralManipulator) {
       return new ParallelCommandGroup(
         coralManipulator.setCoralStateCommand(coralState.empty),
-        coralManipulator.intakeToDeploy(), 
+        coralManipulator.intakeToTransfer(), 
         coralManipulator.setIntakeVoltage(-5), 
         coralManipulator.setIndexerVoltage(-12), 
         coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.panic.height), 
@@ -85,16 +85,16 @@ public class SubsystemActions {
     }
     public static Command resetElevator(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
-        coralManipulator.setElevatorLeftVoltage(-0.7), 
+        coralManipulator.setElevatorLeftVoltage(-0.3), 
         new WaitCommand(0.05),
-        new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()).withTimeout(2), 
+        new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()).withTimeout(1), 
         coralManipulator.resetElevatorLeft(), 
         coralManipulator.stopElevatorLeft()).alongWith(new SequentialCommandGroup(
-          coralManipulator.setElevatorRightVoltage(-0.7), 
+          coralManipulator.setElevatorRightVoltage(-0.3), 
           new WaitCommand(0.05),
-          new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()).withTimeout(2), 
+          new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()).withTimeout(1), 
           coralManipulator.resetElevatorRight(), 
-          coralManipulator.stopElevatorRight())).withTimeout(0.1);
+          coralManipulator.stopElevatorRight())).withTimeout(1.5);
     }
     public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level) {
         return new SequentialCommandGroup(

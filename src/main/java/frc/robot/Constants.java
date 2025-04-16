@@ -68,7 +68,7 @@ public final class Constants {
     public static final double homePositionIntake = 0.125; // deployOffset + 0.02
     public static final double algaeHomePositionIntake = 0.175; 
     public static final double algaeDeployPositionIntake = 0.405;
-    public static final double processorPositionIntake = 0.345;
+    public static final double processorPositionIntake = 0.300;
     public static final double deployPositionIntake = 0.46; // 0.27 for algae
     public static final double transferPositionIntake = 0.28; 
     public static final double processorVoltage = -16;
@@ -118,9 +118,9 @@ public final class Constants {
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 4, 3.5),
       l2(2,22.5, 4.5), 
-      transfer(0, 3.6, 2),
+      transfer(0, 3.7, 2),
       panic(0, 7, 1), 
-      visionClear(0, transfer.height, 0);// 5 inches
+      visionClear(0, 6.0, 0);
       
       elevatorLevel(int level, double height, double shootVoltage) {
         this.height = height;
