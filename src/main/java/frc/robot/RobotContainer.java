@@ -173,8 +173,8 @@ public class RobotContainer {
   private void configureNamedCommands(){
     NamedCommands.registerCommand("resetSubsystems", SubsystemActions.resetDeploy(coralManipulator).alongWith(climb.returnToHome()).alongWith(SubsystemActions.resetElevator(coralManipulator).andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height))).alongWith(coralManipulator.setCoralStateCommand(coralState.coralInIndexer)));
     NamedCommands.registerCommand("intake", coralManipulator.intakeCommand().alongWith(coralManipulator.setCoralStateCommand(coralState.empty)));
-    NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)));
-    NamedCommands.registerCommand("waitUntilCoralInRange", new WaitUntilCommand(() -> poseEstimatorSubsystem.coralInRange()));
+    NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).withTimeout(3.0));
+    NamedCommands.registerCommand("waitUntilCoralInRange", new WaitUntilCommand(() -> poseEstimatorSubsystem.coralInRange()).withTimeout(3.0));
     NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(elevatorLevel.l2.height));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(elevatorLevel.l1.height));
@@ -186,12 +186,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("driveToCoral", new DriveToCoralAuto(drivetrain, () -> (poseEstimatorSubsystem.coralArrayUpdateReturn().size() > 0) ? poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose() : getQuestPose()).withTimeout(2));
     NamedCommands.registerCommand("waitUntilCoralInElevator", waitUntilCoralInElevator());
-    NamedCommands.registerCommand("waitUntilAndElevatorL2", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l2.height)));
-    NamedCommands.registerCommand("waitUntilAndElevatorL1", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1.height)));
-    NamedCommands.registerCommand("waitUntilAndShootL2", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2)));
-    NamedCommands.registerCommand("waitUntilAndShootL1", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1)));
-    NamedCommands.registerCommand("waitUntilAndShootL1Inside", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1inside)));
-    NamedCommands.registerCommand("waitUntilAndElevatorL1Inside", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1inside.height)));
+    NamedCommands.registerCommand("waitUntilAndElevatorL2", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l2.height)).withTimeout(1.0));
+    NamedCommands.registerCommand("waitUntilAndElevatorL1", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1.height)).withTimeout(1.0));
+    NamedCommands.registerCommand("waitUntilAndShootL2", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2)).withTimeout(1.0));
+    NamedCommands.registerCommand("waitUntilAndShootL1", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1)).withTimeout(1.0));
+    NamedCommands.registerCommand("waitUntilAndShootL1Inside", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1inside)).withTimeout(1.0));
+    NamedCommands.registerCommand("waitUntilAndElevatorL1Inside", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1inside.height)).withTimeout(1.0));
 
   }
 

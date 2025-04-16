@@ -53,8 +53,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6375545851528377,
-      "maxWaypointRelativePos": 1.7729257641921385,
+      "minWaypointRelativePos": 1.5720524017467248,
+      "maxWaypointRelativePos": 1.737991266375546,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 5.0,
@@ -80,7 +80,7 @@
     },
     {
       "name": "waitUntilAndShootL2",
-      "waypointRelativePos": 0.960698689956332,
+      "waypointRelativePos": 0.9563318777292577,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

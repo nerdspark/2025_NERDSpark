@@ -36,7 +36,7 @@
         "y": 6.0
       },
       "prevControl": {
-        "x": 1.947131849315068,
+        "x": 1.9471318493150678,
         "y": 5.684460616438358
       },
       "nextControl": null,
@@ -54,7 +54,7 @@
       "rotationDegrees": 95.0
     },
     {
-      "waypointRelativePos": 1.6143497757847534,
+      "waypointRelativePos": 1.553072625698324,
       "rotationDegrees": 160.578
     }
   ],
@@ -74,8 +74,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.6462882096069835,
-      "maxWaypointRelativePos": 1.7729257641921394,
+      "minWaypointRelativePos": 1.593886462882096,
+      "maxWaypointRelativePos": 1.755458515283842,
       "constraints": {
         "maxVelocity": 1.0,
         "maxAcceleration": 5.0,
@@ -101,7 +101,7 @@
     },
     {
       "name": "elevatorToL1",
-      "waypointRelativePos": 0.729257641921397,
+      "waypointRelativePos": 0.6768558951965066,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -112,7 +112,7 @@
     },
     {
       "name": "elevatorShootL1Corner",
-      "waypointRelativePos": 0.8828337874659397,
+      "waypointRelativePos": 0.8427947598253275,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
