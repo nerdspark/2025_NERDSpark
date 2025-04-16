@@ -134,7 +134,7 @@ public class DriveToLine extends Command {
     if (thetaErrorAbs < thetaController.getPositionTolerance()) thetaVelocity = 0.0;
 
 
-    Translation2d driveVelocity = new Translation2d(driveVelocityScalar, poseSupplier.get().getRotation());
+    Translation2d driveVelocity = new Translation2d(Math.copySign(driveVelocityScalar, driveErrorAbs), poseSupplier.get().getRotation());
         // new Pose2d(
         //         new Translation2d(),
         //         poseSupplier.get().getRotation())
@@ -143,7 +143,7 @@ public class DriveToLine extends Command {
 
     Rotation2d joystickDirection = poseSupplier.get().getRotation().plus(Rotation2d.kCW_90deg);
     Translation2d joystickAddition = new Translation2d(joystickVector.get().getNorm() * joystickVector.get().getAngle().minus(joystickDirection).getCos(), joystickDirection);
-    driveVelocity = driveVelocity.times(-1).plus(joystickAddition.times(AllianceFlipUtil.shouldFlip() ? -1 : 1));
+    driveVelocity = driveVelocity.times(1).plus(joystickAddition).times(AllianceFlipUtil.shouldFlip() ? -1 : 1);
 
 
 

@@ -318,7 +318,7 @@ public class FieldConstants {
     Transform2d currentFacePose = new Transform2d(0.0, 0.0, new Rotation2d(0.0));
     double currentDistance = 0.0;
     for (int i=0; i<12; i++) {
-        currentFacePose = Reef.branchPositions2d.get(i).get(ReefLevel.L2).minus(robotPose.get());
+        currentFacePose = AllianceFlipUtil.apply(Reef.branchPositions2d.get(i).get(ReefLevel.L2)).minus(robotPose.get());
         currentDistance = currentFacePose.getTranslation().getNorm();
         if(currentDistance < minDistance) {
             minDistance = currentDistance;
@@ -331,7 +331,7 @@ public class FieldConstants {
   }
 
   public static boolean getCloseEnoughForAutoDrive(Supplier<Pose2d> robotPose) {
-    return robotPose.get().getTranslation().getDistance(Reef.center) < AutoDropoff.distanceToAutoDrive + Reef.faceLength + AutoDropoff.robotThickness;
+    return robotPose.get().getTranslation().getDistance(AllianceFlipUtil.apply(Reef.center)) < AutoDropoff.distanceToAutoDrive + Reef.faceLength + AutoDropoff.robotThickness;
   }
 
 }
