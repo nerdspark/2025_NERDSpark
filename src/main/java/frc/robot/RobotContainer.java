@@ -170,7 +170,7 @@ public class RobotContainer {
   }
   
   private void configureNamedCommands(){
-    NamedCommands.registerCommand("resetSubsystems", SubsystemActions.resetDeploy(coralManipulator).alongWith(climb.returnToHome()).alongWith(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height)).alongWith(coralManipulator.setCoralStateCommand(coralState.coralInIndexer)));
+    NamedCommands.registerCommand("resetSubsystems", SubsystemActions.resetDeploy(coralManipulator).alongWith(climb.returnToHome()).alongWith(SubsystemActions.resetElevator(coralManipulator).andThen(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height))).alongWith(coralManipulator.setCoralStateCommand(coralState.coralInIndexer)));
     NamedCommands.registerCommand("intake", coralManipulator.intakeCommand().alongWith(coralManipulator.setCoralStateCommand(coralState.empty)));
     NamedCommands.registerCommand("waitUntilHasCoral", new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)));
     NamedCommands.registerCommand("waitUntilCoralInRange", new WaitUntilCommand(() -> poseEstimatorSubsystem.coralInRange()));
@@ -223,13 +223,13 @@ public class RobotContainer {
     // climb
     copilot.y().onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
     copilot.x().onTrue(climb.returnToHome());
-    copilot.a().onTrue(climb.contract().alongWith(coralManipulator.stopDeploy())).onFalse(climb.stopCommand());
+    copilot.a().onTrue(climb.contract().alongWith(coralManipulator.stopDeploy()));
     new Trigger(() -> climb.getPosition() > ClimbConstants.climbedPosition).onTrue(climb.stopCommand());
     copilot.b().onTrue(climb.stopCommand());
 
     //reset buttons
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    copilot.back().onTrue(SubsystemActions.resetDeploy(coralManipulator));
+    copilot.back().onTrue(SubsystemActions.resetDeploy(coralManipulator)).onTrue(SubsystemActions.resetElevator(coralManipulator));
 
     // panic button
     joystick.y().onTrue(SubsystemActions.panicButton(coralManipulator))
