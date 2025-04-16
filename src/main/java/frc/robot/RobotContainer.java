@@ -37,6 +37,7 @@ import frc.robot.subsystems.LEDSubsytem;
 import frc.robot.subsystems.PoseEstimatorQuestSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -347,7 +348,10 @@ public class RobotContainer {
   }
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
-    joystick.b().onTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(1, 1, 1))));
+
+    new Trigger(coralManipulator::getIntakeSensor).whileTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(0d, 1d, 0d))));
+    new Trigger(coralManipulator::getIndexerSensor).whileTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(0d, 0d, 1d))));
+    LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(new Color(1, 0, 0))));
     // if (!climb.climbed()) {
       // LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(() -> true, () -> joystick.rightBumper().getAsBoolean(), () -> 1.0))));
     // } else {
