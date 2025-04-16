@@ -310,7 +310,7 @@ public class RobotContainer {
                 Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
                  * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
                  * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getSin())
-              .withRotationalRate(thetaController.calculate(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians(), drivetrain.getState().Pose.getRotation().getRadians()))
+              .withRotationalRate(thetaController.calculate( drivetrain.getState().Pose.getRotation().getRadians(), poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians()))
             ));
         
             // DRIVETOCORAL
@@ -349,8 +349,8 @@ public class RobotContainer {
   private void configureLEDs() {
     LEDs = new LEDSubsytem();
 
-    new Trigger(coralManipulator::getIntakeSensor).whileTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(0d, 1d, 0d))));
-    new Trigger(coralManipulator::getIndexerSensor).whileTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(0d, 0d, 1d))));
+    new Trigger(coralManipulator::getIntakeSensor).whileTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(0d, 0d, 1d))));
+    new Trigger(coralManipulator::getIndexerSensor).whileTrue(LEDs.runPattern(() -> LEDPattern.solid(new Color(0d, 1d, 0d))));
     LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(new Color(1, 0, 0))));
     // if (!climb.climbed()) {
       // LEDs.setDefaultCommand(LEDs.runPattern(() -> LEDPattern.solid(LEDs.getColor(() -> true, () -> joystick.rightBumper().getAsBoolean(), () -> 1.0))));

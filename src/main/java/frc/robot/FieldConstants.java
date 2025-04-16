@@ -304,7 +304,7 @@ public class FieldConstants {
             minIndex = i;
         }
     } 
-    return AllianceFlipUtil.apply(Reef.centerFaces[minIndex].plus(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)));//.getTranslation()), Reef.centerFaces[minIndex].getRotation().plus(Rotatio)));
+    return AllianceFlipUtil.apply(Reef.centerFaces[minIndex].transformBy(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)));//.getTranslation()), Reef.centerFaces[minIndex].getRotation().plus(Rotatio)));
   }
 
   /**

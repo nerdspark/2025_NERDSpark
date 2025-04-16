@@ -251,10 +251,10 @@ public class CoralManipulator extends SubsystemBase {
   }
   
   public boolean elevatorLeftAmpTriggered() {
-    return Math.abs(elevatorLeft.getStatorCurrent().getValueAsDouble()) > 5;
+    return Math.abs(elevatorLeft.getStatorCurrent().getValueAsDouble()) > 10;
   }
   public boolean elevatorRightAmpTriggered() {
-    return Math.abs(elevatorRight.getStatorCurrent().getValueAsDouble()) > 5;
+    return Math.abs(elevatorRight.getStatorCurrent().getValueAsDouble()) > 10;
   }
   public void setElevPosition(double position) {
     targetPositionElevator = position;

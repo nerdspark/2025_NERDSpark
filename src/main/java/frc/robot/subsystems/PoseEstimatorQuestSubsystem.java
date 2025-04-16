@@ -66,8 +66,8 @@ public class PoseEstimatorQuestSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        field.setRobotPose(getCurrentPose());
-        SmartDashboard.putData("Robot Quest debug Pose in Field", field);
+        // field.setRobotPose(getCurrentPose());
+        // SmartDashboard.putData("Robot Quest debug Pose in Field", field);
 
         if (USE_QUESTNAV) {
             Optional<EstimatedRobotPose> visionEstFrontQuest  = visionFront.getEstimatedRobotPoseQuest();

@@ -117,7 +117,7 @@ public final class Constants {
       l1upper(1,l1.height + 5, 1.45),
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 5, 3.5),
-      l2(2,22.0, 3.5), 
+      l2(2,22.0, 4.5), 
       transfer(0, 3.6, 2),
       panic(0, 7, 1), 
       visionClear(0, transfer.height, 0);// 5 inches
@@ -168,8 +168,8 @@ public final class Constants {
     public static final int winchId = 61;
     public static final double currentLimit = 20;
     public static final double power = 0.7;
-    public static final double offset = 64;
-    public static final double deployPosition = -84;//deployPositionInches / inchesPerRotation; // rot of kraken
+    public static final double offset = 43.7; // 64.5 - 20.8
+    public static final double deployPosition = -66; //-84;//deployPositionInches / inchesPerRotation; // rot of kraken
     public static final double homePosition = -0; // rot of kraken
     public static final double climbedPosition = 240;//climbedPositionInches / inchesPerRotation; // rot of kraken
     public static final double rampRate = 0.08;

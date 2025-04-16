@@ -70,7 +70,7 @@ public class SubsystemActions {
         coralManipulator.setCoralStateCommand(coralState.empty),
         coralManipulator.intakeToDeploy(), 
         coralManipulator.setIntakeVoltage(-5), 
-        coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage), 
+        coralManipulator.setIndexerVoltage(-12), 
         coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.panic.height), 
         coralManipulator.shoot(CoralConstants.elevatorLevel.panic.shootVoltage)
       );
@@ -85,14 +85,14 @@ public class SubsystemActions {
     }
     public static Command resetElevator(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
-        coralManipulator.setElevatorLeftVoltage(-0.3), 
+        coralManipulator.setElevatorLeftVoltage(-0.7), 
         new WaitCommand(0.05),
-        // new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()), 
+        new WaitUntilCommand(() -> coralManipulator.elevatorLeftAmpTriggered()).withTimeout(2), 
         coralManipulator.resetElevatorLeft(), 
         coralManipulator.stopElevatorLeft()).alongWith(new SequentialCommandGroup(
-          coralManipulator.setElevatorRightVoltage(-0.3), 
+          coralManipulator.setElevatorRightVoltage(-0.7), 
           new WaitCommand(0.05),
-          // new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()), 
+          new WaitUntilCommand(() -> coralManipulator.elevatorRightAmpTriggered()).withTimeout(2), 
           coralManipulator.resetElevatorRight(), 
           coralManipulator.stopElevatorRight())).withTimeout(0.1);
     }
@@ -104,7 +104,7 @@ public class SubsystemActions {
             new WaitCommand(0.08),
             coralManipulator.shoot(level.shootVoltage), 
             // new WaitCommand(1.0/level.shootVoltage), 
-            coralManipulator.setCoralStateCommand(coralState.empty));
+            coralManipulator.setCoralStateCommand(coralState.empty)).alongWith(new SequentialCommandGroup(coralManipulator.intakeToAlgaeHome(), new WaitCommand(0.1), coralManipulator.intakeToHome()));
     }
     public static Command placeCoralAuto(CoralManipulator coralManipulator, elevatorLevel level) {
       return new SequentialCommandGroup(
