@@ -302,15 +302,18 @@ public class RobotContainer {
       .and(() -> aimAssistEnabled)
         .whileTrue(
           drivetrain.applyRequest(() ->
-            drive.withVelocityX(
-              Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
-               * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
-               * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getCos())
-               .withVelocityY(
-                Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
-                 * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
-                 * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getSin())
-              .withRotationalRate(thetaController.calculate( drivetrain.getState().Pose.getRotation().getRadians(), poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians()))
+            drive
+            .withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+          .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+            // .withVelocityX(
+            //   Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+            //    * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
+            //    * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getCos())
+            //    .withVelocityY(
+            //     Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
+            //      * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
+            //      * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getSin())
+              .withRotationalRate( 10* (drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians()))
             ));
         
             // DRIVETOCORAL

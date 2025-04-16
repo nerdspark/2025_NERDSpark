@@ -116,8 +116,8 @@ public final class Constants {
       l1(1,13.85, 1.45),
       l1upper(1,l1.height + 5, 1.45),
       l1corner(1, l1.height, 2.5),
-      l1inside(1, l1.height + 5, 3.5),
-      l2(2,22.0, 4.5), 
+      l1inside(1, l1.height + 4, 3.5),
+      l2(2,22.5, 4.5), 
       transfer(0, 3.6, 2),
       panic(0, 7, 1), 
       visionClear(0, transfer.height, 0);// 5 inches
