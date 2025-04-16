@@ -17,12 +17,6 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "waitUntilCoralInElevator"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
                   "name": "elevatorShootL2"
                 }
               }

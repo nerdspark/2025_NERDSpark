@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.15,
-        "y": 4.191
+        "x": 3.2,
+        "y": 4.35
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.510105132450331,
-        "y": 4.112168874172185
+        "x": 2.5601051324503312,
+        "y": 4.271168874172185
       },
       "isLocked": false,
       "linkedName": "LoliPops3"

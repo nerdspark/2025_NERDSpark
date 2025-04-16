@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.15,
-        "y": 4.191
+        "x": 3.2,
+        "y": 4.35
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.510105132450331,
-        "y": 4.112168874172185
+        "x": 2.674571917808219,
+        "y": 4.025
       },
       "isLocked": false,
-      "linkedName": "LoliPops3"
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 4.026
       },
       "prevControl": {
-        "x": 1.4116244000085196,
-        "y": 4.049104433162813
+        "x": 1.75,
+        "y": 4.026
       },
       "nextControl": null,
       "isLocked": false,

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9,
-        "y": 6.4
+        "x": 0.8,
+        "y": 6.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7750000000000002,
-        "y": 6.61650635094611
+        "x": 0.9767766952966366,
+        "y": 6.123223304703363
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.15,
-        "y": 4.191
+        "x": 3.2,
+        "y": 4.35
       },
       "prevControl": {
-        "x": 1.9533390410958904,
-        "y": 4.701155821917808
+        "x": 2.4792380136986303,
+        "y": 5.04046404109589
       },
       "nextControl": null,
       "isLocked": false,
@@ -74,7 +74,7 @@
   "folder": "LoliPopsAltASensor",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 135.0
   },
   "useDefaultConstraints": true
 }
