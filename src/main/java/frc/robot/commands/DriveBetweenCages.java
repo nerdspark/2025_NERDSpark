@@ -97,6 +97,8 @@ public class DriveBetweenCages extends Command {
     // Get current and target pose
     var currentPose = drive.getState().Pose;
     var targetPose = poseSupplier.get();
+    SmartDashboard.putString("currentDrivePoseLine", drive.getState().Pose.toString());
+    SmartDashboard.putString("taretPoseLine", poseSupplier.get().toString());
     Transform2d error = targetPose.minus(currentPose);
         SignalLogger.writeDouble("LINEX", error.getX());
         SignalLogger.writeDouble("LINEY", error.getY());
@@ -106,11 +108,8 @@ public class DriveBetweenCages extends Command {
         
     // Calculate drive speed
 
-    driveErrorAbs = error.getTranslation().getNorm() * (error.getTranslation().getAngle().minus(poseSupplier.get().getTranslation().getAngle()).getCos());
+    driveErrorAbs = error.getTranslation().getY();
 
-    driveController.reset(
-        lastSetpointTranslation.getDistance(targetPose.getTranslation()),
-        driveController.getSetpoint().velocity);
 
     double driveVelocityScalar =
              driveController.calculate(driveErrorAbs, 0.0);
@@ -132,22 +131,23 @@ public class DriveBetweenCages extends Command {
     thetaErrorAbs =
         Math.abs((currentPose.getRotation().minus(targetPose.getRotation())).getRadians());
     if (thetaErrorAbs < thetaController.getPositionTolerance()) thetaVelocity = 0.0;
+    SmartDashboard.putNumber("drive error abs", driveErrorAbs);
 
-
-    Translation2d driveVelocity = new Translation2d(driveVelocityScalar, poseSupplier.get().getRotation());
+    Translation2d driveVelocity = new Translation2d(Math.copySign(driveVelocityScalar, driveErrorAbs), Rotation2d.kCCW_90deg);
         // new Pose2d(
         //         new Translation2d(),
         //         poseSupplier.get().getRotation())
         //     .transformBy(new Transform2d(driveVelocityScalar, 0.0, new Rotation2d()))
         //     .getTranslation();
 
-    Rotation2d joystickDirection = poseSupplier.get().getRotation().plus(Rotation2d.kCW_90deg);
-    Translation2d joystickAddition = new Translation2d(joystickVector.get().getNorm() * joystickVector.get().getAngle().minus(joystickDirection).getCos(), joystickDirection);
-    driveVelocity = driveVelocity.times(-1).plus(joystickAddition.times(AllianceFlipUtil.shouldFlip() ? -1 : 1));
+    Translation2d joystickAddition = new Translation2d(joystickVector.get().getX(), 0);// new Translation2d(joystickVector.get().getNorm() * joystickVector.get().getAngle().minus(joystickDirection).getCos(), joystickDirection);
+    driveVelocity = driveVelocity.times(1).plus(joystickAddition).times(AllianceFlipUtil.shouldFlip() ? -1 : 1);
 
 
 
 
+    SmartDashboard.putNumber("velX", driveVelocity.getX());
+    SmartDashboard.putNumber("velY", driveVelocity.getY());
     drive.setControl(driveToPoseRequest.withSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(driveVelocity.getX(),driveVelocity.getY(),
     thetaVelocity, drive.getState().Pose.getRotation())).withDriveRequestType(DriveRequestType.Velocity));
 
