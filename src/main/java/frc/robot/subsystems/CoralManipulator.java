@@ -115,9 +115,9 @@ public class CoralManipulator extends SubsystemBase {
       .withGravityType(GravityTypeValue.Arm_Cosine);
     deployConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(CoralConstants.deployRampRate);
     deployConfig.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs()
-      .withForwardSoftLimitEnable(true)
+      .withForwardSoftLimitEnable(false)
       .withForwardSoftLimitThreshold(CoralConstants.forwardLimitDeploy)
-      .withReverseSoftLimitEnable(true)
+      .withReverseSoftLimitEnable(false)
       .withReverseSoftLimitThreshold(CoralConstants.reverseLimitDeploy);
     deployConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive).withNeutralMode(NeutralModeValue.Coast);
     deploy.getConfigurator().apply(deployConfig);
@@ -167,7 +167,7 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> elevatorRight.setPosition(0));
   }
   public boolean deployAmpTriggered() {
-    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 15;
+    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 55;
   }
   public coralState getCoralState() {
     return coralState;
@@ -182,7 +182,10 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> elevatorRight.stopMotor());
   }
   public Command setDeployVoltage(double voltage) {
-    return new InstantCommand(() -> deploy.setVoltage(voltage));
+    return new InstantCommand(() -> deploy.setControl(new VoltageOut(voltage)));
+  }
+  public void setDeployVoltageFunction(double voltage) {
+    deploy.setControl(new VoltageOut(voltage));
   }
   public boolean getIntakeSensor() {
     return intakeSensor.getIsDetected().getValue();
@@ -301,6 +304,7 @@ public class CoralManipulator extends SubsystemBase {
         setCoralState(coralState.coralInIntake);
       }
     }
+    SmartDashboard.putNumber("deploy amp", deploy.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("elev left pos", elevatorLeft.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elev right pos", elevatorRight.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elevator left amp", elevatorLeft.getStatorCurrent().getValueAsDouble());
@@ -311,6 +315,7 @@ public class CoralManipulator extends SubsystemBase {
     SmartDashboard.putNumber("deploy error", targetPositionDeploy - deploy.getPosition().getValueAsDouble());
     SmartDashboard.putString("coralState", getCoralState().name());
     SmartDashboard.putBoolean("intake detected", getIntakeSensor());
+    SmartDashboard.putBoolean("indexer detected", getIndexerSensor());
     SmartDashboard.putNumber("deploy amp", deploy.getStatorCurrent().getValueAsDouble());
     // This method will be called once per scheduler run
   }

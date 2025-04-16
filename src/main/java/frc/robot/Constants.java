@@ -64,9 +64,9 @@ public final class Constants {
     public static final String canBus = "canivore1";
     public static final double deployCurrentLimit = 75;
     public static final double deployRampRate = 0.03;
-    public static final double deployOffset = 0.25-0.1; 
-    public static final double homePositionIntake = deployOffset + 0.07; // deployOffset + 0.02
-    public static final double algaeHomePositionIntake = deployOffset + 0.12; 
+    public static final double deployOffset = 0.25-0.1 - 0.065; 
+    public static final double homePositionIntake = deployOffset + 0.02; // deployOffset + 0.02
+    public static final double algaeHomePositionIntake = deployOffset + 0.06; 
     public static final double algaeDeployPositionIntake = deployOffset + 0.25;
     public static final double processorPositionIntake = deployOffset + 0.2;
     public static final double deployPositionIntake = deployOffset + 0.325; // 0.27 for algae
@@ -93,7 +93,7 @@ public final class Constants {
     public static final int intakeSensorID = 7;
     public static final int indexerSensorID = 8;
     public static final double intakeSensorTriggerDistance = 0.09;
-    public static final double indexerSensorTriggerDistance = 0.02;
+    public static final double indexerSensorTriggerDistance = 0.05;
     public static final double indexerTransferVoltage = 16;
     public static final double intakeTransferVoltage = 16;
     public static final double intakeAlgaeVoltage = 16;
@@ -165,18 +165,13 @@ public final class Constants {
   }
   
   public static class ClimbConstants {
-    public static final double gearRatio = 125.0;
-    public static final double pulleyDiameter = 2.5; // inches
-    public static final double inchesPerRotation = pulleyDiameter * 2.0 * Math.PI / gearRatio;
     public static final int winchId = 61;
     public static final double currentLimit = 20;
     public static final double power = 0.7;
-    public static final double offset = 17;
-    public static final double deployPositionInches = -10.5;
-    public static final double climbedPositionInches = 32;
-    public static final double deployPosition = deployPositionInches / inchesPerRotation; // rot of kraken
+    public static final double offset = 64;
+    public static final double deployPosition = -83.56;//deployPositionInches / inchesPerRotation; // rot of kraken
     public static final double homePosition = -0; // rot of kraken
-    public static final double climbedPosition = climbedPositionInches / inchesPerRotation; // rot of kraken
+    public static final double climbedPosition = 254.64;//climbedPositionInches / inchesPerRotation; // rot of kraken
     public static final double rampRate = 0.08;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
@@ -259,7 +254,7 @@ public static class Vision {
         public static boolean DOGLOG_ENABLED = false;
 
         public static final boolean USE_VISION = true;
-        public static final boolean USE_QUESTNAV = false;
+        public static final boolean USE_QUESTNAV = true;
 
         public static final boolean USE_BUTTON_BOARD = true;
 

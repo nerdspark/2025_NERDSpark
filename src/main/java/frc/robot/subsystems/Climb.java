@@ -64,10 +64,11 @@ public class Climb extends SubsystemBase {
     return new InstantCommand(() -> setPosition(ClimbConstants.deployPosition));
   }
   public Command contract() {
-    return new SequentialCommandGroup(
-      new InstantCommand(() -> setPower(ClimbConstants.power)), 
-      new WaitUntilCommand(() -> getPosition() > ClimbConstants.climbedPosition),
-      stopCommand());
+    return// new SequentialCommandGroup(
+      new InstantCommand(() -> setPower(ClimbConstants.power));//, 
+      // new WaitUntilCommand(() -> getPosition() > ClimbConstants.climbedPosition),
+      // stopCommand()
+      // );
   }
   public Command returnToHome() {
     return new InstantCommand(() -> setPosition(ClimbConstants.homePosition));

@@ -14,6 +14,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import frc.robot.Constants.AutoDropoff;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.CoralConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.QuestNav.NerdQuestNav;
@@ -223,14 +224,16 @@ public class RobotContainer {
     copilot.y().onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
     copilot.x().onTrue(climb.returnToHome());
     copilot.a().onTrue(climb.contract().alongWith(coralManipulator.stopDeploy())).onFalse(climb.stopCommand());
+    new Trigger(() -> climb.getPosition() > ClimbConstants.climbedPosition).onTrue(climb.stopCommand());
     copilot.b().onTrue(climb.stopCommand());
 
     //reset buttons
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    copilot.start().whileTrue(SubsystemActions.resetDeploy(coralManipulator));
+    copilot.back().onTrue(SubsystemActions.resetDeploy(coralManipulator));
 
     // panic button
-    joystick.y().onTrue(SubsystemActions.panicButton(coralManipulator)).onFalse(coralManipulator.intakeToHome().alongWith(coralManipulator.stopIntake()).alongWith(coralManipulator.stopIndexer()).alongWith(coralManipulator.stopShooter()).alongWith(coralManipulator.elevatorToHome()));
+    joystick.y().onTrue(SubsystemActions.panicButton(coralManipulator))
+      .onFalse(coralManipulator.intakeToHome().alongWith(coralManipulator.stopIntake()).alongWith(coralManipulator.stopIndexer()).alongWith(coralManipulator.stopShooter()).alongWith(coralManipulator.elevatorToHome()));
 
     joystick.back().whileTrue(new DriveBetweenCages(
         drivetrain, 
@@ -273,6 +276,7 @@ public class RobotContainer {
       .onFalse(coralManipulator.intakeToHome());//.onlyIf(() -> !coralManipulator.getCoralState().equals(coralState.coralInIntake) ));
 
     joystick.rightBumper().onTrue(SubsystemActions.intakeAlgae(coralManipulator)).onFalse(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)));
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.algaeInIntake) && coralManipulator.getIntakeSensor()).onTrue(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)));
     joystick.start().onTrue(SubsystemActions.prepareDropOffAlgae(coralManipulator)).onFalse(SubsystemActions.dropOffAlgae(coralManipulator));
 
 

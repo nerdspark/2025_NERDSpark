@@ -180,7 +180,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
             // field.getObject("VisionEstimation").setPoses();
 
-            // SmartDashboard.putData("Robot Pose in Field", field);
+            SmartDashboard.putData("Robot Pose in Field", field);
             SmartDashboard.putString("Formatted Pose", getFomattedPose());
 
             DogLog.log("PoseEstimator/ODO+Vision Pose", getCurrentPose());

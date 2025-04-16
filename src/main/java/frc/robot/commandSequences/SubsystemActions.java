@@ -58,15 +58,15 @@ public class SubsystemActions {
       return new SequentialCommandGroup(
         coralManipulator.setCoralStateCommand(coralState.algaeInIntake), 
         coralManipulator.intakeToAlgaeDeploy(),
-        coralManipulator.setIntakeVoltage(CoralConstants.intakeAlgaeVoltage),
-        new WaitUntilCommand(() -> coralManipulator.getIntakeSensor()), 
-        coralManipulator.intakeToAlgaeHome(), 
-        new WaitCommand(0.5),
-        coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)
+        coralManipulator.setIntakeVoltage(CoralConstants.intakeAlgaeVoltage)//,
+        // new WaitUntilCommand(() -> coralManipulator.getIntakeSensor()), 
+        // coralManipulator.intakeToAlgaeHome(), 
+        // new WaitCommand(0.5),
+        // coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)
       );
     }
     public static Command panicButton(CoralManipulator coralManipulator) {
-      return new SequentialCommandGroup(
+      return new ParallelCommandGroup(
         coralManipulator.setCoralStateCommand(coralState.empty),
         coralManipulator.intakeToDeploy(), 
         coralManipulator.setIntakeVoltage(-5), 
@@ -77,7 +77,7 @@ public class SubsystemActions {
     }
     public static Command resetDeploy(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
-        coralManipulator.setDeployVoltage(-1), 
+        coralManipulator.setDeployVoltage(-1.5), 
         new WaitCommand(0.1),
         new WaitUntilCommand(() -> coralManipulator.deployAmpTriggered()), 
         coralManipulator.resetDeploy(), 
