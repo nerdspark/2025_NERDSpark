@@ -138,7 +138,7 @@ public class SubsystemActions {
       coralManipulator.stopIntake(),
       // coralManipulator.elevatorToHome(), 
       coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
-      ).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+      ).withTimeout(1.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
 
   }
 

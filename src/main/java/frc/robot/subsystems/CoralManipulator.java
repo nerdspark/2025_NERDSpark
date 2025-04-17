@@ -270,7 +270,8 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> setElevPosition(position));
   }
   public Command elevatorToHome() {
-    return new SequentialCommandGroup(
+    return //setElevatorPosition(CoralConstants.elevatorLevel.transfer.height);
+    new SequentialCommandGroup(
       setElevatorPosition(CoralConstants.homePos),
       stopShooter(), 
             new WaitCommand(0.5),

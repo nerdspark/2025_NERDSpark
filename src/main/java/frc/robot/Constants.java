@@ -95,14 +95,14 @@ public final class Constants {
     public static final double intakeSensorTriggerDistance = 0.09;
     public static final double indexerSensorTriggerDistance = 0.05;
     public static final double indexerTransferVoltage = 16;
-    public static final double intakeTransferVoltage = 16;
+    public static final double intakeTransferVoltage = 5;
     public static final double intakeAlgaeVoltage = 16;
     public static final double neutralAlgaeVoltage = 8;
-    public static final double intakingVoltage = 16;
+    public static final double intakingVoltage = 10;
     // public static final double shooterTransferVoltage = 2;
     public static final double shooterRewindVoltage = -1.5;
     // public static final double elevatorTransferPosition = 2.9;
-    public static final double deployTolerance = 0.06;
+    public static final double deployTolerance = 0.1;
     public static final double autoShootVoltageTransfer = 1;
     public static enum coralState {
       empty, 
@@ -114,10 +114,10 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 3.75, 1.7),
+      l1upper(1,l1.height + 3, 1.5),
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 4, 3.5),
-      l2(2,22.2, 3.75), 
+      l2(2,21.2, 3.75), 
       transfer(0, 3.7, 2),
       panic(0, 15, 4), 
       visionClear(0, 6.0, 0);

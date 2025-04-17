@@ -25,12 +25,6 @@
                 "data": {
                   "pathName": "LoliPops2aA"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "waitUntilHasCoral"
-                }
               }
             ]
           }
@@ -82,12 +76,6 @@
                 "data": {
                   "pathName": "LoliPops3aA"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "waitUntilHasCoral"
-                }
               }
             ]
           }
@@ -138,12 +126,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "LoliPops4aA"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "waitUntilHasCoral"
                 }
               }
             ]
