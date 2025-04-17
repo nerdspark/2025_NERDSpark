@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9,
-        "y": 4.026
+        "x": 1.0,
+        "y": 6.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5620276893895055,
-        "y": 4.026
+        "x": 1.7880565068493142,
+        "y": 4.806335616438356
       },
       "isLocked": false,
       "linkedName": null
@@ -17,26 +17,31 @@
     {
       "anchor": {
         "x": 3.15,
-        "y": 3.861
+        "y": 4.2
       },
       "prevControl": {
-        "x": 2.2489288817763184,
-        "y": 3.861
+        "x": 2.3139554794520545,
+        "y": 4.217282534246575
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4618249534450652,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.868995633187773,
+      "minWaypointRelativePos": 0.5283842794759834,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.0,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -59,10 +64,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "LoliPopsAltASensor",
+  "folder": "LoliPoopsAltAGood",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 0.0,
+    "rotation": 135.0
   },
   "useDefaultConstraints": false
 }
