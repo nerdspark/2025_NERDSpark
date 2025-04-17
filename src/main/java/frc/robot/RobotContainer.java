@@ -269,7 +269,7 @@ public class RobotContainer {
       //   drivetrain, 
       //   () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose), 
       //   () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))))
-        .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose).transformBy(new Transform2d(new Translation2d(copilot.getLeftX(), Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1).getRotation().plus(Rotation2d.kCCW_90deg)),new Rotation2d()))))
+        .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose).transformBy(new Transform2d(new Translation2d((copilot.getLeftX() + joystick.getRightX())/2, Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1).getRotation().plus(Rotation2d.kCCW_90deg)),new Rotation2d()))))
       .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
         .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
 
