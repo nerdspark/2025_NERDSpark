@@ -329,7 +329,7 @@ public class RobotContainer {
             // ));
         
             // DRIVETOCORAL
-          joystick.leftTrigger().and(coralInRange).and(coralInList)
+          joystick.leftTrigger().onTrue(coralManipulator.setCoralStateCommand(coralState.empty)).and(coralInRange).and(coralInList)
         .whileTrue(new DriveToCoral(drivetrain,
           () -> new Pose2d(
             poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.2, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
@@ -340,7 +340,7 @@ public class RobotContainer {
 
       
     new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).onTrue(SubsystemActions.transferCoral(coralManipulator));
-
+    
     new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isAutonomous()).onTrue(new WaitCommand(0.0).andThen(SubsystemActions.transferCoralForAuto(coralManipulator)));
     // new Trigger(() -> !coralManipulator.getIndexerSensor()).onTrue(coralManipulator.setCoralStateCommand(coralState.coralInIndexer));
   }

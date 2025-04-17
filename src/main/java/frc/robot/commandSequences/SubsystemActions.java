@@ -69,8 +69,8 @@ public class SubsystemActions {
       return new ParallelCommandGroup(
         coralManipulator.setCoralStateCommand(coralState.empty),
         coralManipulator.intakeToTransfer(), 
-        coralManipulator.setIntakeVoltage(-5), 
-        coralManipulator.setIndexerVoltage(-12), 
+        coralManipulator.setIntakeVoltage(-16), 
+        coralManipulator.setIndexerVoltage(-16), 
         coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.panic.height), 
         coralManipulator.shoot(CoralConstants.elevatorLevel.panic.shootVoltage)
       );

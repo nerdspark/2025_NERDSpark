@@ -60,7 +60,7 @@ public class CoralArrayManager {
     }
     /** Filters outdated corals from the list. */
     public List<CoralObject> expiryFilter(List<CoralObject> corals, double hb, double fps) {
-        double expiryFrameDiff = fps * 3;
+        double expiryFrameDiff = fps * 0.5;
         int sizeCorals = corals.size();
 
         for(int i = 0; i < sizeCorals; i++) {

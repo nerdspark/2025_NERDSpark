@@ -119,7 +119,7 @@ public final class Constants {
       l1inside(1, l1.height + 4, 3.5),
       l2(2,22.2, 4.5), 
       transfer(0, 3.7, 2),
-      panic(0, 7, 1), 
+      panic(0, 15, 4), 
       visionClear(0, 6.0, 0);
       
       elevatorLevel(int level, double height, double shootVoltage) {
