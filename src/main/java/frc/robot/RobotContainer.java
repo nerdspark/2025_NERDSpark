@@ -331,7 +331,8 @@ public class RobotContainer {
             poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.2, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
             poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.2, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
             poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()), 
-          () -> getQuestPose()));
+          () -> getQuestPose()))
+          .onTrue(coralManipulator.intakeCommand());
 
       
     new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).onTrue(SubsystemActions.transferCoral(coralManipulator));

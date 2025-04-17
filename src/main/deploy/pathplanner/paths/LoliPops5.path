@@ -77,17 +77,6 @@
           "name": "elevatorToHome"
         }
       }
-    },
-    {
-      "name": "intake",
-      "waypointRelativePos": 0.6594005449591286,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "intake"
-        }
-      }
     }
   ],
   "globalConstraints": {
