@@ -114,7 +114,7 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 5, 2),
+      l1upper(1,l1.height + 3.75, 1.7),
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 4, 3.5),
       l2(2,22.2, 4.5), 
