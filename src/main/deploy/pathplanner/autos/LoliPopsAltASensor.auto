@@ -21,13 +21,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "waitUntilAndShootL2"
+                        "name": "waitUntilAndShootL1"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.05
+                        "waitTime": 0.3
                       }
                     }
                   ]
@@ -78,13 +78,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "waitUntilAndShootL1"
+                        "name": "elevatorShootL2"
                       }
                     },
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.3
+                        "waitTime": 0.05
                       }
                     }
                   ]
