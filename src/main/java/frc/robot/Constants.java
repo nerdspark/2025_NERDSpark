@@ -67,9 +67,9 @@ public final class Constants {
     public static final double deployOffset = 0.25-0.1 - 0.065; 
     public static final double homePositionIntake = 0.125; // deployOffset + 0.02
     public static final double algaeHomePositionIntake = 0.19; 
-    public static final double algaeDeployPositionIntake = 0.39;
+    public static final double algaeDeployPositionIntake = 0.37;
     public static final double processorPositionIntake = 0.300;
-    public static final double deployPositionIntake = 0.46; // 0.27 for algae
+    public static final double deployPositionIntake = 0.475; // 0.27 for algae
     public static final double transferPositionIntake = 0.28; 
     public static final double processorVoltage = -16;
     // public static final double elevatorPositionIntake = homePositionIntake + 0.1;
@@ -114,7 +114,7 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 5, 1.45),
+      l1upper(1,l1.height + 5, 2),
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 4, 3.5),
       l2(2,22.2, 4.5), 
@@ -168,10 +168,10 @@ public final class Constants {
     public static final int winchId = 61;
     public static final double currentLimit = 20;
     public static final double power = 0.7;
-    public static final double offset = 43.7; // 64.5 - 20.8
+    public static final double offset = 45; // 64.5 - 20.8
     public static final double deployPosition = -76; //-84;//deployPositionInches / inchesPerRotation; // rot of kraken
     public static final double homePosition = -0; // rot of kraken
-    public static final double climbedPosition = 235;//climbedPositionInches / inchesPerRotation; // rot of kraken
+    public static final double climbedPosition = 225;//climbedPositionInches / inchesPerRotation; // rot of kraken
     public static final double rampRate = 0.08;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
@@ -209,29 +209,34 @@ public final class Constants {
   static {
     // Key: cardinal joystick distance
     // Value: % max speed
+    joystickMap.put(-1.0, -1.0);
+    joystickMap.put(-0.3, -0.2);
     joystickMap.put(0.0, 0.0);
-    joystickMap.put(0.1, 0.02);
-    joystickMap.put(0.2, 0.05);
-    joystickMap.put(0.3, 0.1);
-    joystickMap.put(0.4, 0.15);
-    joystickMap.put(0.5, 0.21);
-    joystickMap.put(0.6, 0.30);
-    joystickMap.put(0.7, 0.45);
-    joystickMap.put(0.8, 0.62);
-    joystickMap.put(0.9, 0.85);
-    joystickMap.put(0.95, 1.00);
-    joystickMap.put(1.0, 1.00);
+    joystickMap.put(0.3, 0.2);
+    joystickMap.put(1.0, 1.0);
+    // joystickMap.put(0.0, 0.0);
+    // joystickMap.put(0.1, 0.05);
+    // joystickMap.put(0.2, 0.1);
+    // joystickMap.put(0.3, 0.15);
+    // joystickMap.put(0.4, 0.2);
+    // joystickMap.put(0.5, 0.28);
+    // joystickMap.put(0.6, 0.36);
+    // joystickMap.put(0.7, 0.45);
+    // joystickMap.put(0.8, 0.62);
+    // joystickMap.put(0.9, 0.85);
+    // joystickMap.put(0.95, 1.00);
+    // joystickMap.put(1.0, 1.00);
 
-    joystickMap.put(-0.07, -0.10);
-    joystickMap.put(-0.18, -0.15);
-    joystickMap.put(-0.29, -0.20);
-    joystickMap.put(-0.40, -0.25);
-    joystickMap.put(-0.50, -0.35);
-    joystickMap.put(-0.60, -0.50);
-    joystickMap.put(-0.70, -0.65);
-    joystickMap.put(-0.80, -0.80);
-    joystickMap.put(-0.90, -1.00);
-    joystickMap.put(-1.00, -1.00);
+    // joystickMap.put(-0.07, -0.10);
+    // joystickMap.put(-0.18, -0.15);
+    // joystickMap.put(-0.29, -0.20);
+    // joystickMap.put(-0.40, -0.25);
+    // joystickMap.put(-0.50, -0.35);
+    // joystickMap.put(-0.60, -0.50);
+    // joystickMap.put(-0.70, -0.65);
+    // joystickMap.put(-0.80, -0.80);
+    // joystickMap.put(-0.90, -1.00);
+    // joystickMap.put(-1.00, -1.00);
   }
   }
 

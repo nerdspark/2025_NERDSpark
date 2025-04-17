@@ -211,7 +211,7 @@ public class CoralArrayManager {
 
         int sizeCoral = corals.size();
 
-        double minRange = Units.feetToMeters(5); //2 ft in m
+        double minRange = Units.feetToMeters(10); //2 ft in m
 
         for (int i = 0; i < sizeCoral; i++) {
             CoralObject coralChecked = corals.get(i);

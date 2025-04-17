@@ -141,7 +141,7 @@ public class DriveBetweenCages extends Command {
         //     .getTranslation();
 
     Translation2d joystickAddition = new Translation2d(joystickVector.get().getX(), 0);// new Translation2d(joystickVector.get().getNorm() * joystickVector.get().getAngle().minus(joystickDirection).getCos(), joystickDirection);
-    driveVelocity = driveVelocity.times(1).plus(joystickAddition).times(AllianceFlipUtil.shouldFlip() ? -1 : 1);
+    driveVelocity = driveVelocity.times(-1).plus(joystickAddition).times(AllianceFlipUtil.shouldFlip() ? -1 : 1);
 
 
 
