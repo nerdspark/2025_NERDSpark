@@ -193,7 +193,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("waitUntilAndElevatorL2", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l2.height).alongWith(coralManipulator.setIntakeVoltage(-5))).withTimeout(1.0));
     NamedCommands.registerCommand("waitUntilAndElevatorL1", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1.height).alongWith(coralManipulator.setIntakeVoltage(-5))).withTimeout(1.0));
     NamedCommands.registerCommand("waitUntilAndShootL2", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2).alongWith(coralManipulator.setIntakeVoltage(-5))).withTimeout(1.0));
-    NamedCommands.registerCommand("waitUntilAndShootL1", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1).alongWith(coralManipulator.setIntakeVoltage(-5))).withTimeout(1.0));
+    NamedCommands.registerCommand("waitUntilAndShootL1", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1inside).alongWith(coralManipulator.setIntakeVoltage(-5))).withTimeout(1.0));
     NamedCommands.registerCommand("waitUntilAndShootL1Inside", waitUntilCoralInElevator().andThen(SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1inside).alongWith(coralManipulator.setIntakeVoltage(-5))).withTimeout(1.0));
     NamedCommands.registerCommand("waitUntilAndElevatorL1Inside", waitUntilCoralInElevator().andThen(coralManipulator.setElevatorPosition(elevatorLevel.l1inside.height).alongWith(coralManipulator.setIntakeVoltage(-5))).withTimeout(1.0));
 
