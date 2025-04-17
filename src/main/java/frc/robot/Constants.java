@@ -103,7 +103,7 @@ public final class Constants {
     public static final double shooterRewindVoltage = -1.5;
     // public static final double elevatorTransferPosition = 2.9;
     public static final double deployTolerance = 0.1;
-    public static final double autoShootVoltageTransfer = 1;
+    public static final double autoShootVoltageTransfer = 0.85;
     public static enum coralState {
       empty, 
       coralInRange,
@@ -114,7 +114,7 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 3, 1.5),
+      l1upper(1,l1.height + 4, 2.2),
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 4, 3.5),
       l2(2,21.2, 3.75), 
