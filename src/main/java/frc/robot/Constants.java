@@ -66,6 +66,7 @@ public final class Constants {
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1 - 0.065; 
     public static final double homePositionIntake = 0.125; // deployOffset + 0.02
+    public static final double transferHomePositionIntake = 0.22; // deployOffset + 0.02
     public static final double algaeHomePositionIntake = 0.19; 
     public static final double algaeDeployPositionIntake = 0.37;
     public static final double processorPositionIntake = 0.300;
