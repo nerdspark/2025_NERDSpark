@@ -233,7 +233,7 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("poseY", poseY);
         SmartDashboard.putNumber("yaw", -yaw.getDegrees());
 
-        double tx = visionFront.getTx();
+        double tx = visionFront.getTx() * 1.25;
         double ty = visionFront.getTy();
         double hb = visionFront.getHB();
         boolean upfall = false;
@@ -258,10 +258,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
         double distance = 0.0;
         double theta = 0.0;
-        if (boundingHeight > boundingWidth) {               
-            upfall = false;
-            ignored = true;
-        } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
+        // if (boundingHeight > boundingWidth) {               
+        //     upfall = false;
+        //     ignored = true;
+        // } else 
+        if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
             distance = (Constants.Vision.kCoralCenterFallenHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180)) / Math.cos((tx) * Math.PI / 180);
             upfall = true;
             ignored = false;

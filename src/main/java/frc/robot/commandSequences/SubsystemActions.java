@@ -48,7 +48,7 @@ public class SubsystemActions {
         coralManipulator.intakeToProcessor(), 
         new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
         coralManipulator.setIntakeVoltage(CoralConstants.processorVoltage), 
-        new WaitCommand(1.0),
+        new WaitCommand(3.0),
         coralManipulator.intakeToRetract(),
         new WaitCommand(0.5),
         coralManipulator.stopIntake()
@@ -77,9 +77,9 @@ public class SubsystemActions {
     }
     public static Command resetDeploy(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
-        coralManipulator.setDeployVoltage(-1.5), 
+        coralManipulator.setDeployVoltage(-2.5), 
         new WaitCommand(0.1),
-        new WaitUntilCommand(() -> coralManipulator.deployAmpTriggered()), 
+        new WaitUntilCommand(() -> coralManipulator.deployAmpTriggered()).withTimeout(0.5), 
         coralManipulator.resetDeploy(), 
         coralManipulator.stopDeploy());
     }

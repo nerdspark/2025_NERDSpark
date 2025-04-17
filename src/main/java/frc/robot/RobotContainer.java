@@ -97,7 +97,7 @@ public class RobotContainer {
   private Climb climb;
   private CoralManipulator coralManipulator;
 
-  private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(-90))));
+  // private NerdQuestNav QuestNav = new NerdQuestNav(new Transform3d(0,0, 0, new Rotation3d(Rotation2d.fromDegrees(-90))));
 
   public static BooleanSupplier autoBucketEnabled = () -> true;
 
@@ -127,7 +127,7 @@ public class RobotContainer {
 
     public final PoseEstimatorSubsystem poseEstimatorSubsystem;// = new PoseEstimatorSubsystem(drivetrain);
 
-    public final PoseEstimatorQuestSubsystem poseEstimatorQuestSubsystem;
+    // public final PoseEstimatorQuestSubsystem poseEstimatorQuestSubsystem;
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
@@ -147,7 +147,7 @@ public class RobotContainer {
 
     drivetrain = TunerConstants.createDrivetrain();
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
-    poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
+    // poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
     
     // scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
@@ -170,7 +170,7 @@ public class RobotContainer {
 
   }
   private Command waitUntilCoralInElevator() {
-    return new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor());
+    return new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor() && !coralManipulator.getIntakeSensor() && coralManipulator.getCoralState().equals(coralState.coralInIndexer));
   }
 
   private void configureNamedCommands(){
@@ -218,8 +218,8 @@ public class RobotContainer {
 
 
   private Pose2d getQuestPose() {
-    return USE_QUESTNAV ? poseEstimatorQuestSubsystem.getCurrentPose() : drivetrain.getState().Pose;
-  }
+    return /*USE_QUESTNAV ? poseEstimatorQuestSubsystem.getCurrentPose() :*/ drivetrain.getState().Pose;
+  } 
   private void disableAimAssist(boolean enable) {
     aimAssistEnabled = enable;
   }
@@ -227,8 +227,8 @@ public class RobotContainer {
     // Find Quest Offsets
     //joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
 
-    joystick.b().onTrue(new InstantCommand(() -> disableAimAssist(false)));
-    joystick.x().onTrue(new InstantCommand(() -> disableAimAssist(true)));
+    // joystick.b().onTrue(new InstantCommand(() -> disableAimAssist(false)));
+    // joystick.x().onTrue(new InstantCommand(() -> disableAimAssist(true)));
 
     // climb
     copilot.y().onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
@@ -239,7 +239,7 @@ public class RobotContainer {
 
     //reset buttons
     joystick.leftStick().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    copilot.back().onTrue(SubsystemActions.resetDeploy(coralManipulator)).onTrue(SubsystemActions.resetElevator(coralManipulator)).onFalse(coralManipulator.stopElevator()).onFalse(coralManipulator.intakeToHome());
+    copilot.back().onTrue(SubsystemActions.resetDeploy(coralManipulator)).onTrue(SubsystemActions.resetElevator(coralManipulator));//..onFalse(coralManipulator.stopElevator()).onFalse(coralManipulator.intakeToHome());
 
     // panic button
     joystick.y().onTrue(SubsystemActions.panicButton(coralManipulator))
@@ -282,7 +282,7 @@ public class RobotContainer {
     //intake commands
     joystick.rightTrigger()
       .onTrue(coralManipulator.setCoralStateCommand(coralState.empty))
-      // .onTrue(coralManipulator.intakeCommand())//.onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
+      .onTrue(coralManipulator.intakeCommand())//.onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
       .onFalse(coralManipulator.intakeToHome());//.onlyIf(() -> !coralManipulator.getCoralState().equals(coralState.coralInIntake) ));
 
     joystick.rightBumper().onTrue(SubsystemActions.intakeAlgae(coralManipulator)).onFalse(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)));
@@ -297,17 +297,17 @@ public class RobotContainer {
 
 
           // AIMASSIST
-      coralInList
-      .and(coralInRange)
-      .and(() -> joystick.getLeftTriggerAxis() < 0.2)
-      .and(() -> coralManipulator.getCoralState()
-      .equals(coralState.empty)).and(() -> joystick.rightTrigger().getAsBoolean())
-      .and(() -> aimAssistEnabled)
-        .whileTrue(
-          drivetrain.applyRequest(() ->
-            drive
-            .withVelocityX(Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getCos())
-            .withVelocityY(Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getSin())
+      // coralInList
+      // .and(coralInRange)
+      // .and(() -> joystick.getLeftTriggerAxis() < 0.2)
+      // .and(() -> coralManipulator.getCoralState()
+      // .equals(coralState.empty)).and(() -> joystick.rightTrigger().getAsBoolean())
+      // .and(() -> aimAssistEnabled)
+        // .whileTrue(
+        //   drivetrain.applyRequest(() ->
+        //     drive
+        //     .withVelocityX(xLimiter.calculate(Math.hypot(OperatorConstants.joystickMap.get(-joystick.getRightY() * MaxSpeed), (OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getCos()))
+        //     .withVelocityY(yLimiter.calculate(Math.hypot((OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), (OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)) * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getSin()))
             // .withVelocityX(
             //   Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
             //    * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
@@ -316,20 +316,20 @@ public class RobotContainer {
             //     Math.hypot(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed))
             //      * Math.cos(poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getRadians() - (Math.atan2(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX())), yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY())))))
             //      * poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getTranslation().getAngle().getSin())
-              .withRotationalRate( MathUtil.clamp(10* (drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() > Math.PI ? 
-                drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() - (2.0 * Math.PI) : 
-                (drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() < -Math.PI ? 
-                drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() + (2.0 * Math.PI) : 
-                drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians())
-              ), -5, 5))
-            ));
+            //   .withRotationalRate( MathUtil.clamp(10* (drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() > Math.PI ? 
+            //     drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() - (2.0 * Math.PI) : 
+            //     (drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() < -Math.PI ? 
+            //     drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians() + (2.0 * Math.PI) : 
+            //     drivetrain.getState().Pose.getRotation().getRadians()-poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation().getRadians())
+            //   ), -5, 5))
+            // ));
         
             // DRIVETOCORAL
           joystick.leftTrigger().and(coralInRange).and(coralInList)
         .whileTrue(new DriveToCoral(drivetrain,
           () -> new Pose2d(
-            poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
-            poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
+            poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.2, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
+            poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.2, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
             poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()), 
           () -> getQuestPose()));
 

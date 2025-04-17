@@ -45,33 +45,10 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "waitUntilAndElevatorL2",
-      "waypointRelativePos": 0.8365122615803815,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "waitUntilAndElevatorL2"
-        }
-      }
-    },
-    {
-      "name": "waitUntilAndShootL2",
-      "waypointRelativePos": 0.9318801089918268,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "waitUntilAndShootL2"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.96,
-    "maxAcceleration": 4.5,
+    "maxAcceleration": 4.2,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

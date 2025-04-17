@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6528253424657535,
-        "y": 5.272131849315068
+        "x": 1.7580051369863015,
+        "y": 5.332234589041096
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8296020377623905,
-        "y": 5.095355154018431
+        "x": 1.9347818322829384,
+        "y": 5.155457893744459
       },
       "isLocked": false,
       "linkedName": null
@@ -45,22 +45,10 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "waitUntilAndElevatorL1",
-      "waypointRelativePos": 0.9046321525885563,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "waitUntilAndElevatorL1"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.96,
-    "maxAcceleration": 4.5,
+    "maxAcceleration": 4.2,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -74,7 +62,7 @@
   "folder": "LoliPopsAltASensor",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 157.38013505195968
+    "rotation": 134.99999999999991
   },
   "useDefaultConstraints": true
 }

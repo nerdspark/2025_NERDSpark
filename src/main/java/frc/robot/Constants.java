@@ -66,8 +66,8 @@ public final class Constants {
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1 - 0.065; 
     public static final double homePositionIntake = 0.125; // deployOffset + 0.02
-    public static final double algaeHomePositionIntake = 0.175; 
-    public static final double algaeDeployPositionIntake = 0.405;
+    public static final double algaeHomePositionIntake = 0.19; 
+    public static final double algaeDeployPositionIntake = 0.39;
     public static final double processorPositionIntake = 0.300;
     public static final double deployPositionIntake = 0.46; // 0.27 for algae
     public static final double transferPositionIntake = 0.28; 
@@ -117,7 +117,7 @@ public final class Constants {
       l1upper(1,l1.height + 5, 1.45),
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 4, 3.5),
-      l2(2,22.5, 4.5), 
+      l2(2,22.2, 4.5), 
       transfer(0, 3.7, 2),
       panic(0, 7, 1), 
       visionClear(0, 6.0, 0);
@@ -169,9 +169,9 @@ public final class Constants {
     public static final double currentLimit = 20;
     public static final double power = 0.7;
     public static final double offset = 43.7; // 64.5 - 20.8
-    public static final double deployPosition = -66; //-84;//deployPositionInches / inchesPerRotation; // rot of kraken
+    public static final double deployPosition = -76; //-84;//deployPositionInches / inchesPerRotation; // rot of kraken
     public static final double homePosition = -0; // rot of kraken
-    public static final double climbedPosition = 240;//climbedPositionInches / inchesPerRotation; // rot of kraken
+    public static final double climbedPosition = 235;//climbedPositionInches / inchesPerRotation; // rot of kraken
     public static final double rampRate = 0.08;
     public static final double kP = 1.2;
     public static final double kI = 0.0;
@@ -276,7 +276,7 @@ public static class Vision {
                 AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
         //Do not change these. Actual values will be calculated by the vision system.
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(2, 2, 4);
 
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
         
@@ -312,7 +312,7 @@ public static class Vision {
         // public static final double autoTurnCeiling = 5.0;
 
         public static final double kPoseAmbiguityThreshold = 0.2;
-        public static final double kSingleTagDistanceThreshold = 2.0;
+        public static final double kSingleTagDistanceThreshold = 4.0;
 
         public static final double kAlgaeCenterHeight = 0.2032; //in meters
 
@@ -348,9 +348,9 @@ public static class Vision {
         static {
 
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(26), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(23), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(17), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(17), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(20), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(28.5), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(0))));
           
