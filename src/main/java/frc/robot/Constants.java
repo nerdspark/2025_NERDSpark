@@ -115,12 +115,12 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 4, 2.0),
-      l1corner(1, l1.height, 2.5),
+      l1upper(1,l1.height + 3.5, 1.9),
+      l1corner(1, 13.0, 2),
       l1inside(1, l1.height + 4, 3.5),
       l2(2,22.6, 3.75), 
       l2auton(2,21.3, 3.75), 
-      transfer(0, 3.7, 2),
+      transfer(0, 3.7, 1.25),
       panic(0, 15, 4), 
       visionClear(0, 6.0, 0);
       

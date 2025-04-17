@@ -115,7 +115,7 @@ public class RobotContainer {
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
-    private final CommandXboxController copilot = new CommandXboxController(1);
+    private final CommandXboxController copilot = new CommandXboxController(2);
 
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -360,7 +360,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     /* Run the path selected from the auto chooser */
     // return new Command() {};
-    return autoChooser.getSelected().withTimeout(15.2).andThen(coralManipulator.stopShooter().alongWith(coralManipulator.stopIndexer().alongWith(coralManipulator.stopIntake())));
+    return autoChooser.getSelected().withTimeout(14.8).andThen(coralManipulator.stopShooter().alongWith(coralManipulator.stopIndexer().alongWith(coralManipulator.stopIntake())));
 
   }
   private void configureLEDs() {
