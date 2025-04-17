@@ -83,6 +83,12 @@
           "name": "elevatorToL1"
         }
       }
+    },
+    {
+      "name": "elevatorShootL1",
+      "waypointRelativePos": 1.8689956331877713,
+      "endWaypointRelativePos": null,
+      "command": null
     }
   ],
   "globalConstraints": {
