@@ -182,7 +182,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(elevatorLevel.l2.height));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2));
     NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(elevatorLevel.l1inside.height));
-    NamedCommands.registerCommand("elevatorSpitL1", coralManipulator.shoot(elevatorLevel.l1upper.shootVoltage));
+    NamedCommands.registerCommand("elevatorSpitL1", coralManipulator.shoot(elevatorLevel.l1corner.shootVoltage));
+    NamedCommands.registerCommand("elevatortoL1Corner", coralManipulator.setElevatorPosition(elevatorLevel.l1corner.height));
     NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1));
     NamedCommands.registerCommand("elevatorShootL1Corner", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1corner));
     NamedCommands.registerCommand("elevatorShootL1Inside", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1inside));

@@ -58,7 +58,7 @@
       }
     },
     {
-      "name": "elevatorToL1",
+      "name": "elevatortoL1Corner",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": {
@@ -69,7 +69,7 @@
       }
     },
     {
-      "name": "elevatorShootL1",
+      "name": "elevatorShootL1Corner",
       "waypointRelativePos": 0.95,
       "endWaypointRelativePos": null,
       "command": null
