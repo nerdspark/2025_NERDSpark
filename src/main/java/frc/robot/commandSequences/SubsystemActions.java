@@ -151,7 +151,7 @@ public class SubsystemActions {
       coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.transfer.height),
       coralManipulator.shoot(CoralConstants.autoShootVoltageTransfer),
       new WaitUntilCommand(() -> !coralManipulator.getIntakeSensor()), 
-      new WaitCommand(0.0), 
+      new WaitCommand(0.1), 
       coralManipulator.intakeToRetract(),
       new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
       new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 

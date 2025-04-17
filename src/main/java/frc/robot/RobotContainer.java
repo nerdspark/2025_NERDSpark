@@ -284,8 +284,9 @@ public class RobotContainer {
     //intake commands
     joystick.rightTrigger()
       .onTrue(coralManipulator.setCoralStateCommand(coralState.empty))
-      .onTrue(coralManipulator.intakeCommand())//.onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
-      .onFalse(coralManipulator.intakeToHome());//.onlyIf(() -> !coralManipulator.getCoralState().equals(coralState.coralInIntake) ));
+      .onTrue(coralManipulator.intakeCommand());//.onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
+      // .onFalse(coralManipulator.intakeToHome());//.onlyIf(() -> !coralManipulator.getCoralState().equals(coralState.coralInIntake) ));
+    joystick.x().onTrue(coralManipulator.intakeToHome());
 
     joystick.rightBumper().onTrue(SubsystemActions.intakeAlgae(coralManipulator)).onFalse(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)));
     new Trigger(() -> coralManipulator.getCoralState().equals(coralState.algaeInIntake) && coralManipulator.getIntakeSensor()).onTrue(new WaitCommand(0.5).andThen(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage))));
