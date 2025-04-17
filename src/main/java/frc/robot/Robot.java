@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
 
     private final RobotContainer m_robotContainer;
 
-    private NerdQuestNav questNav = new NerdQuestNav(new Transform3d());
+    // private NerdQuestNav questNav = new NerdQuestNav(new Transform3d());
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
         // }
         SmartDashboard.putNumber("Match Time",DriverStation.getMatchTime());
 
-        questNav.processHeartbeat();
+        // questNav.processHeartbeat();
     }
 
     @Override

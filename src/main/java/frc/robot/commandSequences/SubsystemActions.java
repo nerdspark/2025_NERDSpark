@@ -98,6 +98,7 @@ public class SubsystemActions {
     }
     public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level) {
         return new SequentialCommandGroup(
+          coralManipulator.stopShooter(),
             // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
             coralManipulator.setElevatorPosition(level.height),
             new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
@@ -108,7 +109,8 @@ public class SubsystemActions {
     }
     public static Command placeCoralAuto(CoralManipulator coralManipulator, elevatorLevel level) {
       return new SequentialCommandGroup(
-          // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
+        coralManipulator.stopShooter(),
+        // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
           coralManipulator.setElevatorPosition(level.height),
           new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
           // new WaitCommand(0.08),
@@ -132,14 +134,13 @@ public class SubsystemActions {
       new WaitUntilCommand(() -> !coralManipulator.getIndexerSensor()), 
       coralManipulator.shoot(CoralConstants.shooterRewindVoltage), 
       new WaitCommand(0.02),
-      new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()), 
+      new WaitUntilCommand(() -> coralManipulator.getIndexerSensor()).withTimeout(0.2), 
       coralManipulator.stopShooter(), 
       coralManipulator.stopIndexer(),
       coralManipulator.stopIntake(),
       // coralManipulator.elevatorToHome(), 
       coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
-      ).withTimeout(1.5).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
-
+      ).withTimeout(2.5).andThen(coralManipulator.stopShooter().alongWith(coralManipulator.stopIntake().alongWith(coralManipulator.stopIndexer()))).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
   }
 
   public static Command transferCoralForAuto(CoralManipulator coralManipulator) {
@@ -161,8 +162,7 @@ public class SubsystemActions {
       coralManipulator.stopIntake(),
       // coralManipulator.elevatorToHome(), 
       coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
-      ).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
-
+      ).withTimeout(2.5).andThen(coralManipulator.stopShooter().alongWith(coralManipulator.stopIntake().alongWith(coralManipulator.stopIndexer()))).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
   }
     
   public static Command transferCoralToIndexer(CoralManipulator coralManipulator) {
