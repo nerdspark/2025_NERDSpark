@@ -117,7 +117,7 @@ public final class Constants {
       l1upper(1,l1.height + 3.75, 1.7),
       l1corner(1, l1.height, 2.5),
       l1inside(1, l1.height + 4, 3.5),
-      l2(2,22.2, 4.5), 
+      l2(2,22.5, 4.5), 
       transfer(0, 3.7, 2),
       panic(0, 15, 4), 
       visionClear(0, 6.0, 0);
