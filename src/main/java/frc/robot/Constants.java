@@ -69,6 +69,7 @@ public final class Constants {
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1 - 0.065; 
     public static final double homePositionIntake = 0.125; // deployOffset + 0.02
+    public static final double transferHomePositionIntake = 0.22; // deployOffset + 0.02
     public static final double algaeHomePositionIntake = 0.19; 
     public static final double algaeDeployPositionIntake = 0.37;
     public static final double processorPositionIntake = 0.300;
@@ -117,11 +118,13 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 4, 2.0),
-      l1corner(1, l1.height, 2.5),
+      l1upper(1,l1.height + 3.5, 1.9),
+      l1corner(1, 13.85, 2.5),
+      l1cornerauton(1, 13.0, 2),
       l1inside(1, l1.height + 4, 3.5),
-      l2(2,22.2, 3.75), 
-      transfer(0, 3.7, 2),
+      l2(2,22.6, 3.75), 
+      l2auton(2,21.3, 3.75), 
+      transfer(0, 3.7, 1.25),
       panic(0, 15, 4), 
       visionClear(0, 6.0, 0);
       
@@ -358,7 +361,7 @@ public static class Vision {
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(12), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(12), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(20), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(21), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(28.5), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(0))));
           

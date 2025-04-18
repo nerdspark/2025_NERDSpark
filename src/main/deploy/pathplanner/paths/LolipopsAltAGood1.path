@@ -58,21 +58,26 @@
       }
     },
     {
-      "name": "elevatorToL1",
+      "name": "elevatortoL1Corner",
       "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "elevatorToL1"
+          "name": "elevatortoL1Corner"
         }
       }
     },
     {
-      "name": "elevatorShootL1",
+      "name": "elevatorShootL1Corner",
       "waypointRelativePos": 0.95,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "elevatorShootL1Corner"
+        }
+      }
     }
   ],
   "globalConstraints": {
