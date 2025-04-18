@@ -127,7 +127,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "waitUntilAndShootL1"
+                        "name": "waitUntilCoralInElevator"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "elevatorShootL1Corner"
                       }
                     },
                     {

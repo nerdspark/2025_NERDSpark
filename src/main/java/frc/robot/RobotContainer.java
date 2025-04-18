@@ -237,6 +237,10 @@ public class RobotContainer {
     // joystick.x().onTrue(new InstantCommand(() -> disableAimAssist(true)));
 
     // climb
+    new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L3).onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
+    new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L4).onTrue(climb.contract().alongWith(coralManipulator.stopDeploy()));
+    // new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L2).onTrue(climb.stopCommand());
+
     copilot.y().onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
     copilot.x().onTrue(climb.returnToHome());
     copilot.a().onTrue(climb.contract().alongWith(coralManipulator.stopDeploy()));
@@ -262,13 +266,13 @@ public class RobotContainer {
     //     drivetrain, 
     //     () -> new Pose2d(new Translation2d(0, FieldConstants.getClosestBargeGap(() -> getQuestPose())), Rotation2d.kCCW_90deg), 
     //     () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))));
-
+    joystick.povUp().whileTrue(SubsystemActions.placeCoral(coralManipulator, scoringSubsystem.getLevel().equals(ReefLevel.L1) ? elevatorLevel.l1upper : scoringSubsystem.getLevel().equals(ReefLevel.L1Top) ? elevatorLevel.l1corner : scoringSubsystem.getLevel().equals(ReefLevel.L2) ?elevatorLevel.l2 : elevatorLevel.l1));
     // full auto dropoffs for L2
-    joystick.povUp()//.and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
-      .whileTrue(//coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)
+    // joystick.povUp()//.and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
+      // .whileTrue(//coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)
         // .andThen(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose)))
         // .andThen(
-          SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
+          // SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
         // .and(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator))
           // .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height))
           // .onFalse(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
@@ -285,12 +289,12 @@ public class RobotContainer {
     //   .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
     //     .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
 
-    joystick.povRight()
-      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1corner));
-    joystick.povLeft()
-      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper));
-    joystick.povDown()
-      .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1));
+    // joystick.povRight()
+    //   .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1corner));
+    // joystick.povLeft()
+    //   .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1upper));
+    // joystick.povDown()
+    //   .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1));
 
     joystick.povRight().or(joystick.povLeft()).or(joystick.povDown()).or(joystick.povUp()).and(() -> !coralManipulator.getCoralState().equals(coralState.coralInIndexer)).onFalse(coralManipulator.elevatorToHome());
 
