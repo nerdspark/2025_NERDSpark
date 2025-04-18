@@ -90,7 +90,7 @@
   "folder": "LoliPoopsAltAGood",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 100.0
+    "rotation": 95.0
   },
   "useDefaultConstraints": true
 }

@@ -380,7 +380,7 @@ public class RobotContainer {
     ()-> false,
     ()->-joystick.getRightY(),
     ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX())).and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer)).and(() -> coralManipulator.getElevatorPosition() < CoralConstants.elevatorLevel.visionClear.height).onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
+    ()->-joystick.getLeftX()).andThen(SubsystemActions.placeCoral(coralManipulator,elevatorLevel.l2))).onFalse(new WaitCommand(0.1).andThen(coralManipulator.elevatorToHome().alongWith(coralManipulator.stopShooter())).onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)));//.and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer)).and(() -> coralManipulator.getElevatorPosition() < CoralConstants.elevatorLevel.visionClear.height).onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
   }
 
   private void configureAutoChooser() {

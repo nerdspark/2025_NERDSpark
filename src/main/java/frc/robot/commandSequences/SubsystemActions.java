@@ -118,20 +118,7 @@ public class SubsystemActions {
             new WaitCommand(0.08),
             coralManipulator.shoot(level.shootVoltage), 
             // new WaitCommand(1.0/level.shootVoltage), 
-            coralManipulator.setCoralStateCommand(coralState.empty)).alongWith(new SequentialCommandGroup(coralManipulator.intakeToAlgaeHome(), new WaitCommand(0.1), coralManipulator.intakeToHome()));
-    }
-    public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level, Supplier<Double> offset) {
-        return new SequentialCommandGroup(
-          new InstantCommand(() -> SmartDashboard.putString("level placing", level.toString())),
-          // coralManipulator.intakeToAlgaeClear(),
-          coralManipulator.stopShooter(),
-            // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
-            coralManipulator.setElevatorPosition(level.height + offset.get()),
-            new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
-            new WaitCommand(0.08),
-            coralManipulator.shoot(level.shootVoltage), 
-            // new WaitCommand(1.0/level.shootVoltage), 
-            coralManipulator.setCoralStateCommand(coralState.empty)).alongWith(new SequentialCommandGroup(coralManipulator.intakeToAlgaeHome(), new WaitCommand(0.1), coralManipulator.intakeToHome()));
+            coralManipulator.setCoralStateCommand(coralState.empty)).withTimeout(2.0).andThen(new WaitCommand(0.75).andThen(coralManipulator.elevatorToHome().andThen(coralManipulator.stopShooter())));
     }
     public static Command reverseTransfer(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
