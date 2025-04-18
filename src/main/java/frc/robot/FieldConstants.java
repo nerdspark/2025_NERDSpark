@@ -64,14 +64,14 @@ public class FieldConstants {
     // Measured from floor to bottom of cage
     public static final double deepHeight = Units.inchesToMeters(3.125);
     public static final double shallowHeight = Units.inchesToMeters(30.125);
-    public static final double[] bargeGaps = new double[8];
+    public static final double[] bargeGaps = new double[4];
     static {
-        bargeGaps[0] = (fieldWidth + farCage.getY() + cageThickness * 0.5) * 0.5;
+        // bargeGaps[0] = (fieldWidth + farCage.getY() + cageThickness * 0.5) * 0.5;
         bargeGaps[1] = (farCage.getY() + middleCage.getY()) * 0.5;
-        bargeGaps[2] = (closeCage.getY() + middleCage.getY()) * 0.5;
-        bargeGaps[3] = (closeCage.getY() - cageThickness * 0.5 + middlePoleThickness * 0.5 + fieldLength * 0.5) * 0.5;
-        for (int i = 0; i <= 3; i++) {
-            bargeGaps[7 - i] = fieldWidth -bargeGaps[i];
+        bargeGaps[0] = (closeCage.getY() + middleCage.getY()) * 0.5;
+        // bargeGaps[3] = (closeCage.getY() - cageThickness * 0.5 + middlePoleThickness * 0.5 + fieldLength * 0.5) * 0.5;
+        for (int i = 0; i <= 1; i++) {
+            bargeGaps[3 - i] = fieldWidth -bargeGaps[i];
         }
     }
   }
