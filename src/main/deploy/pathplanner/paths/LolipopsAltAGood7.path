@@ -16,19 +16,24 @@
     },
     {
       "anchor": {
-        "x": 3.3,
-        "y": 4.025
+        "x": 3.425856164383562,
+        "y": 3.1835616438356165
       },
       "prevControl": {
-        "x": 2.1634417808219175,
-        "y": 3.3184075342465755
+        "x": 2.2892979452054796,
+        "y": 2.4769691780821916
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.38175046554934816,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -56,7 +61,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "LoliPoopsAltAGood",

@@ -32,6 +32,9 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants.CoralStations;
+import frc.robot.FieldConstants.L1DiagonalShootingOffSets;
+import frc.robot.FieldConstants.L1VerticalShootingOffSets;
+import frc.robot.FieldConstants.L1DiagonalShootingOffSets;
 import frc.robot.FieldConstants.ReefLevel;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
@@ -66,6 +69,7 @@ public final class Constants {
     public static final double deployRampRate = 0.03;
     public static final double deployOffset = 0.25-0.1 - 0.065; 
     public static final double homePositionIntake = 0.125; // deployOffset + 0.02
+    public static final double transferHomePositionIntake = 0.22; // deployOffset + 0.02
     public static final double algaeHomePositionIntake = 0.19; 
     public static final double algaeDeployPositionIntake = 0.37;
     public static final double processorPositionIntake = 0.300;
@@ -114,11 +118,13 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 4, 2.2),
-      l1corner(1, l1.height, 2.5),
+      l1upper(1,l1.height + 3.5, 1.9),
+      l1corner(1, 13.85, 2.5),
+      l1cornerauton(1, 13.0, 2),
       l1inside(1, l1.height + 4, 3.5),
-      l2(2,21.2, 3.75), 
-      transfer(0, 3.7, 2),
+      l2(2,22.6, 3.75), 
+      l2auton(2,21.3, 3.75), 
+      transfer(0, 3.7, 1.25),
       panic(0, 15, 4), 
       visionClear(0, 6.0, 0);
       
@@ -256,7 +262,7 @@ public static class AutoDropoff {
 public static class Vision {
 
 
-        public static boolean DOGLOG_ENABLED = false;
+        public static boolean DOGLOG_ENABLED = true;
 
         public static final boolean USE_VISION = true;
         public static final boolean USE_QUESTNAV = false;
@@ -353,9 +359,9 @@ public static class Vision {
         static {
 
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(17), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(17), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(20), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(12), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(12), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(21), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(28.5), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(0))));
           
@@ -368,6 +374,47 @@ public static class Vision {
           coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
           coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
          
+        }
+
+        public static final Map<L1DiagonalShootingOffSets, Transform2d> l1DiagonalShootingOffsets = new HashMap<>();
+        public static final Map<L1VerticalShootingOffSets, Transform2d> l1VerticalShootingOffsets = new HashMap<>();
+
+        static {
+         l1DiagonalShootingOffsets.put(
+          L1DiagonalShootingOffSets.LEFT, 
+          new Transform2d(Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.LEFT.x), 
+               Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.LEFT.y), 
+               new Rotation2d(Math.toRadians(FieldConstants.L1DiagonalShootingOffSets.LEFT.angle))));
+
+          l1DiagonalShootingOffsets.put(
+                L1DiagonalShootingOffSets.RIGHT, 
+                new Transform2d(Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.RIGHT.x), 
+                     Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.RIGHT.y), 
+                     new Rotation2d(Math.toRadians(FieldConstants.L1DiagonalShootingOffSets.RIGHT.angle))));
+
+           l1VerticalShootingOffsets.put(
+                 L1VerticalShootingOffSets.RIGHTOUTSIDE, 
+                  new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTOUTSIDE.x), 
+                      Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTOUTSIDE.y), 
+                      new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.RIGHTOUTSIDE.angle))));
+
+           l1VerticalShootingOffsets.put(
+               L1VerticalShootingOffSets.RIGHTINSIDE, 
+                 new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTINSIDE.x), 
+                   Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTINSIDE.y), 
+                     new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.RIGHTINSIDE.angle))));
+                             
+            l1VerticalShootingOffsets.put(
+                 L1VerticalShootingOffSets.LEFTOUTSIDE, 
+                     new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTOUTSIDE.x), 
+                         Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTOUTSIDE.y), 
+                             new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.LEFTOUTSIDE.angle))));
+         
+                             l1VerticalShootingOffsets.put(
+                              L1VerticalShootingOffSets.LEFTINSIDE, 
+                                  new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTINSIDE.x), 
+                                      Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTINSIDE.y), 
+                                          new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.LEFTINSIDE.angle))));
         }
         
         public static final Set<Integer> nonReefTagFiducialIDs = new HashSet<>(Set.of(1, 2, 3, 4, 5, 12, 13, 14, 15, 16));

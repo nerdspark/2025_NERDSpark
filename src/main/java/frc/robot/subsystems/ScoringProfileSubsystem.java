@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.FieldConstants;
+import frc.robot.FieldConstants.CoralStation;
+import frc.robot.FieldConstants.CoralStations;
 import frc.robot.FieldConstants.ReefLevel;
 import frc.robot.util.AllianceFlipUtil;
 
@@ -33,6 +35,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
   private int level = 0;
   private FieldConstants.ReefLevel reefLevel  = FieldConstants.ReefLevel.L3;
   private FieldConstants.CoralStations coralStationSide = FieldConstants.CoralStations.LEFT;
+
   private Pose2d selectedBranchPose = new Pose2d();
   private Pose2d selectedCoralStationPose = new Pose2d();
   private Pose2d selectedAlgaePose = new Pose2d();
@@ -89,26 +92,33 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
   if(Constants.Vision.USE_BUTTON_BOARD) {
     for (int i = 0; i < 12; i++) {
-      if(DriverStation.getStickButton(1, i+1)) {
+      if(DriverStation.getStickButton(2, i+1)) {
         branch = branchesSayan[i]; //Adjusting for incorrect button board orientation.
       }
     }
 
     for(int j=12; j<17; j++) {
-      if(DriverStation.getStickButton(1, j+1)) {
+      if(DriverStation.getStickButton(2, j+1)) {
         reefLevel = FieldConstants.ReefLevel.values()[j-12];
         // System.out.println("J: " + j + "; reeflevel: " + reefLevel.level);
       }
     }
 
 
-    for(int k=17; k<19; k++) {
-      if(DriverStation.getStickButton(1, k+1)) {
-        coralStationSide = FieldConstants.CoralStations.values()[k-17];
-      }
+    // for(int k=17; k<19; k++) {
+    //   if(DriverStation.getStickButton(1, k+1)) {
+    //     coralStationSide = FieldConstants.CoralStations.values()[k-17];
+    //   }
+
+
+      for(int k=17; k<19; k++) {
+        if(DriverStation.getStickButton(2, k+1)) {
+          coralStationSide = FieldConstants.CoralStations.values()[k-17];
+        }
+
     }
 
-    visionDisabled = DriverStation.getStickButton(1, 20);
+    visionDisabled = DriverStation.getStickButton(2, 20);
 
     // SmartDashboard.putNumber("reeflevel", reefLevel.level);
 
@@ -116,13 +126,13 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
   }
   else {
-    if(DriverStation.getStickButtonPressed(0, 7)) {
+    if(DriverStation.getStickButtonPressed(2, 7)) {
       branch++;
       if(branch > 11) {
         branch = 0;
       }
     }
-    if(DriverStation.getStickButtonPressed(0, 1)) {
+    if(DriverStation.getStickButtonPressed(2, 1)) {
       level++;
       reefLevel = FieldConstants.ReefLevel.fromLevel(level);
       if(level > 5) {
@@ -135,16 +145,15 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
     DogLog.log("ScoringProfileSubSystem/Selected Branch", branch);
     DogLog.log("ScoringProfileSubSystem/Selected ReefLevel", reefLevel);
-    DogLog.log("ScoringProfileSubSystem/Selected CoralStation", coralStationSide);
   }
     selectedBranchPose = AllianceFlipUtil.apply(FieldConstants.Reef.branchPositions.get(branch).get(reefLevel).toPose2d());
     selectedAlgaePose = AllianceFlipUtil.apply(FieldConstants.Reef.centerFaces[branch/2]);
-    if(coralStationSide == FieldConstants.CoralStations.LEFT) {
-      selectedCoralStationPose = AllianceFlipUtil.apply(isOutsideCoralStation ? FieldConstants.CoralStation.leftOutsideFace : FieldConstants.CoralStation.leftCenterFace);
-    }
-    else {
-      selectedCoralStationPose = AllianceFlipUtil.apply(isOutsideCoralStation ? FieldConstants.CoralStation.rightOutsideFace :FieldConstants.CoralStation.rightCenterFace);
-    }
+    // if(coralStationSide == FieldConstants.CoralStations.LEFT) {
+    //   selectedCoralStationPose = AllianceFlipUtil.apply(isOutsideCoralStation ? FieldConstants.CoralStation.leftOutsideFace : FieldConstants.CoralStation.leftCenterFace);
+    // }
+    // else {
+    //   selectedCoralStationPose = AllianceFlipUtil.apply(isOutsideCoralStation ? FieldConstants.CoralStation.rightOutsideFace :FieldConstants.CoralStation.rightCenterFace);
+    // }
 
     // DogLog.log("ScoringProfileSubSystem/Selected branch", branch);
     // DogLog.log("ScoringProfileSubSystem/Selected level", reefHeight);
@@ -185,8 +194,16 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     this.coralStationSide = coralStationSide;
   }
 
+ 
+
+
   public Pose2d getRobotPoseForSelectedBranch() {
-   
+
+    if(reefLevel == FieldConstants.ReefLevel.L1)
+      return getRobotPoseForL1Diagonal();
+    else if(reefLevel == FieldConstants.ReefLevel.L1Top)
+      return getRobotPoseForL1Vertical();
+    else   
       return selectedBranchPose.plus(Constants.Vision.reefLevelOffsetsMap.get(reefLevel));
 
   }
@@ -195,8 +212,54 @@ public class ScoringProfileSubsystem extends SubsystemBase {
     return selectedAlgaePose.plus(Constants.Vision.algaeOffset);
   }
 
-  public Pose2d getRobotPoseForSelectedCoralStation() {
-    return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide));
-  }
+  // public Pose2d getRobotPoseForSelectedCoralStation() {
+  //   return selectedCoralStationPose.plus(Constants.Vision.coralStationOffSetsMap.get(coralStationSide));
+  // }
 
+  public Pose2d getRobotPoseForL1Diagonal() {
+
+    Pose2d robotPoseForScoring ;
+
+    if(branch % 2 == 0) {
+      robotPoseForScoring = selectedBranchPose
+      .plus(Constants.Vision.l1DiagonalShootingOffsets.get(FieldConstants.L1DiagonalShootingOffSets.RIGHT));
+    }
+    else {
+      robotPoseForScoring = selectedBranchPose
+      .plus(Constants.Vision.l1DiagonalShootingOffsets.get(FieldConstants.L1DiagonalShootingOffSets.LEFT));
+    }
+
+    return robotPoseForScoring;
+    
+  }
+  public Pose2d getRobotPoseForL1Vertical() {
+
+    Pose2d robotPoseForScoring;
+    boolean inside;
+
+    if((branch % 2 == 0 && getCoralStationSide() == CoralStations.LEFT) || (branch % 2 != 0 && getCoralStationSide() == CoralStations.RIGHT)) {
+      inside = true;
+    }
+    else {
+      inside = false;
+    }
+
+    if(branch % 2 == 0) { // RIGHT
+      if(inside) {
+       return getSelectedBranchPose().plus(Constants.Vision.l1VerticalShootingOffsets.get(FieldConstants.L1VerticalShootingOffSets.RIGHTINSIDE));
+      }
+      else {
+        return getSelectedBranchPose().plus(Constants.Vision.l1VerticalShootingOffsets.get(FieldConstants.L1VerticalShootingOffSets.RIGHTOUTSIDE));
+      } 
+    }
+    else { // LEFT
+      if(inside) {
+        return getSelectedBranchPose().plus(Constants.Vision.l1VerticalShootingOffsets.get(FieldConstants.L1VerticalShootingOffSets.LEFTINSIDE));      }
+      else {
+        return getSelectedBranchPose().plus(Constants.Vision.l1VerticalShootingOffsets.get(FieldConstants.L1VerticalShootingOffSets.LEFTOUTSIDE));
+      }
+    }
+    
+
+  }
 }

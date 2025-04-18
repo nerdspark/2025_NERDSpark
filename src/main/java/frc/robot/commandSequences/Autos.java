@@ -126,21 +126,21 @@ public final class Autos {
             
           // }else{
             // if(reefLevel.get() == ReefLevel.L4){
-              shiftXT = MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
-              0.0,1.0);
+              // shiftXT = MathUtil.clamp((yDistance / (Reef.faceLength * 2)) + ((xDistance - 0.3) / (Reef.faceLength * 3)),
+              // 0.0,1.0);
 
-              shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
+              // shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / Reef.faceLength), 0.0, 1.0);
 
-              goal = goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
+              // goal = goal.plus(new Transform2d(-shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
 
             // }else{
-              // shiftXT =    MathUtil.clamp(((yDistance) / (Reef.faceLength *2 )) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
-              // 0.0,1.0);
+              shiftXT =    MathUtil.clamp(((yDistance) / (Reef.faceLength *2 )) - ((xDistance + 0.3) / (Reef.faceLength * 3)),
+              0.0,1.0);
 
-              // shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / -Reef.faceLength), 0.0, 1.0);
+              shiftYT = MathUtil.clamp( yDistance <= 0.2 ? 0.0 : (offset.getX() / -Reef.faceLength), 0.0, 1.0);
 
-              // goal = goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
+              goal = goal.plus(new Transform2d(shiftXT * maxDistanceReefLineup , Math.copySign(shiftYT * maxDistanceReefLineup * 0.8, offset.getY()), new Rotation2d()));
 
 
             // }

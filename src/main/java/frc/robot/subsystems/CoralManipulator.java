@@ -91,6 +91,9 @@ public class CoralManipulator extends SubsystemBase {
     intakeConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive);
     intake.getConfigurator().apply(intakeConfig);
   }
+  public double getElevatorPosition() {
+    return (elevatorLeft.getPosition().getValueAsDouble() + elevatorRight.getPosition().getValueAsDouble()) * 0.5;
+  }
   private void configureShooter() {
     shooterConfig.CurrentLimits = new CurrentLimitsConfigs()
       .withStatorCurrentLimit(CoralConstants.shooterCurrentLimit)
@@ -229,6 +232,10 @@ public class CoralManipulator extends SubsystemBase {
   }
   public Command intakeToAlgaeHome() {
     return new InstantCommand(() ->setDeployPosition(CoralConstants.algaeHomePositionIntake));
+  }
+  
+  public Command intakeToTransferHome() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.transferHomePositionIntake));
   }
   public Command intakeToProcessor() {
     return new InstantCommand(() ->setDeployPosition(CoralConstants.processorPositionIntake));
