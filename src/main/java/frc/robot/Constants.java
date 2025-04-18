@@ -125,7 +125,7 @@ public final class Constants {
       l1cornerauton(1, 13.0, 1.8),
       l1inside(1, l1.height + 4, 3.5),
       l2(2,21.2, 4.3), 
-      l2auton(2,21.7, 3.95), 
+      l2auton(2,21.3, 3.75), 
       transfer(0, 3.7, 1.25),
       panic(0, 15, 4), 
       visionClear(0, 6.0, 0);
