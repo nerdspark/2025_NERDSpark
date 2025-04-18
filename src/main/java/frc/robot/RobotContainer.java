@@ -134,7 +134,6 @@ public class RobotContainer {
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
     public final ScoringProfileSubsystem scoringSubsystem;
-    public final ScoringProfileSubsystem scoringSubsystem;
 
 
 
@@ -152,7 +151,6 @@ public class RobotContainer {
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
     // poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
     
-    scoringSubsystem = new ScoringProfileSubsystem();
     scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
     coralManipulator = new CoralManipulator();
