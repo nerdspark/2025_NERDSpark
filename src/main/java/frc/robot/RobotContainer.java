@@ -62,6 +62,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -116,7 +117,7 @@ public class RobotContainer {
 
     private final CommandXboxController joystick = new CommandXboxController(0);
     private final CommandXboxController copilot = new CommandXboxController(1);
-    private final Joystick buttonBoard = new Joystick(2);
+    private final CommandJoystick buttonBoard = new CommandJoystick(2);
 
     // private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -155,6 +156,7 @@ public class RobotContainer {
     // climb = new Climb();
     coralManipulator = new CoralManipulator();
     climb = new Climb();
+
 
     // configureTriggers();
     configureNamedCommands();
@@ -237,8 +239,8 @@ public class RobotContainer {
     // joystick.x().onTrue(new InstantCommand(() -> disableAimAssist(true)));
 
     // climb
-    new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L3).onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
-    new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L4).onTrue(climb.contract().alongWith(coralManipulator.stopDeploy()));
+    // new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L3).onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
+    // new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L4).onTrue(climb.contract().alongWith(coralManipulator.stopDeploy()));
     // new Trigger(() -> scoringSubsystem.getLevel() == ReefLevel.L2).onTrue(climb.stopCommand());
 
     copilot.y().onTrue(climb.extend().alongWith(coralManipulator.intakeToDeploy()));
@@ -266,7 +268,7 @@ public class RobotContainer {
     //     drivetrain, 
     //     () -> new Pose2d(new Translation2d(0, FieldConstants.getClosestBargeGap(() -> getQuestPose())), Rotation2d.kCCW_90deg), 
     //     () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))));
-    joystick.povUp().whileTrue(SubsystemActions.placeCoral(coralManipulator, scoringSubsystem.getLevel().equals(ReefLevel.L1) ? elevatorLevel.l1upper : scoringSubsystem.getLevel().equals(ReefLevel.L1Top) ? elevatorLevel.l1corner : scoringSubsystem.getLevel().equals(ReefLevel.L2) ?elevatorLevel.l2 : elevatorLevel.l1));
+    // joystick.povUp().whileTrue(SubsystemActions.placeCoral(coralManipulator, () -> scoringSubsystem.getLevel().equals(ReefLevel.L1) ? elevatorLevel.l1upper : scoringSubsystem.getLevel().equals(ReefLevel.L1Top) ? elevatorLevel.l1corner : scoringSubsystem.getLevel().equals(ReefLevel.L2) ?elevatorLevel.l2 : elevatorLevel.l1));
     // full auto dropoffs for L2
     // joystick.povUp()//.and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
       // .whileTrue(//coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)
@@ -288,7 +290,12 @@ public class RobotContainer {
     //     .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose).transformBy(new Transform2d(new Translation2d((copilot.getLeftX() + joystick.getRightX())/2, Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1).getRotation().plus(Rotation2d.kCCW_90deg)),new Rotation2d()))))
     //   .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
     //     .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
-
+    // joystick.povUp().whileTrue(SubsystemActions.placeCoral(coralManipulator, () -> buttonBoard.getRawButton(12) ? elevatorLevel.l1corner : DriverStation.getStickButton(2, 13) ? elevatorLevel.l1upper : elevatorLevel.l2));
+    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(13)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1corner));
+    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(14)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1upper));
+    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(15)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
+    // joystick.povUp()
+    //   .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
     // joystick.povRight()
     //   .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l1corner));
     // joystick.povLeft()

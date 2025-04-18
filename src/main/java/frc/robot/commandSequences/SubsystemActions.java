@@ -7,9 +7,11 @@ package frc.robot.commandSequences;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -98,6 +100,8 @@ public class SubsystemActions {
     }
     public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level) {
         return new SequentialCommandGroup(
+          new InstantCommand(() -> SmartDashboard.putString("level placing", level.toString())),
+          coralManipulator.intakeToAlgaeClear(),
           coralManipulator.stopShooter(),
             // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
             coralManipulator.setElevatorPosition(level.height),
