@@ -296,7 +296,7 @@ public class RobotContainer {
     joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(13).or(buttonBoard.button(14))).onTrue(SubsystemActions.intakeL1(coralManipulator));
     // joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(13)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1corner));
     // joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(14)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1upper));
-    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(15)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2, () -> l2offset));
+    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(15)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2));
     // joystick.povUp()
     //   .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
     // joystick.povRight()
