@@ -138,7 +138,7 @@ public class SubsystemActions {
       coralManipulator.stopShooter(), 
       coralManipulator.stopIndexer(),
       coralManipulator.stopIntake(),
-      // coralManipulator.elevatorToHome(), 
+      coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height),
       coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
       ).withTimeout(2.5).andThen(coralManipulator.stopShooter().alongWith(coralManipulator.stopIntake().alongWith(coralManipulator.stopIndexer()))).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
   }
@@ -160,7 +160,7 @@ public class SubsystemActions {
       coralManipulator.stopShooter(), 
       coralManipulator.stopIndexer(),
       coralManipulator.stopIntake(),
-      // coralManipulator.elevatorToHome(), 
+      coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height),
       coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
       ).withTimeout(2.5).andThen(coralManipulator.stopShooter().alongWith(coralManipulator.stopIntake().alongWith(coralManipulator.stopIndexer()))).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
   }

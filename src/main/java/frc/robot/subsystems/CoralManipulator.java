@@ -91,6 +91,9 @@ public class CoralManipulator extends SubsystemBase {
     intakeConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive);
     intake.getConfigurator().apply(intakeConfig);
   }
+  public double getElevatorPosition() {
+    return (elevatorLeft.getPosition().getValueAsDouble() + elevatorRight.getPosition().getValueAsDouble()) * 0.5;
+  }
   private void configureShooter() {
     shooterConfig.CurrentLimits = new CurrentLimitsConfigs()
       .withStatorCurrentLimit(CoralConstants.shooterCurrentLimit)
