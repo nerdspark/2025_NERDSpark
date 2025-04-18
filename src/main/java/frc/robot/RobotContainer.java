@@ -254,8 +254,8 @@ public class RobotContainer {
     joystick.back()
       .whileTrue(drivetrain.applyRequest(() ->
       drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
-        .withVelocityY(yLimiter.calculate((FieldConstants.getClosestBargeGap(() -> getQuestPose()) - getQuestPose().getY()) * 0.5 * MaxSpeed * (AllianceFlipUtil.shouldFlip() ? -1 : 1)))
-        .withRotationalRate(zLimiter.calculate(AllianceFlipUtil.apply(new Rotation2d()).minus(getQuestPose().getRotation()).getRadians() * 0.4 * MaxAngularRate))
+        .withVelocityY(yLimiter.calculate((FieldConstants.getClosestBargeGap(() -> getQuestPose()) - getQuestPose().getY()) * 1.0 * MaxSpeed * (AllianceFlipUtil.shouldFlip() ? -1 : 1)))
+        .withRotationalRate(zLimiter.calculate(AllianceFlipUtil.apply(new Rotation2d()).minus(getQuestPose().getRotation()).getRadians() * 0.8 * MaxAngularRate))
       ));
     
     // .whileTrue(new DriveBetweenCages(

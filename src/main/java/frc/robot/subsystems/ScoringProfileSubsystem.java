@@ -8,6 +8,7 @@ import java.lang.constant.Constable;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -118,7 +119,7 @@ public class ScoringProfileSubsystem extends SubsystemBase {
 
     }
 
-    visionDisabled = DriverStation.getStickButton(2, 20);
+    // visionDisabled = DriverStation.getStickButton(2, 20);
 
     // SmartDashboard.putNumber("reeflevel", reefLevel.level);
 
