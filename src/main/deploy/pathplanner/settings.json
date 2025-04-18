@@ -4,10 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "LeftSourceCenterStart",
+    "LoliPoopsAltAGood",
     "LoliPops",
     "LoliPopsAltASensor",
     "LoliPopsAltB",
-    "LoliPoopsAltAGood",
+    "LoliPopsAltABetter",
     "RightSourceCenterStart"
   ],
   "autoFolders": [],
