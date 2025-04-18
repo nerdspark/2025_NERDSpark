@@ -74,7 +74,7 @@ public final class Constants {
     public static final double algaeDeployPositionIntake = 0.40;
     public static final double algaeClearPositionIntake = algaeDeployPositionIntake;
     public static final double processorPositionIntake = 0.320;
-    public static final double l1ReefPositionintake = 0.27;
+    public static final double l1ReefPositionintake = 0.25;
     public static final double deployPositionIntake = 0.475; // 0.27 for algae
     public static final double transferPositionIntake = 0.28; 
     public static final double processorVoltage = -16;
