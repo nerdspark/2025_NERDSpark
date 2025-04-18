@@ -111,6 +111,35 @@ public class SubsystemActions {
             // new WaitCommand(1.0/level.shootVoltage), 
             coralManipulator.setCoralStateCommand(coralState.empty)).alongWith(new SequentialCommandGroup(coralManipulator.intakeToAlgaeHome(), new WaitCommand(0.1), coralManipulator.intakeToHome()));
     }
+    public static Command placeCoral(CoralManipulator coralManipulator, elevatorLevel level, Supplier<Double> offset) {
+        return new SequentialCommandGroup(
+          new InstantCommand(() -> SmartDashboard.putString("level placing", level.toString())),
+          coralManipulator.intakeToAlgaeClear(),
+          coralManipulator.stopShooter(),
+            // new WaitUntilCommand(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator)),
+            coralManipulator.setElevatorPosition(level.height + offset.get()),
+            new WaitUntilCommand(() -> coralManipulator.elevatorAtTarget()),
+            new WaitCommand(0.08),
+            coralManipulator.shoot(level.shootVoltage), 
+            // new WaitCommand(1.0/level.shootVoltage), 
+            coralManipulator.setCoralStateCommand(coralState.empty)).alongWith(new SequentialCommandGroup(coralManipulator.intakeToAlgaeHome(), new WaitCommand(0.1), coralManipulator.intakeToHome()));
+    }
+    public static Command reverseTransfer(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.intakeToTransfer(),
+      // coralManipulator.setIndexerVoltage(CoralConstants.indexerTransferVoltage),
+      coralManipulator.setIntakeVoltage(CoralConstants.intakeTransferVoltage), 
+      // coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.transfer.height),
+      // coralManipulator.shoot(CoralConstants.elevatorLevel.transfer.shootVoltage),
+      // new WaitUntilCommand(() -> coralManipulator.deployAtTarget()),
+      new WaitUntilCommand(() -> !coralManipulator.getIntakeSensor()), 
+      coralManipulator.setIntakeVoltage(-CoralConstants.intakeTransferVoltage), 
+      new WaitUntilCommand(() -> coralManipulator.getIntakeSensor()), 
+      new WaitCommand(0.1), 
+      coralManipulator.stopIntake(),
+      coralManipulator.setCoralStateCommand(coralState.coralInIndexer)
+      ).withTimeout(2.5).andThen(coralManipulator.stopShooter().alongWith(coralManipulator.stopIntake().alongWith(coralManipulator.stopIndexer()))).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
     public static Command placeCoralAuto(CoralManipulator coralManipulator, elevatorLevel level) {
       return new SequentialCommandGroup(
         coralManipulator.stopShooter(),

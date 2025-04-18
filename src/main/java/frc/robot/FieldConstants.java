@@ -284,8 +284,8 @@ public class FieldConstants {
 
   
   public enum L1DiagonalShootingOffSets {   
-    LEFT(19.8,5.5, 25), //INCHES DEGREES
-    RIGHT(19.8,5.5, -25);
+    LEFT(19.8 + 3 + 2,3.7, 25), //INCHES DEGREES
+    RIGHT(19.8 + 3 + 2,-3.7, -25);
 
     L1DiagonalShootingOffSets(double x, double y, double angle) {
       this.x = x;
@@ -302,8 +302,8 @@ public class FieldConstants {
   public enum L1VerticalShootingOffSets {   
     LEFTINSIDE(10,5, 0), //INCHES, DEGREES
     RIGHTINSIDE(10,-5, -0),
-    RIGHTOUTSIDE(10,5, -0),
-    LEFTOUTSIDE(10,-5, -0);
+    RIGHTOUTSIDE(10,6, -0),
+    LEFTOUTSIDE(10,-6, -0);
 
 
     

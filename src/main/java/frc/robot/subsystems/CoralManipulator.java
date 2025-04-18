@@ -237,6 +237,10 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() ->setDeployPosition(CoralConstants.algaeHomePositionIntake));
   }
   
+  public Command intakeToL1Reef() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.l1ReefPositionintake));
+  }
+  
   public Command intakeToTransferHome() {
     return new InstantCommand(() ->setDeployPosition(CoralConstants.transferHomePositionIntake));
   }

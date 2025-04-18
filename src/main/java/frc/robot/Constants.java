@@ -74,6 +74,7 @@ public final class Constants {
     public static final double algaeDeployPositionIntake = 0.40;
     public static final double algaeClearPositionIntake = algaeDeployPositionIntake;
     public static final double processorPositionIntake = 0.320;
+    public static final double l1ReefPositionintake = 0.27;
     public static final double deployPositionIntake = 0.475; // 0.27 for algae
     public static final double transferPositionIntake = 0.28; 
     public static final double processorVoltage = -16;
@@ -119,11 +120,11 @@ public final class Constants {
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 3, 1.8),
-      l1corner(1, 13.4, 2.8),
+      l1upper(1,l1.height + 3.25, 1.8),
+      l1corner(1, 13.35, 3.7),
       l1cornerauton(1, 13.0, 2),
       l1inside(1, l1.height + 4, 3.5),
-      l2(2,23.1, 3.85), 
+      l2(2,21.0, 5), 
       l2auton(2,21.3, 3.75), 
       transfer(0, 3.7, 1.25),
       panic(0, 15, 4), 
@@ -360,9 +361,9 @@ public static class Vision {
         static {
 
           // reefLevelOffsetsMap.put(ReefLevel.L1Inside, new Transform2d(Units.inchesToMeters(24), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(12), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(12), 0, new Rotation2d(Math.toRadians(0))));
-          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(20), 0, new Rotation2d(Math.toRadians(0)))); //21 INCHES AT FIRST 2 PRAC MATCHES
+          reefLevelOffsetsMap.put(ReefLevel.L1Top, new Transform2d(Units.inchesToMeters(15), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L1, new Transform2d(Units.inchesToMeters(15), 0, new Rotation2d(Math.toRadians(0))));
+          reefLevelOffsetsMap.put(ReefLevel.L2, new Transform2d(Units.inchesToMeters(22), 0, new Rotation2d(Math.toRadians(0)))); //21 INCHES AT FIRST 2 PRAC MATCHES
           reefLevelOffsetsMap.put(ReefLevel.L3, new Transform2d(Units.inchesToMeters(28.5), 0, new Rotation2d(Math.toRadians(0))));
           reefLevelOffsetsMap.put(ReefLevel.L4, new Transform2d(Units.inchesToMeters(25.5), 0, new Rotation2d(Math.toRadians(0))));
           
