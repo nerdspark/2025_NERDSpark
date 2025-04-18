@@ -182,10 +182,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevatorToL2", coralManipulator.setElevatorPosition(elevatorLevel.l2auton.height));
     NamedCommands.registerCommand("elevatorShootL2", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l2auton));
     NamedCommands.registerCommand("elevatorToL1", coralManipulator.setElevatorPosition(elevatorLevel.l1inside.height));
-    NamedCommands.registerCommand("elevatorSpitL1", coralManipulator.shoot(elevatorLevel.l1corner.shootVoltage));
-    NamedCommands.registerCommand("elevatortoL1Corner", coralManipulator.setElevatorPosition(elevatorLevel.l1corner.height));
+    NamedCommands.registerCommand("elevatorSpitL1", coralManipulator.shoot(elevatorLevel.l1cornerauton.shootVoltage));
+    NamedCommands.registerCommand("elevatortoL1Corner", coralManipulator.setElevatorPosition(elevatorLevel.l1cornerauton.height));
     NamedCommands.registerCommand("elevatorShootL1", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1));
-    NamedCommands.registerCommand("elevatorShootL1Corner", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1corner));
+    NamedCommands.registerCommand("elevatorShootL1Corner", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1cornerauton));
     NamedCommands.registerCommand("elevatorShootL1Inside", SubsystemActions.placeCoralAuto(coralManipulator, elevatorLevel.l1inside));
     NamedCommands.registerCommand("elevatorToHome", coralManipulator.setElevatorPosition(elevatorLevel.visionClear.height));
     NamedCommands.registerCommand("elevatorToHomeAndIntake", coralManipulator.setElevatorPosition(elevatorLevel.visionClear.height).alongWith(coralManipulator.intakeCommand()));
@@ -227,6 +227,8 @@ public class RobotContainer {
     aimAssistEnabled = enable;
   }
   private void configureBindings() {
+    SmartDashboard.putNumber("x", AllianceFlipUtil.applyX(FieldConstants.Reef.branchPositions2d.get(1).get(ReefLevel.L1).getX()));
+    SmartDashboard.putNumber("y", AllianceFlipUtil.applyY(FieldConstants.Reef.branchPositions2d.get(1).get(ReefLevel.L1).getY()));
     // Find Quest Offsets
     //joystick.leftTrigger().onTrue(QuestNav.determineOffsetToRobotCenter(drivetrain, 0.35)); //0.314
 
