@@ -77,6 +77,15 @@ public class SubsystemActions {
         coralManipulator.shoot(CoralConstants.elevatorLevel.panic.shootVoltage)
       );
     }
+    public static Command intakeL1(CoralManipulator coralManipulator) {
+      return new SequentialCommandGroup(
+        coralManipulator.intakeToL1Reef(),
+        new WaitCommand(0.3),
+        coralManipulator.setIntakeVoltage(-4),
+        new WaitCommand(1.0),
+        coralManipulator.intakeToHome(),
+        coralManipulator.stopIntake()).withTimeout(1.5).andThen(coralManipulator.intakeToHome().alongWith(coralManipulator.stopIntake()));
+    }
     public static Command resetDeploy(CoralManipulator coralManipulator) {
       return new SequentialCommandGroup(
         coralManipulator.setDeployVoltage(-2.5), 

@@ -293,9 +293,9 @@ public class RobotContainer {
     //   .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
     //     .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
     // joystick.povUp().whileTrue(SubsystemActions.placeCoral(coralManipulator, () -> buttonBoard.getRawButton(12) ? elevatorLevel.l1corner : DriverStation.getStickButton(2, 13) ? elevatorLevel.l1upper : elevatorLevel.l2));
-    // joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(13).or(buttonBoard.button(14))).onTrue(coralManipulator.)
-    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(13)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1corner));
-    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(14)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1upper));
+    joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(13).or(buttonBoard.button(14))).onTrue(SubsystemActions.intakeL1(coralManipulator));
+    // joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(13)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1corner));
+    // joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(14)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l1upper));
     joystick.povUp().or(joystick.povRight().or(joystick.povDown().or(joystick.povLeft()))).and(buttonBoard.button(15)).whileTrue(SubsystemActions.placeCoral(coralManipulator, elevatorLevel.l2, () -> l2offset));
     // joystick.povUp()
     //   .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
@@ -366,8 +366,8 @@ public class RobotContainer {
           .onTrue(coralManipulator.intakeCommand());
 
       
-    // new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).and(buttonBoard.button(13).or(buttonBoard.button(14))).onTrue(SubsystemActions.reverseTransfer(coralManipulator));
-    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).onTrue(SubsystemActions.transferCoral(coralManipulator));
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).and(buttonBoard.button(13).or(buttonBoard.button(14))).onTrue(SubsystemActions.reverseTransfer(coralManipulator));
+    new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isTeleop()).and(buttonBoard.button(13).or(buttonBoard.button(14)).negate()).onTrue(SubsystemActions.transferCoral(coralManipulator));
     joystick.b().onTrue(SubsystemActions.transferCoral(coralManipulator));
     new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).and(() -> DriverStation.isAutonomous()).onTrue(new WaitCommand(0.0).andThen(SubsystemActions.transferCoralForAuto(coralManipulator)));
     // new Trigger(() -> !coralManipulator.getIndexerSensor()).onTrue(coralManipulator.setCoralStateCommand(coralState.coralInIndexer));
