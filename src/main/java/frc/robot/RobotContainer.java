@@ -248,10 +248,17 @@ public class RobotContainer {
     joystick.y().onTrue(SubsystemActions.panicButton(coralManipulator))
       .onFalse(coralManipulator.intakeToHome().alongWith(coralManipulator.stopIntake()).alongWith(coralManipulator.stopIndexer()).alongWith(coralManipulator.stopShooter()).alongWith(coralManipulator.elevatorToHome()));
 
-    joystick.back().whileTrue(new DriveBetweenCages(
-        drivetrain, 
-        () -> new Pose2d(new Translation2d(0, FieldConstants.getClosestBargeGap(() -> getQuestPose())), Rotation2d.kCCW_90deg), 
-        () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))));
+    joystick.back()
+      .whileTrue(drivetrain.applyRequest(() ->
+      drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
+        .withVelocityY(yLimiter.calculate((FieldConstants.getClosestBargeGap(() -> getQuestPose()) - getQuestPose().getY()) * 0.5 * MaxSpeed * (AllianceFlipUtil.shouldFlip() ? -1 : 1)))
+        .withRotationalRate(zLimiter.calculate(AllianceFlipUtil.apply(new Rotation2d()).minus(getQuestPose().getRotation()).getRadians() * 0.4 * MaxAngularRate))
+      ));
+    
+    // .whileTrue(new DriveBetweenCages(
+    //     drivetrain, 
+    //     () -> new Pose2d(new Translation2d(0, FieldConstants.getClosestBargeGap(() -> getQuestPose())), Rotation2d.kCCW_90deg), 
+    //     () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))));
 
     // full auto dropoffs for L2
     joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
