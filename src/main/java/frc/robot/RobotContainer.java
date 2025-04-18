@@ -132,7 +132,7 @@ public class RobotContainer {
 
     // public final ScoringProfileSubsystem scoringSubsystem = new ScoringProfileSubsystem();
 
-    // public final ScoringProfileSubsystem scoringSubsystem;
+    public final ScoringProfileSubsystem scoringSubsystem;
 
 
 
@@ -150,7 +150,7 @@ public class RobotContainer {
     poseEstimatorSubsystem = new PoseEstimatorSubsystem(drivetrain);
     // poseEstimatorQuestSubsystem = new PoseEstimatorQuestSubsystem(QuestNav);
     
-    // scoringSubsystem = new ScoringProfileSubsystem();
+    scoringSubsystem = new ScoringProfileSubsystem();
     // climb = new Climb();
     coralManipulator = new CoralManipulator();
     climb = new Climb();
@@ -263,10 +263,11 @@ public class RobotContainer {
     //     () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))));
 
     // full auto dropoffs for L2
-    joystick.povUp().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
-      .whileTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)
-        .andThen(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose)))
-        .andThen(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)));
+    joystick.povUp()//.and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
+      .whileTrue(//coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height)
+        // .andThen(new DriveToPose(drivetrain, () -> FieldConstants.getClosestPole(() -> drivetrain.getState().Pose)))
+        // .andThen(
+          SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
         // .and(() -> coralManipulator.getCoralState().equals(coralState.coralInElevator))
           // .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.l2.height))
           // .onFalse(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2));
@@ -274,12 +275,12 @@ public class RobotContainer {
     // .whileTrue(SubsystemActions.placeCoral(coralManipulator, CoralConstants.elevatorLevel.l2)).onFalse(coralManipulator.elevatorToHome());
 
     // semi auto dropoffs for L1
-    joystick.leftBumper().and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
+    joystick.leftBumper()//.and(() -> FieldConstants.getCloseEnoughForAutoDrive(() -> drivetrain.getState().Pose))
       // .whileTrue(new DriveToLine(
       //   drivetrain, 
       //   () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose), 
       //   () -> new Translation2d(OperatorConstants.joystickMap.get(-joystick.getRightY()), OperatorConstants.joystickMap.get(-joystick.getRightX()))))
-        .whileTrue(new DriveToPose(drivetrain, () -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose).transformBy(new Transform2d(new Translation2d((copilot.getLeftX() + joystick.getRightX())/2, Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1).getRotation().plus(Rotation2d.kCCW_90deg)),new Rotation2d()))))
+        .whileTrue(new DriveToPose(drivetrain, () -> scoringSubsystem.getRobotPoseForSelectedBranch()))//() -> FieldConstants.getClosestL1(() -> drivetrain.getState().Pose).transformBy(new Transform2d(new Translation2d((copilot.getLeftX() + joystick.getRightX())/2, Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1).getRotation().plus(Rotation2d.kCCW_90deg)),new Rotation2d()))))
       .and(() -> coralManipulator.getCoralState().equals(coralState.coralInIndexer))
         .onTrue(coralManipulator.setElevatorPosition(CoralConstants.elevatorLevel.visionClear.height));
 
