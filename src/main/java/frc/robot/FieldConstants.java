@@ -243,8 +243,8 @@ public class FieldConstants {
 
   public enum ReefLevel {
     // L1Inside(0,Units.inchesToMeters(25.0), 0),
-    L1Top(0,Units.inchesToMeters(25.0), 0),
-    L1(1,Units.inchesToMeters(25.0), 0),
+    L1(0,Units.inchesToMeters(25.0), 0),
+    L1Top(1,Units.inchesToMeters(25.0), 0),
     L2(2,Units.inchesToMeters(31.875 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
     L3(3,Units.inchesToMeters(47.625 - Math.cos(Math.toRadians(35.0)) * 0.625), -35),
     L4(4,Units.inchesToMeters(72), -90);
@@ -282,6 +282,47 @@ public class FieldConstants {
 
   }
 
+  
+  public enum L1DiagonalShootingOffSets {   
+    LEFT(23.8,3.7, 25), //INCHES DEGREES
+    RIGHT(23.8,3.7, -25);
+
+    L1DiagonalShootingOffSets(double x, double y, double angle) {
+      this.x = x;
+      this.y = y;
+      this.angle = angle;
+
+    }
+    public final double x;
+    public final double y;
+    public final double angle;
+
+  }
+
+  public enum L1VerticalShootingOffSets {   
+    LEFTINSIDE(12,5, 0), //INCHES, DEGREES
+    RIGHTINSIDE(12,-5, -0),
+    RIGHTOUTSIDE(12,5, -0),
+    LEFTOUTSIDE(12,-5, -0);
+
+
+    
+
+    L1VerticalShootingOffSets(double x, double y, double angle) {
+      this.x = x;
+      this.y = y;
+      this.angle = angle;
+
+    }
+    public final double x;
+    public final double y;
+    public final double angle;
+
+  }
+
+  
+
+
 //   public static Pose2d getReefPoseOffset(DoubleSupplier offsetScalar, int reefFace) {
 //     Pose2d facePose = Reef.centerFaces[reefFace];
 //     // Transform2d offsetVector = new Transform2d(, , 0.0);
@@ -304,7 +345,8 @@ public class FieldConstants {
             minIndex = i;
         }
     } 
-    return AllianceFlipUtil.apply(Reef.centerFaces[minIndex].transformBy(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)));//.getTranslation()), Reef.centerFaces[minIndex].getRotation().plus(Rotatio)));
+    return AllianceFlipUtil.apply(Reef.centerFaces[minIndex].
+    transformBy(Constants.Vision.reefLevelOffsetsMap.get(ReefLevel.L1)));//.getTranslation()), Reef.centerFaces[minIndex].getRotation().plus(Rotatio)));
   }
 
   /**

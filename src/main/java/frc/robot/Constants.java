@@ -32,6 +32,9 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.FieldConstants.CoralStations;
+import frc.robot.FieldConstants.L1DiagonalShootingOffSets;
+import frc.robot.FieldConstants.L1VerticalShootingOffSets;
+import frc.robot.FieldConstants.L1DiagonalShootingOffSets;
 import frc.robot.FieldConstants.ReefLevel;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
@@ -256,7 +259,7 @@ public static class AutoDropoff {
 public static class Vision {
 
 
-        public static boolean DOGLOG_ENABLED = false;
+        public static boolean DOGLOG_ENABLED = true;
 
         public static final boolean USE_VISION = true;
         public static final boolean USE_QUESTNAV = false;
@@ -368,6 +371,47 @@ public static class Vision {
           coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
           coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
          
+        }
+
+        public static final Map<L1DiagonalShootingOffSets, Transform2d> l1DiagonalShootingOffsets = new HashMap<>();
+        public static final Map<L1VerticalShootingOffSets, Transform2d> l1VerticalShootingOffsets = new HashMap<>();
+
+        static {
+         l1DiagonalShootingOffsets.put(
+          L1DiagonalShootingOffSets.LEFT, 
+          new Transform2d(Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.LEFT.x), 
+               Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.LEFT.y), 
+               new Rotation2d(Math.toRadians(FieldConstants.L1DiagonalShootingOffSets.LEFT.angle))));
+
+          l1DiagonalShootingOffsets.put(
+                L1DiagonalShootingOffSets.RIGHT, 
+                new Transform2d(Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.RIGHT.x), 
+                     Units.inchesToMeters(FieldConstants.L1DiagonalShootingOffSets.RIGHT.y), 
+                     new Rotation2d(Math.toRadians(FieldConstants.L1DiagonalShootingOffSets.RIGHT.angle))));
+
+           l1VerticalShootingOffsets.put(
+                 L1VerticalShootingOffSets.RIGHTOUTSIDE, 
+                  new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTOUTSIDE.x), 
+                      Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTOUTSIDE.y), 
+                      new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.RIGHTOUTSIDE.angle))));
+
+           l1VerticalShootingOffsets.put(
+               L1VerticalShootingOffSets.RIGHTINSIDE, 
+                 new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTINSIDE.x), 
+                   Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.RIGHTINSIDE.y), 
+                     new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.RIGHTINSIDE.angle))));
+                             
+            l1VerticalShootingOffsets.put(
+                 L1VerticalShootingOffSets.LEFTOUTSIDE, 
+                     new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTOUTSIDE.x), 
+                         Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTOUTSIDE.y), 
+                             new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.LEFTOUTSIDE.angle))));
+         
+                             l1VerticalShootingOffsets.put(
+                              L1VerticalShootingOffSets.LEFTINSIDE, 
+                                  new Transform2d(Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTINSIDE.x), 
+                                      Units.inchesToMeters(FieldConstants.L1VerticalShootingOffSets.LEFTINSIDE.y), 
+                                          new Rotation2d(Math.toRadians(FieldConstants.L1VerticalShootingOffSets.LEFTINSIDE.angle))));
         }
         
         public static final Set<Integer> nonReefTagFiducialIDs = new HashSet<>(Set.of(1, 2, 3, 4, 5, 12, 13, 14, 15, 16));
