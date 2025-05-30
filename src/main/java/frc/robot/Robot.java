@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.Vision;
+import frc.robot.commandSequences.ArmActions;
 
 import org.ironmaple.simulation.SimulatedArena;
 
@@ -100,7 +101,7 @@ public class Robot extends TimedRobot {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         if (m_autonomousCommand != null) {
-            m_autonomousCommand.schedule();
+            m_autonomousCommand.alongWith(ArmActions.resetZero(m_robotContainer.arm)).schedule();
         }
     }
 
