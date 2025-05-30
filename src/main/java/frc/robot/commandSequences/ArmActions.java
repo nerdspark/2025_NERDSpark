@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmSetpoints;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandPathToPoint;
@@ -45,6 +46,20 @@ public class ArmActions {
           arm.goToHome()); 
   }
 
+  /** reset zero */
+  public static Command resetZero(Arm arm){
+    return new SequentialCommandGroup(
+    new InstantCommand(() -> arm.setShoulderAmpLimit(15)), 
+    new InstantCommand(() -> arm.setElbowAmpLimit(15)),
+    new InstantCommand(() -> arm.setElbowPower(0.1)),
+    new InstantCommand(() -> arm.setShoulderPower(0.1)),
+    new WaitCommand(0.10),
+    new InstantCommand(() -> arm.setElbowPower(0.0)),
+    new InstantCommand(() -> arm.setShoulderPower(0.0)),
+    new InstantCommand(() -> arm.resetOffsets()),
+    new InstantCommand(() -> arm.setShoulderAmpLimit(ArmConstants.currentLimitShoulder)),
+    new InstantCommand(() -> arm.setElbowAmpLimit(ArmConstants.currentLimitElbow)));
+  }
   /** move arm to ground intake position and begin intaking */
   public static Command groundIntake(Arm arm, Gripper gripper) {
     return new ArmCommandPathToPoint(arm, () -> 8).alongWith(gripper.coralIntakeCommand());

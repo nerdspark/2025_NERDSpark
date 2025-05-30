@@ -70,6 +70,7 @@ public class Arm extends SubsystemBase {
 
   private boolean wristStopped = true;
   private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
+  private TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
   public boolean stowing = false;
   private SlewRateLimiter shoulderLimiter = new SlewRateLimiter(ArmConstants.shoulderSlewRate);
   private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
@@ -91,7 +92,7 @@ public class Arm extends SubsystemBase {
     elbowRight = new TalonFX(ArmConstants.elbowMotorRightPort, ArmConstants.armCanBus);
     wrist = new TalonFX(ArmConstants.wristMotorPort, ArmConstants.armCanBus);
 
-    TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
+    
 
     shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
         .withStatorCurrentLimit(ArmConstants.currentLimitShoulder)
@@ -495,6 +496,10 @@ public class Arm extends SubsystemBase {
     shoulderLeft.set(-power);
     shoulderRight.set(power);
   }
+  public void setElbowPower(double power) {
+    elbowLeft.set(-power);
+    elbowRight.set(power);
+  }
 
   /**
    * Set the amp limit of the shoulder motors.
@@ -506,6 +511,14 @@ public class Arm extends SubsystemBase {
     .withStatorCurrentLimit(amplimit);
     shoulderLeft.getConfigurator().apply(shoulderConfig);
     shoulderRight.getConfigurator().apply(shoulderConfig);
+  }
+
+
+  public void setElbowAmpLimit(double amplimit) {
+    elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
+    .withStatorCurrentLimit(amplimit);
+    elbowLeft.getConfigurator().apply(elbowConfig);
+    elbowRight.getConfigurator().apply(elbowConfig);
   }
 
 
