@@ -354,8 +354,8 @@ public static class BucketConstants {
     public static final double gripperRadPerRot = gripperGearRatio;
     public static final double gripperOffset = 0;
     public static final double shoulderOffset = -0.476 / 2.0 / Math.PI; // radians, fwd = 0
-    public static final double elbowOffset = 2.032 / 2.0 / Math.PI; // negative of measurement
-    public static final double wristOffset = 4.949 / 2.0 / Math.PI; // 
+    public static final double elbowOffset = 2.032 / 2.0 / Math.PI; // negative of measurement 2.032
+    public static final double wristOffset = 4.949 / 2.0 / Math.PI; // 4.949
 
     /** wrist flip belting ratio between elbow and the wrist */
     public static final double wristToElbowRatio = 1.0/(35.0 / 50.0);

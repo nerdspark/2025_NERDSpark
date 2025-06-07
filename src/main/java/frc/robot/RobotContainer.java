@@ -253,6 +253,7 @@ public class RobotContainer {
     joystick.povRight().onTrue(ArmActions.removeAlgae(arm, gripper, () -> (((scoringSubsystem.getBranch() / 2) % 2) == 0)));
 
     // algae dropoff (odo-based)
+    
     // joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)
     //   .andThen(new WaitUntilCommand(() -> Math.abs(drivetrain.getState().Pose.getMeasureX().abs(Meter) - FieldConstants.fieldLength/2) < Constants.shootAlgaeDistance))
     //   .andThen(ArmActions.shootAlgaeBarge(arm, gripper))
@@ -275,7 +276,7 @@ public class RobotContainer {
     // climb
     joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(new WaitCommand(0.3).andThen(climb.deploy()));
     // joystick.start().whileTrue(climb.climb());//.climbInstantCommand()).onFalse(climb.stopCommand());
-    joystick.start().whileTrue(ArmActions.resetZero(arm));
+    joystick.start().onTrue(ArmActions.resetZero(arm));
 
 
     /* autodrive TODO: rebind to not conflict with drive stick */

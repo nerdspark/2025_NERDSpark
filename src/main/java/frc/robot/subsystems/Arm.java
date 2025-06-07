@@ -71,11 +71,11 @@ public class Arm extends SubsystemBase {
   private boolean wristStopped = true;
   private TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
   private TalonFXConfiguration elbowConfig = new TalonFXConfiguration();
+  private TalonFXConfiguration wristConfig = new TalonFXConfiguration();
   public boolean stowing = false;
   private SlewRateLimiter shoulderLimiter = new SlewRateLimiter(ArmConstants.shoulderSlewRate);
   private SlewRateLimiter elbowLimiter = new SlewRateLimiter(ArmConstants.elbowSlewRate);
   private double wristOffset = ArmConstants.wristOffset;
-  private TalonFXConfiguration wristConfig = new TalonFXConfiguration();
 
   public double wristTarget = ArmSetpoints.homeWrist;
   public double elbowTarget = ArmConstants.shoulderOffset;
@@ -500,7 +500,9 @@ public class Arm extends SubsystemBase {
     elbowLeft.set(-power);
     elbowRight.set(power);
   }
-
+  public void setWristPower(double power) {
+    wrist.set(power);
+  }
   /**
    * Set the amp limit of the shoulder motors.
    *
@@ -520,7 +522,11 @@ public class Arm extends SubsystemBase {
     elbowLeft.getConfigurator().apply(elbowConfig);
     elbowRight.getConfigurator().apply(elbowConfig);
   }
-
+  public void setWristAmpLimit (double amplimit) {
+    wristConfig.CurrentLimits = new CurrentLimitsConfigs()
+    .withStatorCurrentLimit(amplimit);
+    wrist.getConfigurator().apply(elbowConfig);
+  }
 
   /**
    * Request the shoulder PIDs to target a position.
