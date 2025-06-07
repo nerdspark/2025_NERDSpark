@@ -329,6 +329,10 @@ public static class Vision {
         public static boolean kCoralInRange = false;
         // public static boolean kCoralAutoTarget = true;
 
+        public static boolean kAlgaeTargeted = false;
+        public static boolean kAlgaeInRange = false;
+        //public static boolean kAlgaeAutoTarget = false;
+
         public static final boolean USE_LIMELIGHT = true;
         
 

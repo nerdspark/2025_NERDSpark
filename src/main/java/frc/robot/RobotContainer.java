@@ -21,6 +21,7 @@ import frc.robot.Constants.CoralConstants.coralState;
 import frc.robot.Constants.CoralConstants.elevatorLevel;
 import frc.robot.commandSequences.Autos;
 import frc.robot.commandSequences.SubsystemActions;
+import frc.robot.commands.DriveToAlgae;
 import frc.robot.commands.DriveToCoral;
 import frc.robot.commands.DriveToCoralAuto;
 import frc.robot.commands.DriveToPose;
@@ -241,12 +242,21 @@ public class RobotContainer {
       Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
       // Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
       Trigger coralInList = new Trigger(() -> poseEstimatorSubsystem.coralInList());
+
+      Trigger algaeInRange = new Trigger(() -> poseEstimatorSubsystem.algaeInRange());
+      // Trigger algaeAutoTarget = new Trigger(() -> Constants.Vision.kAlgaeAutoTarget);
+      Trigger algaeInList = new Trigger(() -> poseEstimatorSubsystem.algaeInList());
       
 
-      joystick.leftTrigger().and(coralInRange).and(coralInList).whileTrue(new DriveToCoral(drivetrain, () -> new Pose2d(
+      joystick.leftTrigger().and(coralInList).whileTrue(new DriveToCoral(drivetrain, () -> new Pose2d(
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.381, poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation())));
+
+      joystick.rightTrigger().and(algaeInList).whileTrue(new DriveToAlgae(drivetrain, () -> new Pose2d(
+          poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.5, poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
+          poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.5, poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
+          poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation())));
 
       
     new Trigger(() -> coralManipulator.getCoralState().equals(coralState.coralInIntake)).onTrue(SubsystemActions.transferCoral(coralManipulator));

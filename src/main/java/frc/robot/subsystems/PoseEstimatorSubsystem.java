@@ -34,6 +34,8 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.util.CoralArrayManager;
 import frc.robot.util.CoralObject;
+import frc.robot.util.AlgaeArrayManager;
+import frc.robot.util.AlgaeObject;
 import frc.robot.QuestNav.NerdQuestNav;
 
 
@@ -58,7 +60,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
     private static List<CoralObject> corals = new ArrayList<>();
     private static CoralArrayManager coralManager = new CoralArrayManager();
+
+    private static List<AlgaeObject> algaes = new ArrayList<>();
+    private static AlgaeArrayManager algaeManager = new AlgaeArrayManager();
+    
     static boolean coralInRange = false;
+    static boolean algaeInRange = false;
        
         private Field2d field = new Field2d(); 
           
@@ -168,8 +175,16 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             
 
             corals = coralArrayUpdateReturn();
-            SmartDashboard.putNumber("size", corals.size());
-            SmartDashboard.putBoolean("targeting", Constants.Vision.kCoralTargeted);
+            algaes = algaeArrayUpdateReturn();
+
+            SmartDashboard.putNumber("sizeCorals", corals.size());
+            SmartDashboard.putNumber("sizeAlgaes", algaes.size());
+
+            SmartDashboard.putBoolean("targetingCoral", Constants.Vision.kCoralTargeted);
+            SmartDashboard.putBoolean("targetingAlgae", Constants.Vision.kAlgaeTargeted);
+
+            SmartDashboard.putString ("class", visionFront.getObjectClass());
+
             coralInRange = coralInRange();
 
             
@@ -177,6 +192,11 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             if (corals.size() > 0) {
                 Pose2d coralPose = corals.get(corals.size() - 1).getPose();
                 SmartDashboard.putString("coralPose", getFomattedPose(coralPose));
+            }
+
+            if (algaes.size() > 0) {
+                Pose2d algaePose = algaes.get(algaes.size() - 1).getPose();
+                SmartDashboard.putString("algaePose", getFomattedPose(algaePose));
             }
             
             // if (corals.size() > 0) {
@@ -220,8 +240,12 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
 
         }
         SmartDashboard.putBoolean("tV", visionFront.hasTarget()); 
+
         SmartDashboard.putBoolean("Coral In Range", coralInRange());  
-        SmartDashboard.putBoolean("Coral In List", coralInList());     
+        SmartDashboard.putBoolean("Coral In List", coralInList());   
+        
+        SmartDashboard.putBoolean("Algae In Range", algaeInRange());  
+        SmartDashboard.putBoolean("Algae In List", algaeInList());   
     }
     
 
@@ -325,8 +349,79 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         }
     }
 
+    public AlgaeObject newAlgae() {
+        //Rotation2d yaw = gyro.getGyro();
+        //Pose2d pose = new Pose2d(0.0,0.0,yaw);
+        Pose2d pose = getCurrentPose();
+        double poseX = pose.getX();
+        double poseY = pose.getY();
+        Rotation2d yaw = pose.getRotation();
+
+        SmartDashboard.putNumber("poseX", poseX);
+        SmartDashboard.putNumber("poseY", poseY);
+        SmartDashboard.putNumber("yaw", yaw.getDegrees());
+
+        double tx = visionFront.getTx();
+        double ty = visionFront.getTy();
+        double hb = visionFront.getHB();
+        boolean upfall = false;
+        boolean ignored = false;
+        boolean targeted = false;
+
+        Translation2d offset = new Translation2d(-Constants.Vision.kLimeLightYOffset, yaw);
+        //Translation2d offset = new Translation2d(-0.90, new Rotation2d((-yaw.getDegrees() + tx) * Math.PI / 180));
+
+        //DriverStation.getMatchTime();
+
+        // double boundingHeight = 0.0;
+        // double boundingWidth = 0.0;       
+
+        // double[] xys = visionFront.getCoordinates();
+        // if (xys.length != 0) { //debug
+        //     boundingHeight = xys[5] - xys[3];
+        //     boundingWidth = xys[2] - xys[0];
+        //     SmartDashboard.putNumber("boundingHeight", boundingHeight);
+        //     SmartDashboard.putNumber("boundingWidth", boundingWidth);
+        // }
+
+        double distance = 0.0;
+        // double theta = 0.0;
+        // if (boundingHeight > boundingWidth) {               
+        //     upfall = false;
+        //     ignored = true;
+        // } else if (boundingHeight <= boundingWidth && boundingHeight != 0.0) {
+        distance = ((Constants.Vision.kAlgaeCenterHeight - kLimeLightHeight) / Math.tan((Constants.Vision.kLimeLightAOD+ty) * (Math.PI / 180))) / Math.cos((tx) * Math.PI / 180);
+        upfall = true;
+        ignored = false;
+        // } else {
+        //     distance = 0.0;
+        //     SmartDashboard.putString("orientation", "");
+        //     ignored = true;
+        // }
+        if (distance > 0.0) {
+            //Rotation2d coralOrientation = new Rotation2d(theta);
+            Pose2d coralPose = new Pose2d(distance * Math.cos((yaw.getDegrees()-tx) * (Math.PI / 180)) + poseX + offset.getX(), 
+                                          distance * Math.sin((yaw.getDegrees()-tx) * (Math.PI / 180)) + poseY + offset.getY(), 
+                                          yaw);
+            //Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
+            SmartDashboard.putNumber("distance", distance);
+            ignored = false;
+            AlgaeObject newAlgae = new AlgaeObject(coralPose, hb, distance, targeted, ignored);
+            return newAlgae;
+        } else {
+            Pose2d zeroed = new Pose2d(0,0, new Rotation2d(0.0));
+            ignored = true;
+            AlgaeObject newAlgae = new AlgaeObject(zeroed, hb, distance, targeted, ignored);
+            // Pose2d coralPose = new Pose2d(2 + offset.getX(), 2 + offset.getY(), yaw);
+            // SmartDashboard.putNumber("distance", distance);
+            // ignored = false;
+            // CoralObject newCoral = new CoralObject(coralPose, hb, distance, upfall, targeted, ignored);
+            return newAlgae;
+        }
+    }
+
     public List<CoralObject> coralArrayUpdateReturn() {
-        if (!Constants.Vision.kCoralTargeted) {
+        if (!Constants.Vision.kCoralTargeted && (visionFront.getObjectClass().equals("coral"))) {
             CoralObject newCoral = newCoral();
             double hb = visionFront.getHB();
             double fps = visionFront.getFPS();
@@ -334,10 +429,26 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
             coralManager.distanceAndYawUpdate(corals, getCurrentPose());
             coralManager.expiryFilter(corals, hb, fps);
             coralManager.displacementFilter(corals);
-            coralManager.possibilityFilter(corals);
+            //coralManager.possibilityFilter(corals);
             return corals;
         } else {
             return coralManager.selectCoral(corals);
+        }
+    }
+
+    public List<AlgaeObject> algaeArrayUpdateReturn() {
+        if (!Constants.Vision.kAlgaeTargeted && (visionFront.getObjectClass().equals("algae"))) {
+            AlgaeObject newAlgae = newAlgae();
+            double hb = visionFront.getHB();
+            double fps = visionFront.getFPS();
+            algaes.add(newAlgae);
+            algaeManager.distanceAndYawUpdate(algaes, getCurrentPose());
+            algaeManager.expiryFilter(algaes, hb, fps);
+            algaeManager.displacementFilter(algaes);
+            //coralManager.possibilityFilter(corals);
+            return algaes;
+        } else {
+            return algaeManager.selectAlgae(algaes);
         }
     }
 
@@ -346,8 +457,17 @@ public class PoseEstimatorSubsystem extends SubsystemBase {
         return coralInRange; 
     }
 
+    public boolean algaeInRange() {
+        algaeInRange = algaeManager.getAlgaeInRange(algaes, getCurrentPose());
+        return algaeInRange;
+    }
+
     public boolean coralInList() {
         return (corals.size() > 0);
+    }
+
+    public boolean algaeInList() {
+        return (algaes.size() > 0);
     }
 
     /**

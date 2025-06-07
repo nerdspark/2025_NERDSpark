@@ -280,7 +280,7 @@ import dev.doglog.DogLog;
       }
 
       public String getObjectClass() {
-        return llTable.getEntry("tclass").getString("none");
+        return llTable.getEntry("tdclass").getString("none");
       }
 
       public double getHB() {
