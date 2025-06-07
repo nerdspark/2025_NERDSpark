@@ -60,23 +60,30 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static class CoralConstants {
-    public static final double indexerCurrentLimit = 30;
+    public static final double indexerCurrentLimit = 35;
     public static final String canBus = "canivore1";
-    public static final double deployCurrentLimit = 60;
+    public static final double deployCurrentLimit = 75;
     public static final double deployRampRate = 0.03;
-    public static final double deployOffset = 0.25-0.1; 
-    public static final double homePositionIntake = deployOffset + 0.07; // deployOffset + 0.02
-    public static final double deployPositionIntake = deployOffset + 0.34; // 0.27 for algae
-    public static final double transferPositionIntake = deployPositionIntake - 0.15; 
+    public static final double deployOffset = 0.25-0.1 - 0.065; 
+    public static final double homePositionIntake = 0.125; // deployOffset + 0.02
+    public static final double transferHomePositionIntake = 0.22; // deployOffset + 0.02
+    public static final double algaeHomePositionIntake = 0.19; 
+    public static final double algaeDeployPositionIntake = 0.40;
+    public static final double algaeClearPositionIntake = algaeDeployPositionIntake;
+    public static final double processorPositionIntake = 0.320;
+    public static final double l1ReefPositionintake = 0.28;
+    public static final double deployPositionIntake = 0.475; // 0.27 for algae
+    public static final double transferPositionIntake = 0.28; 
+    public static final double processorVoltage = -16;
     // public static final double elevatorPositionIntake = homePositionIntake + 0.1;
     public static final double forwardLimitDeploy = deployPositionIntake;
     public static final double reverseLimitDeploy = homePositionIntake;
-    public static final double kPDeploy = 25; // 12 for 25:1
+    public static final double kPDeploy = 15; // 12 for 25:1; 25 for 75 : 1
     public static final double kIDeploy = 0;
     public static final double kDDeploy = 0;
-    public static final double kGDeploy = 0.07; // 0.39 for 25:1
+    public static final double kGDeploy = 0.42; // 0.39 for 25:1; 0.07 for 75:1
     public static final double intakeCurrentLimit = 65;
-    public static final double deployGearRatio = 75.0;
+    public static final double deployGearRatio = 25.0;
     public static final double deploySensorRatio = deployGearRatio;
     public static final double intakeGearRatio = 5.0;
     public static final double indexerGearRatio = 20.0;
@@ -89,29 +96,36 @@ public final class Constants {
     public static final int intakeSensorID = 7;
     public static final int indexerSensorID = 8;
     public static final double intakeSensorTriggerDistance = 0.09;
-    public static final double indexerSensorTriggerDistance = 0.02;
+    public static final double indexerSensorTriggerDistance = 0.05;
     public static final double indexerTransferVoltage = 16;
-    public static final double intakeTransferVoltage = 16;
-    public static final double intakingVoltage = 16;
+    public static final double intakeTransferVoltage = 5;
+    public static final double intakeAlgaeVoltage = 16;
+    public static final double neutralAlgaeVoltage = 8;
+    public static final double intakingVoltage = 10;
     // public static final double shooterTransferVoltage = 2;
     public static final double shooterRewindVoltage = -1.5;
     // public static final double elevatorTransferPosition = 2.9;
-    public static final double deployTolerance = 0.06;
+    public static final double deployTolerance = 0.1;
+    public static final double autoShootVoltageTransfer = 0.85;
     public static enum coralState {
       empty, 
       coralInRange,
       coralInIntake, 
-      coralInIndexer
+      coralInIndexer, 
+      algaeInIntake
     }
     public static enum elevatorLevel {
       home(0, 2, 0), 
       l1(1,13.85, 1.45),
-      l1upper(1,l1.height + 5, 1.45),
-      l1inside(1, l1.height + 5, 2.5),
-      l2(2,22.0, 3.5), 
-      transfer(0, 3.6, 2),
-      panic(0, 7, 1), 
-      visionClear(0, 5, 0);
+      l1upper(1,l1.height + 3.25, 1.8),
+      l1corner(1, 13.35, 3.7),
+      l1cornerauton(1, 13.0, 1.8),
+      l1inside(1, l1.height + 4, 3.5),
+      l2(2,21.2, 4.3), 
+      l2auton(2,21.3, 3.75), 
+      transfer(0, 3.7, 1.25),
+      panic(0, 15, 4), 
+      visionClear(0, 6.0, 0);
       
       elevatorLevel(int level, double height, double shootVoltage) {
         this.height = height;

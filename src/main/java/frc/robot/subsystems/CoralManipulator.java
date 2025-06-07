@@ -91,6 +91,9 @@ public class CoralManipulator extends SubsystemBase {
     intakeConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive);
     intake.getConfigurator().apply(intakeConfig);
   }
+  public double getElevatorPosition() {
+    return (elevatorLeft.getPosition().getValueAsDouble() + elevatorRight.getPosition().getValueAsDouble()) * 0.5;
+  }
   private void configureShooter() {
     shooterConfig.CurrentLimits = new CurrentLimitsConfigs()
       .withStatorCurrentLimit(CoralConstants.shooterCurrentLimit)
@@ -115,9 +118,9 @@ public class CoralManipulator extends SubsystemBase {
       .withGravityType(GravityTypeValue.Arm_Cosine);
     deployConfig.ClosedLoopRamps = new ClosedLoopRampsConfigs().withVoltageClosedLoopRampPeriod(CoralConstants.deployRampRate);
     deployConfig.SoftwareLimitSwitch = new SoftwareLimitSwitchConfigs()
-      .withForwardSoftLimitEnable(true)
+      .withForwardSoftLimitEnable(false)
       .withForwardSoftLimitThreshold(CoralConstants.forwardLimitDeploy)
-      .withReverseSoftLimitEnable(true)
+      .withReverseSoftLimitEnable(false)
       .withReverseSoftLimitThreshold(CoralConstants.reverseLimitDeploy);
     deployConfig.MotorOutput = new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive).withNeutralMode(NeutralModeValue.Coast);
     deploy.getConfigurator().apply(deployConfig);
@@ -167,7 +170,7 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> elevatorRight.setPosition(0));
   }
   public boolean deployAmpTriggered() {
-    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 10;
+    return Math.abs(deploy.getStatorCurrent().getValueAsDouble()) > 55;
   }
   public coralState getCoralState() {
     return coralState;
@@ -182,7 +185,10 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> elevatorRight.stopMotor());
   }
   public Command setDeployVoltage(double voltage) {
-    return new InstantCommand(() -> deploy.setVoltage(voltage));
+    return new InstantCommand(() -> deploy.setControl(new VoltageOut(voltage)));
+  }
+  public void setDeployVoltageFunction(double voltage) {
+    deploy.setControl(new VoltageOut(voltage));
   }
   public boolean getIntakeSensor() {
     return intakeSensor.getIsDetected().getValue();
@@ -212,15 +218,36 @@ public class CoralManipulator extends SubsystemBase {
     deploy.setControl(new PositionVoltage(position));
     targetPositionDeploy = position;
   }
-  public Command deployIntake() {
+  public Command intakeToDeploy() {
     return new InstantCommand(() -> setDeployPosition(CoralConstants.deployPositionIntake));
   }
-  public Command transferIntake() {
+  public Command intakeToAlgaeClear() {
+    return new InstantCommand(() -> setDeployPosition(CoralConstants.algaeClearPositionIntake));
+  }
+  public Command intakeToTransfer() {
     return new InstantCommand(() -> setDeployPosition(CoralConstants.transferPositionIntake));
   }
-  public Command retractIntake() {
+  public Command intakeToRetract() {
     return new InstantCommand(() ->setDeployPosition(CoralConstants.homePositionIntake));
   }
+  public Command intakeToAlgaeDeploy() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.algaeDeployPositionIntake));
+  }
+  public Command intakeToAlgaeHome() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.algaeHomePositionIntake));
+  }
+  
+  public Command intakeToL1Reef() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.l1ReefPositionintake));
+  }
+  
+  public Command intakeToTransferHome() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.transferHomePositionIntake));
+  }
+  public Command intakeToProcessor() {
+    return new InstantCommand(() ->setDeployPosition(CoralConstants.processorPositionIntake));
+  }
+  
 
 
   public void setShooter(double voltage) {
@@ -257,7 +284,8 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> setElevPosition(position));
   }
   public Command elevatorToHome() {
-    return new SequentialCommandGroup(
+    return //setElevatorPosition(CoralConstants.elevatorLevel.transfer.height);
+    new SequentialCommandGroup(
       setElevatorPosition(CoralConstants.homePos),
       stopShooter(), 
             new WaitCommand(0.5),
@@ -276,19 +304,22 @@ public class CoralManipulator extends SubsystemBase {
     return new InstantCommand(() -> elevatorLeft.stopMotor()).alongWith(new InstantCommand(() -> elevatorRight.stopMotor())); 
   }
   public Command intakeCommand() {
-    return deployIntake().alongWith(setIntakeVoltage(CoralConstants.intakingVoltage));
+    return intakeToDeploy().alongWith(setIntakeVoltage(CoralConstants.intakingVoltage));
   }
   public Command intakeToHome() {
-    return retractIntake().alongWith(stopIntake());
+    return intakeToRetract().alongWith(stopIntake());
   }
 
   @Override
   public void periodic() {
-    if (getIndexerSensor()) {
-      setCoralState(coralState.coralInIndexer);
-    } else if (getIntakeSensor()) {
-      setCoralState(coralState.coralInIntake);
+    if (!coralState.equals(coralState.algaeInIntake)) {
+      if (getIndexerSensor()) {
+        setCoralState(coralState.coralInIndexer);
+      } else if (getIntakeSensor()) {
+        setCoralState(coralState.coralInIntake);
+      }
     }
+    SmartDashboard.putNumber("deploy amp", deploy.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("elev left pos", elevatorLeft.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elev right pos", elevatorRight.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("elevator left amp", elevatorLeft.getStatorCurrent().getValueAsDouble());
@@ -299,6 +330,7 @@ public class CoralManipulator extends SubsystemBase {
     SmartDashboard.putNumber("deploy error", targetPositionDeploy - deploy.getPosition().getValueAsDouble());
     SmartDashboard.putString("coralState", getCoralState().name());
     SmartDashboard.putBoolean("intake detected", getIntakeSensor());
+    SmartDashboard.putBoolean("indexer detected", getIndexerSensor());
     SmartDashboard.putNumber("deploy amp", deploy.getStatorCurrent().getValueAsDouble());
     // This method will be called once per scheduler run
   }

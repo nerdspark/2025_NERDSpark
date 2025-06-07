@@ -234,10 +234,14 @@ public class RobotContainer {
     joystick.povRight().or(joystick.povLeft()).or(joystick.povDown()).or(joystick.povUp()).and(() -> !coralManipulator.getCoralState().equals(coralState.coralInIndexer)).onFalse(coralManipulator.elevatorToHome());
 
     //intake commands
-    joystick.leftTrigger().or(joystick.rightTrigger())
+    joystick.leftTrigger()
       .onTrue(coralManipulator.setCoralStateCommand(coralState.empty))
       .onTrue(coralManipulator.intakeCommand())//.onlyIf(() -> coralManipulator.getCoralState().equals(coralState.empty)))
       .onFalse(coralManipulator.intakeToHome());//.onlyIf(() -> !coralManipulator.getCoralState().equals(coralState.coralInIntake) ));
+
+    joystick.rightTrigger()
+      .onTrue(SubsystemActions.intakeAlgae(coralManipulator))
+      .onFalse(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)));
 
       Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
       // Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
@@ -254,8 +258,8 @@ public class RobotContainer {
           poseEstimatorSubsystem.coralArrayUpdateReturn().get(0).getPose().getRotation())));
 
       joystick.rightTrigger().and(algaeInList).whileTrue(new DriveToAlgae(drivetrain, () -> new Pose2d(
-          poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.5, poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
-          poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.5, poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
+          poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getX() + new Translation2d(-0.4, poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation()).getX(),
+          poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getY() + new Translation2d(-0.4, poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation()).getY(),
           poseEstimatorSubsystem.algaeArrayUpdateReturn().get(0).getPose().getRotation())));
 
       
