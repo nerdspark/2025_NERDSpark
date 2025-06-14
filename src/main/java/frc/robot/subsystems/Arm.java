@@ -534,8 +534,11 @@ public class Arm extends SubsystemBase {
   }
   public void setWristAmpLimit (double amplimit) {
     wristConfig.CurrentLimits = new CurrentLimitsConfigs()
-    .withStatorCurrentLimit(amplimit);
-    wrist.getConfigurator().apply(elbowConfig);
+    .withStatorCurrentLimit(amplimit)
+    .withStatorCurrentLimitEnable(true);
+    wrist.getConfigurator().apply(wristConfig.withMotorOutput(new MotorOutputConfigs()
+    .withInverted(InvertedValue.Clockwise_Positive)
+        .withNeutralMode(NeutralModeValue.Coast)));
   }
 
   /**
