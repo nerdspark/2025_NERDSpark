@@ -510,17 +510,27 @@ public class Arm extends SubsystemBase {
    */
   public void setShoulderAmpLimit(double amplimit) {
     shoulderConfig.CurrentLimits = new CurrentLimitsConfigs()
-    .withStatorCurrentLimit(amplimit);
-    shoulderLeft.getConfigurator().apply(shoulderConfig);
-    shoulderRight.getConfigurator().apply(shoulderConfig);
+    .withStatorCurrentLimit(amplimit)
+    .withStatorCurrentLimitEnable(true);
+    shoulderLeft.getConfigurator().apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+    .withInverted(InvertedValue.CounterClockwise_Positive)
+    .withNeutralMode(NeutralModeValue.Coast)));
+    shoulderRight.getConfigurator().apply(shoulderConfig.withMotorOutput(new MotorOutputConfigs()
+    .withInverted(InvertedValue.Clockwise_Positive)
+    .withNeutralMode(NeutralModeValue.Coast)));
   }
 
 
   public void setElbowAmpLimit(double amplimit) {
     elbowConfig.CurrentLimits = new CurrentLimitsConfigs()
-    .withStatorCurrentLimit(amplimit);
-    elbowLeft.getConfigurator().apply(elbowConfig);
-    elbowRight.getConfigurator().apply(elbowConfig);
+    .withStatorCurrentLimit(amplimit)
+    .withStatorCurrentLimitEnable(true);
+    elbowLeft.getConfigurator().apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
+    .withInverted(InvertedValue.CounterClockwise_Positive)
+      .withNeutralMode(NeutralModeValue.Coast)));
+    elbowRight.getConfigurator().apply(elbowConfig.withMotorOutput(new MotorOutputConfigs()
+    .withInverted(InvertedValue.Clockwise_Positive)
+      .withNeutralMode(NeutralModeValue.Coast)));
   }
   public void setWristAmpLimit (double amplimit) {
     wristConfig.CurrentLimits = new CurrentLimitsConfigs()

@@ -49,16 +49,16 @@ public class ArmActions {
   /** reset zero */
   public static Command resetZero(Arm arm){
     return new SequentialCommandGroup(
-    new InstantCommand(() -> arm.setShoulderAmpLimit(15)), 
-    new InstantCommand(() -> arm.setElbowAmpLimit(15)),
+    new InstantCommand(() -> arm.setShoulderAmpLimit(15.0)), 
+    new InstantCommand(() -> arm.setElbowAmpLimit(15.0)),
     new InstantCommand(() -> arm.setElbowPower(0.1)),
     new InstantCommand(() -> arm.setShoulderPower(-0.1)),
     new WaitCommand(0.50),
     new InstantCommand(() -> arm.setElbowPower(0.0)),
     new InstantCommand(() -> arm.setShoulderPower(0.0)),
-    new InstantCommand(() -> arm.resetOffsets()),
     new InstantCommand(() -> arm.setShoulderAmpLimit(ArmConstants.currentLimitShoulder)),
-    new InstantCommand(() -> arm.setElbowAmpLimit(ArmConstants.currentLimitElbow)));
+    new InstantCommand(() -> arm.setElbowAmpLimit(ArmConstants.currentLimitElbow)),
+    new InstantCommand(() -> arm.resetOffsets()));
   }
   /** move arm to ground intake position and begin intaking */
   public static Command groundIntake(Arm arm, Gripper gripper) {
