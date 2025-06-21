@@ -54,7 +54,7 @@ public class ArmActions {
     new InstantCommand(() -> arm.setWristAmpLimit(35)),
     new InstantCommand(() -> arm.setElbowPower(0.1)),
     new InstantCommand(() -> arm.setShoulderPower(-0.1)),
-    new InstantCommand(() -> arm.setWristPower(0.1)),
+    new InstantCommand(() -> arm.setWristPower(-0.2)),
     new WaitCommand(0.50),
     new InstantCommand(() -> arm.setElbowPower(0.0)),
     new InstantCommand(() -> arm.setShoulderPower(0.0)),
