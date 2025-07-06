@@ -22,6 +22,7 @@ import frc.robot.subsystems.ScoringProfileSubsystem;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmCommandPathToPoint;
+import frc.robot.commands.DriveToPose;
 import frc.robot.subsystems.Gripper;
 import frc.robot.subsystems.LEDSubsytem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +33,8 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -264,7 +267,12 @@ public class RobotContainer {
     // .onFalse(arm.goToHome());
 
     //algae dropoff driver-based
-    joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)).onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+    
+    joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(new DriveToPose(drivetrain, () -> new Pose2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 7.2 : 12.0, 
+    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 5.2 : 2.2, 
+    DriverStation.getAlliance().get().equals(Alliance.Blue) ? new Rotation2d(0, 0) : new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180))))))
+    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+    // joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)).onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
     // joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
     // .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().get().equals(Alliance.Red) ? 0 : Math.PI)))))
     // .onFalse(ArmActions.shootAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)).withTimeout(0.31)));
