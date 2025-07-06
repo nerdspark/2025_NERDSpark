@@ -90,7 +90,7 @@ public final class Constants {
     public static final double deploySensorRatio = deployGearRatio;
     public static final double intakeGearRatio = 5.0;
     public static final double indexerGearRatio = 20.0;
-    public static final int shooterID = 1;
+    public static final int shooterID = 9;
     public static final int indexerID = 2;
     public static final int elevatorLeftID = 3;
     public static final int elevatorRightID = 4;
