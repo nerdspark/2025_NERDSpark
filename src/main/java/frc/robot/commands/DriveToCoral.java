@@ -56,7 +56,7 @@ public class DriveToCoral extends Command {
 
 private final ProfiledPIDController driveController =
       new ProfiledPIDController(
-          15, 0, 0.1, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
+          0.2, 0, 0, new TrapezoidProfile.Constraints(Constants.Vision.MAX_VELOCITY,Constants.Vision.MAX_ACCELARATION), loopPeriodSecs); //10, 0, 0
   private final ProfiledPIDController thetaController =
       new ProfiledPIDController(
           0.5, 0,0, new TrapezoidProfile.Constraints(Math.toRadians(Constants.Vision.MAX_VELOCITY_ROTATION), Math.toRadians(Constants.Vision.MAX_ACCELARATION_ROTATION)), loopPeriodSecs); //3, 10, 0
@@ -149,6 +149,7 @@ private final ProfiledPIDController driveController =
              driveController.calculate(driveErrorAbs, 0.0);
 
     if (currentDistance < driveController.getPositionTolerance()) driveVelocityScalar = 0.0;
+    if (currentDistance > 0.3) driveVelocityScalar = -2;
     lastSetpointTranslation =
         new Pose2d(
                 targetPose.getTranslation(),

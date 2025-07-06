@@ -241,7 +241,7 @@ public class RobotContainer {
 
     joystick.rightTrigger()
       .onTrue(SubsystemActions.intakeAlgae(coralManipulator))
-      .onFalse(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(CoralConstants.neutralAlgaeVoltage)));
+      .onFalse(coralManipulator.intakeToAlgaeHome().alongWith(coralManipulator.setIntakeVoltage(0))); //CoralConstants.neutralAlgaeVoltage
 
       Trigger coralInRange = new Trigger(() -> poseEstimatorSubsystem.coralInRange());
       // Trigger coralAutoTarget = new Trigger(() -> Constants.Vision.kCoralAutoTarget);
