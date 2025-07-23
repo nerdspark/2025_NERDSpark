@@ -243,7 +243,7 @@ public class RobotContainer {
       //manual dunk
     joystick.povLeft().onTrue(ArmActions.dunkCoral(arm, () -> scoringSubsystem.getArmReefTarget(), () -> (joystick.getLeftTriggerAxis() - joystick.getRightTriggerAxis())))
       .onTrue(gripper.coralDefaultCommand());
-    joystick.leftBumper().onTrue(gripper.spitOutCommand())
+    joystick.rightBumper().onTrue(gripper.spitOutCommand())
       .onFalse(new WaitCommand(0.4).andThen(gripper.neutralCommand())).onFalse(new WaitCommand(0.2).andThen(arm.goToHome()));
 
       // autodunk
@@ -277,7 +277,7 @@ public class RobotContainer {
     DriverStation.getAlliance().get().equals(Alliance.Blue) ? 5.304 : 2.2, 
     DriverStation.getAlliance().get().equals(Alliance.Blue) ? new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180)) : new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180)))));
 
-    joystick.rightTrigger().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)
+    joystick.leftBumper().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)
     .alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
     .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)).withRotationalRate(thetaController
     .calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().get().equals(Alliance.Red) ? 0 : Math.PI)))))
@@ -295,7 +295,7 @@ public class RobotContainer {
     // climb
     joystick.back().onTrue(new ArmCommand(arm, () -> 11)).onTrue(new WaitCommand(0.3).andThen(climb.deploy()));
     joystick.start().whileTrue(climb.climb());//.climbInstantCommand()).onFalse(climb.stopCommand());
-    joystick.leftTrigger().onTrue(ArmActions.resetZero(arm));
+    // joystick.leftTrigger().onTrue(ArmActions.resetZero(arm));
 
 
     /* autodrive TODO: rebind to not conflict with drive stick */
@@ -308,7 +308,7 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX()));
     
-    joystick.rightBumper().whileTrue(Autos.driveAndAutoDropoff(drivetrain,
+    joystick.a().whileTrue(Autos.driveAndAutoDropoff(drivetrain,
     () -> drivetrain.getState().Pose,
     () -> scoringSubsystem.getRobotPoseForSelectedBranch(),
     ()->scoringSubsystem.getLevel(),
@@ -317,12 +317,12 @@ public class RobotContainer {
     ()->-joystick.getRightX(),
     ()->-joystick.getLeftX(), arm, gripper, () -> scoringSubsystem.getArmReefTarget())).and(() -> !gripper.hasGamePiece).onFalse(arm.goToHome().alongWith(gripper.neutralCommand()));
 
-    joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
-    () -> drivetrain.getState().Pose,
-    () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
-    ()->-joystick.getRightY(),
-    ()->-joystick.getRightX(),
-    ()->-joystick.getLeftX()));
+    // joystick.a().whileTrue(Autos.getAutoDriveCommandStation(drivetrain,
+    // () -> drivetrain.getState().Pose,
+    // () -> scoringSubsystem.getRobotPoseForSelectedCoralStation(),
+    // ()->-joystick.getRightY(),
+    // ()->-joystick.getRightX(),
+    // ()->-joystick.getLeftX()));
 
     joystick.x().whileTrue(Autos.getAutoDriveCommandReef(drivetrain,
     () -> drivetrain.getState().Pose,
