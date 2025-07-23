@@ -217,8 +217,8 @@ public static class Vision {
 
         public static final Map<CoralStations, Transform2d> coralStationOffSetsMap = new HashMap<>();
         static {
-          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
-          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(16.5), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.LEFT, new Transform2d(Units.inchesToMeters(18.5), 0, new Rotation2d(Math.toRadians(180))));
+          coralStationOffSetsMap.put(CoralStations.RIGHT, new Transform2d(Units.inchesToMeters(18.5), 0, new Rotation2d(Math.toRadians(180))));
          
         }
     }
@@ -422,8 +422,12 @@ public static class BucketConstants {
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(250)).rotateElbowBy(Rotation2d.fromDegrees(-25));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
 
-      armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(115)), Units.degreesToRadians(128));
-      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(115)), Units.degreesToRadians(128));
+      // THIS IS FOR FRONT THROWING
+      // armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(115)), Units.degreesToRadians(128));
+      // armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(115)), Units.degreesToRadians(128));
+
+      armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(95)), Units.degreesToRadians(75));
+      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(75));
 
       armSetPoints[11] = new ArmPoint(new Translation2d(-18, 0.1), Units.degreesToRadians(265)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
 

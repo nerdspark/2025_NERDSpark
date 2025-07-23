@@ -270,17 +270,17 @@ public class RobotContainer {
     
 
 
-    
-    
-    joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(new DriveToPose(drivetrain, () -> new Pose2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 6.41 : 12.0, 
+    // ArmActions.armToAlgaeBarge(arm, gripper).alongWith(
+    // .onFalse(ArmActions.shootAlgaeBarge(arm, gripper)
+
+    joystick.y().whileTrue(new DriveToPose(drivetrain, () -> new Pose2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 6.41 : 12.0, 
     DriverStation.getAlliance().get().equals(Alliance.Blue) ? 5.304 : 2.2, 
-    DriverStation.getAlliance().get().equals(Alliance.Blue) ? new Rotation2d(0, 0) : new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180))))))
-    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
+    DriverStation.getAlliance().get().equals(Alliance.Blue) ? new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180)) : new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180)))));
 
     joystick.rightTrigger().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)
     .alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
     .withVelocityY(yLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightX()) * MaxSpeed)).withRotationalRate(thetaController
-    .calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().get().equals(Alliance.Red) ? Math.PI : 0)))))
+    .calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().get().equals(Alliance.Red) ? 0 : Math.PI)))))
     .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
     // joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(Constants.shootAlgaeDriveSpeed)
     // .withRotationalRate(thetaController.calculate(drivetrain.getState().Pose.getRotation().getRadians(), DriverStation.getAlliance().get().equals(Alliance.Red) ? 0 : Math.PI)))))
