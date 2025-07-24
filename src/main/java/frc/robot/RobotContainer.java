@@ -273,9 +273,10 @@ public class RobotContainer {
     // ArmActions.armToAlgaeBarge(arm, gripper).alongWith(
     // .onFalse(ArmActions.shootAlgaeBarge(arm, gripper)
 
-    joystick.y().whileTrue(new DriveToPose(drivetrain, () -> new Pose2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 6.41 : 12.0, 
-    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 5.304 : 2.2, 
-    DriverStation.getAlliance().get().equals(Alliance.Blue) ? new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180)) : new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180)))));
+    joystick.y().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper).alongWith(new DriveToPose(drivetrain, () -> new Pose2d(DriverStation.getAlliance().get().equals(Alliance.Blue) ? 7.165 : 10.892, 
+    DriverStation.getAlliance().get().equals(Alliance.Blue) ? 5.614 : 2.402, 
+    DriverStation.getAlliance().get().equals(Alliance.Blue) ? new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180)) : new Rotation2d(0, 0).plus(Rotation2d.fromDegrees(180))))))
+    .onFalse(ArmActions.shootAlgaeBarge(arm, gripper));
 
     joystick.leftBumper().whileTrue(ArmActions.armToAlgaeBarge(arm, gripper)
     .alongWith(drivetrain.applyRequest(() -> drive.withVelocityX(xLimiter.calculate(OperatorConstants.joystickMap.get(-joystick.getRightY()) * MaxSpeed))
