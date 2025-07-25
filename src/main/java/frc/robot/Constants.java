@@ -416,8 +416,8 @@ public static class BucketConstants {
       armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(129));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[1] = armSetPoints[4];
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 16.0), Units.degreesToRadians(170)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
-      armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 37.0), Units.degreesToRadians(170)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 15.7), Units.degreesToRadians(170)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 36.3), Units.degreesToRadians(170)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(250)).rotateElbowBy(Rotation2d.fromDegrees(-25));
       armSetPoints[8] = new ArmPoint(new Translation2d(32.2, -14.6), true, 0.0);
@@ -426,8 +426,8 @@ public static class BucketConstants {
       // armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(115)), Units.degreesToRadians(128));
       // armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(115)), Units.degreesToRadians(128));
 
-      armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(80)), Units.degreesToRadians(80));
-      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(80)), Units.degreesToRadians(80));
+      armSetPoints[9] = new ArmPoint(new Translation2d(20, Rotation2d.fromDegrees(80)), Units.degreesToRadians(95));
+      armSetPoints[10] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(80)), Units.degreesToRadians(95)); //old number is ArmConstants.totalStageLength
 
       armSetPoints[11] = new ArmPoint(new Translation2d(-18, 0.1), Units.degreesToRadians(265)); // (-21.5, 0.1) for legal position // (-33, 30) for test position
 
