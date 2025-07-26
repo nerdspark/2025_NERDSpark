@@ -416,7 +416,7 @@ public static class BucketConstants {
       armSetPoints[4] = new ArmPoint(new Translation2d(ArmConstants.totalStageLength, Rotation2d.fromDegrees(95)), Units.degreesToRadians(129));//new ArmPoint(new Translation2d(-8.4, 49.9), Units.degreesToRadians(150)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperCoralOffset);
       armSetPoints[1] = armSetPoints[4];
 
-      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 15.7), Units.degreesToRadians(170)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
+      armSetPoints[5] = new ArmPoint(new Translation2d(-13.4, 13.7), Units.degreesToRadians(170)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
       armSetPoints[6] = new ArmPoint(new Translation2d(-13.4, 36.3), Units.degreesToRadians(170)).add(new Translation2d(dropoffDistanceFromBumper, 0)).withGripperOffset(gripperAlgaeOffset);
 
       armSetPoints[7] = new ArmPoint(home, Units.degreesToRadians(250)).rotateElbowBy(Rotation2d.fromDegrees(-25));
